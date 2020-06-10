@@ -1,0 +1,1475 @@
+ /*Eric Meyer's CSS Reset */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6,h7,I1, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* End of Eric Meyer's CSS Reset */
+
+
+html {
+	height: 100%;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
+	display: block;
+}
+body {
+    font: 12px/18px 'Lato', sans-serif;
+    /*font-family: 'Lato', sans-serif !important;*/
+    /*font: 12px/18px 'Helvetica', sans-serif;
+    font-family: 'Helvetica', sans-serif !important;*/
+	height: 100%;
+    /*background-color: #e6e6e6;*/
+}
+
+#WSLoading {
+    font-family: 'Lato', sans-serif !important;
+}
+
+svg text{
+    font-family: 'Lato', sans-serif;
+}
+
+.no-padding {
+    padding:0 !important;
+}
+/* Main wrapper for the entire UI. 
+    02.22.16 DAS- surrounds all the panels
+    --------------------------------------------*/
+.wrapper {
+  height: auto !important;
+  min-height: 100%;
+  min-width: 1000px;
+  padding: 0px 10px 10px 10px;
+  /*background-color: #e6e6e6;*/
+    transition:margin-left .25s;
+    transition-timing-function:linear;
+    /* Safari */
+    -webkit-transition:margin-left .25s;
+    -webkit-transition-timing-function:linear;
+     /* for debugging position and layout*/
+     /*border-style:dashed;
+     border-color:forestgreen;
+     border-width:2px;*/
+}
+
+.open {
+    margin-left: 300px !important;
+}
+
+h1 {
+  /*color: #990033;*/
+  color: #2676bb;
+  text-shadow: 1px 1px 1px #FFFFFF;
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+h7 {
+  color: #4F5557;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+/* Header
+The "wrapper" for the sustainability indicators
+DAS- 02.19.16 - this surrounds the dashboard
+-----------------------------------------------------*/
+.header
+{
+    /*background-color: #e6e6e6;*/
+    margin-bottom: 5px;
+    padding: 1px;
+     /* for debugging position and layout*/
+     /*border-style:dashed;
+     border-color:blue;
+     border-width:2px;*/
+}
+
+
+/* Middle
+see horizontal.css for more controls over the "middle" frame
+-----------------------------------------------------------------------------*/
+.middle {
+	width: 100%;
+	
+	padding: 0px;
+	position: relative;
+     /*border-style:dashed;
+     border-color:lightgreen;
+     border-width:2px;*/
+
+}
+.middle:after {
+	display: table;
+	clear: both;
+	content: '';
+}
+/* Surrounds the left ((policy) panel and the main content 
+    (tabbed) area. 02.22.16 DAS 
+    ----------------------------------------------------------*/
+/*#tabs-1 {
+     text-align: center;
+  font-family: san-serif;
+  font-size: 17px;
+  color: blue;
+}*/
+#ui-id-1 {
+       /*text-align: center;
+  font-family: san-serif;
+  font-size: 37px;
+  color: blue;*/
+}
+/*DAS 05.11.16 Container and Content occupy the same space- WHY?*/
+/* .container now determines the graphing area height*/
+.container {
+	width: 100%;
+	float: left;
+	/*height: 660px;*/
+    height: 780px;
+	overflow: hidden;
+     /* for debugging position and layout*/
+     /*border-style:solid;
+     border-color:red;
+     border-width:2px;*/
+}
+/* Sits under the #left-sidebar - determined where main-content starts (on left side)
+    02.25.16 DAS
+    ----------------------*/
+/*This is so absurd!  the padding value in .content class moves the div that contains chanrts and such content to the left or right
+    making the left padding field larger pushes it right.*/
+/* DAS 05.11.16 [01.31.17 das] changed padding to match minor change in left-sidebar */
+.content {
+	
+    /*padding: 0 0 0 429px;*/
+    padding: 0 0 0 495px;
+    height: 100%;
+    /* for debugging position and layout*/
+     /*border-style: dashed;
+     border-color: black;
+     border-width:2px;*/
+ }
+/*-----------------------------------------------------*/
+/* A "wrapper" for the content area of the tabbed area 
+DAS 02.19.16 -----------------------------------------*/
+/* We can gain 72 pixels here*/
+.main-content {
+ 
+  /*background-color: #e6e6e6;*/
+  margin-bottom: 2px;
+  height: 100%;
+  
+   /* for debugging position and layout*/
+     /*border-style: dashed;
+     border-color:red;
+     border-width:1px;*/
+}
+
+/*---------------------------------------------------------------------------*/
+/* Left Sidebar
+DAS 02.19.16 - This is the Policy panel on the left side of the UI
+-----------------------------------------------------------------------------*/
+/*Ipad status bar is about 195px in height
+MTS 02.23.16*/
+#left-sidebar {
+  float: left;
+  margin-left: -100%;
+  overflow: auto;
+  
+  /*height: 580px;*/
+  height: 700px;
+  position: relative;
+  /*width: 410px;*/
+  width: 500px;
+  margin-top: 80px;
+  /*padding: 5px;*/
+  /*background-color: #e6e6e6;*/
+   /* for debugging position and layout*/
+     /*border-style:dashed;
+     border-color:coral;
+     border-width:2px;*/
+}
+/*-------------------------------------------------------------------------------------*/
+/* Left sidebar Title
+    02.22.16 - this is a small div that holds the title for the policy panel. For the
+    Smithsonian model this div holds the name of the State being examined.
+    ----------------------------------------------------------------------------------*/
+#PanelUserInputs {
+    /*margin-top:5px;*/
+}
+
+#left-title {
+ 
+}
+.TheState {
+  /*float: left;*/
+  /*margin-left: -100%;*/
+ 
+  overflow: auto;
+ 
+  /*height: auto;*/
+  /*height: 42px;
+  height: 42px;*/
+  /*width: 415px;*/
+  padding: 7px 0 3px 0;
+  /*box-shadow: 7px 7px 5px grey;*/
+  position:relative;
+ 
+  /*text-align: center;*/
+  /*font-family: Arial;*/
+  font-family: 'Adobe Caslon Pro' ;
+  font-size: 48px;
+  line-height: 48px;
+  /* colorbrewer2.org*/
+  color: #ef3f37;
+  /*background-color: #d6dadb;*/
+  /*background-color: #e6e6e6;*/
+     /*border-style: solid;
+     border-color: darkblue;
+     border-width: 1px;*/
+}
+
+/*---------------------------------------------------------------------------*/
+/* Footer
+    02.22.16 - the panel that contains the gear icon, the run model button,
+    the version control information
+-----------------------------------------------------------------------------*/
+.footer {
+  /*background-color: #e6e6e6;*/
+  /*height: 140px;*/
+  /*min-width: 1000px;*/
+  margin-top: 20px;
+  /*padding: 5px;*/
+  /*padding: 5px 5px 5px 5px;*/
+  position: relative;
+  /* border-radius: 4px; */
+  /*transition:margin-left .25s;
+    transition-timing-function:linear;
+    -webkit-transition:margin-left .25s;
+    -webkit-transition-timing-function:linear;*/
+     /* for debugging position and layout*/
+     /*border-style:dashed;
+      border-color: yellow;
+      border-width:2px;*/
+}
+.feedback{
+    padding-right: 5px;
+    float: left;
+}
+.version{
+    padding-left:5px;
+    padding-top:5px;
+    height: 45px;
+    float: left;
+    font-size: 10px;
+     margin-left: 5px;
+     margin-right: 30px;
+     /*border-style:dashed;
+      border-color:blue;
+      border-width:2px;*/
+}
+.api{
+    padding-left:2px;
+    padding-top:10px;
+    float: left;
+    font-size: 8px;
+  
+     /*border-style:dashed;
+      border-color:red;
+      border-width:2px;*/
+}
+/*========================================================================================================*/
+
+.trace-CO {
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+
+       /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #4F5557 0%, #FFB310 100%) ;
+
+    background-image: -webkit-linear-gradient(top, #0000FF 0%, #3399FF 100%) ;
+
+    border: 1px solid #CCCCCC;
+    color: #FFFFFF;
+    padding: 5px;
+    width: 340px;
+    margin-left:5px;
+    float:left;
+}
+
+.trace-CO:hover {
+    cursor: pointer;
+    color: #FFFFFF;
+}
+
+
+
+/* Accordion
+    NO functionality that I can see
+    02.22.16 DAS
+-----------------------------------------------------------------------------*/
+.accordionWrapper {
+    display: inline-block;
+    background-color: #fff;
+    overflow: hidden;
+      /*border-style:dashed;
+      border-color:yellow;
+      border-width:2px;*/
+}
+
+    .accordionWrapper img {
+        vertical-align: top;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .accordionWrapper div {
+      display: inline;
+      float: left;
+      height: 100%;
+      margin: auto;
+     /* border-style:solid;
+      border-color:blue;
+      border-width:2px;*/
+    }
+
+        .accordionWrapper div.title {
+            color: #555555;
+            cursor: pointer;
+            font-weight: normal;
+            padding: 5px;
+            width: 90px;
+        }
+
+        .accordionWrapper div.content {
+            display: none;
+            background: #fff;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+
+        .ui-accordion .ui-accordion-content {
+            background-color: #FFFFFF !important;
+        }
+
+.set {
+  background: url("images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
+  border: 1px solid #D3D3D3;
+  border-radius: 4px;
+  height: 190px !important;
+  margin-right: 2px !important;
+  min-width: 100px;
+  padding: 0px;
+}
+
+#slider {
+    background-color: #fff;
+    bottom: 0;
+    height: 106px !important;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+    #slider .slider-closed {
+        width: 100px;
+    }
+
+    .slider-open {
+        background: #fff;
+    }
+
+    .slider-closed {
+      background: none repeat scroll 0 0 #FFFFFF;
+      border-left: 1px solid #CCCCCC;
+    }
+
+    #slider strong {
+        color: #444;
+        display: block;
+        margin-bottom: 5px;
+        padding: 10px 10px 0;
+        text-shadow: none;
+    }
+
+    #slider p {
+        color: #444;
+        display: block;
+        font-size: 14px;
+        padding: 15px;
+        text-shadow: none;
+    }
+
+    #slider .slider-open strong {
+      color: #444444;
+      float: left;
+      font-size: 22px;
+      height: 65px;
+      width: 140px;
+    }
+
+    #slider .slider-closed strong {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    #slider .slider-closed p {
+        display: none;
+    }
+
+
+
+/*
+Images used in the Environment Sustainability Indicator ?????? What is this?
+*/
+ul.img-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+ul.img-list li {
+  display: inline-block;
+  height: 150px;
+  margin: 0 1em 1em 0;
+  position: relative;
+  width: 150px;
+}
+
+span.text-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+}
+
+span.text-content span {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+span.text-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+}
+
+ul.img-list li:hover span.text-content {
+  opacity: 1;
+}
+span.text-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+
+/* Settings popup
+-----------------------------------------------------------------------------*/
+.hidden {
+    display: none;    
+}
+
+#SettingsPanel {
+    float: right;
+}
+
+#button {
+    padding: .5em 1em;
+    text-decoration: none;
+}
+
+#effect {
+    position: relative;
+    width: 240px;
+    height: 135px;
+    padding: 0.4em;
+    display: none;
+}
+
+#effect h3 {
+    margin: 0;
+    padding: 0.4em;
+    text-align: center;
+}
+
+#effect h7 {
+    margin: 0;
+    padding: 0.4em;
+    text-align: center;
+}
+/* jQuery controls
+*/
+
+.ui-slider .ui-slider-handle {
+    border-radius: 10px !important;
+    height: 10px !important;
+    width: 10px !important;
+    border-width:5px !important; 
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444444), color-stop(1, #FFFFFF)) !important;
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #444444 0%, #FFFFFF 100%) !important;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  box-shadow: 1px 1px 2px #444444;
+  margin-left: -10px !important;
+  top: -5px !important;
+  box-shadow: 0 0 4px #990033;
+}
+
+.slider-container, .desc {
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #FFFFFF));
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #CCCCCC 0%, #FFFFFF 100%);
+    border: 1px solid #CCCCCC;
+    border-radius: 20px !important;
+    padding: 10px 40px 10px 10px;
+    position: relative;
+    margin-bottom: 30px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.ui-slider-horizontal {
+    height: 8px !important;
+    border-radius: 5px !important;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444444), color-stop(1, #FFFFFF)) !important;
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #444444 0%, #FFFFFF 100%) !important;
+}
+
+.ui-slider {
+  border-radius: 5px !important;
+  position: relative;
+  text-align: left;
+}
+
+.ui-slider .ui-slider-range {
+  background: radial-gradient(#FFFFFF, #990033) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  box-shadow: 0 0 8px #990033;
+}
+
+select {
+  border: 0 none;
+  color: #555555;
+  font-size: 14px;
+  width: 100%;
+}
+
+.desc {
+    padding: 5px 40px 5px 10px !important;
+}
+
+/*option {
+    border: 0px;
+    color: #990033;
+}*/
+
+.ui-accordion-content p {
+    margin-top: 0px;
+}
+
+.scale {
+  font-size: 12px !important;
+  left: -5px;
+  position: relative;
+  top: 15px;
+}
+    .scale span {
+        position: absolute;
+    }
+
+.ui-slider-popup-button {
+    border: 8px solid #CCCCCC;
+    border-radius: 16px;
+    cursor: pointer;
+    height: 14px;
+    position: absolute;
+    right: 0;
+    top: 0px;
+    width: 14px;
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444444), color-stop(1, #FFFFFF));
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #444444 0%, #FFFFFF 100%);
+}
+
+
+.ui-accordion .ui-accordion-content {
+  padding: 10px 5px 10px 30px !important;
+}
+
+.ui-accordion .ui-accordion-header {
+      -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+
+
+/* jQuery dialog popups*/
+
+
+.ui-dialog {
+  /*background: none repeat scroll 0 0 #FFB310 !important;*/
+  border-radius: 20px !important;
+  box-shadow: 5px 5px 10px #444;
+  border: 0 none !important;
+}
+
+
+.ui-dialog .ui-dialog-titlebar {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border: 0 none;
+  padding: 0.4em 1em;
+  position: relative;
+}
+
+
+.ui-dialog .ui-dialog-title {
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 200;
+}
+
+/* Panels */
+/* tabs */
+
+#tabs-off {
+    background-color: #000000 !important;
+   
+}
+
+#tabs-off ul {
+    display: none;
+}
+
+.ui-tabs .ui-tabs-panel {
+  border: 0px solid #CCCCCC !important;
+  /* 02.25.16 DAS */
+  /*padding: 17px 0 !important;*/
+  padding: 1px 0 !important;
+  background-color: white !important;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br, .ui-corner-left, .ui-corner-bl, .ui-corner-top, .ui-corner-tr, .ui-corner-left, .ui-corner-tl {
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+}
+
+.ui-slider, .ui-slider-range {
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+}
+
+.ui-tabs {
+  border: 0 solid #CCCCCC !important;
+  padding: 0 !important;
+  position: relative;
+}
+
+
+.ui-widget-header {
+  background: none;
+  border: 0 solid #AAAAAA;
+  color: #222222;
+  font-weight: bold;
+}
+
+/*.ui-dialog .ui-dialog-buttonpane {
+    background-color: #4F5557 !important;
+}*/
+
+
+.ui-dialog-buttonset {
+    width:100%
+}
+
+
+.ui-dialog-buttonset .ui-button:last-child {
+    float:right !important;
+}
+
+
+.ui-dialog .ui-dialog-title {
+    /*background-color: #e6e6e6 !important;*/
+    color: #4F5557 !important;
+    text-shadow: 1px 1px 1px #FFFFFF;
+}
+
+
+.ui-widget-content {
+  /*background: none repeat scroll 0 0 #e6e6e6 !important;*/
+  border: 0px none #AAAAAA !important;
+}
+
+
+.ui-dialog .ui-dialog-content {
+    color:#4F5557 !important;
+}
+
+
+.ui-dialog {
+ /*background-color: #e6e6e6 !important;*/
+ color: #4F5557;
+}
+
+.ui-widget-overlay {
+    background: none repeat scroll 0 0 #000000 !important;
+    opacity: 0.7 !important;
+}
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    /* background: radial-gradient(#ffffff, #990033) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;*/
+    background: #ffffff !important;
+    color: white !important;
+    border-top: 1px solid #cccccc !important;
+    border-left: 1px solid #cccccc !important;
+    border-right: 1px solid #cccccc !important;
+    border-bottom: 0px none #cccccc !important;
+}
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  /*color: black !important;*/
+  font-weight: bold;
+}
+
+.ui-tabs .ui-tabs-nav {
+  margin-left: 0px !important;
+  padding: 0 !important;
+}
+
+/* THIS IS WHAT CONTROLS THE COLOR OF THE BACKGROUND OF TAB STRIP in THE JQUERY TAB CONTROL RQ DAS 12 /19/14 */
+/* Content Area */
+.middle .ui-tabs .ui-tabs-nav {
+    background-color: white !important;
+}
+
+.ui-tabs-nav {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  border: 0 solid #AAAAAA !important;
+  color: #222222;
+  font-weight: bold;
+
+}
+
+
+/*.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 1px solid #D3D3D3;
+    color: white !important;
+}*/
+
+
+.ui-tabs .ui-tabs-nav li {
+    border-bottom-width: 0;
+    float: left;
+    list-style: none outside none;
+    margin: 0 2px 0 0;
+    padding: 0;
+    position: relative;
+    top: 0;
+    white-space: nowrap;
+
+    /*background-color: #4F5557 !important;
+    border: 1px solid #4F5557 !important;*/
+    background:none;
+    /*background-color: #35B6ED !important;*/
+    border: 1px solid #35B6ED !important;
+    color: white !important;
+}
+
+
+.ui-tabs .ui-tabs-nav li.ui-state-active .ui-tabs-anchor {
+    color: white;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    /*background-color: #4F5557 !important;
+    border: 1px solid #4F5557 !important;*/
+    background-color: #35B6ED !important;
+    border: 1px solid #35B6ED !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    /*color: black !important;*/
+}
+
+
+
+
+.ui-dialog-buttonset .ui-button {
+    background-image: -moz-linear-gradient(center top , #CCCCCC 0%, #999999 100%) !important;
+    border: 1px solid #ffffff !important;
+    color: #FFFFFF !important;
+}
+/* Controls the main content area (tabbed) area
+    02.22.16 DAS
+    --------------------------------------------*/
+/* SEE the top of the page in horizontal.css file. Look for 
+.frame { */
+
+/* This is the container that holds the  .highcharts-container 
+    found immediately below
+    02.22.16 DAS
+    ----------------------------------------------------------*/
+/* Content Area */
+/*  EDIT QUAY 4/5/16 BEGIN*/
+.SanKey_chart {
+    /*width: 600px;*/
+    width: auto;
+    height: 400px;
+    /*background-color: #e6e6e6;*/
+    position: relative;
+      /*border-style:solid;
+      border-color:blue;
+      border-width:2px;*/
+}
+/*  EDIT QUAY 4/5/16 BEGIN*/
+
+.chart {
+    /*width: 600px;*/
+    width: auto;
+    height: auto;
+    /*background-color: #e6e6e6;*/
+    /*height: 700PX;*/
+    
+    /*height: 500px;*/
+    position: relative;
+        /*border-style:solid;
+      border-color:blue;
+      border-width:2px;*/
+   
+}
+/* David Arthur Sampson 06.10.14*/
+.inputs {
+    width: 277px;  
+    width: auto;
+   
+    /*height: auto;*/
+    
+}
+/* Individual container for each highcharts image
+    02.22.16 DAS- this container is embedded within another
+    yet not found container
+    /* Content Area */
+   /* ---------------------------------------------------------
+    */
+/*Chart Border Below*/
+.highcharts-container {
+    /*box-shadow: 5px 5px 5px #333333;*/
+    /* for debugging position and layout*/
+     /*border-style:dashed;
+     border-color:red;
+     border-width:2px;*/
+}
+
+/* Draggable and Droppable */
+
+#drop-right {
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+
+    overflow: hidden;
+}
+
+#drop-left {
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+*{
+    margin:0;
+    padding:0;
+}
+#watersim {
+    width: 1280px;
+    float:left;
+}
+#decision-theater-left{
+    background:#000;
+    width: calc(50% - 640px);
+    float:left;
+}
+#decision-theater-right{
+    background:#000;
+    width: calc(50% - 640px);
+    float:right;
+}
+
+#watersim,#decision-theater-left,#decision-theater-right{
+    height: 719px;
+}
+
+/*DAS begin here again -------------------------------------------------------------------------------
+    NOT NOW used... original code by Jeff
+    ----------------------------------------*/
+/* Draggable objects */
+.draggable { 
+    cursor: crosshair; 
+}
+#containment-wrapper { 
+    /*width: 100%; 
+    height: 98%; 
+    padding: 0px;*/
+      /*border-style:solid;
+          border-color:blue;
+      border-width:2px;*/
+   
+}
+/* Small div that sits above the div that holds the vertical text
+    "Indicators" on the left side of the dashboard
+    02.22.16 DAS
+    ------------------------------------------------ */
+.dashboard-header-container {
+  /*Width controls the width of where the 'Sustanability Indicators' to make more space */
+  width: 60px;
+  height: 220px;
+  float: left;
+
+  position: relative;
+
+  /*background-color: #e6e6e6;*/
+		 
+  /* for debugging position and layout*/
+    /*border-style:dashed;
+      border-color:yellow;
+      border-width:2px;*/
+}
+
+/* DAS 10.06.14 */
+/* Horizontal accordion for dashboard */
+/* Contains Nothing -takes up space
+    02.22.16 DAS
+    -----------------------------------*/
+.dashboard-header {
+    width: 40px;
+    float: left;
+
+    /*margin-right: 7px;*/
+      /* for debugging position and layout*/
+      /*   border-style:dashed;
+          border-color:yellow;
+     border-width:2px;*/
+}
+
+    .dashboard-header h0 {
+        /*background-color: #e6e6e6;*/
+     
+        display: block;
+        left: auto;
+    }
+     
+/*-------------------------------------------------------------*/
+/* This is the vertical div on the left side of the dashboard
+    that holds the text "Indicators"
+    02.22.16 DAS 
+    -----------------------------------------------------------*/
+.dashboard-header h1 {
+    position: absolute;
+    width: auto;
+    margin-top: 20px;
+    margin-top: 40px;
+    text-shadow:none;
+
+    display: none;
+    top: 194px;
+    /*font-size: 26px;*/
+    font-size: 2.5em;
+    padding-top:5px;
+   
+    line-height: 28px;
+    text-align:right;
+    /*top: 0px;*/
+    /*background-color: #e6e6e6;
+    font-size: 20px;
+    text-align:right;*/
+    
+    /* for debugging position and layout*/
+    /*border-style:solid;
+    border-color:red;
+    border-width:2px;*/
+
+  	-webkit-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
+   transform-origin: 0 0;
+	
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+
+    
+}
+/* Not being used, that I can tell
+    02.22.16 DAS
+    ---------------------------------*/
+.header wrapAccordion
+{
+    /* for debugging position and layout*/
+	/*border-style: dotted;
+    border-color:red;
+    border-width:2px;
+
+    border-style:solid;
+    border-color:red;
+    border-width:2px;*/
+}
+/* Wrapper for the Sustainability Indicators- this is the
+    center div that is wrapped by the .header (at the top of this file)
+    This div scales to the indicators.. it has the gray background
+    02.22.16 DAS
+    ---------------------------------------*/
+.header article.accordion
+{
+    /*background-color: #e6e6e6;*/
+	display: block;
+	margin: 0 auto;
+	overflow: auto;
+    
+    /*for debugging position and layout*/
+	/*border-style:solid;
+    border-color:red;
+    border-width:2px;*/
+}
+/* NOT currently in play - that I can tell
+    02.22.16 DAS
+    --------------------------------*/
+.header article.accordion section {
+  background-color: #4F5557;
+  color: #4F5557;
+  display: block;
+  float:left;
+  height: auto;/*12em;*/
+  width: auto; /*145px;*/
+  margin-right: 3px;
+  margin-bottom:1px;
+  padding-right: 1px;
+  overflow: hidden;
+  position: relative;
+   z-index: 100;
+  
+    /* for debugging position and layout*/
+  /*border-style:solid;
+  border-color: blue;
+  border-width:1px;*/
+}
+
+
+
+/* Not currently in play- that I can see
+    02.22.16 DAS
+    ------------------------------------*/
+.header article.accordion iframe {
+  /*background-color: #e6e6e6;*/ 
+  display: block;
+  float:left;
+  height:150px;/*12em;*/
+  width: 500px; /*145px;*/
+  
+    /* for debugging position and layout*/
+  /*border-style:solid;
+  border-color:yellow;
+  border-width:2px;*/
+}
+.header article.accordion section canvas {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+   
+    left: -15px;
+    top: 25px; 
+  
+    /* for debugging position and layout*/
+  /*border-style:dotted;
+  border-color:red;
+  border-width:2px;*/
+}
+/*DAS Indicator Control Wrapper- moves container left*/
+/* UI version 16a- 10.06.14 */
+.ICwrapper {
+    float: left;
+    margin-left: 5px;
+    /* for debugging position and layout*/
+   	    /*border-style:solid;
+     	    border-color:red;
+            border-width:2px;*/ 
+}
+.header article.accordion section h2
+{
+	position: absolute;
+	font-size: 15px; /* 15px 17px*/
+	font-weight:bold ;
+
+	padding: 0;
+	margin: 0;
+	color: #ddd;
+    
+    /* for debugging position and layout*/
+  	/*border-style:solid;
+    border-color: red;
+    border-width:2px;*/
+
+	
+	-webkit-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
+	transform-origin: 0 0;
+	
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	
+}
+
+.header article.accordion section h2 a
+{
+	display: block;
+	width: 100%;
+	line-height: 2em;
+	text-decoration: none;
+	color: inherit;
+	outline: 0 none;
+}
+
+.header article.accordion section img
+{
+	display: none;
+}
+
+.header article.accordion section I1
+{
+	position: absolute;
+	font-size: 16px;
+	font-weight: normal;
+	width: 140px;
+	height: 2em;
+	top: 325px;
+	left: 0;
+	text-indent: 15px;
+	padding: 0;
+	margin: 0;
+	color: #ddd;
+	
+	
+	-webkit-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
+	transform-origin: 0 0;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+      /* for debugging position and layout*/
+  	/*border-style:solid;
+    border-color: red;
+    border-width:2px;*/
+}
+/* Not currently in Play, that I can tell
+    02.22.16 DAS
+    ----------------------------------------*/
+.header article.accordion section:target {
+    /*background-color: #e6e6e6;/*#FFFFFF;*/
+    /*color: #333333;*/
+    /*margin-left: 590px; /*600px;*/
+    /*margin-right: 18px;
+    padding: 0 2em; */
+    /*position: absolute;
+    width:auto;*/
+    /*width: 1500px;*/
+    /*max-width: 900px;*/
+
+    /*background-color: #e6e6e6; /*#FFFFFF;*/*/
+    color: #333333;
+    margin-left: 600px;
+    margin-right: 18px;
+    /*padding: 0 2em;*/
+    position: absolute;
+    /*width:600px !important;*/
+    width: auto !important;
+    max-width: 700px;
+    /* for debugging position and layout*/
+  /*border-style:solid;
+  border-color:red;
+  border-width:2px;*/
+
+}
+/*
+ max-width: was 960px;
+*/
+.header article.accordion section:target h2
+{
+	position: static;
+	font-size: 1.3em;
+	text-indent: 0;
+	color: #333;
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+.header article.accordion section:target canvas
+{
+	position: static;
+	font-size: 1.3em;
+	text-indent: 0;
+	color: #333;
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	transform: rotate(0deg);
+    left: 0;
+    /*border-style:solid;
+  border-color:lightcoral;
+  border-width:2px;*/
+}
+
+.header article.accordion section:target img
+{
+	display: block;
+}
+
+.header article.accordion section,
+.header article.accordion section h2
+{
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+}
+
+.header article.accordion section p {
+    margin-left: 120px;
+}
+
+.header article.accordion section iframe {
+    margin-left: 120px;
+      /* for debugging position and layout*/
+  	/*border-style:solid;
+    border-color: red;
+    border-width:2px;*/
+}
+
+/* stores old sustainability Inticator values and displays them underneath the canvas*/
+/* DAS 10.06.14 */
+.header article.accordion section h3 {
+
+	position: absolute;
+	top: 0px; 
+
+	font-size: 16px; /* 17px*/
+	/*font-weight:bold ;*/
+	text-align: right;
+	padding: 0;
+	margin: 0;
+	margin-left: 0px;
+	left: 0px;
+	color: #ddd;
+	width: auto;
+  	text-shadow:none;
+	/*height: 25px;*/
+
+ /* for debugging position and layout*/
+     	    /*border-style:solid;
+     	    border-color:red;
+            border-width:2px;*/
+}
+
+
+.help {
+    display: inline-block;
+    float: right;
+}
+
+.help:hover {
+    cursor: pointer;
+}
+
+/*#fsbutton {
+    float: right;
+}*/
+#fsbutton {
+    float: left;
+}
+
+/* Draggable and resizeable */
+
+
+.scrollbar-off {
+    display:none;
+}
+
+
+.wrapper-dt {
+    height: auto !important;
+    min-height: 100%;
+    min-width: 1000px;
+    padding: 10px 0;
+    transition: margin-left 0.25s linear 0s;
+}
+
+#left-sidebar-dt {
+    float: left;
+    height: 510px;
+    margin-bottom: 5px;
+    margin-left: 0;
+    overflow: auto;
+    padding: 10px;
+    position: relative;
+    width: 275px;
+}
+
+.footer-dt {
+    /*background-color: #E6E6E6;*/
+    bottom: 0;
+    height: 32px;
+    min-width: 100%;
+    padding: 5px 0;
+    position: absolute;
+    transition: margin-left 0.25s linear 0s;
+}
+
+
+@keyframes pulse {
+    from {
+        box-shadow: 3px 3px 9px 3px blue;
+        -moz-box-shadow: 3px 3px 9px 3px blue;
+        -webkit-box-shadow: 3px 3px 9px 3px blue;
+    }
+
+    to {
+        box-shadow: 0px;
+        -moz-box-shadow: 0px;
+        -webkit-box-shadow: 0px;
+    }
+}

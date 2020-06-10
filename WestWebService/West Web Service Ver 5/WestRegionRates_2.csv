@@ -1,0 +1,25 @@
+UNIT,SN,SC,RC,RN,POPGRATE,INDGRATE,AGGRATE,AGNET
+AZ,Arizona,4,10,Arizona North,1.3923191,1.1308944,1.47,600.395
+AZ,Arizona,4,23,Arizona Southeast,1.3923191,1.1308944,1.47,600.395
+AZ,Arizona,4,24,Arizona Central North,1.3923191,1.1308944,1.47,600.395
+AZ,Arizona,4,9,Arizona West,1.3923191,1.1308944,1.47,600.395
+AZ,Arizona,4,8,Arizona Central South,1.3923191,1.1308944,1.47,600.395
+CA,California,6,4, California North,0.7178447,2.2789834,2.26,8523.285
+CA,California,6,2, California Southeast,0.7178447,2.2789834,2.26,8523.285
+CA,California,6,1, California Southwest,0.7178447,2.2789834,2.26,8523.285
+CO,Colorado,8,17, Colorado Front Range,1.3835457,2.1981943,1.73,134.8471
+CO,Colorado,8,19, Colorado Not In Basin,1.3835457,2.1981943,1.73,134.8471
+CO,Colorado,8,18, Colorado In Basin,1.3835457,2.1981943,1.73,134.8471
+NV,Nevada,32,7, Nevada Not In Basin,0.795771,2.4666495,1.78,168.562
+NV,Nevada,32,5, Nevada South,0.795771,2.4666495,1.78,168.562
+NV,Nevada,32,6, Nevada In Basin,0.795771,2.4666495,1.78,168.562
+NM,NewMexico,35,20, New Mexico Central,1.1171679,2.1537149,2.25,"234,870"
+NM,NewMexico,35,25, New Mexico Gila,1.1171679,2.1537149,2.25,"234,870"
+NM,NewMexico,35,22, New Mexico Not In Basin,1.1171679,2.1537149,2.25,"234,870"
+NM,NewMexico,35,21, New Mexico In Basin,1.1171679,2.1537149,2.25,"234,870"
+UT,Utah,49,13, Utah Not In Basin,1.6369381,2.1915741,1.47,298.404
+UT,Utah,49,12, Utah In Basin,1.6369381,2.1915741,1.47,298.404
+UT,Utah,49,11, Utah Salt Lake,1.6369381,2.1915741,1.47,298.404
+WY,Wyoming,56,16, Wyoming Not In Basin,0.7823525,1.9674924,0.91,235.988
+WY,Wyoming,56,15, Wyoming In Basin,0.7823525,1.9674924,0.91,235.988
+WY,Wyoming,56,14, Wyoming Southwest,0.7823525,1.9674924,0.91,235.988

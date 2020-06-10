@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetFieldNamesAndValues">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="KeyWord" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFieldNamesAndValuesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetFieldNamesAndValuesResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetFieldNamesAndValuesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFieldNamesAndValues" />
+  </wsdl:message>
+  <wsdl:message name="GetFieldNamesAndValuesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFieldNamesAndValuesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WaterSimMetaDataMockServiceSoap">
+    <wsdl:operation name="GetFieldNamesAndValues">
+      <wsdl:input message="tns:GetFieldNamesAndValuesSoapIn" />
+      <wsdl:output message="tns:GetFieldNamesAndValuesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WaterSimMetaDataMockServiceSoap" type="tns:WaterSimMetaDataMockServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetFieldNamesAndValues">
+      <soap:operation soapAction="http://tempuri.org/GetFieldNamesAndValues" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WaterSimMetaDataMockServiceSoap12" type="tns:WaterSimMetaDataMockServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetFieldNamesAndValues">
+      <soap12:operation soapAction="http://tempuri.org/GetFieldNamesAndValues" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WaterSimMetaDataMockService">
+    <wsdl:port name="WaterSimMetaDataMockServiceSoap" binding="tns:WaterSimMetaDataMockServiceSoap">
+      <soap:address location="http://localhost:49601/WaterSimMetaDataMockService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WaterSimMetaDataMockServiceSoap12" binding="tns:WaterSimMetaDataMockServiceSoap12">
+      <soap12:address location="http://localhost:49601/WaterSimMetaDataMockService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

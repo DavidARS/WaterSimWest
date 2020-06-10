@@ -1,0 +1,229 @@
+﻿#main-input-container{
+    float: left;
+    margin-right: 20px;
+}
+
+main-input-container .input-pane {
+    /*width: 417px;*/
+    width: 432px;
+}
+
+.policy-title {
+    display: block;
+    left: auto;
+    /*font: 800 24px Lato-Black, Lato;*/
+    font: 800 23px Lato-Black, Lato;
+    margin: 10px 0 0;
+    color: #4E4D4D;
+}
+
+.field-name {
+    color: #4E4D4D;
+    /*font: 600 17px Lato-Semibold, Lato;*/
+    font: 600 16px Lato-Semibold, Lato;
+}
+
+.info-icon {
+    position: absolute;
+    right: 0;
+    top: 12px;
+    width: 15px;
+    cursor: pointer;
+}
+
+.info-item:hover {
+        opacity: 0.7;
+    }
+
+#policy-pop-controls {
+    border-top: 1px solid black;
+    margin-top: 12px;
+}
+
+.controlgroup {
+    position: relative;
+}
+
+.radio-container, .radio-container-climate {
+    position: relative;
+    /*margin-bottom: 15px;*/
+    margin-right: 0px !important;
+    /*margin-right: 10px;*/
+    /*margin-top: 15px;*/
+    /*height:50px;*/
+}
+
+    .radio-container label.ui-button, .radio-container-climate label.ui-button {
+        border: 1px solid #FFFFFF;
+        /*color: #4E4D4D !important;*/
+        color: black !important;
+        font: 600 12px Lato-Semibold, Lato !important;
+        width: 75px;
+        height: 28px;
+        /*min-width: 20%;*/
+    }
+
+    .radio-container label.ui-state-active span, .radio-container-climate label.ui-state-active span {
+        color: black !important;
+        border: 1px solid black;
+    }
+
+    .radio-container label.ui-button {
+        width: 75px;
+        margin: 0 0.1px;
+    }
+
+
+    .radio-container-climate label.ui-button {
+        width: 80px;
+    }
+
+    .radio-container .ui-button-text-only .ui-button-text, .radio-container-climate .ui-button-text-only .ui-button-text {
+        padding: .4em 0;
+    }
+
+.realclearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.input-number {
+    font: 600 12px Lato-Semibold, Lato !important;
+    /*width: 40px;*/
+    height: 28px;
+    float: left;
+    width: 50px !important;
+    margin-left: 5px;
+    /*margin-bottom: 15px;*/
+    /*margin-top: 15px;*/
+    margin-top: 2.5px;
+    text-align: center;
+}
+
+.run-model {
+    /*float:left;*/
+    color: #FFFFFF;
+    width: 168px;
+    height: 54px;
+    font: 600 19px Lato-Semibold, Lato !important;
+    margin-right: 10px;
+    opacity: 1;
+}
+
+    .run-model.focus, .run-model:focus {
+        box-shadow: 0 0 0 0 !important;
+    }
+
+    .run-model:hover {
+        /*cursor: pointer;
+    color: #990033;*/
+        opacity: 0.7;
+        /*background-color: #4593AB;*/
+    }
+
+    .run-model.done {
+        background-color: #1D83A0;
+        border: 2px solid #1D83A0;
+    }
+
+    .run-model.ready {
+        background-color: #60bf7e;
+        border: 2px solid #60bf7e;
+    }
+
+    .run-model.running {
+        background-color: #e6585d;
+        border: 2px solid #e6585d;
+    }
+
+.btn-settings {
+    /*float: left;*/
+    color: #1D83A0;
+    background-color: #FFFFFF;
+    width: 168px;
+    height: 54px;
+    font: 600 15px Lato-Semibold, Lato !important;
+    margin-left: 10px;
+    border: 2px solid #1D83A0 !important;
+}
+
+.btn-credits {
+    /*float: left;*/
+    color: #60bf7e;
+    background-color: #FFFFFF;
+    width: 168px;
+    height: 54px;
+    font: 600 15px Lato-Semibold, Lato !important;
+    margin: auto;
+    display: block !important;
+    border: 2px solid #60bf7e !important;
+}
+
+.btn-report {
+    color: black;
+    background-color: #FFFFFF;
+    width: 168px;
+    height: 35px;
+    font: 600 15px Lato-Semibold, Lato !important;
+    margin: auto;
+    display: block !important;
+    border: 2px solid black !important;
+}
+
+.btn-sec {
+    /*float: left;*/
+    color: #1D83A0;
+    background-color: #FFFFFF;
+    width: 200px;
+    height: 35px;
+    font: 600 15px Lato-Semibold, Lato !important;
+    margin: auto;
+    display: block !important;
+    border: 2px solid #1D83A0 !important;
+    margin-bottom: 3px;
+}
+
+    .btn:hover {
+        opacity: 0.7;
+    }
+
+.btn-force-margins {
+    margin: auto !important;
+    margin-bottom: 3px !important;
+}
+
+.gear-button {
+    cursor: pointer;
+}
+
+
+.gear-button:hover {
+    opacity: 0.7;
+}
+
+.finish {
+    width: 185px;
+    margin-left: 3px;
+    float: right;
+}
+
+.input-button-0 {
+    background: #C4ECF5 !important;
+}
+
+.input-button-1 {
+    background: #8BE6F7 !important;
+}
+
+.input-button-2 {
+    background: #55CDE4 !important;
+}
+
+.input-button-3 {
+    background: #37B6D7 !important;
+}
+
+.input-button-4 {
+    background: #32A8C9 !important;
+}

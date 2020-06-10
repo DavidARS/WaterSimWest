@@ -1,0 +1,879 @@
+﻿/* Eric Meyer's CSS Reset */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* End of Eric Meyer's CSS Reset */
+
+
+html {
+	height: 100%;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
+	display: block;
+}
+body {
+	font: 12px/18px 'Open sans', sans-serif;
+	height: 100%;
+    background-color: #000000;
+}
+
+.wrapper {
+  height: auto !important;
+  min-height: 100%;
+  min-width: 1000px;
+  padding: 10px 10px 4px;
+    transition:margin-left .25s;
+    transition-timing-function:linear;
+    /* Safari */
+    -webkit-transition:margin-left .25s;
+    -webkit-transition-timing-function:linear;
+}
+
+.open {
+    margin-left: 300px;
+}
+
+h1 {
+  color: #990033;
+  text-shadow: 1px 1px 1px #FFFFFF;
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+
+/* Header
+-----------------------------------------------------------------------------*/
+.header {
+  background-color: #e6e6e6;
+  /* border-radius: 4px; */
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+
+/* Middle
+-----------------------------------------------------------------------------*/
+.middle {
+	width: 100%;
+	padding: 0px;
+	position: relative;
+}
+.middle:after {
+	display: table;
+	clear: both;
+	content: '';
+}
+.container {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+}
+.content {
+	padding: 0 0 0 305px;
+}
+
+.main-content {
+  background-color: #e6e6e6;
+  /*border-radius: 4px;*/
+  margin-bottom: 5px;
+}
+
+
+/* Left Sidebar
+-----------------------------------------------------------------------------*/
+.left-sidebar {
+  float: left;
+  margin-left: -100%;
+  overflow: auto;
+  height: 510px;
+  position: relative;
+  width: 275px;
+  background-color: #e6e6e6;
+  /* border-radius: 4px; */
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+
+/* Footer
+-----------------------------------------------------------------------------*/
+footer {
+  background-color: #e6e6e6;
+  height: 32px;
+  min-width: 1000px;
+  padding: 5px;
+  position: relative;
+  /* border-radius: 4px; */
+  transition:margin-left .25s;
+    transition-timing-function:linear;
+    /* Safari */
+    -webkit-transition:margin-left .25s;
+    -webkit-transition-timing-function:linear;
+}
+.feedback{
+    float: left;
+    margin-left: 80px;
+}
+
+.run-model {
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #990000 0%, #990033 100%) !important;
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #990000 0%, #990033 100%) !important;
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #990000 0%, #990033 100%) !important;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #990000), color-stop(1, #990033)) !important;
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #990000 0%, #990033 100%) !important;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #990000 0%, # 100%) !important;
+    border: 1px solid #CCCCCC;
+    color: #FFFFFF;
+    padding: 5px;
+    width: 200px;
+    margin-left:20px;
+    float:left;
+}
+
+.run-model:hover {
+    cursor: pointer;
+    color: #FFB310;
+}
+
+
+/* Accordion
+-----------------------------------------------------------------------------*/
+.accordionWrapper {
+    display: inline-block;
+    background-color:   #fff; 
+    overflow: hidden;
+}
+
+    .accordionWrapper img {
+        vertical-align: top;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .accordionWrapper div {
+      display: inline;
+      float: left;
+      height: 100%;
+      margin: auto;
+    }
+
+        .accordionWrapper div.title {
+            color:  #555555; 
+            cursor: pointer;
+            font-weight: normal;
+            padding: 5px;
+            width: 90px;
+        }
+
+        .accordionWrapper div.content {
+            display: none;
+            background: #fff;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+
+        .ui-accordion .ui-accordion-content {
+            background-color: #FFFFFF !important;
+        }
+
+.set {
+  background: url("images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
+  border: 1px solid #D3D3D3;
+  border-radius: 4px;
+  height: 190px !important;
+  margin-right: 2px !important;
+  min-width: 100px;
+  padding: 0px;
+}
+
+#slider {
+    background-color: #fff;
+    bottom: 0;
+    height: 106px !important;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+    #slider .slider-closed {
+        width: 100px;
+    }
+
+    .slider-open {
+        background: #fff;
+    }
+
+    .slider-closed {
+      background: none repeat scroll 0 0 #FFFFFF;
+      border-left: 1px solid #CCCCCC;
+    }
+
+    #slider strong {
+        color: #444;
+        display: block;
+        margin-bottom: 5px;
+        padding: 10px 10px 0;
+        text-shadow: none;
+    }
+
+    #slider p {
+        color: #444;
+        display: block;
+        font-size: 14px;
+        padding: 15px;
+        text-shadow: none;
+    }
+
+    #slider .slider-open strong {
+      color: #444444 ;
+      float: left;
+      font-size: 22px;
+      height: 65px;
+      width: 140px;
+    }
+
+    #slider .slider-closed strong {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    #slider .slider-closed p {
+        display: none;
+    }
+
+
+
+/* Settings popup
+-----------------------------------------------------------------------------*/
+.hidden {
+    display: none;    
+}
+
+#SettingsPanel {
+    float: right;
+}
+
+#button {
+    padding: .5em 1em;
+    text-decoration: none;
+}
+
+#effect {
+    position: relative;
+    width: 240px;
+    height: 135px;
+    padding: 0.4em;
+    display: none;
+}
+
+#effect h3 {
+    margin: 0;
+    padding: 0.4em;
+    text-align: center;
+}
+
+/* jQuery controls
+*/
+
+.ui-slider .ui-slider-handle {
+    border-radius: 10px !important;
+    height: 10px !important;
+    width: 10px !important;
+    border-width:5px !important; 
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444444), color-stop(1, #FFFFFF)) !important;
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #444444 0%, #FFFFFF 100%) !important;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  box-shadow: 1px 1px 2px #444444;
+  margin-left: -10px !important;
+  top: -5px !important;
+  box-shadow: 0 0 4px #990033;
+}
+
+.slider-container, .desc {
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #FFFFFF));
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #CCCCCC 0%, #FFFFFF 100%);
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #CCCCCC 0%, #FFFFFF 100%);
+    border: 1px solid #CCCCCC;
+    border-radius: 20px !important;
+    padding: 10px 40px 10px 10px;
+    position: relative;
+    margin-bottom: 30px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.ui-slider-horizontal {
+    height: 8px !important;
+    border-radius: 5px !important;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444444), color-stop(1, #FFFFFF)) !important;
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #444444 0%, #FFFFFF 100%) !important;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #444444 0%, #FFFFFF 100%) !important;
+}
+
+.ui-slider {
+  border-radius: 5px !important;
+  position: relative;
+  text-align: left;
+}
+
+.ui-slider .ui-slider-range {
+  background: radial-gradient(#FFFFFF, #990033) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  box-shadow: 0 0 8px #990033;
+}
+
+select {
+  border: 0 none;
+  color: #555555;
+  font-size: 14px;
+  width: 100%;
+}
+
+.desc {
+    padding: 5px 40px 5px 10px !important;
+}
+
+option {
+    border: 0px;
+    color: #990033;
+}
+
+.ui-accordion-content p {
+    margin-top: 0px;
+}
+
+.scale {
+  font-size: 8px;
+  left: -5px;
+  position: relative;
+  top: 15px;
+}
+    .scale span {
+        position: absolute;
+    }
+
+.ui-slider-popup-button {
+    border: 8px solid #CCCCCC;
+    border-radius: 16px;
+    cursor: pointer;
+    height: 14px;
+    position: absolute;
+    right: 0;
+    top: 0px;
+    width: 14px;
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #444444), color-stop(1, #FFFFFF));
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #444444 0%, #FFFFFF 100%);
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #444444 0%, #FFFFFF 100%);
+}
+
+
+.ui-accordion .ui-accordion-content {
+  padding: 10px 5px 10px 30px !important;
+}
+
+.ui-accordion .ui-accordion-header {
+      -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+
+
+/* jQuery dialog popups*/
+
+
+.ui-dialog {
+  background: none repeat scroll 0 0 #FFB310 !important;
+  border-radius: 20px !important;
+  box-shadow: 5px 5px 10px #444;
+  border: 0 none !important;
+}
+
+
+.ui-dialog .ui-dialog-titlebar {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border: 0 none;
+  padding: 0.4em 1em;
+  position: relative;
+}
+
+
+.ui-dialog .ui-dialog-title {
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 200;
+}
+
+/* Panels */
+/* tabs */
+
+.ui-tabs .ui-tabs-panel {
+  border: 0px solid #CCCCCC !important;
+  padding: 17px 0 !important;
+  background-color: #4F5557 !important;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br, .ui-corner-left, .ui-corner-bl, .ui-corner-top, .ui-corner-tr, .ui-corner-left, .ui-corner-tl {
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+}
+
+.ui-slider, .ui-slider-range {
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+}
+
+.ui-tabs {
+  border: 0 solid #CCCCCC !important;
+  padding: 0 !important;
+  position: relative;
+}
+
+
+.ui-widget-header {
+  background: none;
+  border: 0 solid #AAAAAA;
+  color: #222222;
+  font-weight: bold;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    background-color: #4F5557 !important;
+}
+
+
+.ui-dialog-buttonset {
+    width:100%
+}
+
+
+.ui-dialog-buttonset .ui-button:last-child {
+    float:right !important;
+}
+
+
+.ui-dialog .ui-dialog-title {
+    background-color: #e6e6e6 !important;
+    color: #4F5557 !important;
+    text-shadow: 1px 1px 1px #FFFFFF;
+}
+
+
+.ui-widget-content {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+}
+
+
+.ui-dialog .ui-dialog-content {
+    color:#4F5557 !important;
+}
+
+
+.ui-dialog {
+ background-color: #e6e6e6 !important;
+ color: #4F5557;
+}
+
+.ui-widget-overlay {
+    background: none repeat scroll 0 0 #000000 !important;
+    opacity: 0.7 !important;
+}
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    /* background: radial-gradient(#ffffff, #990033) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;*/
+    background: #ffffff !important;
+    color: #990033 !important;
+    border-top: 1px solid #cccccc !important;
+    border-left: 1px solid #cccccc !important;
+    border-right: 1px solid #cccccc !important;
+    border-bottom: 0px none #cccccc !important;
+}
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  color: #ffffff !important;
+}
+
+.ui-tabs .ui-tabs-nav {
+  margin-left: 0px !important;
+  padding: 0 !important;
+}
+
+.middle .ui-tabs .ui-tabs-nav {
+    background-color: #000000 !important;
+}
+
+.ui-tabs-nav {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  border: 0 solid #AAAAAA !important;
+  color: #222222;
+  font-weight: bold;
+}
+
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 1px solid #D3D3D3;
+    color: #D3D3D3 !important;
+    /*
+    -webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+    */
+}
+
+
+.ui-tabs .ui-tabs-nav li {
+    border-bottom-width: 0;
+    float: left;
+    list-style: none outside none;
+    margin: 0 2px 0 0;
+    padding: 0;
+    position: relative;
+    top: 0;
+    white-space: nowrap;
+}
+
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    background-color: #4F5557 !important;
+    border: 1px solid #4F5557 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.ui-dialog-buttonset .ui-button {
+    background-image: -moz-linear-gradient(center top , #CCCCCC 0%, #999999 100%) !important;
+    border: 1px solid #ffffff !important;
+    color: #FFFFFF !important;
+}
+
+
+.chart {
+    width: 500px;
+    /*
+    height: 500px;
+    position: relative;
+    */
+}
+
+.highcharts-container {
+    box-shadow: 5px 5px 5px #333333;
+}
+
+/* Draggable and Droppable */
+
+#drop-right {
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+
+    overflow: hidden;
+}
+
+#drop-left {
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.over {
+  border: solid 5px #ffb310;
+}
+
+.draggable
+{
+  border: solid 2px #ffb310;
+}
+
+
+
+
+*{
+    margin:0;
+    padding:0;
+}
+#watersim {
+    width: 1280px;
+    float:left;
+}
+#decision-theater-left{
+    background:#000;
+    width: calc(50% - 640px);
+    float:left;
+}
+#decision-theater-right{
+    background:#000;
+    width: calc(50% - 640px);
+    float:right;
+}
+
+#watersim,#decision-theater-left,#decision-theater-right{
+    height: 719px;
+}
+
+
+/* Draggable objects */
+.draggable { cursor: crosshair; }
+#containment-wrapper { width: 100%; padding: 0px; }
+
+/* Horizontal accordion for dashboard. */
+.dashboard-header {
+    width: 290px;
+    float: left;
+    margin-right: 7px;
+}
+
+.header article.accordion
+{
+	display: block;
+	margin: 0 auto;
+	overflow: auto;
+}
+
+.header article.accordion section {
+  background-color: #555555; /* #4F5557;*/
+  color: #555555; /*#4F5557;*/
+  display: block;
+  float: left;
+  height: 12em;
+  margin-right: 2px;
+  overflow: hidden;
+  position: relative;
+  width: 150px;
+  height:150px;
+}
+
+.header article.accordion section canvas {
+    -webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	transform: rotate(90deg);
+    left: 14px;
+}
+
+.header article.accordion section h2
+{
+	position: absolute;
+	font-size: 14px;
+	font-weight: normal;
+	width: 150px;
+	height: 2em;
+	top: 150px;
+	left: 0;
+	text-indent: 16px;
+	padding: 0;
+	margin: 0;
+	color: #ddd;
+	-webkit-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
+	transform-origin: 0 0;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+.header article.accordion section h2 a
+{
+	display: block;
+	width: 100%;
+	line-height: 2em;
+	text-decoration: none;
+	color: inherit;
+	outline: 0 none;
+}
+.header article.accordion section:target {
+    background-color: #FFFFFF;
+    color:   #333333; 
+    margin-left: 609px;
+    margin-right: 18px;
+    padding: 0 2em;
+    position: absolute;
+    width: auto;
+    max-width: 960px;
+}
+.header article.accordion section:target h2
+{
+	position: static;
+	font-size: 1.3em;
+	text-indent: 0;
+	color: #333;
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+.header article.accordion section:target canvas
+{
+	position: static;
+	font-size: 1.3em;
+	text-indent: 0;
+	color: #333;
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	transform: rotate(0deg);
+    left: 0;
+}
+
+
+.header article.accordion section,
+.header article.accordion section h2
+{
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+}
+
+.header article.accordion section p {
+    margin-left: 120px;
+}
+
+/* INDICATOR */
+.ui.indicator {
+    background-color:transparent;
+    color:#444444;
+}
+
+.help {
+    display: inline-block;
+    float: right;
+}
+
+.help:hover {
+    cursor: pointer;
+}
+
+.ui-tooltip {
+	padding: 8px;
+	position: absolute;
+	z-index: 9999;
+	max-width: 500px;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+
+    background:blue;
+}
+body .ui-tooltip {
+	border-width: 2px;
+    background-color:antiquewhite;
+ 	font-size: 12px;
+	font-weight: normal;
+    fill-opacity:initial;
+    fill:aliceblue;
+    }

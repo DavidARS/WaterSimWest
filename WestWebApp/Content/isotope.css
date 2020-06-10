@@ -1,0 +1,95 @@
+﻿.item { 
+    background: none repeat scroll 0 0 #FFFFFF;
+    margin: 10px;
+}
+
+.button-group {
+    margin-bottom: 4px;
+    margin-left: 10px;
+    margin-top: 25px;
+    text-align: left;
+}
+
+.button {
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    /*background-image: -ms-linear-gradient(top, #cccccc 0%, #999999 100%) !important;*/
+    /* Mozilla Firefox */ 
+    /*background-image: -moz-linear-gradient(top, #cccccc 0%, #999999 100%) !important;*/
+    /* Opera */ 
+    /*background-image: -o-linear-gradient(top, #cccccc 0%, #999999 100%) !important;*/
+    /* Webkit (Safari/Chrome 10) */ 
+    /*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #cccccc), color-stop(1, #999999)) !important;*/
+    /* Webkit (Chrome 11+) */ 
+    /*background-image: -webkit-linear-gradient(top, #cccccc 0%, #999999 100%) !important;*/
+    /* W3C Markup, IE10 Release Preview */ 
+    /*background-image: linear-gradient(to bottom, #cccccc 0%, # 100%) !important;*/
+    background-color: #F6E9DA;
+    border: 1px solid #e5e5e5;
+    color: black !important;
+    padding: 5px;
+    width: 95%;
+}
+
+.button:hover {
+    cursor: pointer;
+    color: #990033 !important;
+}
+
+.button-no-hover {
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(top, #cccccc 0%, #999999 100%) !important;
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(top, #cccccc 0%, #999999 100%) !important;
+    /* Opera */ 
+    background-image: -o-linear-gradient(top, #cccccc 0%, #999999 100%) !important;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #cccccc), color-stop(1, #999999)) !important;
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(top, #cccccc 0%, #999999 100%) !important;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to bottom, #cccccc 0%, # 100%) !important;
+    border: 1px solid #e5e5e5;
+    color: #FFFFFF !important;
+    padding: 5px;
+    margin-top: 10px;
+    width: 95%;
+    font-weight: bold;
+}
+
+.button-no-hover-active {
+    -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from(black), to(rgba(0, 0, 0, 0))) 1 100%; 
+    -webkit-border-image: -webkit-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -o-border-image: -o-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%; 
+    -moz-border-image: -moz-linear-gradient(black, rgba(0, 0, 0, 0)) 1 100%;
+    /* IE10 Consumer Preview */ 
+    background-image: none;
+    /* Mozilla Firefox */ 
+    background-image: none;
+    /* Opera */ 
+    background-image: none;
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: none;
+    /* Webkit (Chrome 11+) */ 
+    background-image: none;
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: none;
+    background: #00af00;
+    border: 1px solid #e5e5e5;
+    color: #f4dc5b !important;
+    padding: 5px;
+    margin-top: 10px;
+    width: 95%;
+    font-weight: bold;
+}
+
+.button-no-hover-active:hover {
+    cursor: pointer;
+}

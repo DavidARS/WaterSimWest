@@ -1,0 +1,82 @@
+﻿.assessment {
+    float: left;
+    height: 513px;
+    margin-left: 20px;
+    border-left: 1px solid #4E4D4D;
+    width: 520px;
+    margin-top: 27px;
+    padding: 5px 5px 5px 20px;
+    color: #4e4d4d;
+}
+
+.assessment-header{
+    margin-bottom: 10px;
+    margin-top: -6px;
+}
+
+.assessment-title {
+    font-family: Lato-Regular, Lato;
+    font-weight: 400;
+    font-size: 23px;
+    /*font-size: 25px;*/
+    /*font: 800 23px Lato-Black, Lato;*/
+    color: #4e4d4d;
+}
+
+.assessment-title-space {
+    float: left;
+    height: 45px;
+    width: 50px;
+}
+
+.assessment-status {
+    /*font-size: 25px;
+    font-family: Lato-Regular, Lato;
+    font-weight: 400;*/
+    /*font-size: 30px;
+    font-family: Lato-Bold, Lato;
+    font-weight: 700;*/
+    font: 800 23px Lato-Black, Lato;
+    color: #4e4d4d;
+}
+
+.assessment-line-break {
+    margin-top: -3px;
+}
+
+.assessment-status-info {
+    color: #4e4d4d;
+    font-size: 13px;
+    font-family: Lato-Bold, Lato;
+    font-weight: 700;
+}
+
+.assessment-white {
+    fill: #fff;
+}
+
+.assessment-indicator {
+    width: 100%;
+    height: 10%;
+    margin-top: 5px;
+}
+
+.assessment-indicator-prefix {
+    font-family: Lato-Bold, Lato;
+    font-weight: 700;
+}
+
+.assessment-indicator-info {
+    font-family: Lato-Regular, Lato;
+    font-weight: 400;
+}
+
+.assessment-indicator-prefix, .assessment-indicator-info {
+    font-size: 13.5px;
+}
+
+.assessment svg {
+    float: left;
+    height: 100%;
+    width: 50px;
+}

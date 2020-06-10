@@ -1,0 +1,187 @@
+/* css controls for the added inputs to the tab for Climate/River Flows*/
+/*DAS last updated on 10.15.14*/
+/*
+The climate factor controls on the Climate/River Flows Tab
+*/
+#tabs {
+    background-color: #e6e6e6;
+}
+
+/*SXI1211: 9 June 2017
+    Modified the margins and position attributes to arrage the divs in grid format. 
+*/
+#scenariosDiv {
+    position: absolute; 
+    border: 1px solid; 
+    margin-left: 10px; 
+    padding: 10px; 
+    width: 1095px;
+}
+
+#policiesDiv {
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 90px;
+}
+
+#climateTab {
+    /*position: absolute;*/
+    /*margin-left: 390px;*/
+    /*margin-top: 90px;*/
+    margin-top: 10px;
+    height: 275px;
+    width: 400px;
+    padding: 10px;
+    /*background-color: #e6e6e6;*/
+    color: #555;
+    text-align: center;
+    /*border: 1px solid;*/
+}
+
+#climateTab-button-container {
+    width: 32px;
+    height: 32px;
+    float: left;
+}
+
+#climateTab .ui-tabs .ui-tabs-panel {
+    background-color: #E6E6E6 !important;
+    /*border: 1px solid #990033 !important;*/
+    padding: 7px !important;
+}
+
+#climateTab .ui-tabs {
+    margin-bottom: 10px;
+}
+
+#HeaderClimate {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+}
+/* -------------------------------------------------------------------------------*/
+/*05/16/2017: 
+    SXI1211 Changes for input div in Default*/
+#droughtTab {
+    position: absolute;
+    margin-left: 390px;
+    margin-top: 400px;
+    height: auto;
+    width: 400px;
+    padding: 10px;
+    background-color: #e6e6e6;
+    color: #555;
+    text-align: center;
+    border: 1px solid;
+}
+/*SXI1211 Endregion*/
+
+#droughtTab-button-container {
+    width: 32px;
+    height: 32px;
+    float: left;
+}
+
+#droughtTab .ui-tabs .ui-tabs-panel {
+    background-color: #E6E6E6 !important;
+    /* border: 1px solid #990033 !important;*/
+    padding: 5px !important;
+}
+
+#droughtTab .ui-tabs {
+    margin-bottom: 20px;
+}
+
+#droughtStartStop {
+    background-color: #E6E6E6 !important;
+    position: absolute;
+    top: 185px;
+    height: 120px;
+    left: 623px;
+    width: 275px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 17px;
+    text-align: center;
+}
+
+/* This is the text box with for Drought Start/Stop years */
+input[type='number'] {
+    width: 75px;
+}
+/* This is the redline area where start and stop are entered*/
+#droughtStartStop {
+    left: 641px;
+    width: 255px;
+    height: 148px;
+    border: 1px solid #990033 !important;
+}
+/* ------------------------------------------------------------------------------------*/
+
+/* this is the div for the trace start years */
+/*05/16/2017: 
+    SXI1211 Changes for input div in Default*/
+#startYear {
+    position: absolute;
+    margin-left: 390px;
+    margin-top: 540px;
+    height: auto;
+    width: 410px;
+    padding: 5px;
+    background-color: #e6e6e6;
+    color: #555;
+    text-align: center;
+    border: 1px solid;
+}
+/*SXI1211 Endregion*/
+
+/*
+River flow images
+*/
+/*05/16/2017: 
+    SXI1211 Changes for input div in Default*/
+#Image_container {
+    position: absolute;
+    margin-left: 825px;
+    margin-top: 90px;
+    height: auto;
+    width: 280px;
+    padding: 20px 10px;
+    background-color: #e6e6e6;
+    color: #555;
+    text-align: center;
+    border: 1px solid;
+}
+/*SXI1211 Endregion*/
+
+/* THis has the radio buttons for the four start years for the rivers */
+#riverTab {
+    position: absolute;
+    margin-top: 460px;
+    margin-left: 825px;
+    height: 124px;
+    width: 280px;
+    padding: 10px;
+    background-color: #e6e6e6;
+    color: #555;
+    text-align: center;
+    border: 1px solid;
+}
+
+/* Contains the red border for the riverTab div */
+#FlowRecord {
+    /*border: 1px solid #990033 !important;*/
+    text-align: left;
+    height: 70px;
+}
+
+#flowRecordList {
+    /*background-color: #e6e6e6 !important;*/
+    width: calc(100% - 29px);
+    font-weight: bold;
+    margin-top: 32px;
+}
+
+#WindowObject_TS {
+    height: 100%;
+    width: 300px;
+    overflow: hidden;
+}

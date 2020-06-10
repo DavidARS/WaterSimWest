@@ -1,0 +1,236 @@
+/* Disable iPad touch menu, selection/copy, custom css buttons */
+* {
+    /* Disable touch menu */
+    -webkit-touch-callout: none;
+    /* Disable selection/copy */
+    -webkit-user-select: none;
+    /* Disable custom css buttons */
+    /*-webkit-appearance: none;*/
+}
+
+body {
+    /*overflow: hidden;*/
+}
+
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+
+/*Start Cactus Jack Area*/
+
+#cactus-jack-container {
+    float: left;
+    margin-top: 10px;
+    margin-right: 40px;
+}
+
+#cactus-jack-img {
+    float: left;
+    margin-right: 5px;
+    height: 260px;
+}
+
+#cactus-jack-span-container {
+    float: left;
+    width: 400px;
+}
+
+#cactus-jack-span-pre {
+    font-family: Lato-Regular, Lato;
+    font-weight: 400;
+    font-size: 23px;
+    color: #4e4d4d;
+}
+
+#cactus-jack-span {
+    /*height: 220px;
+    display: table-cell;
+    vertical-align: middle;*/
+    font: 22px Lato;
+    color: #4E4D4D;
+}
+
+.assessment {
+    height: auto;
+    width: 635px;
+    margin-top: 0;
+    margin-left: 0;
+    padding: 10px 5px 5px 0px;
+    border: none;
+    /*border-right: 1px solid;*/
+}
+
+.assessment-header {
+    margin-bottom: 5px;
+    margin-top: -6px;
+}
+
+.assessment-title {
+    margin-left: 5px;
+}
+
+.assessment-title-space {
+    height: 20px;
+}
+
+.assessment-indicator {
+    height: 12%;
+}
+
+#assessment-bad {
+    margin-top: 10px;
+}
+
+.assessment-indicator-prefix, .assessment-indicator-postfix {
+    font-size: 18px;
+}
+
+.assessment-indicator-postfix {
+    font-family: 'Lato', sans-serif;
+}
+
+/*Start Input Area*/
+
+#main-input-container {
+    margin-right: 40px;
+}
+
+#main-input-container, #main-output-container {
+    margin-top: 30px;
+}
+
+#policyPane {
+    height: 532px;
+    position: relative;
+}
+
+#policyPane, #simulation-pane {
+    width: 376px;
+}
+
+.field-name {
+    font-size: 18px;
+}
+
+.radio-container label.ui-button {
+    height: 40px;
+    font-size: 14px !important;
+}
+
+.radio-container .ui-button-text-only .ui-button-text, .radio-container-climate .ui-button-text-only .ui-button-text {
+    padding: .8em 0;
+    height: 40px;
+}
+
+.info-icon {
+    display: none;
+}
+
+.info-item:hover {
+    opacity: 1;
+}
+
+.easter-egg {
+    /*background-color: black;*/
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+    width: 60px;
+}
+
+.run-model {
+    float: left;
+    margin-right: 20px;
+}
+
+.next-challenge {
+    float: left;
+    color: #1D83A0;
+    background-color: #FFFFFF;
+    width: 168px;
+    height: 54px;
+    font: 600 15px Lato-Semibold, Lato !important;
+    margin-left: 20px;
+    border: 2px solid #1D83A0 !important;
+}
+
+/*Start Output Area*/
+
+#main-output-container {
+    /*border: 1px solid black;*/
+}
+
+#sankey-container, #sankey-div, #region-pane {
+    width: 445px;
+}
+
+#sankey-container {
+    float: left;
+    height: 532px;
+    margin-top: 10px;
+    margin-right: 40px;
+}
+
+#sankey-div {
+    height: calc(532px - 50px);
+    margin-top: 20px;
+}
+
+.sankey-title {
+    font: 800 23px 'Lato', sans-serif;
+    color: #4E4D4D;
+    margin-left: 5px;
+}
+
+.indicator-container, .indicator-container svg {
+    width: 152px;
+}
+
+.indicator-container {
+    cursor: default;
+}
+
+.indicators-sustainability, .indicators-efficiency {
+    float: none;
+}
+
+/*Bottom Area*/
+
+#simulation-pane, #region-pane, #logo-pane {
+    margin-top: 15px;
+    float: left;
+    height: 54px;
+}
+
+#simulation-pane, #region-pane {
+    margin-right: 40px;
+}
+
+#region-pane {
+    text-align: center;
+    padding-top: 8px;
+}
+
+.title-arizona, .title-region {
+    /*text-transform: uppercase;*/
+}
+
+.title-arizona {
+    text-align: center;
+    font: 400 35px Lato;
+    color: #4E4D4D;
+    margin-right: 5px;
+}
+
+.title-region {
+    margin: 0;
+}
+
+#logo-pane {
+    width: 456px;
+    padding-right: 25px;
+}
+
+    #logo-pane img {
+        float: right;
+    }

@@ -1,0 +1,325 @@
+﻿.indicators-container {
+    float: left;
+    /*height: 276px;*/
+    height: 266px;
+    margin-top: 10px;
+    /*border: 1px solid black;*/
+}
+
+.indicators-sustainability {
+    float: left;
+    margin: auto;
+    /*display: table;*/
+    height: 100%;
+    /*margin-right: 12px;*/
+    /*border-right: 1px solid #4E4D4D;*/
+}
+
+.indicators-efficiency {
+    float: left;
+    margin: auto;
+    /*display: table;*/
+    height: 100%;
+    /*margin-left: 12px;*/
+}
+
+.indicators-divider-container {
+    float: left;
+    position: relative;
+    height: 100%;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.indicators-divider {
+    border-right: 1px solid #4E4D4D;
+    position: absolute;
+    bottom: 11px;
+    height: calc(100% - 41px);
+}
+
+.indicators-title {
+    /*font: 800 24px 'Lato', sans-serif;*/
+    font: 800 23px 'Lato', sans-serif;
+    color: #4E4D4D;
+}
+
+.indicators-content {
+    height: calc(100% - 40px);
+}
+
+.indicator-container {
+    position: relative;
+    /*float: left;*/
+    display: inline-block;
+    cursor: pointer;
+    opacity: 1;
+}
+
+    .indicator-container, .indicator-container svg {
+        /*width: 150px;*/
+        width: 145px;
+        height: 100%;
+    }
+
+        .indicator-container svg {
+            position: absolute;
+            bottom: 0;
+        }
+
+.indicator-title {
+    font-family: Lato-Semibold, Lato;
+    font-weight: 600;
+    fill: #4e4d4d;
+    font-size: 16px;
+}
+
+.indicator-value-background {
+    fill: #fff;
+}
+
+.indicator-value-current-rg .indicator-value-current-tick {
+    fill: #4e4d4d;
+    /*fill: #898b8e;*/
+}
+
+.indicator-value-current-rgr .indicator-value-current-tick {
+    fill: #4e4d4d;
+}
+
+.indicator-value-current-rg .indicator-value-current-text {
+    font-size: 12px;
+    font-family: Lato-Heavy, Lato;
+    font-weight: 800;
+    fill: #4e4d4d;
+}
+
+.indicator-value-current-rgr .indicator-value-current-text {
+    font-size: 18px;
+    font-family: Lato-Heavy, Lato;
+    font-weight: 800;
+    fill: #4e4d4d;
+}
+
+.indicator-value-previous-rg {
+    display: none;
+}
+
+    .indicator-value-previous-rg .indicator-value-previous-tick {
+        /*fill: #898b8e;*/
+        /*fill: #cccccb;*/
+        fill: #a2a0a0;
+    }
+
+    .indicator-value-previous-rg .indicator-value-previous-text {
+        font-family: Lato-Semibold, Lato;
+        font-weight: 600;
+        /*fill: #898b8e;*/
+        /*fill: #666;*/
+        fill: #a2a0a0;
+        /*font-size: 10px;*/
+        font-size: 12px;
+    }
+
+.indicator-value-previous-rgr {
+    display: none;
+}
+
+    .indicator-value-previous-rgr .indicator-value-previous-tick {
+        /*fill: #898b8e;*/
+        /*fill: #cccccb;*/
+        fill: #a2a0a0;
+    }
+
+    .indicator-value-previous-rgr .indicator-value-previous-text {
+        /*fill: #666;*/
+        /*fill: #898b8e;*/
+        fill: #a2a0a0;
+        /*font-size: 10px;*/
+        font-size: 15px;
+        font-family: Lato-Semibold, Lato;
+        font-weight: 600;
+    }
+
+.indicator-meter-fill-color-0 {
+    fill: #60bf7e;
+}
+
+.indicator-meter-fill-color-1 {
+    fill: #92cc81;
+}
+
+.indicator-meter-fill-color-2 {
+    fill: #f4d13a;
+}
+
+.indicator-meter-fill-color-3 {
+    fill: #e88a3c;
+}
+
+.indicator-meter-fill-color-4 {
+    fill: #e6585d;
+}
+
+.indicator-meter-fill-color-white {
+    fill: #fff;
+}
+
+.indicator-meter-stroke-color-0 {
+    fill: #60bf7e;
+    stroke: #60bf7e;
+    stroke-width: 5px;
+}
+
+.indicator-meter-stroke-color-1 {
+    fill: #92cc81;
+    stroke: #92cc81;
+    stroke-width: 5px;
+}
+
+.indicator-meter-stroke-color-2 {
+    fill: #f4d13a;
+    stroke: #f4d13a;
+    stroke-width: 5px;
+}
+
+.indicator-meter-stroke-color-3 {
+    fill: #e88a3c;
+    stroke: #e88a3c;
+    stroke-width: 5px;
+}
+
+.indicator-meter-stroke-color-4 {
+    fill: #e6585d;
+    stroke: #e6585d;
+    stroke-width: 5px;
+}
+
+.indicator-meter-color-color-0 {
+    color: #60bf7e;
+}
+
+.indicator-meter-color-color-1 {
+    color: #92cc81;
+}
+
+.indicator-meter-color-color-2 {
+    color: #f4d13a;
+}
+
+.indicator-meter-color-color-3 {
+    color: #e88a3c;
+}
+
+.indicator-meter-color-color-4 {
+    color: #e6585d;
+}
+
+.indicator-meter-elipse {
+    fill: #f3f1f1;
+}
+
+.economy-dollar {
+    fill: #594941;
+}
+
+.economy-outline {
+    fill: #80ad66;
+}
+
+.environment-stem {
+    fill: #594941;
+}
+
+.environment-leaf-big {
+    fill: #80ad66;
+}
+
+.environment-leaf-small {
+    fill: #aad58e;
+}
+
+.groundwater-ground {
+    fill: #594941;
+}
+
+.groundwater-water {
+    fill: #1c97d3;
+}
+
+.groundwater-house {
+    fill: #898b8e;
+}
+
+.groundwater-tree {
+    fill: #80ad66;
+}
+
+.urban-body {
+    fill: #898b8e;
+}
+
+.urban-handle {
+    fill: #594941;
+}
+
+.urban-water {
+    fill: #1c97d3;
+}
+
+.agriculture-stem {
+    fill: #594941;
+}
+
+.agriculture-leaf {
+    fill: #80ad66;
+}
+
+.agriculture-corn-yellow-dark {
+    fill: #f9c55f;
+}
+
+.agriculture-corn-yellow-light {
+    fill: #f9b517;
+}
+
+.agriculture-corn-green {
+    fill: #80ad66;
+}
+
+.agriculture-corn-white {
+    fill: #fff;
+    fill-rule: evenodd;
+}
+
+.industry-building {
+    fill: #898b8e;
+}
+
+.industry-smoke {
+    fill: #594941;
+}
+
+.industry-windows {
+    fill: #f0efef;
+}
+
+.power-gear {
+    fill: #898b8e;
+}
+
+.power-lightning {
+    fill: #fff;
+}
+
+.power-water {
+    fill: #1c97d3;
+}
+
+.power-base {
+    fill: #898b8e;
+}
+
+.power-bulb {
+    fill: #f9c55f;
+}

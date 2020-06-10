@@ -1,0 +1,101 @@
+﻿.policy-title {
+    display: block;
+    left: auto;
+    font: 800 24px Lato-Black, Lato;
+    padding: 0 0 5px 0;
+    margin-top: 3px;
+    margin: 15px 0;
+    color: #4E4D4D;
+}
+
+.field-name{
+    color: #4E4D4D;
+    font: 600 17px Lato-Semibold, Lato;
+}
+
+.radio-container {
+    position: relative;
+    /*margin-bottom: 15px;*/
+    margin-right: 0px !important;
+    /*margin-right: 10px;*/
+    /*margin-top: 15px;*/
+    /*height:50px;*/
+}
+
+.radio-container label.ui-button {
+    border: 1px solid #e5e5e5;
+    color: #4E4D4D !important;
+    font: 600 12px Lato-Semibold, Lato !important;
+    width: 70px;
+    height: 28px;
+    /*
+Minimum width determines the smallest size the buttonsets are allowed to be.
+MTS 02.23.16
+    */
+    /*min-width: 20%;*/
+    margin: 0 0.1px;
+}
+
+.radio-container label.ui-state-active span {
+    color: black !important;
+    /*webkit-box-shadow: inset 0px 0px 0px 1px black;
+    -moz-box-shadow: inset 0px 0px 0px 1px black;
+    box-shadow: inset 0px 0px 0px 1px black;*/
+    border: 1px solid black;
+}
+
+.realclearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.input-number {
+    font: 600 12px Lato-Semibold, Lato !important;
+    width: 70px;
+    height: 28px;
+
+    float: left;
+    width: 60px !important;
+    margin-left: 5px;
+    /*margin-bottom: 15px;*/
+    /*margin-top: 15px;*/
+    margin-top: 2.5px;
+    text-align: center;
+}
+
+.run-model {
+    /*float:left;*/
+    color: #FFFFFF;
+    background-color: #1D83A0;
+    width: 168px;
+    height: 54px;
+    font: 600 19px Lato-Semibold, Lato !important;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: 2px solid #1D83A0 !important;
+}
+
+.run-model:hover {
+    /*cursor: pointer;
+    color: #990033;*/
+    background-color: #4593AB;
+}
+
+.btn-settings {
+    /*float: left;*/
+    color: #1D83A0;
+    background-color: #FFFFFF;
+    width: 168px;
+    height: 54px;
+    font: 600 15px Lato-Semibold, Lato !important;
+    margin-top: 10px;
+    margin-left: 10px;
+    border: 2px solid #1D83A0 !important;
+}
+
+.finish {
+    width: 185px;
+    margin-left:3px;
+    float:right;
+}

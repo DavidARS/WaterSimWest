@@ -1,0 +1,33 @@
+﻿
+
+Water balance	
+	Field	Base Phrase
+	"RNDR_P"	Supplies and demands are 
+		
+	value	Value Phrase
+	=>90	in balance.
+	=>60	close to being in balance.
+	=>30	out of balance!
+	=>0	seriously out of balance!
+		
+Average Sustainability
+	Field	Base Phrase
+	"ASI_P"	The regions's sustinability
+		
+	Value	Value phrase
+	=>85	very high!
+	=>70	could be improved.
+	=>50	is low.
+	=>0	is seriously low!
+		
+Overall Assessment	
+	Field	
+	"SAI_P"	
+		
+	Value	Phrase
+	>=85	Good Job!
+	=>70	Almost there!
+	=>50	Needs Work!
+	=>0	Yikes!
+
+

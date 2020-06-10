@@ -1,0 +1,63 @@
+#pageslide {
+    position: absolute;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    /*z-index: 999999;*/
+    z-index: 99;
+    width: 280px;
+    padding: 10px;
+    /*background-color: #e6e6e6;*/
+    color: #555;
+    -webkit-box-shadow: 0 0 5px 5px #000000;
+    -moz-box-shadow: 0 0 5px 5px #000000;
+    box-shadow: 0 0 5px 5px #000000;
+    display: none;
+}
+
+/*#pageslide-button-container {
+    margin-top: 10px;
+  
+    width: 32px;
+    height: 32px;
+
+    float: left;
+}*/
+
+#settings-button-container {
+    width: 25px;
+    height: 25px;
+    /*float: right;*/
+    position: absolute;
+    top: 30px;
+    right: 10px;
+}
+
+#settings-button-container-Ipad {
+    width: 25px;
+    height: 25px;
+    float: right;
+}
+
+
+#pageslide .ui-tabs .ui-tabs-panel {
+    /*background-color: #E6E6E6 !important;*/
+    border: 1px solid black !important;
+    padding: 10px !important;
+}
+
+#pageslide .ui-tabs {
+    margin-bottom: 20px;
+}
+
+.settings-tab-title{
+    display: block;
+    left: auto;
+    /*font: 800 24px Lato-Black, Lato;*/
+    font: 800 23px Lato-Black, Lato;
+    color: #4E4D4D;
+}
+
+#settings-tabs-scenarios{
+    width: 100%;
+}

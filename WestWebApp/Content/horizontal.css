@@ -1,0 +1,146 @@
+
+
+/* Frame */
+/* Content Area */
+.frame {
+    /* Padding somewhere extends the area beyond the height.....
+        02.25.16 DAS
+        ---------------------------------------------------------*/
+	/*height: 400px;*/
+    /*height: 662px;
+    height: 570px;*/
+    height: 100%;
+    line-height: 400px;
+	overflow: hidden;
+    /*background-color: #e6e6e6;*/
+     /*border-style:solid;
+      border-color: darkblue;
+      border-width:2px;*/
+}
+.frame ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+.frame ul li {
+	float: left;
+	width: 600px;
+	height: 100%;
+	margin: 0 1px 0 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+
+/* Scrollbar */
+.scrollbar {
+    background: none repeat scroll 0 0 #333333;
+    height: 10px;
+    line-height: 0;
+    margin: 0 0 5px;
+}
+.scrollbar .handle {
+    background: radial-gradient(#FFFFFF, #990033) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-radius: 5px;
+    box-shadow: 0 0 8px #990033;
+    cursor: pointer;
+    height: 10px;
+    width: 100px;
+}
+
+.scrollbar .handle .mousearea {
+	position: absolute;
+	top: -9px;
+	left: 0;
+	width: 100%;
+	height: 20px;
+}
+/*.scrollbar .handle .mousearea {
+	position: absolute;
+	top: -9px;
+	left: 0;
+	width: 100%;
+	height: 20px;
+}*/
+/* Pages */
+.pages {
+	list-style: none;
+	margin: 5px 0px 0 0;
+	padding: 0;
+	text-align: center;
+}
+.pages li {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	margin: 0 4px;
+	text-indent: -999px;
+	border-radius: 10px;
+	cursor: pointer;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+    border: 1px solid #fff;
+}
+.pages li:hover {
+	background: none repeat scroll 0 0 #FFB310;
+    border: 1px solid #FFFFFF;
+    box-shadow: 0 0 8px #FFB310;
+}
+.pages li.active {
+	background: none repeat scroll 0 0 #FFB310;
+    border: 1px solid #FFFFFF;
+    box-shadow: 0 0 8px #FFB310;
+}
+
+/* Controls */
+.controls { margin: 25px 0; text-align: center; }
+
+/* One Item Per Frame example*/
+.oneperframe { height: 300px; line-height: 300px; }
+.oneperframe ul li { width: 1140px; }
+.oneperframe ul li.active { background: #333; }
+
+/* Crazy example */
+.crazy ul li:nth-child(2n) { width: 100px; margin: 0 4px 0 20px; }
+.crazy ul li:nth-child(3n) { width: 300px; margin: 0 10px 0 5px; }
+.crazy ul li:nth-child(4n) { width: 400px; margin: 0 30px 0 2px; }
+
+/* Effects */
+.effects {
+	height: 200px;
+	line-height: 200px;
+	-webkit-perspective: 800px;
+	-ms-perspective: 800px;
+	perspective: 800px;
+	-webkit-perspective-origin: 50% 50%;
+	-ms-perspective-origin: 50% 50%;
+	perspective-origin: 50% 50%;
+	overflow-y: show;
+}
+.effects ul {
+	-webkit-transform-style: preserve-3d;
+	-ms-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+.effects ul li {
+	position: relative;
+	margin: 0 -20px;
+	-webkit-transform: rotateY(60deg) scale(0.9);
+	-ms-transform: rotateY(60deg) scale(0.9);
+	transform: rotateY(60deg) scale(0.9);
+	-webkit-transition: -webkit-transform 300ms ease-out;
+	transition: transform 300ms ease-out;
+}
+.effects ul li.active {
+	z-index: 10;
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	transform: scale(1);
+}
+.effects ul li.active ~ li {
+	-webkit-transform: rotateY(-60deg) scale(0.9);
+	-ms-transform: rotateY(-60deg) scale(0.9);
+	transform: rotateY(-60deg) scale(0.9);
+}

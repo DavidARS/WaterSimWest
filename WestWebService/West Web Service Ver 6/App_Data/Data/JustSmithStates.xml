@@ -1,0 +1,410 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<METATDATA>
+  <DATAINFO>
+    <TITLE>USGS WATERUSE DATA FOR WATERSIM SMITHSONIAN PROJECT</TITLE>
+    <FILEDESC>Summary of Combined USGS Water Data by State for 2010</FILEDESC>
+    <FILENAME>JustSmithStates.csv</FILENAME>
+    <DATE>Wednesday, January 27, 2016</DATE>
+    <CONTACT>Decision Center for a Desert CITY</CONTACT>
+    <COLUMNS>
+      <COLUMN>
+         <NAME>SC</NAME>
+         <DESC>State Code</DESC>
+      </COLUMN>
+      <COLUMN>
+         <NAME>SN</NAME>
+         <DESC>State Name</DESC>
+      </COLUMN>
+      <COLUMN>
+         <NAME>CC</NAME>
+         <DESC>County Code</DESC>
+      </COLUMN>
+      <COLUMN>
+         <NAME>CN</NAME>
+         <DESC>County Name</DESC>
+      </COLUMN>
+      <COLUMN>
+         <NAME>YR</NAME>
+         <DESC>Year</DESC>
+      </COLUMN>
+      <COLUMN>
+         <NAME>POP</NAME>
+         <DESC>Population (,000)</DESC>
+      </COLUMN>
+      <COLUMN>
+         <NAME>USUR</NAME>
+         <DESC>Urban (Public Supply) Surface</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>USAL</NAME>
+         <DESC>Urban Surface Saline</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>UGW</NAME>
+         <DESC>Urban Groundwater</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSGW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>UREC</NAME>
+         <DESC>Urban Reclaimed</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>URES</NAME>
+         <DESC>Urban Residential</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSF</NAME></COLUMN>
+           <COLUMN><NAME>PSSS</NAME></COLUMN>
+           <COLUMN><NAME>PSGW</NAME></COLUMN>
+           <COLUMN><NAME>PSRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>UIND</NAME>
+         <DESC>Urban Industrial</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSDI</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>UTOT</NAME>
+         <DESC>Urban Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSF</NAME></COLUMN>
+           <COLUMN><NAME>PSSS</NAME></COLUMN>
+           <COLUMN><NAME>PSGW</NAME></COLUMN>
+           <COLUMN><NAME>PSRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>UPOP</NAME>
+         <DESC>Urban Population Served</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSPOP</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>RSUR</NAME>
+         <DESC>Rural (Self Supplied Residential ) Surface</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>DMSF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>RSAL</NAME>
+         <DESC>Rural (Self Supplied Residential ) Surface Saline</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>DMSS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>RGW</NAME>
+         <DESC>Rural (Self Supplied Residential ) Groundwater</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>DMGF</NAME></COLUMN>
+           <COLUMN><NAME>DMGS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>RTOT</NAME>
+         <DESC>Rural (Self Supplied Residential ) Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>DMSF</NAME></COLUMN>
+           <COLUMN><NAME>DMSS</NAME></COLUMN>
+           <COLUMN><NAME>DMGF</NAME></COLUMN>
+           <COLUMN><NAME>DMGS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ASUR</NAME>
+         <DESC>Agriculture Surface</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>LSSF</NAME></COLUMN>
+           <COLUMN><NAME>LVGS</NAME></COLUMN>
+           <COLUMN><NAME>LASF</NAME></COLUMN>
+           <COLUMN><NAME>AQSF</NAME></COLUMN>
+           <COLUMN><NAME>IRSF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ASAL</NAME>
+         <DESC>Agriculture Surface Saline</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>LSSS</NAME></COLUMN>
+           <COLUMN><NAME>LASS</NAME></COLUMN>
+           <COLUMN><NAME>AQSS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>AGW</NAME>
+         <DESC>Agriculture Groundwater</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>LSGW</NAME></COLUMN>
+           <COLUMN><NAME>LVGF</NAME></COLUMN>
+           <COLUMN><NAME>LAGW</NAME></COLUMN>
+           <COLUMN><NAME>AQGW</NAME></COLUMN>
+           <COLUMN><NAME>IRGF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>AREC</NAME>
+         <DESC>Agriculture Reclaimed</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>IRRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ATOT</NAME>
+         <DESC>Agriculture Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>LSSF</NAME></COLUMN>
+           <COLUMN><NAME>LVGS</NAME></COLUMN>
+           <COLUMN><NAME>LASF</NAME></COLUMN>
+           <COLUMN><NAME>AQSF</NAME></COLUMN>
+           <COLUMN><NAME>IRSF</NAME></COLUMN>
+           <COLUMN><NAME>LSSS</NAME></COLUMN>
+           <COLUMN><NAME>LSSS</NAME></COLUMN>
+           <COLUMN><NAME>AQSS</NAME></COLUMN>
+           <COLUMN><NAME>LSGW</NAME></COLUMN>
+           <COLUMN><NAME>LVGF</NAME></COLUMN>
+           <COLUMN><NAME>LAGW</NAME></COLUMN>
+           <COLUMN><NAME>AQGW</NAME></COLUMN>
+           <COLUMN><NAME>IRGF</NAME></COLUMN>
+           <COLUMN><NAME>IRRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ISUR</NAME>
+         <DESC>Industry / Mining (non urban - self supplied) Surface Water</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>IDSF</NAME></COLUMN>
+           <COLUMN><NAME>MNSF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ISAL</NAME>
+         <DESC>Industry / Mining (non urban - self supplied) Surface Saline</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>IDSS</NAME></COLUMN>
+           <COLUMN><NAME>MNSS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>IGW</NAME>
+         <DESC>Industry / Mining  (non urban - self supplied) Groundwater</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>IDGW</NAME></COLUMN>
+           <COLUMN><NAME>MNGW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>IREC</NAME>
+         <DESC>Industry / Mining  (non urban - self supplied) Reclaimed</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>IDRW</NAME></COLUMN>
+           <COLUMN><NAME>MNRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ITOT</NAME>
+         <DESC>Industry / Mining  (non urban - self supplied) Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>IDSF</NAME></COLUMN>
+           <COLUMN><NAME>MNSF</NAME></COLUMN>
+           <COLUMN><NAME>IDSS</NAME></COLUMN>
+           <COLUMN><NAME>MNSS</NAME></COLUMN>
+           <COLUMN><NAME>IDGW</NAME></COLUMN>
+           <COLUMN><NAME>MNGW</NAME></COLUMN>
+           <COLUMN><NAME>IDRW</NAME></COLUMN>
+           <COLUMN><NAME>MNRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>PSUR</NAME>
+         <DESC>Power Surface Water</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>TPSF</NAME></COLUMN>
+           <COLUMN><NAME>HPSF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>PSAL</NAME>
+         <DESC>Power Surface Saline</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>TPSS</NAME></COLUMN>
+           <COLUMN><NAME>HPSS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>PGW</NAME>
+         <DESC>Power Groundwater</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>TPGW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>PREC</NAME>
+         <DESC>Power Reclaimed</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>TPRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>PTOT</NAME>
+         <DESC>Power Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>TPSF</NAME></COLUMN>
+           <COLUMN><NAME>HPSF</NAME></COLUMN>
+           <COLUMN><NAME>TPSS</NAME></COLUMN>
+           <COLUMN><NAME>HPSS</NAME></COLUMN>
+           <COLUMN><NAME>TPGW</NAME></COLUMN>
+           <COLUMN><NAME>TPRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>SUR</NAME>
+         <DESC>Surface Water Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSF</NAME></COLUMN>
+           <COLUMN><NAME>DMSF</NAME></COLUMN>
+           <COLUMN><NAME>LSSF</NAME></COLUMN>
+           <COLUMN><NAME>LVGS</NAME></COLUMN>
+           <COLUMN><NAME>LASF</NAME></COLUMN>
+           <COLUMN><NAME>AQSF</NAME></COLUMN>
+           <COLUMN><NAME>IRSF</NAME></COLUMN>
+           <COLUMN><NAME>IDSF</NAME></COLUMN>
+           <COLUMN><NAME>MNSF</NAME></COLUMN>
+           <COLUMN><NAME>TPSF</NAME></COLUMN>
+           <COLUMN><NAME>HPSF</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>SAL</NAME>
+         <DESC>Surface Saline Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSS</NAME></COLUMN>
+           <COLUMN><NAME>DMSS</NAME></COLUMN>
+           <COLUMN><NAME>LSSS</NAME></COLUMN>
+           <COLUMN><NAME>LASS</NAME></COLUMN>
+           <COLUMN><NAME>AQSS</NAME></COLUMN>
+           <COLUMN><NAME>IDSS</NAME></COLUMN>
+           <COLUMN><NAME>MNSS</NAME></COLUMN>
+           <COLUMN><NAME>TPSS</NAME></COLUMN>
+           <COLUMN><NAME>HPSS</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>GW</NAME>
+         <DESC>GroundWater Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSGW</NAME></COLUMN>
+           <COLUMN><NAME>DMGF</NAME></COLUMN>
+           <COLUMN><NAME>DMGS</NAME></COLUMN>
+           <COLUMN><NAME>LSGW</NAME></COLUMN>
+           <COLUMN><NAME>LVGF</NAME></COLUMN>
+           <COLUMN><NAME>LAGW</NAME></COLUMN>
+           <COLUMN><NAME>AQGW</NAME></COLUMN>
+           <COLUMN><NAME>IRGF</NAME></COLUMN>
+           <COLUMN><NAME>IDGW</NAME></COLUMN>
+           <COLUMN><NAME>MNGW</NAME></COLUMN>
+           <COLUMN><NAME>TPGW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>REC</NAME>
+         <DESC>Reclaimed  Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSRW</NAME></COLUMN>
+           <COLUMN><NAME>IRRW</NAME></COLUMN>
+           <COLUMN><NAME>IDRW</NAME></COLUMN>
+           <COLUMN><NAME>MNRW</NAME></COLUMN>
+           <COLUMN><NAME>TPRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+      <COLUMN>
+         <NAME>ALL</NAME>
+         <DESC>All Water Total</DESC>
+         <UNIT>MGD</UNIT>
+         <DERIVEDFROM>
+           <COLUMN><NAME>PSSF</NAME></COLUMN>
+           <COLUMN><NAME>PSSS</NAME></COLUMN>
+           <COLUMN><NAME>PSGW</NAME></COLUMN>
+           <COLUMN><NAME>PSRW</NAME></COLUMN>
+           <COLUMN><NAME>DMSF</NAME></COLUMN>
+           <COLUMN><NAME>DMSS</NAME></COLUMN>
+           <COLUMN><NAME>DMGF</NAME></COLUMN>
+           <COLUMN><NAME>DMGS</NAME></COLUMN>
+           <COLUMN><NAME>LSSF</NAME></COLUMN>
+           <COLUMN><NAME>LVGS</NAME></COLUMN>
+           <COLUMN><NAME>LASF</NAME></COLUMN>
+           <COLUMN><NAME>AQSF</NAME></COLUMN>
+           <COLUMN><NAME>IRSF</NAME></COLUMN>
+           <COLUMN><NAME>LSSS</NAME></COLUMN>
+           <COLUMN><NAME>LSSS</NAME></COLUMN>
+           <COLUMN><NAME>AQSS</NAME></COLUMN>
+           <COLUMN><NAME>LSGW</NAME></COLUMN>
+           <COLUMN><NAME>LVGF</NAME></COLUMN>
+           <COLUMN><NAME>LAGW</NAME></COLUMN>
+           <COLUMN><NAME>AQGW</NAME></COLUMN>
+           <COLUMN><NAME>IRGF</NAME></COLUMN>
+           <COLUMN><NAME>IRRW</NAME></COLUMN>
+           <COLUMN><NAME>IDSF</NAME></COLUMN>
+           <COLUMN><NAME>MNSF</NAME></COLUMN>
+           <COLUMN><NAME>IDSS</NAME></COLUMN>
+           <COLUMN><NAME>MNSS</NAME></COLUMN>
+           <COLUMN><NAME>IDGW</NAME></COLUMN>
+           <COLUMN><NAME>MNGW</NAME></COLUMN>
+           <COLUMN><NAME>IDRW</NAME></COLUMN>
+           <COLUMN><NAME>MNRW</NAME></COLUMN>
+           <COLUMN><NAME>TPSF</NAME></COLUMN>
+           <COLUMN><NAME>HPSF</NAME></COLUMN>
+           <COLUMN><NAME>TPSS</NAME></COLUMN>
+           <COLUMN><NAME>HPSS</NAME></COLUMN>
+           <COLUMN><NAME>TPGW</NAME></COLUMN>
+           <COLUMN><NAME>TPRW</NAME></COLUMN>
+         </DERIVEDFROM>
+      </COLUMN>
+    </COLUMNS>
+  </DATAINFO>
+</METATDATA>

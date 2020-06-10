@@ -1,0 +1,56 @@
+#tabbedArea_1 {
+    position: relative;
+    position: fixed;
+    top: 260px;
+    height: relative;
+    margin-left:15px;
+    z-index: 999999;
+    width: 289px;
+    padding: 10px;
+    background-color: #e6e6e6;
+    color: #555;
+    -webkit-box-shadow: 0 0 5px 5px #000000;
+    -moz-box-shadow: 0 0 5px 5px #000000;
+    box-shadow: 0 0 5px 5px #000000;
+}
+
+#tabbedArea_1-button-container {
+    width: 32px;
+    height: 32px;
+    float: center;
+}
+#settings-button-container {
+    width: 25px;
+    height: 25px;
+    float: right;
+}
+
+#tabbedArea_1 .ui-tabs .ui-tabs-panel {
+    background-color: #E6E6E6 !important;
+    border: 1px solid #990033 !important;
+    padding: 10px !important;
+}
+
+#tabbedArea_1 .ui-tabs {
+    margin-bottom: 18px;
+    
+}
+
+#tabbedArea_2 {
+    position: fixed;
+    top: 260px;
+    height: relative;
+    margin-left:345px;
+    z-index: 999999;
+    width: 360px;
+    padding: 10px;
+    background-color: #e6e6e6;
+   
+    color: #555;
+    -webkit-box-shadow: 0 0 5px 5px #000000;
+    -moz-box-shadow: 0 0 5px 5px #000000;
+    box-shadow: 0 0 5px 5px #000000;
+}
+
+
+    

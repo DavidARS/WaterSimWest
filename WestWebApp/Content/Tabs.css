@@ -1,0 +1,20 @@
+﻿.custom-nav-link{
+    background: #D7EAEE !important;
+    color: #4E4D4D !important;
+    border-color: #1C97D3 !important;
+    font: bold 14px 'Lato', sans-serif !important;
+    cursor: pointer;
+    width: 125px;
+    text-align: center;
+    padding: .4rem 1rem !important;
+}
+
+.custom-nav-link.active{
+    background: #1D83A0 !important;
+    color: white !important;
+    border-color: #1D83A0 !important;
+}
+
+.nav-tabs{
+    border-color: #1C97D3 !important;
+}

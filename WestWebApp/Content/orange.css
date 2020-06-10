@@ -1,0 +1,6 @@
+h2 a { color: #F69C3A; }
+h2 a:hover { color: #FF5C01; }
+
+#wrapper { background-image:url("images/monster_orange.png"); }
+
+#content h3 { color:#F69C3A; }

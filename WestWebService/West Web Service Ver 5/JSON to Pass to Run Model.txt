@@ -1,0 +1,144 @@
+{"Inputs":[{"FLD":"STOPYR","VAL":2065},{"FLD":"COCLMADJ","VAL":80},{"FLD":"WEBPOPGR","VAL":20},{"FLD":"PCGRTON","VAL":10,"PVC":"ph"}] }
+{"Outputs":["PCGRTON","COCLMADJ","CORFLOW","SVRFLOW","MGWPUMP","POPUSED","TOTDEM","WEBPOPGR"],"Providers":["ph","sc"]}
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2065},{"FLD":"WEBPOPGR","VAL":20}] }
+{“Inputs”:[{“FLD”:”STOPYR”,”VAL”:2050},{“FLD”:”COCLMADJ”,”VAL”:100},{“FLD”:”SVCLMADJ”,”VAL”:100},{“FLD”:”WEBWBPCT”,”VAL”:0},{“FLD”:”WEBAGTR1”,”VAL”:50},{“FLD”:”ENFLOPCT”,”VAL”:0},{“FLD”:”WEBPRPCT”,”VAL”:100},{“FLD”:”WEBPOPGR”,”VAL”:100},{“FLD”:”WEBEFENV”,”VAL”:100},{“FLD”:”WEBEFAG”,”VAL”:100},{“FLD”:”AWSLIMIT”,”VAL”:1},{“FLD”:”COEXTSTYR”,”VAL”:1922},{“FLD”:”SVEXTSTYR”,”VAL”:1955}]}
+
+{"Inputs":[]}
+{"Outputs":["WEBEFPCT","WEBEFENV","WEBEFAG","WEBAGTR1","ENFLOPCT","WEBPRPCT","WEBPOPGR","RECTOT","MGWPUMP","SRPDELIV","COLDELIV","WATAUG","BNKUSED","POPUSED","GPCDUSED","TOTDEM","SVRSTORE","CORFLOW","POWSTORE","MEDSTORE","SVRFLOW","POPONPRJ","POPOTHER","PCTGWDEM","SINDENV","SINDAG","SINDPC","SINYRGW"],"Providers":["reg","bu","ch","gi","ph","sc"]}
+
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2065},{"FLD":"WEBPOPGR","VAL":20},{"FLD":"WEBWBPCT","VAL":50}] }
+{"Outputs":["WEBEFPCT","WEBEFENV","WEBEFAG","WEBAGTR1","ENFLOPCT","WEBPRPCT","WEBPOPGR","WEBWBPCT","MGWPUMP","BNKUSED","SINDAG","SINDPC","SINYRGW"],"Providers":["reg","bu","ch","gi","ph","sc"]}
+
+{"InfoRequest":["UCON","ACON","PCON","SWM","GWM","RECM"]}
+{"InfoRequest":["all"]}
+  {"InfoRequest":["ENFLOPCT"]}
+
+    {"InfoRequest":["REGRECEFF"]}
+
+  ENFLOPCT
+"Providers":Values
+
+Values can either be an array of string values for provider codes or can be "All"
+
+"Providers":["ph","sc"]
+
+"Providers":"All" 
+
+
+OUTPUT
+
+{"RESULTS":[FieldObject, FieldObject]
+Field Object
+
+{ "FLD":"NAME","FTP":"VALUE","DATA":[1,2,3,4,5] }
+
+
+
+"FLD" = WaterSim Field "NAME" is the fieldame
+"FTP" = Parameter Type "VALUE" is one of FOllowing "BO" Base Output "BI" Base Input "PO" Provider Output "PI" Provider Input
+"DATA" = Model Result for this field [] is an array of int values one for each year run of the model;
+
+{ "FLD":"NAME","FTP":"VALUE","DATA":[1,2,3,4,5],"PRV":"CODE" }
+
+Same as above
+"PRV" = Provider Code woth "CODE" the string code for a provider
+
+From Venue
+
+"{"Inputs":[{"FLD":"STOPYR","VAL":2020},{"FLD":"WEBEFPCT","VAL":65},{"FLD":"WEBEFENV","VAL":50},{"FLD":"WEBEFAG","VAL":50},{"FLD":"WEBAGTR1","VAL":60},{"FLD":"ENFLOPCT","VAL":60},{"FLD":"WEBPRPCT","VAL":60},{"FLD":"WEBPOPGR","VAL":60},{"FLD":"COCLMADJ","VAL":[63]},{"FLD":"SVCLMADJ","VAL":[47]}]}"
+
+"{"Outputs":["WEBEFPCT","WEBAGTR1","ENFLOPCT","WEBPRPCT","WEBPOPGR","WEBEFAG","WEBEFENV","POWSTORE","MEDSTORE","SVRSTORE","CORFLOW","SVRFLOW","RECTOT","MGWPUMP","SRPDELIV","COLDELIV","WATAUG","TOTDEM","GPCDUSED","BANKUSED","POPUSED","POPONPRJ","POPOTHER"],"Providers":["ch","ph"]}"
+
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2020},{"FLD":"WEBEFPCT","VAL":65},{"FLD":"WEBEFENV","VAL":50},{"FLD":"WEBEFAG","VAL":50},{"FLD":"WEBAGTR1","VAL":60},{"FLD":"ENFLOPCT","VAL":60},{"FLD":"WEBPRPCT","VAL":60},{"FLD":"WEBPOPGR","VAL":60},{"FLD":"COCLMADJ","VAL":63},{"FLD":"SVCLMADJ","VAL":47}]}
+
+{"Outputs":["WEBEFPCT","WEBAGTR1","ENFLOPCT","WEBPRPCT","WEBPOPGR","WEBEFAG","WEBEFENV","POWSTORE","MEDSTORE","SVRSTORE","CORFLOW","SVRFLOW","RECTOT","MGWPUMP","SRPDELIV","COLDELIV","WATAUG","TOTDEM","GPCDUSED","BNKUSED","POPUSED","POPONPRJ","POPOTHER"],"Providers":["ch","ph"]}
+
+"{"inputJsonArray":"{"Inputs":[]}","outputJsonArray":"{"Outputs":["WEBEFPCT","WEBEFENV","WEBEFAG","WEBAGTR1","ENFLOPCT","WEBPRPCT","WEBPOPGR","WATAUG","BNKUSED","RECTOT","MGWPUMP","SRPDELIV","COLDELIV","TOTSUPUSE","POPUSED","GPCDUSED","TOTDEM","SVRSTORE","CORFLOW","POWSTORE","MEDSTORE","SVRFLOW","POPONPRJ","POPOTHER","PCTGWDEM","SINDENV","SINDAG","SINDPC","SINYRGW"],"Providers":["reg","bu","ch","gi","ph","sc"]}"}"
+
+
+TEST WEB Inputs
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2085},{"FLD":"ENFLOPCT","VAL":60}] }
+{"Inputs":[{"FLD":"STOPYR","VAL":2085}] }
+
+
+{"Outputs":["WEBPOPGR"],"Providers":["ph","sc"]}
+{"Outputs":["GPCDUSED","WATAUG","WEBAGTR1"],"Providers":["ph","sc"]}
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2050},{"FLD":"WEBEFPCT","VAL":65},{"FLD":"WEBEFENV","VAL":50},{"FLD":"WEBEFAG","VAL":50},{"FLD":"WEBAGTR1","VAL":60},{"FLD":"ENFLOPCT","VAL":60},{"FLD":"WEBPRPCT","VAL":60},{"FLD":"WEBPOPGR","VAL":60}]}
+{"Outputs":["ENFLOPCT"],"Providers":["ph,reg"]}
+
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2050},{"FLD":"WEBAGTR1","VAL":70},{"FLD":"WEBPRPCT","VAL":30}]}
+{"Outputs":["WEBAGTR1","WEBPRPCT"],"Providers":["ph,reg"]}
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2050},{"FLD":"WEBPRPCT","VAL":30}]}
+{"Outputs":["GPCDUSED","WEBPRPCT"],"Providers":["ph,reg"]}
+
+{"InfoRequest":["WEBEFPCT","WEBAGTR1","ENFLOPCT","WEBPRPCT","WEBPOPGR","WEBEFAG","WEBEFENV"]}
+
+{"Inputs":[]}
+{"Outputs":["all"],"Providers":["all"]}
+
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2070},{"FLD":"WEBPRPCT","VAL":10},{"FLD":"WEBPOPGR","VAL":10},{"FLD":"WEBAGTR1","VAL":80},{"FLD":"WEBWBPCT","VAL":0}] }
+
+{“Inputs”:[{“FLD”:”STOPYR”,”VAL”:2050},{“FLD”:”COCLMADJ”,”VAL”:100},{“FLD”:”SVCLMADJ”,”VAL”:100},{“FLD”:”WEBWBPCT”,”VAL”:0},{“FLD”:”WEBAGTR1”,”VAL”:50},{“FLD”:”ENFLOPCT”,”VAL”:0},{“FLD”:”WEBPRPCT”,”VAL”:100},{“FLD”:”WEBPOPGR”,”VAL”:100},{“FLD”:”WEBEFENV”,”VAL”:100},{“FLD”:”WEBEFAG”,”VAL”:100},{“FLD”:”AWSLIMIT”,”VAL”:1},{“FLD”:”COEXTSTYR”,”VAL”:1922},{“FLD”:”SVEXTSTYR”,”VAL”:1955}]}
+{"Outputs":["REGAQBAL"],"Providers":["ph","sc"]}
+
+
+{"Inputs":[{"FLD":"AWSLIMIT","VAL":1},{"FLD":"COEXTSTYR","VAL":1922},{"FLD":"SVEXTSTYR","VAL":1955}]}
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2050},{"FLD":"COCLMADJ","VAL":100},{"FLD":"SVCLMADJ","VAL":100},{"FLD":"WEBWBPCT","VAL":0},{"FLD":"WEBAGTR1","VAL":50},{"FLD":"ENFLOPCT","VAL":0},{"FLD":"WEBPRPCT","VAL":100},{"FLD":"WEBPOPGR","VAL":100},{"FLD":"WEBEFENV","VAL":100},{"FLD":"WEBEFAG","VAL":100},{"FLD":"AWSLIMIT","VAL":1},{"FLD":"COEXTSTYR","VAL":1922},{"FLD":"SVEXTSTYR","VAL":1955}]}
+
+{"Inputs":[{"FLD":"ENFLOPCT","VAL":0},{"FLD":"WEBPOPGR","VAL":100},{"FLD":"WEBEFENV","VAL":100},{"FLD":"WEBEFAG","VAL":100},{"FLD":"AWSLIMIT","VAL":1},{"FLD":"AWSLIMIT","VAL":1},{"FLD":"COEXTSTYR","VAL":1922},{"FLD":"SVEXTSTYR","VAL":1955}]}
+
+{"Inputs":[{"FLD":"REGRECEFF","VAL":20}] }
+{"Outputs":["REGAQBAL"],"Providers":["ph","sc"]}
+
+{"Inputs":[] }
+{"Outputs":["SINYRGW"],"Providers":["ph","sc"]}
+{"Outputs":["SINDPC"],"Providers":["ph","sc"]}
+
+{"Inputs":[{"FLD":"REGRECEFF","VAL":20}],"User":"Quay" }
+{"Outputs":["REGAQBAL"],"Providers":["ph","sc"]}
+
+
+{"InfoRequest":["all"]}
+
+{"Inputs":[{"FLD":"STARTYR","VAL":2015},{"FLD":"STOPYR","VAL":2050},{"FLD":"UCON","VAL":100},{"FLD":"ST","VAL":1}]}
+
+{"Inputs":[{"FLD":"STARTYR","VAL":2015},{"FLD":"STOPYR","VAL":2050},{"FLD":"UCON","VAL":50},{"FLD":"ACON","VAL":50},{"FLD":"PCON","VAL":50},{"FLD":"ST","VAL":1}]}
+
+{"Inputs":[{"FLD":"STARTYR","VAL":2015},{"FLD":"STOPYR","VAL":2050},{"FLD":"UCON","VAL":100}]}
+
+{"Inputs":[{"FLD":"STARTYR","VAL":2015},{"FLD":"STOPYR","VAL":2050}]}
+
+{"Outputs":["all"],"Providers":["all"]}
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2065},{"FLD":"POPGR","VAL":100}]}
+{"Inputs":[{"FLD":"STOPYR","VAL":2065}]}
+
+{"Outputs":["ID","IDN"],"Providers":["st"]}
+
+"{\"inputJsonArray\":\"{\\\"Inputs\\\":[{\\\"FLD\\\":\\\"ST\\\",\\\"VAL\\\":1},{\\\"FLD\\\":\\\"STOPYR\\\",\\\"VAL\\\":\\\"2065\\\"},{\\\"FLD\\\":\\\"UCON\\\",\\\"VAL\\\":100},{\\\"FLD\\\":\\\"AGCON\\\",\\\"VAL\\\":100},{\\\"FLD\\\":\\\"PCON\\\",\\\"VAL\\\":100},{\\\"FLD\\\":\\\"SWM\\\",\\\"VAL\\\":0},{\\\"FLD\\\":\\\"GWM\\\",\\\"VAL\\\":0},{\\\"FLD\\\":\\\"RECM\\\",\\\"VAL\\\":0},{\\\"FLD\\\":\\\"POPGR\\\",\\\"VAL\\\":100}]}\",\"outputJsonArray\":\"{\\\"Outputs\\\":[\\\"all\\\"],\\\"Providers\\\":[[\\\"st\\\"]]}\"}"
+
+{"InfoRequest":["UCON","ACON","PCON","SWM","GWM","RECM"]}
+
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2050},{"FLD":"ST","VAL":0},{"FLD":"DC","VAL":65}],"User":"WSA_23_5"}
+
+{"Inputs":[{"FLD":"STOPYR","VAL":2050},{"FLD":"DC","VAL":65}]}
+{"Outputs":["SUR","ST"],"Providers":["st"]}
+
+{"Outputs":["SUR","SUR_UD","SUR_AD","SUR_ID","SUR_PD"],"Providers":["st"]}
+
+
+
+"{\"Inputs\":[{\"FLD\":\"ST\",\"VAL\":0},{\"FLD\":\"STOPYR\",\"VAL\":\"2065\"},{\"FLD\":\"UCON\",\"VAL\":null},{\"FLD\":\"AGCON\",\"VAL\":null},{\"FLD\":\"PCON\",\"VAL\":null},{\"FLD\":\"ICON\",\"VAL\":null},{\"FLD\":\"SWM\",\"VAL\":null},{\"FLD\":\"GWM\",\"VAL\":null},{\"FLD\":\"RECM\",\"VAL\":null},{\"FLD\":\"POPGR\",\"VAL\":null},{\"FLD\":\"ST\",\"VAL\":0},{\"FLD\":\"STOPYR\",\"VAL\":\"2065\"}]}"
+
+
+"{\"Inputs\":[{\"FLD\":\"ST\",\"VAL\":0},{\"FLD\":\"STOPYR\",\"VAL\":\"2065\"},{\"FLD\":\"UCON\",\"VAL\":null},{\"FLD\":\"AGCON\",\"VAL\":null},{\"FLD\":\"PCON\",\"VAL\":null},{\"FLD\":\"ICON\",\"VAL\":null},{\"FLD\":\"SWM\",\"VAL\":null},{\"FLD\":\"GWM\",\"VAL\":null},{\"FLD\":\"RECM\",\"VAL\":null},{\"FLD\":\"POPGR\",\"VAL\":null},{\"FLD\":\"ST\",\"VAL\":0},{\"FLD\":\"STOPYR\",\"VAL\":\"2065\"}],\"User\":\"WSA_23_5\"}"

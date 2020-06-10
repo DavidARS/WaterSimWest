@@ -1,0 +1,1380 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2F0262A0-DE2E-4797-AA04-5842F123886E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterSimUI</RootNamespace>
+    <AssemblyName>WaterSimUI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="AspNet.ScriptManager.jQuery">
+      <HintPath>packages\AspNet.ScriptManager.jQuery.1.8.2\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="AspNet.ScriptManager.jQuery.UI.Combined">
+      <HintPath>packages\AspNet.ScriptManager.jQuery.UI.Combined.1.8.24\lib\net45\AspNet.ScriptManager.jQuery.UI.Combined.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ScriptManager.MSAjax, Version=4.5.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Microsoft.AspNet.ScriptManager.MSAjax.4.5.6\lib\net45\Microsoft.ScriptManager.MSAjax.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ScriptManager.WebForms, Version=4.5.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Microsoft.AspNet.ScriptManager.WebForms.4.5.6\lib\net45\Microsoft.ScriptManager.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Providers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Microsoft.AspNet.Providers.Core.1.2\lib\net40\System.Web.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetOpenAuth.Core.4.1.4.12333\lib\net40-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetOpenAuth.OAuth.Core.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetOpenAuth.OAuth.Consumer.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetOpenAuth.OpenId.Core.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetOpenAuth.OpenId.RelyingParty.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\DotNetOpenAuth.AspNet.4.1.4.12333\lib\net40-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Membership.OpenAuth, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Microsoft.AspNet.Membership.OpenAuth.1.0.1\lib\net45\Microsoft.AspNet.Membership.OpenAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.Web.Optimization.WebForms.1.0.0\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.FriendlyUrls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.0\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\indicators\Images\backup\house3.png" />
+    <Content Include="Assets\indicators\Images\groundpattern.jpg" />
+    <Content Include="Assets\indicators\Images\horsemesa.jpg" />
+    <Content Include="Assets\indicators\Images\house1.jpg" />
+    <Content Include="Assets\indicators\Images\house1.png" />
+    <Content Include="Assets\indicators\Images\house2.png" />
+    <Content Include="Assets\indicators\Images\house3.jpg" />
+    <Content Include="Assets\indicators\Images\house3.png" />
+    <Content Include="Assets\indicators\Images\images1.jpg" />
+    <Content Include="Assets\indicators\Images\images1.png" />
+    <Content Include="Assets\indicators\Images\images2.png" />
+    <Content Include="Assets\indicators\Images\oak.jpg" />
+    <Content Include="Assets\indicators\Images\oak_sm.png" />
+    <Content Include="Assets\indicators\Images\oak_sm2.png" />
+    <Content Include="Assets\indicators\Images\PHX.png" />
+    <Content Include="Assets\indicators\Images\rowcropsquare1.jpg" />
+    <Content Include="Assets\indicators\Images\saguaro.jpg" />
+    <Content Include="Assets\indicators\Images\saguaro1.jpg" />
+    <Content Include="Assets\indicators\Images\saguaro1.png" />
+    <Content Include="Assets\indicators\Images\saguaro_sm.png" />
+    <Content Include="Assets\indicators\Images\sub.jpg" />
+    <Content Include="Assets\indicators\Images\waiting.gif" />
+    <Content Include="Assets\indicators\Latest_Images\agriculture_0.png" />
+    <Content Include="Assets\indicators\Latest_Images\economy_0.png" />
+    <Content Include="Assets\indicators\Latest_Images\environment_0.png" />
+    <Content Include="Assets\indicators\Latest_Images\groundwater_0.png" />
+    <Content Include="Assets\indicators\Latest_Images\surfacewater_0.png" />
+    <Content Include="Assets\indicators\NewImages\agriculture.jpg" />
+    <Content Include="Assets\indicators\NewImages\economy.jpg" />
+    <Content Include="Assets\indicators\NewImages\environment.jpg" />
+    <Content Include="Assets\indicators\NewImages\groundwater.jpg" />
+    <Content Include="Assets\indicators\NewImages\power.jpg" />
+    <Content Include="Assets\indicators\NewImages\rgr_meter.jpg" />
+    <Content Include="Assets\indicators\NewImages\rgr_meter_s.jpg" />
+    <Content Include="Assets\indicators\NewImages\rg_meter.jpg" />
+    <Content Include="Assets\indicators\NewImages\rg_meter_s.jpg" />
+    <Content Include="Assets\indicators\NewImages\surfacewater.jpg" />
+    <Content Include="Assets\indicators\NewImages\urbanefficiency.jpg" />
+    <Content Include="Assets\indicators\New_Images\agriculture.jpg" />
+    <Content Include="Assets\indicators\New_Images\agriculture_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\agriculture_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\agriculture_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\New_Images\economy.jpg" />
+    <Content Include="Assets\indicators\New_Images\economy_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\economy_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\economy_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\New_Images\environment.jpg" />
+    <Content Include="Assets\indicators\New_Images\environment_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\environment_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\environment_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\New_Images\groundwater.jpg" />
+    <Content Include="Assets\indicators\New_Images\groundwater_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\groundwater_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\groundwater_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\New_Images\power.jpg" />
+    <Content Include="Assets\indicators\New_Images\power_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\power_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\power_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\New_Images\rgr_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\rgr_meter_s.jpg" />
+    <Content Include="Assets\indicators\New_Images\rg_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\rg_meter_s.jpg" />
+    <Content Include="Assets\indicators\New_Images\surfacewater.jpg" />
+    <Content Include="Assets\indicators\New_Images\surfacewater_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\surfacewater_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\surfacewater_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\agriculture.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\economy.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\economy_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\environment.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\environment_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\meter-red-green-short.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\meter-red-red-short.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\meter-red-red-tall.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\rgr_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\rgr_meter_s.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\rg_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\Final\rg_meter_s.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\groundwater.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\power.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\rgr_meter %282%29.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\rgr_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\rg_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\surfacewater.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\surfacewater_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\urbanefficiency.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp old\urbanefficiency_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\agriculture.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\economy.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\economy_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\environment.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\environment_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\meter-red-green-short.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\meter-red-red-short.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\meter-red-red-tall.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\rgr_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\rgr_meter_s.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\rg_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\Final\rg_meter_s.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\groundwater.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\power.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\rgr_meter %282%29.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\rgr_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\rg_meter.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\surfacewater.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\surfacewater_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\urbanefficiency.jpg" />
+    <Content Include="Assets\indicators\New_Images\temp\urbanefficiency_old.jpg" />
+    <Content Include="Assets\indicators\New_Images\urbanefficiency.jpg" />
+    <Content Include="Assets\indicators\New_Images\urbanefficiency_button_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\urbanefficiency_flat_grey.jpg" />
+    <Content Include="Assets\indicators\New_Images\urbanefficiency_flat_grey_color.jpg" />
+    <Content Include="Assets\indicators\Scripts\indicator.js" />
+    <Content Include="Assets\indicators\Scripts\IndicatorControl_v_4 - Copy.js" />
+    <Content Include="Assets\indicators\Scripts\IndicatorControl_v_4.js" />
+    <Content Include="Assets\indicators\Scripts\indicatorsCore_v2.js" />
+    <Content Include="Assets\indicators\Scripts\reportindicator.js" />
+    <Content Include="Content\accordion.css" />
+    <Content Include="Content\Add\isotopeV2.css" />
+    <Content Include="Content\Audio\challenge 1_2e3_01.mp3" />
+    <Content Include="Content\Audio\challenge 2_2e3_01.mp3" />
+    <Content Include="Content\Audio\challenge 3_2e3_01.mp3" />
+    <Content Include="Content\basic.css" />
+    <Content Include="Content\basic_ie.css" />
+    <Content Include="Content\blue.css" />
+    <Content Include="Content\climateTab.css" />
+    <Content Include="Content\collapsible_panels.css" />
+    <Content Include="Content\green.css" />
+    <Content Include="Content\HELPFILES\CreateReportIcon.png" />
+    <Content Include="Content\HELPFILES\default.png" />
+    <Content Include="Content\HELPFILES\gearButton.png" />
+    <Content Include="Content\HELPFILES\gear_icon.png" />
+    <Content Include="Content\HELPFILES\HELP_ACREFOOT.html" />
+    <Content Include="Content\HELPFILES\HELP_AGCON.html" />
+    <Content Include="Content\HELPFILES\HELP_AMA.html" />
+    <Content Include="Content\HELPFILES\HELP_CLIEFF.html" />
+    <Content Include="Content\HELPFILES\HELP_CLIMATEFACTORS.html" />
+    <Content Include="Content\HELPFILES\HELP_COCLMADJ.html" />
+    <Content Include="Content\HELPFILES\HELP_COLDELIV.html" />
+    <Content Include="Content\HELPFILES\HELP_COLORADORIVER.html" />
+    <Content Include="Content\HELPFILES\HELP_CORFLOW.html" />
+    <Content Include="Content\HELPFILES\HELP_COUSRADJ.html" />
+    <Content Include="Content\HELPFILES\HELP_DEMAND.html" />
+    <Content Include="Content\HELPFILES\HELP_DOCUMENT.html" />
+    <Content Include="Content\HELPFILES\HELP_DROUGHT.html" />
+    <Content Include="Content\HELPFILES\HELP_DROUSCEN.html" />
+    <Content Include="Content\HELPFILES\HELP_EFFLUENT.html" />
+    <Content Include="Content\HELPFILES\HELP_EFLCRT.html" />
+    <Content Include="Content\HELPFILES\HELP_ENFLOAMT.html" />
+    <Content Include="Content\HELPFILES\HELP_ENFLOPCT.html" />
+    <Content Include="Content\HELPFILES\HELP_GEOGRAPHY.html" />
+    <Content Include="Content\HELPFILES\HELP_GPCDUSED.html" />
+    <Content Include="Content\HELPFILES\HELP_GROUNDWATERUSED.html" />
+    <Content Include="Content\HELPFILES\HELP_GWM.html" />
+    <Content Include="Content\HELPFILES\HELP_INDICATORS.html" />
+    <Content Include="Content\HELPFILES\HELP_INTRODUCTION.html" />
+    <Content Include="Content\HELPFILES\HELP_LPROVIDERS.html" />
+    <Content Include="Content\HELPFILES\HELP_MEDSTORE.html" />
+    <Content Include="Content\HELPFILES\HELP_MGWPUMP.html" />
+    <Content Include="Content\HELPFILES\HELP_PCON.html" />
+    <Content Include="Content\HELPFILES\HELP_PCTGWDEM.html" />
+    <Content Include="Content\HELPFILES\HELP_PERENNIALRIVER.html" />
+    <Content Include="Content\HELPFILES\HELP_POINTINTIME.html" />
+    <Content Include="Content\HELPFILES\HELP_POPONPRJ.html" />
+    <Content Include="Content\HELPFILES\HELP_POPOTHER.html" />
+    <Content Include="Content\HELPFILES\HELP_POPUSED.html" />
+    <Content Include="Content\HELPFILES\HELP_POWSTORE.html" />
+    <Content Include="Content\HELPFILES\HELP_PUBS.html" />
+    <Content Include="Content\HELPFILES\HELP_RANGEINTIME.html" />
+    <Content Include="Content\HELPFILES\HELP_RECM.html" />
+    <Content Include="Content\HELPFILES\HELP_RECTOT.html" />
+    <Content Include="Content\HELPFILES\HELP_REGIONALAQUIFER.html" />
+    <Content Include="Content\HELPFILES\HELP_REGRECEFF.html" />
+    <Content Include="Content\HELPFILES\HELP_SALTRIVER.html" />
+    <Content Include="Content\HELPFILES\HELP_SALTRIVERMAP.html" />
+    <Content Include="Content\HELPFILES\HELP_SCENARIOS.html" />
+    <Content Include="Content\HELPFILES\HELP_SINDAG.html" />
+    <Content Include="Content\HELPFILES\HELP_SINDENV.html" />
+    <Content Include="Content\HELPFILES\HELP_SINDPC.html" />
+    <Content Include="Content\HELPFILES\HELP_SINPCTGWDEM.html" />
+    <Content Include="Content\HELPFILES\HELP_SINYRGW.html" />
+    <Content Include="Content\HELPFILES\HELP_SI_AGWATER.html" />
+    <Content Include="Content\HELPFILES\HELP_SI_AWS.html" />
+    <Content Include="Content\HELPFILES\HELP_SI_ENV.html" />
+    <Content Include="Content\HELPFILES\HELP_SI_GROUNDWATER.html" />
+    <Content Include="Content\HELPFILES\HELP_SI_PERSONAL.html" />
+    <Content Include="Content\HELPFILES\HELP_SRPDELIV.html" />
+    <Content Include="Content\HELPFILES\HELP_SVCLMADJ.html" />
+    <Content Include="Content\HELPFILES\HELP_SVRFLOW.html" />
+    <Content Include="Content\HELPFILES\HELP_SVRSTORE.html" />
+    <Content Include="Content\HELPFILES\HELP_SVUSRADJ.html" />
+    <Content Include="Content\HELPFILES\HELP_SWM.html" />
+    <Content Include="Content\HELPFILES\HELP_TOTDEM.html" />
+    <Content Include="Content\HELPFILES\HELP_TRACES.html" />
+    <Content Include="Content\HELPFILES\HELP_TROUBLESHOOT.html" />
+    <Content Include="Content\HELPFILES\HELP_TROUBLESHOOT_a.html" />
+    <Content Include="Content\HELPFILES\HELP_UCON.html" />
+    <Content Include="Content\HELPFILES\HELP_VERDERIVER.html" />
+    <Content Include="Content\HELPFILES\HELP_WATERRIGHTS.html" />
+    <Content Include="Content\HELPFILES\HELP_WATERSHED.html" />
+    <Content Include="Content\HELPFILES\HELP_WATERSIM.html" />
+    <Content Include="Content\HELPFILES\HELP_WEBAGTR1.html" />
+    <Content Include="Content\HELPFILES\HELP_WEBEFPCT.html" />
+    <Content Include="Content\HELPFILES\HELP_WEBPOPGR.html" />
+    <Content Include="Content\HELPFILES\HELP_WEBPRPCT.html" />
+    <Content Include="Content\HELPFILES\HELP_WIZARD.html" />
+    <Content Include="Content\HELPFILES\horsemesa.png" />
+    <Content Include="Content\HELPFILES\icon_help.png" />
+    <Content Include="Content\HELPFILES\Images\CityModel_April2015.png" />
+    <Content Include="Content\HELPFILES\Images\CityModel_Jan2016.jpg" />
+    <Content Include="Content\HELPFILES\Images\CityModel_Sept2014.png" />
+    <Content Include="Content\HELPFILES\Images\CO.JPG" />
+    <Content Include="Content\HELPFILES\Images\COandSVTBasin.jpg" />
+    <Content Include="Content\HELPFILES\Images\COdelta_2.jpg" />
+    <Content Include="Content\HELPFILES\Images\GPCDgoals.jpg" />
+    <Content Include="Content\HELPFILES\Images\HeatMap_groundwater.JPG" />
+    <Content Include="Content\HELPFILES\Images\Icon_docs.jpg" />
+    <Content Include="Content\HELPFILES\Images\Icon_docs.png" />
+    <Content Include="Content\HELPFILES\Images\PCTchangeGWAquifer.JPG" />
+    <Content Include="Content\HELPFILES\Images\Policies.JPG" />
+    <Content Include="Content\HELPFILES\Images\Policy_Quay.jpg" />
+    <Content Include="Content\HELPFILES\Images\Providers.jpg" />
+    <Content Include="Content\HELPFILES\Images\Reclaimed.png" />
+    <Content Include="Content\HELPFILES\Images\RegionalGW.jpg" />
+    <Content Include="Content\HELPFILES\Images\Regional_Quay.jpg" />
+    <Content Include="Content\HELPFILES\Images\Salt.JPG" />
+    <Content Include="Content\HELPFILES\Images\Sampsonetal_Figure_3.jpg" />
+    <Content Include="Content\HELPFILES\Images\SandKey.jpg" />
+    <Content Include="Content\HELPFILES\Images\Sensitivity_2.jpg" />
+    <Content Include="Content\HELPFILES\Images\Sensitivity_Quay.jpg" />
+    <Content Include="Content\HELPFILES\Images\Structure.jpg" />
+    <Content Include="Content\HELPFILES\Images\SupplyDemand.jpg" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\CityModel_Sept2014.png" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\CO.JPG" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\HeatMap_groundwater.JPG" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\Providers.jpg" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\Salt.JPG" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\SandKey.jpg" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\Structure.jpg" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\SupplyDemand.jpg" />
+    <Content Include="Content\HELPFILES\Images\SupportingDocs\Verde.JPG" />
+    <Content Include="Content\HELPFILES\Images\TippingPoints.jpg" />
+    <Content Include="Content\HELPFILES\Images\troubleshoot.png" />
+    <Content Include="Content\HELPFILES\Images\UI.jpg" />
+    <Content Include="Content\HELPFILES\Images\UI.png" />
+    <Content Include="Content\HELPFILES\Images\Verde.JPG" />
+    <Content Include="Content\HELPFILES\Images\wrigley.jpg" />
+    <Content Include="Content\HELPFILES\OLD\HELP_COCLMADJ.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_COUSRADJ.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_DOCUMENT.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_ENFLOAMT.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_INDICATORS.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_LPROVIDERS.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_REGRECEFF.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SI_AGWATER.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SI_AWS.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SI_ENV.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SI_GROUNDWATER.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SI_PERSONAL.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SVCLMADJ.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_SVUSRADJ.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_TRACES.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_TROUBLESHOOT.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_WEBAGTR1.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_WEBPOPGR.html" />
+    <Content Include="Content\HELPFILES\OLD\HELP_WEBPRPCT.html" />
+    <Content Include="Content\HELPFILES\OLD\troubleshoot.png" />
+    <Content Include="Content\HELPFILES\printReportButton.png" />
+    <Content Include="Content\HELPFILES\runButton.png" />
+    <Content Include="Content\HELPFILES\stewartmtndam.png" />
+    <Content Include="Content\HELPFILES\troubleshoot.png" />
+    <Content Include="Content\horizontal.css" />
+    <Content Include="Content\ipad.css" />
+    <Content Include="Content\isotope.css" />
+    <Content Include="Content\jquery-ui.css" />
+    <Content Include="Content\jquery.mobile-1.3.0.min.css" />
+    <Content Include="Content\jslider.css" />
+    <Content Include="Content\orange.css" />
+    <Content Include="Content\pageslide.css" />
+    <Content Include="Content\Site org 3 17 14.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Content\Site_blue.css" />
+    <Content Include="Content\style.css" />
+    <Content Include="Content\tabbedArea.css" />
+    <Content Include="Content\themes\base\Gear.tooltip.css" />
+    <Content Include="Content\themes\base\images\animated-overlay.gif" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.menu.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.spinner.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\jquery.ui.tooltip.css" />
+    <Content Include="Content\themes\base\minified\images\animated-overlay.gif" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.menu.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.spinner.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\HELP_RANGEINTIME.html" />
+    <Content Include="Content\themes\horizontal.css" />
+    <Content Include="Content\themes\new_base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\new_base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\new_base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\new_base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\new_base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\new_base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\new_base\jquery-ui.css" />
+    <Content Include="Content\themes\new_base\jquery-ui.min.css" />
+    <Content Include="Content\themes\new_base\theme.css" />
+    <Content Include="Content\themes\smoothness\images\animated-overlay.gif" />
+    <Content Include="Content\themes\smoothness\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\smoothness\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\smoothness\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\smoothness\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\smoothness\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\smoothness\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\smoothness\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\smoothness\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\smoothness\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\smoothness\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\smoothness\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\smoothness\jquery-ui-1.10.4.custom.min.css" />
+    <Content Include="Content\themes\smoothness\jquery-ui.css" />
+    <Content Include="Content\themes\tipped.css" />
+    <Content Include="Content\timer.css" />
+    <Content Include="Content\wizard.css" />
+    <Content Include="Content\WSA_Assessment.css" />
+    <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="HelpFiles.html" />
+    <Content Include="Images\ajax_loader_blue_350.gif" />
+    <Content Include="Images\asulogo1.jpg" />
+    <Content Include="Images\CactusJack.png" />
+    <Content Include="Images\dcdc-logo.png" />
+    <Content Include="Images\DCDC_CMYK.png" />
+    <Content Include="Images\DCDC_CMYK_Aug21_2013.png" />
+    <Content Include="Images\DCDC_CMYK_Aug21_2013_Grey.png" />
+    <Content Include="Images\icon_help.png" />
+    <Content Include="Images\Sankey\Gray\AD.png" />
+    <Content Include="Images\Sankey\Gray\AD_v1.png" />
+    <Content Include="Images\Sankey\Gray\AD_v2.png" />
+    <Content Include="Images\Sankey\Gray\GW.png" />
+    <Content Include="Images\Sankey\Gray\GW_v1.png" />
+    <Content Include="Images\Sankey\Gray\GW_v2.png" />
+    <Content Include="Images\Sankey\Gray\ID.png" />
+    <Content Include="Images\Sankey\Gray\ID_v1.png" />
+    <Content Include="Images\Sankey\Gray\ID_v2.png" />
+    <Content Include="Images\Sankey\Gray\PD.png" />
+    <Content Include="Images\Sankey\Gray\PD_v1.png" />
+    <Content Include="Images\Sankey\Gray\REC.png" />
+    <Content Include="Images\Sankey\Gray\REC_v1.png" />
+    <Content Include="Images\Sankey\Gray\SAL.png" />
+    <Content Include="Images\Sankey\Gray\SAL_v1.png" />
+    <Content Include="Images\Sankey\Gray\SUR.png" />
+    <Content Include="Images\Sankey\Gray\SURL.png" />
+    <Content Include="Images\Sankey\Gray\SURL_Old.png" />
+    <Content Include="Images\Sankey\Gray\SURL_v2.png" />
+    <Content Include="Images\Sankey\Gray\UD.png" />
+    <Content Include="Images\Sankey\Gray\UD_v1.png" />
+    <Content Include="Images\Sankey\Gray\UD_v2.png" />
+    <Content Include="Images\Sankey\White\AD.png" />
+    <Content Include="Images\Sankey\White\GW.png" />
+    <Content Include="Images\Sankey\White\ID.png" />
+    <Content Include="Images\Sankey\White\PD.png" />
+    <Content Include="Images\Sankey\White\REC.png" />
+    <Content Include="Images\Sankey\White\SAL.png" />
+    <Content Include="Images\Sankey\White\SURL.png" />
+    <Content Include="Images\Sankey\White\UD.png" />
+    <Content Include="Images\wrigley.jpg" />
+    <Content Include="Images\wrigley_2_Grey.png" />
+    <Content Include="PHP\swiftmailer-5.x\.gitattributes" />
+    <Content Include="PHP\swiftmailer-5.x\.gitignore" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\charsets\iso-2022-jp\one.txt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\charsets\iso-8859-1\one.txt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\charsets\utf-8\one.txt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\charsets\utf-8\three.txt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\charsets\utf-8\two.txt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\files\data.txt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\files\swiftmailer.png" />
+    <Content Include="Scripts\autoComplete\auto-complete.css" />
+    <Content Include="Scripts\autoComplete\auto-complete.js" />
+    <Content Include="Scripts\autoComplete\auto-complete.min.js" />
+    <Content Include="Scripts\autoComplete\demo.html" />
+    <Content Include="Scripts\autoComplete\img\at.png" />
+    <Content Include="Scripts\autoComplete\img\au.png" />
+    <Content Include="Scripts\autoComplete\img\bg.png" />
+    <Content Include="Scripts\autoComplete\img\br.png" />
+    <Content Include="Scripts\autoComplete\img\ca.png" />
+    <Content Include="Scripts\autoComplete\img\ch.png" />
+    <Content Include="Scripts\autoComplete\img\cn.png" />
+    <Content Include="Scripts\autoComplete\img\cz.png" />
+    <Content Include="Scripts\autoComplete\img\de.png" />
+    <Content Include="Scripts\autoComplete\img\dk.png" />
+    <Content Include="Scripts\autoComplete\img\es.png" />
+    <Content Include="Scripts\autoComplete\img\fi.png" />
+    <Content Include="Scripts\autoComplete\img\fr.png" />
+    <Content Include="Scripts\autoComplete\img\hu.png" />
+    <Content Include="Scripts\autoComplete\img\in.png" />
+    <Content Include="Scripts\autoComplete\img\it.png" />
+    <Content Include="Scripts\autoComplete\img\ja.png" />
+    <Content Include="Scripts\autoComplete\img\nl.png" />
+    <Content Include="Scripts\autoComplete\img\no.png" />
+    <Content Include="Scripts\autoComplete\img\pt.png" />
+    <Content Include="Scripts\autoComplete\img\ro.png" />
+    <Content Include="Scripts\autoComplete\img\ru.png" />
+    <Content Include="Scripts\autoComplete\img\tr.png" />
+    <Content Include="Scripts\autoComplete\img\us.png" />
+    <Content Include="Scripts\Chosen\chosen-sprite%402x.png" />
+    <Content Include="Scripts\Chosen\chosen-sprite.png" />
+    <Content Include="Scripts\Chosen\chosen.css" />
+    <Content Include="Scripts\Chosen\chosen.jquery.js" />
+    <Content Include="Scripts\Chosen\chosen.jquery.min.js" />
+    <Content Include="Scripts\Chosen\chosen.min.css" />
+    <Content Include="Scripts\Chosen\chosen.proto.js" />
+    <Content Include="Scripts\Chosen\chosen.proto.min.js" />
+    <Content Include="Scripts\Chosen\docsupport\chosen.png" />
+    <Content Include="Scripts\Chosen\docsupport\oss-credit.png" />
+    <Content Include="Scripts\Chosen\docsupport\prism.css" />
+    <Content Include="Scripts\Chosen\docsupport\prism.js" />
+    <Content Include="Scripts\Chosen\docsupport\style.css" />
+    <Content Include="Scripts\Chosen\index.html" />
+    <Content Include="Scripts\Chosen\index.proto.html" />
+    <Content Include="Scripts\Chosen\options.html" />
+    <Content Include="Scripts\Custom\Add\ConvertInputControls.js" />
+    <Content Include="Scripts\Custom\Charts\AreaChart.js" />
+    <Content Include="Scripts\Custom\Charts\ChartTools.js" />
+    <Content Include="Scripts\Custom\Charts\ComplexStackedColumn.js" />
+    <Content Include="Scripts\Custom\Charts\DoublePie.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownChartBO.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownColumnChartBO.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownLineChartBO.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownLineChartTEMP.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownPieColumnChartMF.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownPieColumnChartMP.js" />
+    <Content Include="Scripts\Custom\Charts\DrillDownSingleColumnChart.js" />
+    <Content Include="Scripts\Custom\Charts\HighChartsUnderscoreFix.js" />
+    <Content Include="Scripts\Custom\Charts\HighStocks.js" />
+    <Content Include="Scripts\Custom\Charts\LineChartMP.js" />
+    <Content Include="Scripts\Custom\Charts\MultiPieChart.js" />
+    <Content Include="Scripts\Custom\Charts\PieChart.js" />
+    <Content Include="Scripts\Custom\Charts\ProvidersChart.js" />
+    <Content Include="Scripts\Custom\Charts\SankeyChart.js" />
+    <Content Include="Scripts\Custom\Charts\SimpleLineChart.js" />
+    <Content Include="Scripts\Custom\Charts\SimpleStackedColumn.js" />
+    <Content Include="Scripts\Custom\Charts\StackedAreaChart.js" />
+    <Content Include="Scripts\Custom\Charts\StackedColumnChart.js" />
+    <Content Include="Scripts\Custom\collapsible-panels.js" />
+    <Content Include="Scripts\Custom\Core\AddInput.js" />
+    <Content Include="Scripts\Custom\Add\AddOutputControl.js" />
+    <Content Include="Scripts\Custom\Add\ChartsAdd.js" />
+    <Content Include="Scripts\Custom\Core\AmericaAppControl.js" />
+    <Content Include="Scripts\Custom\Core\AmericaAppControl_v2.js" />
+    <Content Include="Scripts\Custom\Core\Assessment\WSA_AssessmentReport_v4.js" />
+    <Content Include="Scripts\Custom\Core\Assessment\Xpan_V2.js" />
+    <Content Include="Scripts\Custom\Core\ConvertInputControls.js" />
+    <Content Include="Scripts\Custom\Core\Core.js" />
+    <Content Include="Scripts\Custom\Add\CoreAdd.js" />
+    <Content Include="Scripts\Custom\Core\CoreDrawCharts.js" />
+    <Content Include="Scripts\Custom\Core\CoreGenFunctions Server.js" />
+    <Content Include="Scripts\Custom\Core\CoreGenFunctions.js" />
+    <Content Include="Scripts\Custom\Core\CoreGetJSON.js" />
+    <Content Include="Scripts\Custom\Core\CoreOld.js" />
+    <Content Include="Scripts\Custom\Core\CoreQuayChart.js" />
+    <Content Include="Scripts\Custom\Core\Feedback.js" />
+    <Content Include="Scripts\Custom\Core\GuidedInteraction.js" />
+    <Content Include="Scripts\Custom\Core\GuidedInteractionWSAmerica.js" />
+    <Content Include="Scripts\Custom\Core\ReportTools.js" />
+    <Content Include="Scripts\Custom\Core\RiverFlow.js" />
+    <Content Include="Scripts\Custom\Add\imagesloaded.pkgd.js" />
+    <Content Include="Scripts\Custom\Add\isotopeV2.js" />
+    <Content Include="Scripts\Custom\Core\RiverTrace.js" />
+    <Content Include="Scripts\Custom\Core\SettingRunButton.js" />
+    <Content Include="Scripts\Custom\Core\soundsupport.js" />
+    <Content Include="Scripts\Custom\Core\UrlHandler.js" />
+    <Content Include="Scripts\Custom\Indicators\indicator.js" />
+    <Content Include="Scripts\Custom\Indicators\indicatorImage.js" />
+    <Content Include="Scripts\Custom\jquery.pageslide.js" />
+    <Content Include="Scripts\Custom\jquery.steps.js" />
+    <Content Include="Scripts\Custom\load-files.js" />
+    <Content Include="Scripts\Custom\Sankey\README.js" />
+    <Content Include="Scripts\Custom\Sankey\sankey.css" />
+    <Content Include="Scripts\Custom\Sankey\sankey.js" />
+    <Content Include="Scripts\Custom\Slider\SettingRun.js" />
+    <Content Include="Scripts\Custom\Slider\SettingSlider.js" />
+    <Content Include="Charts.Master" />
+    <Content Include="Charts.Mobile.Master" />
+    <Content Include="Scripts\Chosen\bower.json" />
+    <Content Include="PHP\swiftmailer-5.x\.travis.yml" />
+    <Content Include="PHP\swiftmailer-5.x\CHANGES" />
+    <Content Include="PHP\swiftmailer-5.x\composer.json" />
+    <Content Include="PHP\swiftmailer-5.x\doc\headers.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\help-resources.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\including-the-files.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\index.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\installing.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\introduction.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\japanese.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\messages.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\overview.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\plugins.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\sending.rst" />
+    <Content Include="PHP\swiftmailer-5.x\doc\uml\Encoders.graffle" />
+    <Content Include="PHP\swiftmailer-5.x\doc\uml\Mime.graffle" />
+    <Content Include="PHP\swiftmailer-5.x\doc\uml\Transports.graffle" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Attachment.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\ByteStream\AbstractFilterableInputStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\ByteStream\ArrayByteStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\ByteStream\FileByteStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\ByteStream\TemporaryFileByteStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterReader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterReaderFactory.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterReaderFactory\SimpleCharacterReaderFactory.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterReader\GenericFixedWidthReader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterReader\UsAsciiReader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterReader\Utf8Reader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterStream\ArrayCharacterStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\CharacterStream\NgCharacterStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\ConfigurableSpool.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\DependencyContainer.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\DependencyException.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\EmbeddedFile.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Encoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Encoder\Base64Encoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Encoder\QpEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Encoder\Rfc2231Encoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Encoding.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\CommandEvent.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\CommandListener.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\Event.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\EventDispatcher.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\EventListener.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\EventObject.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\ResponseEvent.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\ResponseListener.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\SendEvent.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\SendListener.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\SimpleEventDispatcher.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\TransportChangeEvent.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\TransportChangeListener.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\TransportExceptionEvent.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Events\TransportExceptionListener.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\FailoverTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\FileSpool.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\FileStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Filterable.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Image.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\InputByteStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\IoException.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\KeyCache.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\KeyCache\ArrayKeyCache.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\KeyCache\DiskKeyCache.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\KeyCache\KeyCacheInputStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\KeyCache\NullKeyCache.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\KeyCache\SimpleKeyCacheInputStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\LoadBalancedTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mailer.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mailer\ArrayRecipientIterator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mailer\RecipientIterator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\MailTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\MemorySpool.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Message.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\MimePart.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Attachment.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\CharsetObserver.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder\Base64ContentEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder\NativeQpContentEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder\PlainContentEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder\QpContentEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder\QpContentEncoderProxy.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ContentEncoder\RawContentEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\EmbeddedFile.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\EncodingObserver.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Grammar.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Header.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\HeaderEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\HeaderEncoder\Base64HeaderEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\HeaderEncoder\QpHeaderEncoder.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\HeaderFactory.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\HeaderSet.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\AbstractHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\DateHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\IdentificationHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\MailboxHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\OpenDKIMHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\ParameterizedHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\PathHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Headers\UnstructuredHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\Message.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\MimeEntity.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\MimePart.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\ParameterizedHeader.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\SimpleHeaderFactory.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\SimpleHeaderSet.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\SimpleMessage.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Mime\SimpleMimeEntity.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\NullTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\OutputByteStream.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\AntiFloodPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\BandwidthMonitorPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\DecoratorPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Decorator\Replacements.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\ImpersonatePlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Logger.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\LoggerPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Loggers\ArrayLogger.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Loggers\EchoLogger.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\MessageLogger.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\PopBeforeSmtpPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Pop\Pop3Connection.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Pop\Pop3Exception.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\RedirectingPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Reporter.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\ReporterPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Reporters\HitReporter.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Reporters\HtmlReporter.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Sleeper.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\ThrottlerPlugin.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Plugins\Timer.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Preferences.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\ReplacementFilterFactory.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\RfcComplianceException.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\SendmailTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\SignedMessage.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signer.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signers\BodySigner.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signers\DKIMSigner.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signers\DomainKeySigner.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signers\HeaderSigner.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signers\OpenDKIMSigner.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Signers\SMimeSigner.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\SmtpTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Spool.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\SpoolTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\StreamFilter.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\StreamFilters\ByteArrayReplacementFilter.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\StreamFilters\StringReplacementFilter.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\StreamFilters\StringReplacementFilterFactory.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\SwiftException.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\TransportException.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\AbstractSmtpTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\EsmtpHandler.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\EsmtpTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\Authenticator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\AuthHandler.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\Auth\CramMd5Authenticator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\Auth\LoginAuthenticator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\Auth\NTLMAuthenticator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\Auth\PlainAuthenticator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\Esmtp\Auth\XOAuth2Authenticator.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\FailoverTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\IoBuffer.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\LoadBalancedTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\MailInvoker.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\MailTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\NullTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\SendmailTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\SmtpAgent.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\SpoolTransport.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Transport\StreamBuffer.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\classes\Swift\Validate.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\dependency_maps\cache_deps.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\dependency_maps\message_deps.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\dependency_maps\mime_deps.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\dependency_maps\transport_deps.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\mime_types.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\preferences.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\swiftmailer_generate_mimes_config.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\swift_init.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\swift_required.php" />
+    <Content Include="PHP\swiftmailer-5.x\lib\swift_required_pear.php" />
+    <Content Include="PHP\swiftmailer-5.x\LICENSE" />
+    <Content Include="PHP\swiftmailer-5.x\phpunit.xml.dist" />
+    <Content Include="PHP\swiftmailer-5.x\README" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance.conf.php.default" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\AttachmentAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\ByteStream\FileByteStreamAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\CharacterReaderFactory\SimpleCharacterReaderFactoryAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\DependencyContainerAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\EmbeddedFileAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Encoder\Base64EncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Encoder\QpEncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Encoder\Rfc2231EncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\EncodingAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\KeyCache\ArrayKeyCacheAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\KeyCache\DiskKeyCacheAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\MessageAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\MimePartAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\AttachmentAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\ContentEncoder\Base64ContentEncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\ContentEncoder\NativeQpContentEncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\ContentEncoder\PlainContentEncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\ContentEncoder\QpContentEncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\EmbeddedFileAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\HeaderEncoder\Base64HeaderEncoderAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\MimePartAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Mime\SimpleMessageAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Transport\StreamBuffer\AbstractStreamBufferAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Transport\StreamBuffer\BasicSocketAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Transport\StreamBuffer\ProcessAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Transport\StreamBuffer\SocketTimeoutTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Transport\StreamBuffer\SslSocketAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\acceptance\Swift\Transport\StreamBuffer\TlsSocketAcceptanceTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bootstrap.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug111Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug118Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug206Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug274Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug34Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug35Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug38Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug518Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug51Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug534Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug71Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\bug\Swift\Bug76Test.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\fixtures\MimeEntityFixture.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\IdenticalBinaryConstraint.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\smoke.conf.php.default" />
+    <Content Include="PHP\swiftmailer-5.x\tests\smoke\Swift\Smoke\AttachmentSmokeTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\smoke\Swift\Smoke\BasicSmokeTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\smoke\Swift\Smoke\HtmlWithAttachmentSmokeTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\smoke\Swift\Smoke\InternationalSmokeTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\StreamCollector.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\SwiftMailerSmokeTestCase.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\SwiftMailerTestCase.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\ByteStream\ArrayByteStreamTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\CharacterReader\GenericFixedWidthReaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\CharacterReader\UsAsciiReaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\CharacterReader\Utf8ReaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\CharacterStream\ArrayCharacterStreamTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\DependencyContainerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Encoder\Base64EncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Encoder\QpEncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Encoder\Rfc2231EncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\CommandEventTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\EventObjectTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\ResponseEventTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\SendEventTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\SimpleEventDispatcherTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\TransportChangeEventTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Events\TransportExceptionEventTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\KeyCache\ArrayKeyCacheTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\KeyCache\SimpleKeyCacheInputStreamTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\MailerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mailer\ArrayRecipientIteratorTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\MessageTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\AbstractMimeEntityTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\AttachmentTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\ContentEncoder\Base64ContentEncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\ContentEncoder\PlainContentEncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\ContentEncoder\QpContentEncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\EmbeddedFileTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\HeaderEncoder\Base64HeaderEncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\HeaderEncoder\QpHeaderEncoderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\Headers\DateHeaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\Headers\IdentificationHeaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\Headers\MailboxHeaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\Headers\ParameterizedHeaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\Headers\PathHeaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\Headers\UnstructuredHeaderTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\MimePartTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\SimpleHeaderFactoryTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\SimpleHeaderSetTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\SimpleMessageTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Mime\SimpleMimeEntityTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\AntiFloodPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\BandwidthMonitorPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\DecoratorPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\LoggerPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\Loggers\ArrayLoggerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\Loggers\EchoLoggerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\PopBeforeSmtpPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\RedirectingPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\ReporterPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\Reporters\HitReporterTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\Reporters\HtmlReporterTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Plugins\ThrottlerPluginTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Signers\DKIMSignerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Signers\OpenDKIMSignerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Signers\SMimeSignerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\StreamFilters\ByteArrayReplacementFilterTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\StreamFilters\StringReplacementFilterFactoryTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\StreamFilters\StringReplacementFilterTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\AbstractSmtpEventSupportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\AbstractSmtpTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\EsmtpTransportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\EsmtpTransport\ExtensionSupportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\Esmtp\AuthHandlerTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\Esmtp\Auth\CramMd5AuthenticatorTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\Esmtp\Auth\LoginAuthenticatorTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\Esmtp\Auth\NTLMAuthenticatorTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\Esmtp\Auth\PlainAuthenticatorTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\FailoverTransportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\LoadBalancedTransportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\MailTransportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\SendmailTransportTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\unit\Swift\Transport\StreamBufferTest.php" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\dkim\dkim.test.priv" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\dkim\dkim.test.pub" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\files\textfile.zip" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\ca.crt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\ca.key" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\CA.srl" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\create-cert.sh" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\encrypt.crt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\encrypt.key" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\encrypt2.crt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\encrypt2.key" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\intermediate.crt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\intermediate.key" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\sign.crt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\sign.key" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\sign2.crt" />
+    <Content Include="PHP\swiftmailer-5.x\tests\_samples\smime\sign2.key" />
+    <Content Include="PHP\swiftmailer-5.x\VERSION" />
+    <Content Include="Scripts\autoComplete\bower.json" />
+    <Content Include="Scripts\autoComplete\readme.md" />
+    <Content Include="Content\HELPFILES\HELPFILES.7z" />
+    <Content Include="Content\HELPFILES\HELPFILESicons.7z" />
+    <Content Include="Content\HELPFILES\OLD\HELPFILES.7z" />
+    <Content Include="Content\HELPFILES\OLD\HELPFILESicons.7z" />
+    <Content Include="Content\Site.css.bak" />
+    <Content Include="Content\themes\base.zip" />
+    <Content Include="Images\Sankey\Gray\AD 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\AD.psd" />
+    <Content Include="Images\Sankey\Gray\GW 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\GW.psd" />
+    <Content Include="Images\Sankey\Gray\ID 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\ID.psd" />
+    <Content Include="Images\Sankey\Gray\PD 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\PD.psd" />
+    <Content Include="Images\Sankey\Gray\REC 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\REC.psd" />
+    <Content Include="Images\Sankey\Gray\SUR 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\SUR.psd" />
+    <Content Include="Images\Sankey\Gray\SURL 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\SURL.psd" />
+    <Content Include="Images\Sankey\Gray\UD 150 x 150.psd" />
+    <Content Include="Images\Sankey\Gray\UD.psd" />
+    <Content Include="Content\HELPFILES\RunAssessment.csv" />
+    <Content Include="Content\HELPFILES\help.csv" />
+    <None Include="Scripts\jquery-2.1.0.intellisense.js" />
+    <Content Include="Scripts\Custom\STC.js" />
+    <Content Include="Scripts\Custom\Timer\CountDown.js" />
+    <Content Include="Scripts\Custom\Timer\ExternalFunctions.js" />
+    <Content Include="Scripts\d3.min.js" />
+    <Content Include="Scripts\jquery-2.1.0.js" />
+    <Content Include="Scripts\jquery-2.1.0.min.js" />
+    <Content Include="Scripts\jquery-ui-1.10.4.js" />
+    <Content Include="Scripts\jquery-ui-1.10.4.min.js" />
+    <Content Include="Scripts\msAccordion.js" />
+    <Content Include="Scripts\Sideshow\backup\sideshow.min .css" />
+    <Content Include="Scripts\Sideshow\backup\sideshow.min.css" />
+    <Content Include="Scripts\Sideshow\distr\dependencies\jazz.min.js" />
+    <Content Include="Scripts\Sideshow\distr\dependencies\jquery.min.js" />
+    <Content Include="Scripts\Sideshow\distr\dependencies\pagedown.min.js" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bold.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bolditalic.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabold.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabolditalic.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-italic.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-light.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-lightitalic.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-regular.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibold.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibolditalic.svg" />
+    <Content Include="Scripts\Sideshow\distr\fonts\sideshow-fontface.min.css" />
+    <Content Include="Scripts\Sideshow\distr\fonts\sideshow-icons\sideshow-icons.svg" />
+    <Content Include="Scripts\Sideshow\distr\sideshow.js" />
+    <Content Include="Scripts\Sideshow\distr\sideshow.min.js" />
+    <Content Include="Scripts\Sideshow\distr\stylesheets\sideshow.css" />
+    <Content Include="Scripts\SimpleModal\basic.js" />
+    <Content Include="Scripts\SimpleModal\jquery.simplemodal.js" />
+    <Content Include="Scripts\Sly\horizontal-sustain.js" />
+    <Content Include="Scripts\Sly\horizontal-validation.js" />
+    <Content Include="Scripts\Wizard\jquery.steps.js" />
+    <Content Include="Images\gear_icon.png" />
+    <Content Include="Images\icon_agriculture.png" />
+    <Content Include="Images\icon_effluent.png" />
+    <Content Include="Images\icon_environment.png" />
+    <Content Include="Images\icon_personal.png" />
+    <Content Include="Images\icon_population.png" />
+    <Content Include="Images\accent.png" />
+    <Content Include="Images\bullet.png" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\orderedList0.png" />
+    <Content Include="Images\orderedList1.png" />
+    <Content Include="Images\orderedList2.png" />
+    <Content Include="Images\orderedList3.png" />
+    <Content Include="Images\orderedList4.png" />
+    <Content Include="Images\orderedList5.png" />
+    <Content Include="Images\orderedList6.png" />
+    <Content Include="Images\orderedList7.png" />
+    <Content Include="Images\orderedList8.png" />
+    <Content Include="Images\orderedList9.png" />
+    <Content Include="Data\JSON\ProdActivejsondataPointInTime.json" />
+    <Content Include="Data\JSON\ProdActivejsondataTemporal.json" />
+    <Content Include="Data\JSON\ProdInfoRequest.json" />
+    <Content Include="Data\JSON\ProdInfoRequest1.json" />
+    <None Include="Properties\PublishProfiles\WaterSim.pubxml" />
+    <Content Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="Scripts\Custom\climate-charts-graphs.js" />
+    <Content Include="Scripts\Custom\demand-charts-graphs.js" />
+    <Content Include="Scripts\Custom\jquery.zaccordion.js" />
+    <Content Include="Scripts\Custom\policy-charts-graphs.js" />
+    <Content Include="Scripts\Custom\supply-charts-graphs.js" />
+    <Content Include="Scripts\Highcharts\adapters\mootools-adapter.js" />
+    <Content Include="Scripts\Highcharts\adapters\mootools-adapter.src.js" />
+    <Content Include="Scripts\Highcharts\adapters\prototype-adapter.js" />
+    <Content Include="Scripts\Highcharts\adapters\prototype-adapter.src.js" />
+    <Content Include="Scripts\Highcharts\adapters\standalone-framework.js" />
+    <Content Include="Scripts\Highcharts\adapters\standalone-framework.src.js" />
+    <Content Include="Scripts\Highcharts\highcharts-all.js" />
+    <Content Include="Scripts\Highcharts\highcharts-more.js" />
+    <Content Include="Scripts\Highcharts\highcharts-more.src.js" />
+    <Content Include="Scripts\Highcharts\highcharts.js" />
+    <Content Include="Scripts\Highcharts\highcharts.src.js" />
+    <Content Include="Scripts\Highcharts\modules\annotations.js" />
+    <Content Include="Scripts\Highcharts\modules\annotations.src.js" />
+    <Content Include="Scripts\Highcharts\modules\canvas-tools.js" />
+    <Content Include="Scripts\Highcharts\modules\canvas-tools.src.js" />
+    <Content Include="Scripts\Highcharts\modules\data.js" />
+    <Content Include="Scripts\Highcharts\modules\data.src.js" />
+    <Content Include="Scripts\Highcharts\modules\drilldown.js" />
+    <Content Include="Scripts\Highcharts\modules\drilldown.src.js" />
+    <Content Include="Scripts\Highcharts\modules\exporting.js" />
+    <Content Include="Scripts\Highcharts\modules\exporting.src.js" />
+    <Content Include="Scripts\Highcharts\modules\funnel.js" />
+    <Content Include="Scripts\Highcharts\modules\funnel.src.js" />
+    <Content Include="Scripts\Highcharts\modules\heatmap.js" />
+    <Content Include="Scripts\Highcharts\modules\heatmap.src.js" />
+    <Content Include="Scripts\Highcharts\modules\map.js" />
+    <Content Include="Scripts\Highcharts\modules\map.src.js" />
+    <Content Include="Scripts\Highcharts\modules\no-data-to-display.js" />
+    <Content Include="Scripts\Highcharts\modules\no-data-to-display.src.js" />
+    <Content Include="Scripts\Highcharts\themes\dark-blue.js" />
+    <Content Include="Scripts\Highcharts\themes\dark-green.js" />
+    <Content Include="Scripts\Highcharts\themes\gray.js" />
+    <Content Include="Scripts\Highcharts\themes\grid.js" />
+    <Content Include="Scripts\Highcharts\themes\skies.js" />
+    <Content Include="Scripts\Isotope\isotope.js" />
+    <Content Include="Scripts\Sly\horizontal-demand.js" />
+    <Content Include="Scripts\Sly\horizontal-policy.js" />
+    <Content Include="Scripts\Isotope\isotope.pkgd.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\Custom\jquery-functions.js" />
+    <Content Include="Scripts\Sly\sly.js" />
+    <Content Include="Scripts\WebForms\DetailsView.js" />
+    <Content Include="Scripts\WebForms\Focus.js" />
+    <Content Include="Scripts\WebForms\GridView.js" />
+    <Content Include="Scripts\WebForms\Menu.js" />
+    <Content Include="Scripts\WebForms\MenuStandards.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjax.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxApplicationServices.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxComponentModel.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxCore.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxGlobalization.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxHistory.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxNetwork.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxSerialization.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxTimer.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebForms.js" />
+    <Content Include="Scripts\WebForms\MSAjax\MicrosoftAjaxWebServices.js" />
+    <Content Include="Scripts\WebForms\SmartNav.js" />
+    <Content Include="Scripts\WebForms\TreeView.js" />
+    <Content Include="Scripts\WebForms\WebForms.js" />
+    <Content Include="Scripts\WebForms\WebParts.js" />
+    <Content Include="Scripts\WebForms\WebUIValidation.js" />
+    <Content Include="Styles\blue.css" />
+    <Content Include="Styles\collapsible_panels.css" />
+    <Content Include="Styles\green.css" />
+    <Content Include="Styles\haccordion.css" />
+    <Content Include="Styles\horizontal.css" />
+    <Content Include="Styles\jquery.panel.slider.css" />
+    <Content Include="Styles\orange.css" />
+    <Content Include="Styles\pageslide.css" />
+    <Content Include="Styles\style.css" />
+    <Content Include="UserControls\InputUserControl.ascx" />
+    <Content Include="UserControls\OutputUserControl.ascx" />
+    <Content Include="ViewSwitcher.ascx" />
+    <Content Include="WaterSimMetaDataService.asmx" />
+    <Content Include="WaterSimService.asmx" />
+    <Content Include="Web References\MetaDataService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\MetaDataService\WaterSimMetaDataService.disco" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\jquery-2.1.0.min.map" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bold.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bold.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bold.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bolditalic.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bolditalic.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-bolditalic.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabold.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabold.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabold.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabolditalic.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabolditalic.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-extrabolditalic.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-italic.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-italic.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-italic.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-light.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-light.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-light.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-lightitalic.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-lightitalic.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-lightitalic.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-regular.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-regular.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-regular.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibold.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibold.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibold.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibolditalic.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibolditalic.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\open-sans-family\opensans-semibolditalic.woff" />
+    <Content Include="Scripts\Sideshow\distr\fonts\sideshow-icons\sideshow-icons.eot" />
+    <Content Include="Scripts\Sideshow\distr\fonts\sideshow-icons\sideshow-icons.ttf" />
+    <Content Include="Scripts\Sideshow\distr\fonts\sideshow-icons\sideshow-icons.woff" />
+    <None Include="Scripts\_references.js" />
+    <Content Include="Site.Mobile.Master" />
+    <Content Include="Web References\MetaDataService\WaterSimMetaDataService.wsdl" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\AuthConfig.cs" />
+    <Compile Include="Charts.Master.cs">
+      <DependentUpon>Charts.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Charts.Master.designer.cs">
+      <DependentUpon>Charts.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Charts.Mobile.Master.cs">
+      <DependentUpon>Charts.Mobile.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Charts.Mobile.Master.designer.cs">
+      <DependentUpon>Charts.Mobile.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Site.Master.cs">
+      <DependentUpon>Site.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Site.Master.designer.cs">
+      <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Site.Mobile.Master.cs">
+      <DependentUpon>Site.Mobile.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Site.Mobile.Master.designer.cs">
+      <DependentUpon>Site.Mobile.Master</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\InputUserControl.ascx.cs">
+      <DependentUpon>InputUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\InputUserControl.ascx.designer.cs">
+      <DependentUpon>InputUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\OutputUserControl.ascx.cs">
+      <DependentUpon>OutputUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\OutputUserControl.ascx.designer.cs">
+      <DependentUpon>OutputUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewSwitcher.ascx.cs">
+      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewSwitcher.ascx.designer.cs">
+      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="WaterSimMetaDataService.asmx.cs">
+      <DependentUpon>WaterSimMetaDataService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WaterSimService.asmx.cs">
+      <DependentUpon>WaterSimService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Web References\MetaDataService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Assets\Simple\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Site.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost:49601/WaterSimMetaDataService.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\MetaDataService\</RelPath>
+      <UpdateFromURL>http://localhost:49601/WaterSimMetaDataService.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>WaterSimUI_MetaDataService_WaterSimMetaDataMockService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49601</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:49601/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

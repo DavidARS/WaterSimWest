@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+        <h1>Stylesheet switcher using jQuery</h1>
+
+        <p>This page can be used so that the stylesheet switcher degrades gracefully where Javascript is disabled or the level of Javascript support isn't high enough to support the stylesheet switcher (e.g. <a href="http://www.jquery.com/">jQuery</a> isn't supported).</p>
+
+        <p>You can program this page in whatever serverside language you prefer. A cookie called "style" should be set to the value of the querystring parameter "style". The page should then redirect to it's referrer.</p>
+
+        <p>Then when serving up any other page on your site you will need to set the "rel" attribute of all not selected stylesheet links (e.g. ones whose title isn't the value of the cookie style) to "alternate stylesheet".</p>
+
+        <p><strong>NOTE:</strong> this page and process is only necessary if you care about the small percentage of users that the stylesheet switcher won't work for. You could also just display a message on this page informing the user that they need to enable JavaScript in their browser or to download a better broswer from <a href="http://www.mozilla.com/firefox/">here</a>.</p>
+
+</body>
+</html>

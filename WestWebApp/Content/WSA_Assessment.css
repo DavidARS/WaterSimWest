@@ -1,0 +1,110 @@
+       
+ /*     Specific Actions CLass Styles */
+        div[class$="-C11"]{
+            font-size:22px;
+            background-color: #f0d0b0;
+            border: 1px #ffe6cc;
+        }
+        div[class$="-C12"] {
+            font-size:18px;
+            background-color: #e0b6a0;
+            border: 1px #e0c6ac;
+        }
+        div[class$="-C13"] {
+            font-size:18px;
+            background-color:#c0a68c;
+            border: 1px #c0a68c;
+        }
+        div[class$="-C21"]{
+            font-size:22px;
+            background-color: #96f7f0;
+            border: 1px #96f7f0;
+        }
+        div[class$="-C22"]{
+            font-size:18px;
+            background-color:#88d7f8; 
+            border: 1px #88d7f8;
+        }
+        div[class$="-C23"]{
+            font-size:18px;
+            background-color:#73b9f6; 
+            border: 1px #73b9f6;
+        }
+        
+        /*  Level Styles */
+
+
+        div[class*="-L1"] {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            vertical-align: middle;
+            position: relative;
+            left: 10px;
+            border-radius: 25px;
+            width: 97%;
+        }
+
+        div[class*="-L2"] {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            vertical-align: middle;
+            position: relative;
+            left: 20px;
+            width: 97%;
+        }
+        div[class*="-L3"] {
+            padding-top: 5px;
+            padding-bottom: 10px;
+            vertical-align: middle;
+            position: relative;
+            left: 30px;
+             width: 95%;
+       }
+        div[class*="-L4"] {
+            padding-top: 5px;
+            padding-bottom: 10px;
+            vertical-align: middle;
+            position: relative;
+            left: 40px;
+            width: 90%;
+        }
+        dDiv[class*="-L5"] {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            vertical-align: middle;
+            position: relative;
+            left: 50px;
+            width: 90%;
+        }
+
+        /* Assessment Report Styles*/
+        .WSA-mainDiv {
+            width:700px; 
+            max-height: 600px;
+            /*border: 1px solid black;*/  
+            border-radius: 25px; 
+            background-color:cornsilk;
+        }
+        .WSA-header
+        {
+            font-size: 30px;
+            color: darkblue;
+            text-align: center;
+            margin-bottom: 10px;
+            margin-top:10px;
+        }
+       .WSA-msg {
+            position: relative;
+            left:24px;
+            font-size:22px;
+            color: darkblue;
+            width: 90%;
+            margin-bottom: 10px;
+            line-height: 110%;
+            /*border: 1px dashed red;*/
+
+        }
+    
+    
+    
+

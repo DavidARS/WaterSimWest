@@ -1,0 +1,899 @@
+only-icon-button:before {
+    margin-right: 0!important
+}
+
+@-webkit-keyframes timer-wizard-menu-title-slideright {
+    0%,
+    30% {
+        opacity: 0;
+        left: -30px
+    }
+    100% {
+        opacity: 1;
+        left: 0
+    }
+}
+
+@-ms-keyframes timer-wizard-menu-title-slideright {
+    0%,
+    30% {
+        opacity: 0;
+        left: -30px
+    }
+    100% {
+        opacity: 1;
+        left: 0
+    }
+}
+
+@keyframes timer-wizard-menu-title-slideright {
+    0%,
+    30% {
+        opacity: 0;
+        left: -30px
+    }
+    100% {
+        opacity: 1;
+        left: 0
+    }
+}
+
+@-webkit-keyframes timer-wizard-menu-title-fadeout {
+    0%,
+    30% {
+        opacity: 1;
+        text-shadow: none
+    }
+    100% {
+        opacity: 0;
+        text-shadow: 0 0 7px #fff, 0 0 3px #fff
+    }
+}
+
+@-ms-keyframes timer-wizard-menu-title-fadeout {
+    0%,
+    30% {
+        opacity: 1;
+        text-shadow: none
+    }
+    100% {
+        opacity: 0;
+        text-shadow: 0 0 7px #fff, 0 0 3px #fff
+    }
+}
+
+@keyframes timer-wizard-menu-title-fadeout {
+    0%,
+    30% {
+        opacity: 1;
+        text-shadow: none
+    }
+    100% {
+        opacity: 0;
+        text-shadow: 0 0 7px #fff, 0 0 3px #fff
+    }
+}
+
+aaaa {
+    color: #00f
+}
+
+@-webkit-keyframes timer-wizard-menu-item-slidedown {
+    0%,
+    30% {
+        opacity: 0;
+        top: -100px
+    }
+    100% {
+        opacity: 1;
+        top: 0
+    }
+}
+
+@-ms-keyframes timer-wizard-menu-item-slidedown {
+    0%,
+    30% {
+        opacity: 0;
+        top: -100px
+    }
+    100% {
+        opacity: 1;
+        top: 0
+    }
+}
+
+@keyframes timer-wizard-menu-item-slidedown {
+    0%,
+    30% {
+        opacity: 0;
+        top: -100px
+    }
+    100% {
+        opacity: 1;
+        top: 0
+    }
+}
+
+@-webkit-keyframes timer-wizard-menu-item-slideleft {
+    0% {
+        opacity: 1;
+        left: -90px
+    }
+    100% {
+        opacity: 0;
+        left: -190px
+    }
+}
+
+@-ms-keyframes timer-wizard-menu-item-slideleft {
+    0% {
+        opacity: 1;
+        left: -90px
+    }
+    100% {
+        opacity: 0;
+        left: -190px
+    }
+}
+
+@keyframes timer-wizard-menu-item-slideleft {
+    0% {
+        opacity: 1;
+        left: -90px
+    }
+    100% {
+        opacity: 0;
+        left: -190px
+    }
+}
+
+@-webkit-keyframes timer-subject-arrow-animation {
+    0% {
+        margin-top: 0
+    }
+    50% {
+        -webkit-transform: scale(1, .7);
+        transform: scale(1, .7);
+        margin-top: 10px
+    }
+    100% {
+        margin-top: 0
+    }
+}
+
+@-ms-keyframes timer-subject-arrow-animation {
+    0% {
+        margin-top: 0
+    }
+    50% {
+        -ms-transform: scale(1, .7);
+        transform: scale(1, .7);
+        margin-top: 10px
+    }
+    100% {
+        margin-top: 0
+    }
+}
+
+@keyframes timer-subject-arrow-animation {
+    0% {
+        margin-top: 0
+    }
+    50% {
+        -webkit-transform: scale(1, .7);
+        transform: scale(1, .7);
+        margin-top: 10px
+    }
+    100% {
+        margin-top: 0
+    }
+}
+
+@-webkit-keyframes timer-subject-arrow-animation-right {
+    0% {
+        margin-left: 0
+    }
+    50% {
+        margin-left: -10px
+    }
+    100% {
+        margin-left: 0
+    }
+}
+
+@-ms-keyframes timer-subject-arrow-animation-right {
+    0% {
+        margin-left: 0
+    }
+    50% {
+        margin-left: -10px
+    }
+    100% {
+        margin-left: 0
+    }
+}
+
+@keyframes timer-subject-arrow-animation-right {
+    0% {
+        margin-left: 0
+    }
+    50% {
+        margin-left: -10px
+    }
+    100% {
+        margin-left: 0
+    }
+}
+
+@-webkit-keyframes timer-subject-arrow-animation-bottom {
+    0% {
+        margin-top: 0
+    }
+    50% {
+        margin-top: -10px
+    }
+    100% {
+        margin-top: 0
+    }
+}
+
+@-ms-keyframes timer-subject-arrow-animation-bottom {
+    0% {
+        margin-top: 0
+    }
+    50% {
+        margin-top: -10px
+    }
+    100% {
+        margin-top: 0
+    }
+}
+
+@keyframes timer-subject-arrow-animation-bottom {
+    0% {
+        margin-top: 0
+    }
+    50% {
+        margin-top: -10px
+    }
+    100% {
+        margin-top: 0
+    }
+}
+
+@-webkit-keyframes timer-subject-arrow-animation-left {
+    0% {
+        margin-left: -10px
+    }
+    50% {
+        margin-left: 0
+    }
+    100% {
+        margin-left: -10px
+    }
+}
+
+@-ms-keyframes timer-subject-arrow-animation-left {
+    0% {
+        margin-left: -10px
+    }
+    50% {
+        margin-left: 0
+    }
+    100% {
+        margin-left: -10px
+    }
+}
+
+@keyframes timer-subject-arrow-animation-left {
+    0% {
+        margin-left: -10px
+    }
+    50% {
+        margin-left: 0
+    }
+    100% {
+        margin-left: -10px
+    }
+}
+
+.timer-mask-corner-part,
+.timer-mask-part,
+.timer-step-description,
+.timer-subject-arrow,
+.timer-subject-mask {
+    -webkit-transition: opacity 600ms ease;
+    transition: opacity 600ms ease
+}
+
+.timer-mask-corner-part,
+.timer-mask-part,
+.timer-subject-mask {
+    position: fixed;
+    opacity: .95;
+    background-color: #222
+}
+/* next step button color*/
+.timer-step-description .timer-next-step-button {
+    border-radius: 5px;
+    -webkit-transition: background-color 150ms ease;
+    transition: background-color 150ms ease;
+    background-color: #da4435;
+    border: 1px solid #ba3022;
+    padding: 5px;
+    text-transform: uppercase;
+    color: #fff
+}
+
+.timer-step-description .timer-next-step-button:hover {
+    background-color: #ba3022
+}
+
+.timer-step-description .timer-next-step-button:disabled {
+    background-color: #bbb!important;
+    border-color: #999
+}
+
+.timer-subject-mask {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    z-index: 14999;
+    width: 0;
+    height: 0
+}
+
+.timer-mask-part {
+    z-index: 15000
+}
+
+.timer-mask-corner-part {
+    background-color: transparent;
+    z-index: 15001;
+    overflow: hidden
+}
+
+.timer-mask-corner-part svg {
+    position: absolute;
+    left: 0;
+    top: 0
+}
+
+.timer-mask-corner-part svg path {
+    fill: #222
+}
+
+.timer-mask-corner-part.leftTop {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg)
+}
+
+.timer-mask-corner-part.rightTop {
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg)
+}
+
+.timer-mask-corner-part.leftBottom {
+    -webkit-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    transform: rotate(270deg)
+}
+
+.timer-mask-corner-part.rightBottom {
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg)
+}
+
+.timer-invisible {
+    opacity: 0!important
+}
+
+.timer-hidden {
+    display: none!important
+}
+
+.timer-details-panel {
+    position: fixed;
+    z-index: 15001
+}
+/*Body Text*/
+.timer-step-description {
+    position: absolute;
+    display: inline-block;
+    /*background-color: rgba(60, 60, 60, .7);*/
+     background-color: rgba(60, 60, 60, 0.9);
+    padding: 21px;
+    /*font-size: 14px;*/
+    font-size: 20px
+}
+/*Header*/
+.timer-step-description h2 {
+    display: inline-block;
+    font-size: 36px;
+    text-transform: uppercase;
+    text-align:center;
+    color: #fff;
+    line-height: 35px;
+    margin-bottom: 10px
+}
+/* Edit here for 1/1 step position - I hid the counter*/
+.timer-step-description .timer-step-position {
+    display: inline-block;
+    font-family: OpenSans Semibold;
+    font-size: 20px;
+    color: #888;
+    visibility:hidden;
+    margin-right: 10px
+}
+
+.timer-step-description .timer-step-text {
+    clear: both;
+    display: block;
+    color: #fff;
+    /*line-height: 22px*/
+    line-height: 26px
+}
+
+.timer-step-description .timer-step-text code {
+    font-family: monospace, courier
+}
+/* Next step button - red background*/
+.timer-step-description .timer-next-step-button {
+    float: right;
+    font-size: 16px;
+    margin-top: 10px
+}
+
+.timer-step-description .timer-next-step-button:before {
+    font-family: timer-icons;
+    font-style: normal;
+    font-weight: 400;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    text-align: center;
+    margin-right: .4em;
+    font-variant: normal;
+    text-transform: none;
+    content: '\e800'
+}
+
+.timer-step-description ol,
+.timer-step-description ul {
+    padding-left: 40px
+}
+
+.timer-step-description ul {
+    list-style-type: disc
+}
+
+.timer-step-description ol {
+    list-style-type: decimal
+}
+
+.timer-subject-arrow {
+    color: #da4435;
+    position: fixed;
+    z-index: 15003;
+    opacity: .8;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-animation-name: timer-subject-arrow-animation;
+    animation-name: timer-subject-arrow-animation;
+    -webkit-animation-duration: 600ms;
+    animation-duration: 600ms;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-fill-mode: none;
+    animation-fill-mode: none
+}
+
+.timer-subject-arrow:before {
+    font-family: timer-icons;
+    font-style: normal;
+    font-weight: 400;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    text-align: center;
+    margin-right: .4em;
+    font-variant: normal;
+    text-transform: none;
+    content: '\e802';
+    font-size: 40px
+}
+
+.timer-subject-arrow.right {
+    -webkit-animation-name: timer-subject-arrow-animation-right;
+    animation-name: timer-subject-arrow-animation-right;
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg)
+}
+
+.timer-subject-arrow.bottom {
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+    -webkit-animation-name: timer-subject-arrow-animation-bottom;
+    animation-name: timer-subject-arrow-animation-bottom
+}
+
+.timer-subject-arrow.left {
+    -webkit-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    transform: rotate(270deg);
+    -webkit-animation-name: timer-subject-arrow-animation-left;
+    animation-name: timer-subject-arrow-animation-left
+}
+
+.timer-subject-arrow:before {
+    line-height: .5
+}
+
+.timer-wizard-menu {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    margin: auto;
+    width: 750px;
+    height: 400px;
+    z-index: 15002
+}
+
+.timer-wizard-menu .timer-wizard-menu-title {
+    -webkit-animation-name: timer-wizard-menu-title-slideright;
+    animation-name: timer-wizard-menu-title-slideright;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 32px;
+    font-family: OpenSans Light;
+    position: relative;
+    font-weight: 400
+}
+
+.timer-wizard-menu ul {
+    padding: 0;
+    margin: 0
+}
+
+.timer-wizard-menu ul li {
+    list-style-type: none;
+    cursor: pointer;
+    opacity: 0;
+    position: relative;
+    left: -90px;
+    -webkit-animation-name: timer-wizard-menu-item-slidedown;
+    animation-name: timer-wizard-menu-item-slidedown;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    height: 50px;
+    overflow: hidden;
+    margin-top: 20px
+}
+
+.timer-wizard-menu ul li:nth-child(1) {
+    animation-delay: 600ms;
+    -webkit-animation-delay: 600ms
+}
+
+.timer-wizard-menu ul li:nth-child(2) {
+    animation-delay: 900ms;
+    -webkit-animation-delay: 900ms
+}
+
+.timer-wizard-menu ul li:nth-child(3) {
+    animation-delay: 1200ms;
+    -webkit-animation-delay: 1200ms
+}
+
+.timer-wizard-menu ul li:nth-child(4) {
+    animation-delay: 1500ms;
+    -webkit-animation-delay: 1500ms
+}
+
+.timer-wizard-menu ul li:nth-child(5) {
+    animation-delay: 1800ms;
+    -webkit-animation-delay: 1800ms
+}
+
+.timer-wizard-menu ul li:nth-child(6) {
+    animation-delay: 2100ms;
+    -webkit-animation-delay: 2100ms
+}
+
+.timer-wizard-menu ul li:nth-child(7) {
+    animation-delay: 2400ms;
+    -webkit-animation-delay: 2400ms
+}
+
+.timer-wizard-menu ul li:nth-child(8) {
+    animation-delay: 2700ms;
+    -webkit-animation-delay: 2700ms
+}
+
+.timer-wizard-menu ul li:nth-child(9) {
+    animation-delay: 3000ms;
+    -webkit-animation-delay: 3000ms
+}
+
+.timer-wizard-menu ul li:nth-child(10) {
+    animation-delay: 3300ms;
+    -webkit-animation-delay: 3300ms
+}
+
+.timer-wizard-menu ul li:nth-child(11) {
+    animation-delay: 3600ms;
+    -webkit-animation-delay: 3600ms
+}
+
+.timer-wizard-menu ul li:nth-child(12) {
+    animation-delay: 3900ms;
+    -webkit-animation-delay: 3900ms
+}
+
+.timer-wizard-menu ul li:nth-child(13) {
+    animation-delay: 4200ms;
+    -webkit-animation-delay: 4200ms
+}
+
+.timer-wizard-menu ul li:nth-child(14) {
+    animation-delay: 4500ms;
+    -webkit-animation-delay: 4500ms
+}
+
+.timer-wizard-menu ul li:nth-child(15) {
+    animation-delay: 4800ms;
+    -webkit-animation-delay: 4800ms
+}
+
+.timer-wizard-menu ul li h2 {
+    -webkit-transition: color 300ms ease;
+    transition: color 300ms ease;
+    font-family: OpenSans Light;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0
+}
+
+.timer-wizard-menu ul li .timer-wizard-menu-item-description {
+    color: #fff;
+    font-size: 12px
+}
+
+.timer-wizard-menu ul li .timer-wizard-menu-item-estimated-time {
+    -webkit-transition: border-right 300ms ease;
+    transition: border-right 300ms ease;
+    border-right: solid 0 #fff;
+    opacity: .5;
+    font-size: 10px;
+    color: #fff;
+    float: left;
+    height: 50px;
+    width: 80px;
+    margin-right: 10px;
+    position: relative
+}
+
+.timer-wizard-menu ul li .timer-wizard-menu-item-estimated-time:before {
+    font-family: timer-icons;
+    font-style: normal;
+    font-weight: 400;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    content: '\e803';
+    margin-right: 5px
+}
+
+.timer-wizard-menu ul li:hover h2 {
+    color: #da4435
+}
+
+.timer-wizard-menu ul li:hover .timer-wizard-menu-item-estimated-time {
+    border-right: solid 20px #fff
+}
+
+.timer-wizard-menu.timer-menu-closed h1 {
+    -webkit-animation-name: timer-wizard-menu-title-fadeout;
+    animation-name: timer-wizard-menu-title-fadeout;
+    -webkit-animation-duration: 600ms;
+    animation-duration: 600ms;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards
+}
+
+.timer-wizard-menu.timer-menu-closed ul li {
+    opacity: 1;
+    -webkit-animation-name: timer-wizard-menu-item-slideleft;
+    animation-name: timer-wizard-menu-item-slideleft;
+    -webkit-animation-duration: 600ms;
+    animation-duration: 600ms;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(1) {
+    animation-delay: 250ms;
+    -webkit-animation-delay: 250ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(2) {
+    animation-delay: 350ms;
+    -webkit-animation-delay: 350ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(3) {
+    animation-delay: 450ms;
+    -webkit-animation-delay: 450ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(4) {
+    animation-delay: 550ms;
+    -webkit-animation-delay: 550ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(5) {
+    animation-delay: 650ms;
+    -webkit-animation-delay: 650ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(6) {
+    animation-delay: 750ms;
+    -webkit-animation-delay: 750ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(7) {
+    animation-delay: 850ms;
+    -webkit-animation-delay: 850ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(8) {
+    animation-delay: 950ms;
+    -webkit-animation-delay: 950ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(9) {
+    animation-delay: 1050ms;
+    -webkit-animation-delay: 1050ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(10) {
+    animation-delay: 1150ms;
+    -webkit-animation-delay: 1150ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(11) {
+    animation-delay: 1250ms;
+    -webkit-animation-delay: 1250ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(12) {
+    animation-delay: 1350ms;
+    -webkit-animation-delay: 1350ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(13) {
+    animation-delay: 1450ms;
+    -webkit-animation-delay: 1450ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(14) {
+    animation-delay: 1550ms;
+    -webkit-animation-delay: 1550ms
+}
+
+.timer-wizard-menu.timer-menu-closed ul li:nth-child(15) {
+    animation-delay: 1650ms;
+    -webkit-animation-delay: 1650ms
+}
+/* Our Close button - 03.28.16 DAS
+    added visibility: hidden to the close button*/
+.timer-close-button {
+    text-shadow: 0 0 5px #030, 0 0 3px #000, 0 2px 3px #000;
+    -webkit-transition: text-shadow 300ms ease;
+    transition: text-shadow 300ms ease;
+    border-width: 0;
+    background-color: transparent!important;
+    z-index: 15005;
+    position: fixed;
+    color: #fff;
+    font-size: 16px;
+    bottom: 25px;
+    right: 25px;
+    cursor: pointer;
+    visibility: hidden;
+    text-transform: uppercase
+}
+
+.timer-close-button:before {
+    font-family: timer-icons;
+    font-style: normal;
+    font-weight: 400;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    content: '\e804';
+    font-size: 16px
+}
+
+.timer-close-button:hover {
+    text-shadow: 0 0 10px #030, 0 0 6px #000, 0 2px 5px #000, 0 0 7px #000;
+    background-color: transparent!important;
+    left: auto;
+    top: auto
+}
+
+.timer-close-button:active {
+    outline-width: 0!important
+}
+
+.timer-close-button:before {
+    margin-right: 5px
+}
+
+.timer-no-wizards-available {
+    -webkit-animation-name: timer-wizard-menu-item-slidedown;
+    animation-name: timer-wizard-menu-item-slidedown;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    color: #fff;
+    opacity: 0;
+    position: relative;
+    height: 50px;
+    margin-top: 20px
+}
+
+body {
+    margin: 0;
+    height: 100%
+}

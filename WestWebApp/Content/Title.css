@@ -1,0 +1,54 @@
+﻿.title-container{
+    float: left;
+    width: 300px;
+    margin-top: 10px;
+    /*margin-top: 18px;*/
+    /*margin-right: 125px;*/
+    margin-right: 151px;
+    text-align: center;
+    /*border: 1px solid black;*/
+}
+
+.title-water, .title-sim{
+    color: #1C97D3;
+    font-size: 58px;
+    font-family: Lato-Bold, Lato;
+    font-weight: 700;
+    line-height: 50px;
+    /*border: 1px solid black;*/
+}
+
+/*.title-sim{
+    color: #CD4848;
+    font-size: 64px;
+    font-family: Helvetica-Bold, Helvetica;
+    font-weight: 700;
+    line-height: 50px;
+}*/
+
+.title-state{
+    /*color: #A1DCEF;*/
+    color: #C53E39;
+    font-size: 79px;
+    font-family: Lato-Italic, Lato;
+    font-weight: 400;
+    font-style: italic;
+    display: block;
+    line-height: 70px;
+    margin-bottom: 10px;
+}
+
+.title-waves-container{
+    width: 100%;
+    height: 38px;
+}
+
+.title-waves {
+    fill: #1c97d3;
+}
+
+.title-region{
+    font: 400 35px Lato;
+    margin: 20px 0 0;
+    color: #4E4D4D;
+}

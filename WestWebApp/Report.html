@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WaterSim Screnario Report</title>
+     <style>
+       .container{
+         width: 300px; 
+         border: 1px solid #ddd; 
+         border-radius: 5px; 
+         overflow: hidden;
+         display:inline-block;
+         margin:0px 10px 5px 5px;
+         vertical-align:top;
+     }
+       .progressbar {
+           color: #fff;
+           text-align: right;
+            height: 25px;
+           width: 0;
+           background-color: #0ba1b5;
+            border-radius: 3px; 
+       }
+   </style>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,400,600,700&amp;lang=en" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="Content/Indicators.css" />
+    <link rel="stylesheet" href="Scripts/Custom/Sankey/sankey.css"/>
+
+</head>
+<body>
+ <h1>WaterSim Scenario Report :</h1><h3 id="PageTitle"></h3>
+ <div id="PrintDiv" style="display:none"><input type="button" id="PrintButton" value="Print Report" /> </div>
+  
+  <div id='waitdiv' style='float:left; position:fixed; z-index:1; width:500px; height:300px;  border: 1px solid black; opacity: 0.9;text-align:center; vertical-align:middle; background-color: #3030ff;'>
+     <div style="text-align:center">  <h1 style='color:white'>Please wait,<br />Creating report</h1> </div>
+      <div id="mypbimg" ><img src="Images/ajax_loader_blue_350.gif" width="100" height="100"/></div>
+     <div id="mypbdiv" style="display:none" class='container'>
+       <div id='mypb' class='progressbar'> 
+       </div>
+     </div>
+  </div> <!-- id='waitdiv' -->
+  <div id='inputoutput'>
+     <h2>Simulation Inputs</h2>
+     <div id='inputs'>
+     </div> <!-- id='inputs' -->
+  </div> <!-- inputoutput -->
+  <div id='indicatoroutput'>
+  <h2>Indicator Results</h2>
+  <div id='indicators' >
+  </div> <!-- indicators -->
+  </div> <!-- indicatoroutput -->
+  <div id='chartoutput'>
+     <h2>Simulation Outputs</h2>
+    <div id='flow'>
+    </div> <!-- id flow -->
+    <div id='bar'>
+    </div> <!-- id bar -->
+    <div id='line'>
+    </div> <!-- id line -->
+    <div id='reservoirs'>
+    </div> <!-- id reservoirs -->
+    <div id='sustain'>
+    </div> <!-- id sustain -->
+  </div> <!-- ChartOuput -->
+  <div id='statusoutput'>
+  </div> <!-- statusoutput -->
+  <script src='Scripts/jquery-2.1.0.js'></script>
+  <script src='Scripts/jquery-ui-1.10.4.js'></script>
+  <!--<script src='Assets/indicators/Scripts/IndicatorControl_v_4.js'></script>-->
+    <script src="Scripts/d3.min.js"></script>
+    <script src='Scripts/Custom/Indicators/indicator.js'></script>
+  <script src='Assets/indicators/Scripts/reportindicator.js'></script>
+  <script type='text/javascript'>
+      var ReportReady = false;
+
+      function HideWait() { $('#waitdiv').hide(); }
+
+
+      function setProgress(progress) {
+          $("#mypbdiv").show();
+          $("#mypbimg").hide();
+          var progressBarWidth = progress * $('.container').width() / 100;
+          $('.progressbar').width(progressBarWidth).html(progress + '% ');
+      }
+
+      function ShowPrint() {
+          $("#PrintDiv").show();
+      }
+
+      function HidePrint() {
+          $("#PrintDiv").hide();
+      }
+      $("#PrintButton").click(function () {
+          HidePrint();
+          window.print();
+          ShowPrint();
+      });
+
+
+      $(window).load(function () {
+          ReportReady = true;
+
+          HidePrint();
+          var result = "";
+          if (window.opener) {
+              window.focus();
+              result = window.opener.ReportEventHandler(window, "Test");
+              if (result !== "Scheduled") {
+                  alert("What happened? : " + result);
+              }
+          }
+          else {
+              alert("This webpage only works when run from WaterSim Web User Interface!");
+              window.close();
+          }
+      });
+  </script>
+    <div style="font-size:xx-small">Final Loaded</div>
+</body>
+</html>

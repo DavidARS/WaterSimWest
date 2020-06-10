@@ -1,0 +1,79 @@
+﻿* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+/* ---- isotope ---- */
+
+.isotope {
+  background: #4f5557;
+  /*max-width: 2000px;*/
+  min-height: 800px;
+  min-width: 800px;
+}
+
+/* clear fix */
+.isotope:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* ---- .item ---- */
+
+.itemv2 {
+  float: left;
+  width: 505px;
+  /*height: 350px;*/
+  /*height: 335px;*/
+  height: 288px;
+  /*background: #0D8;*/
+  border: 2px solid #333;
+  border-color: hsla(0, 0%, 0%, 0.7);
+}
+
+.itemv2.width2 { width: 200px; }
+.itemv2.height2 { height: 200px; }
+
+/*.itemv2:hover {
+  background: #8CF;
+  cursor: pointer;
+}*/
+
+.itemv2.gigante {
+  width: 750px;
+  /*height: 600px;*/
+  height: 576px;
+  background: #903;
+}
+
+.chartv2 {
+    width: 450px;
+    height: 270px;
+}
+
+.chartv2.gigante {
+  width: 400px;
+  height: 400px;
+}
+
+.highcharts-title.gigante {
+    font-size: 30px;
+}
+
+
+.button-group2 {
+    margin-bottom: 4px;
+    margin-left: 10px;
+    margin-top: 50px;
+    text-align: left;
+}
+
+.button-resizeChart {
+    height: 30px;
+    width: 30px;
+    border: medium groove;
+    position: absolute;
+    right: 0px;
+}

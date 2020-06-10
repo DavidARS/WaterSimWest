@@ -1,0 +1,25 @@
+//{FIELDNAME: "REGRECEFF"} {DESCRIP:"Sets Regional Wastewater to Reclaimed Values for all providers"} {UNIT:"%"} {LONGUNIT:"% of Wastewater"} {WEBLABEL:"% of Wastewater Reclaimed"}//
+{FIELDNAME: "UCON"} {WEBLABEL:"Change Cities and Towns Water Use"} {WEBSCALE:["Normal","Low","Lower","Lowest"]} {WEBSCALEVALUES:[100,85,70,55]}
+{FIELDNAME: "AGCON"}{WEBLABEL:"Change Agriculture Water Use"} {WEBSCALE:["Normal","Low","Lower","Lowest"]} {WEBSCALEVALUES:[100,85,70,55]}
+{FIELDNAME: "PCON"} {WEBLABEL:"Change Power Water Use"} {WEBSCALE:["Normal","Low","Lower","Lowest"]} {WEBSCALEVALUES:[100,85,70,55]}
+{FIELDNAME: "SWM"} {WEBLABEL:"Change River Water Use"} {WEBSCALE:["Less","Normal","More","Most"]} {WEBSCALEVALUES:[0,1,2,3]}
+{FIELDNAME: "GWM"} {WEBLABEL:"Change Groundwater Use"} {WEBSCALE:["Less","Normal","More","Most"]} {WEBSCALEVALUES:[0,1,2,3]}
+{FIELDNAME: "LWM"} {WEBLABEL:"Change Lake Water Use"}
+{FIELDNAME: "RECM"} {WEBLABEL:"Increase Recycled Water Use"} {WEBSCALE:["None","Low","Moderate","High"]} {WEBSCALEVALUES:[0,1,2,4]}
+{FIELDNAME: "POPGR"} {WEBLABEL:"Change Population Growth"}
+{FIELDNAME: "SUR"} {WEBLABEL:"River"}
+{FIELDNAME: "SURL"} {WEBLABEL:"Lake"}
+{FIELDNAME: "SAL"} {WEBLABEL:"Ocean"}
+{FIELDNAME: "REC"} {WEBLABEL:"Recycled"}
+{FIELDNAME: "UD"} {WEBLABEL:"Cities and Towns"}
+{FIELDNAME: "AD"} {WEBLABEL:"Agriculture"}
+{FIELDNAME: "ID"} {WEBLABEL:"Industry"}
+{FIELDNAME: "PD"} {WEBLABEL:"Power"}
+{FIELDNAME: "GW"} {WEBLABEL:"Groundwater"}
+{FIELDNAME: "UEF"} {WEBLABEL:"Cities and Towns"}
+{FIELDNAME: "SWI"} {WEBLABEL:"Environment"}
+
+
+
+
+

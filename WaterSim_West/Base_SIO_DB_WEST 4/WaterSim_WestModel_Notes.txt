@@ -1,0 +1,48 @@
+﻿WaterSim West Model Notes
+Initial Notes
+Organization
+
+WaterSim West is based on a heirarchy of classes that can be a bit confusing.  
+Below are the classes for WaterSim brand models.  Those marked with a star are
+generally stable classes, that have been used with a number of different models 
+(Phoenix, America, and West) with no changes unique to each model.  However
+there is a different WaterSimManager class for each model.
+
+WaterSimManager_DB *
+	'---------> WaterSimManager_SIO *
+					'------- WaterSimManager
+								'-------- WaterSimManagerClass *
+
+WaterSimManager class for each model follows a similar structure and have the same 
+enums and methods carried from WaterSimManagerClass, but there values and execution is
+different for each model.  Each uniue WaterSimManager class wraps around a unique model.
+In the West Model it is the WaterSimModel class.
+
+in most VS projects thte WaterSimManager_DB, WaterSimManager_SIO, and WaterSimManagerClass files, as well as the classes
+that support WaterSimManagerClass are found in a SourceFile directory common to all projects. These classes have changed very little 
+and in order to keep these classes stable, they are kept in common to all projects.  However, WaterSimManager class 
+files and some support methods for it are found in the project subdirectory.  These classes change frequently and often different projects 
+are created to experiment and test different models. 
+
+The WaterSimModel object the WaterSimManager encases (ie manages) is based on the Consumer Resource Framework (CRF).  
+Each region in the WestModel has a WaterSimCRFModel that utilizes classes and methods in a CRF API.  The heart of 
+the West Model is in the WaterSimCRFModel.  WaterSimModel contains a List<> of WaterSimCRFModel objects one for each region.
+It manages the data initilization for the list of models and manages the interface between the list of model and WaterSimManager.  
+There are different versions of the WaterSimCRF model being used to experiment and test different models.  However all these models are 
+based on a standard set of classes called the CRF framework.  These files are stored in the same common surce directory mentioned above.  \
+They have been used for multiple models (America, Initial Arizona, and West) and are fairly stable, not often changed.   
+The WaterSimCRF model code is found in the Project directory.  The WaterSimModel must be able to pass through to WaterSimManager 
+parameters to the List<> of WaterSimCRFModel objects, thus it changes with WaterSimCRFModel code and is also in the Project directory.
+
+
+
+
+
+
+	  
+
+
+
+4/28/20
+An effort was made to consolidate the WestModel into a new project to initialize contonued work on the West Model. Also some better 
+documentation was started for the WaterSim West model. 

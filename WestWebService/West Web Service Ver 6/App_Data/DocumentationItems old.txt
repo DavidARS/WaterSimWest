@@ -1,0 +1,5 @@
+{FIELDNAME: "REGRECEFF"} {DESCRIP:"Sets Regional Wastewater to Reclaimed Values for all providers"} {UNIT:"%"} {LONGUNIT:"% of Wastewater"} {WEBLABEL:"% of Wastewater Reclaimed"}
+{FIELDNAME: "WEBAGTR1"} {DESCRIP:"Web-based Ag water used for municipal"} {UNIT:"%"} {LONGUNIT:"Small instream flows"} {WEBLABEL:"Farm Water Used by Cities"}
+{FIELDNAME: "ENFLOPCT"} {DESCRIP:"Web-Based Water for the Environment, percent of water that can be used for envirionmental flows"} {UNIT:"%"} {LONGUNIT:"% of water that can be allocated to environment"} {WEBLABEL:"Water for River Flows"}  
+{FIELDNAME: "WEBPRPCT"} {DESCRIP:"Web-based personal water use"} {UNIT:"% of Forecasted"} {LONGUNIT:"Small instream flows"} {WEBLABEL:"% Forecasted Per Capita Water Use"}
+{FIELDNAME: "WEBPOPGR"} {DESCRIP:"Web-based population growth rate"} {UNIT:"% of Forecasted"} {LONGUNIT:"Small instream flows"} {WEBLABEL:"% Forecasted Population Growth"}

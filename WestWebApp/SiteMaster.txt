@@ -1,0 +1,435 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="WaterSimUI.SiteMaster" %>
+
+<%@ Register src="UserControls/InputUserControl.ascx" tagname="InputUserControl" tagprefix="Wsmi" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <title><%: Page.Title %> - WaterSim 5 Model</title>
+    <asp:PlaceHolder runat="server">     
+          <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>  
+    <webopt:BundleReference runat="server" Path="~/Content/css" /> 
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="Content/themes/base/Gear.tooltip.css" rel="stylesheet" />
+
+    <meta name="viewport" content="width=device-width" />
+    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+</head>
+<body>
+   <div id="WSLoading" style="height:1000px;width:800px; background-color:#999999" >
+       <div style="height:50px"><hr /></div>
+       <div style="font-size:80px;color:antiquewhite;text-align:center; height:100px; vertical-align:middle"> Loading WaterSim </div>
+       <div style="text-align:center">
+           <p><img src="Images/dcdc-logo.png" style="vertical-align:middle" /></p>
+           <div style="color:maroon; font-size:20px; height:40px; vertical-align:middle">Decision Center for a Desert City</div>
+           <p><img src="Images/wrigley.jpg" style="vertical-align:middle" /></p>
+
+       </div>
+   </div>
+ 
+    <form runat="server" id="MainForm" style="display:normal"> 
+    <asp:ScriptManager runat="server">
+        <Scripts>
+            <%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=272931&clcid=0x409 --%>
+            <%--Framework Scripts--%>
+            
+            <asp:ScriptReference Name="MsAjaxBundle" />
+            <asp:ScriptReference Name="jquery" />
+            <asp:ScriptReference Name="jquery.ui.combined" />
+            <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+            <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+            <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+            <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+            <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+            <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+            <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+            <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+            <asp:ScriptReference Name="WebFormsBundle" />
+            <%--Site Scripts--%>   
+
+        </Scripts>
+    </asp:ScriptManager>
+    
+    <link href="Content/accordion.css" rel="stylesheet" /> 
+    <link href="Content/collapsible_panels.css" rel="stylesheet" />
+    <link href="Content/pageslide.css" rel="stylesheet" />
+    <link href="Content/climateTab.css" rel="stylesheet" />
+    <link href="Content/validationTab.css" rel="stylesheet" />
+    <!-- <link href="Content/tabbedArea.css" rel="stylesheet" />-->
+     <link href="Content/wizard.css" rel="stylesheet" />
+    <!-- Simple Modal popup for help files -->    
+    <link href="Content/basic.css" rel="stylesheet" />
+    <link href="Content/basic_ie.css" rel="stylesheet" />
+<!-- QUAY EDIT BEGIN 3/16/14 
+    <link href="Content/themes/base/jquery.ui.tooltip.css" rel="stylesheet" />
+<!-- QUAY EDIT END 3/16/14 -->
+    
+
+    <!-- 
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        -->
+    <script src="Scripts/jquery-2.1.0.js"></script>
+    <script src="Scripts/jquery-ui-1.10.4.js"></script>
+
+    <script src="Scripts/msAccordion.js"></script> 
+    <script src="Scripts/Custom/jquery.zaccordion.js"></script>
+    <script src="Scripts/Custom/collapsible-panels.js"></script> 
+
+    <!-- Simple Modal popup for help files -->
+    <script src="Scripts/SimpleModal/jquery.simplemodal.js"></script>
+    <script src="Scripts/SimpleModal/basic.js"></script>
+
+    <div id="containment-wrapper">
+
+    <!-- Full screen mode -->
+        <div id="container">
+		<div id="specialstuff">
+    <!-- End -->
+    
+    <!-- Decision Theater mode -->    
+    <div id="decision-theater-left-no-dt">
+        <div id="drop-left-no-dt" class="fbox"></div>
+    </div>
+    <div id="watersim-no-dt">
+    <!-- End -->
+           <!--Sampson Start 06.12.14-->
+        <!-- Wizard walk through jQuery -->
+    <script src="Scripts/Wizard/jquery.steps.js"></script>
+     
+        <div id="wizard">
+            
+            <h1>Sustainability Indicators</h1>
+            <div>
+                <div class="close-wizard close-wizard-button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" title="close">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                    <span class="ui-button-text">close</span>
+                </div>
+                  <iframe src="Content\HELPFILES\HELP_WIZARD_SI.html"> </iframe>
+             </div>   
+            <h1>User Inputs</h1>
+            <div>
+                <div class="close-wizard close-wizard-button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" title="close">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                    <span class="ui-button-text">close</span>
+                </div>
+                <iframe src="Content\HELPFILES\HELP_WIZARD_POLICY.html"> </iframe>
+            </div>
+            <h1>Output Graphs</h1>
+            <div>
+                <div class="close-wizard close-wizard-button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" title="close">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                    <span class="ui-button-text">close</span>
+                </div>
+                <iframe src="Content\HELPFILES\HELP_WIZARD_GRAPHS.html"> </iframe>
+             </div>
+            <h1>Feedback and status notification</h1>
+            <div>
+                <div class="close-wizard close-wizard-button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" title="close">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                    <span class="ui-button-text">close</span>
+                </div>
+                <iframe src="Content\HELPFILES\HELP_WIZARD_STATUS.html"> </iframe>
+            </div>           
+            <h1>Settings</h1>
+            <div>
+  
+                  <iframe src="Content\HELPFILES\HELP_WIZARD_SETTINGS.html"> </iframe>
+                <p>&nbsp;</p>
+                <input type="button" value="Conclude Wizard" class="close-wizard button" />
+            </div>
+        </div>
+
+    <!--Sampson End 06.12.14-->
+
+        <div class="wrapper">
+            <div id="dragResize-dashboard-off" class="click-to-top">
+	        <header class="header">
+
+                <%-- <!-- modal content --> 
+		        <div id="basic-modal-content">
+			        <h3>Help Modal Dialog</h3>
+			        <p>This loads up the help files from the Wordpress site.</p>
+		        </div>
+
+                <!-- preload the images -->
+		        <div style='display:none'>
+			        <img src="Images/icon_close.png" />
+		        </div>--%>
+
+                <div class="dashboard-header" >
+                    <h1>Sustainability Indicators</h1>
+                    <div id="INTRODUCTIONHelpControlContainer" class="help" data-key="INDICATORS"><img style="" src="../Images/icon_help.png" /> </div>  
+                </div>
+                <article class="accordion">
+                    <section id="acc1">
+                         <h2 id="idGWPDiv" class ="IndicatorControl" data-fld="PCTGWDEM"><a href="#acc1">Groundwater </a></h2>
+                         <p><iframe src="Content\HELPFILES\HELP_SI_GROUNDWATER.html"> </iframe></p>
+                         <div id="PCTGWDEMHelpControlContainer" class="help" data-key="PCTGWDEM"><img style=" " src="../Images/icon_help.png" /></div> 
+                     </section>
+	                <section id="acc2">
+                        <h2 id="idENVDiv" class ="IndicatorControl" data-fld="SINDENV"><a href="#acc2">Environment</a></h2>
+                        <div id="SINDENVHelpControlContainer" class="help" data-key="SINDENV"><img style="" src="Images/icon_help.png" /></div>   
+                        <p><iframe src="Content\HELPFILES\HELP_SI_ENV.html"> </iframe>
+                    </section>
+	                <section id="acc3">
+                        <h2 id="idAGRDiv" class ="IndicatorControl" data-fld="SINDAG"><a href="#acc3">Agriculture</a></h2>
+                        <div id="SINDAGHelpControlContainer" class="help" data-key="SINDAG"><img style="" src="Images/icon_help.png" /></div>    
+                        <p><iframe src="Content\HELPFILES\HELP_SI_AGWATER.html"> </iframe></p>
+                    </section>
+	                <section id="acc4">
+                        <h2 id="idPWCDiv" class ="IndicatorControl" data-fld="SINDPC"><a href="#acc4">Personal</a></h2>
+                        <div id="SINDPCHelpControlContainer" class="help" data-key="SINDPC"><img style="" src="Images/icon_help.png" /></div>  
+                         <p><iframe src="Content\HELPFILES\HELP_SI_PERSONAL.html"> </iframe></p> 
+                    </section>
+	                <section id="acc5">    
+                        <h2 id="idAWSDiv" class ="IndicatorControl" data-fld="SINYRGW"><a href="#acc5">Population</a></h2>
+                        <div id="SINYRGWHelpControlContainer" class="help" data-key="SINYRGW"><img style="" src="Images/icon_help.png" /></div>   
+                         <p><iframe src="Content\HELPFILES\HELP_SI_AWS.html"> </iframe> </p>
+
+                    </section>
+                </article>
+	        </header><!-- .header-->
+            </div>
+           <%-- --%>
+	        <div class="middle">
+        
+		        <div class="container">
+			
+                    <div class="content">
+
+                        <section class="content-wrapper main-content clear-fix">
+
+                            <asp:ContentPlaceHolder runat="server" ID="GraphControls" />
+
+                        </section>
+      
+			        </div><!-- .content -->
+		        </div><!-- .container-->
+		        <div id="dragResize-policies-off" class="click-to-top">
+                <aside id="left-sidebar">
+                    <asp:Panel ID="PanelUserInputs" runat="server">
+                        <h1>Policy Choices</h1>
+                        <Wsmi:InputUserControl ID="EFFLInputUserControl" FieldKeyWord="WEBEFPCT" runat="server" />
+                        <Wsmi:InputUserControl ID="AGRIInputUserControl" FieldKeyWord="WEBAGTR1" runat="server" />
+                        <Wsmi:InputUserControl ID="ENVIInputUserControl" FieldKeyWord="ENFLOPCT" runat="server" />
+                        <Wsmi:InputUserControl ID="PERSInputUserControl" FieldKeyWord="WEBPRPCT" runat="server" />
+                        <Wsmi:InputUserControl ID="POPInputUserControl" FieldKeyWord="WEBPOPGR" runat="server" />
+                            
+                        <!--<input type="button" class="run-model" id="run-model-Main" name="run-model" value="Run Model"/>-->
+                        <asp:HiddenField ID="hvJSONData" runat="server" />
+
+                    </asp:Panel>
+                    <div id="panelDependents" runat="server">
+                        <input type="button" class="run-model" id="run-model-Pop" name="run-model" value="Run Model"/>
+                    </div>
+            
+		        </aside><!-- .left-sidebar -->
+                    
+                </div>
+
+	        </div><!-- .middle-->
+    
+            <footer class="footer">
+             
+            <div id="pageslide-button-container">
+                <a href="#pageslide-button"><img id="openGear" class="gear-button" src="Images/gear_icon.png" width="32" height="32" Title/></a>
+            </div>
+            <input type="button" class="run-model" id="run-model-Main" name="run-model" value="Run Model"/>    
+            <!-- DAS -- 07.10.14-->
+            <div class="feedback">
+               <img src="Images/wizard.png"  class="open-wizard" width="34" height="34" />
+             </div>
+             <!-- end DAS-->
+            <div class="feedback">
+                <h3>WaterSim 5.0 - <A href="http://dcdc.asu.edu" target="dcdc">Decision Center for a Desert City</A> - Arizona State University </h3> <p>&copy; <%: DateTime.Now.Year %> - <a href="http://www.asu.edu/copyright/" target="_blank" >Copyright & Trademark</a> </p>
+            </div>
+                <div class="feedback">
+                <p >Status: <span id="fsstatus"></span></p>
+	        </div>
+                <div id="VersionInfo" class="version"></div>
+        </footer><!-- .footer -->
+
+        </div><!-- .wrapper -->
+    
+    <!-- Decision Theater mode -->
+    </div>
+    <div id="decision-theater-right-no-dt">
+        <div id="drop-right-no-dt" class="fbox"></div>
+    </div>
+    <!-- End -->
+         <div id="pageslide">
+            <h1>Settings</h1>
+
+            <div id="settings-tabs-geography"> 
+                <!-- DAS -->
+                <div id="settings-button-container">
+                <a href="#pageslide-button"><img id="closeGear" class="gear-button" src="Images/gear_icon.png" width="24" height="24" title="" /></a>
+                </div>
+
+                    <ul>
+                        <li><a href="#settings-tabs-geography-1">Temporal</a></li>
+                        <li><a href="#settings-tabs-geography-2">Geography</a></li>
+                    </ul>
+
+                    <div id="settings-tabs-geography-1">   
+                    <h3>Point-in-time: <span id="point-in-time" class="percentage">2010</span>
+                            <input type="radio" id="point" name="temporal" value="point-in-time" data-related-item="geography-regional" checked />   
+                            <div class="slider-container">
+                                                    
+                                    <div class="temporal" id="point-in-time-slider"></div>
+                                    <div class="scale">
+                                        <span style="left: 0%">2010</span>
+                                        <span style="left: 25%">2020</span>
+                                        <span style="left: 50%">2030</span>
+                                        <span style="left: 75%">2040</span>
+                                        <span style="left: 100%">2050</span>
+                                    </div>
+                                </div>
+                        </h3>
+
+                        <h3>Range-in-time: <span id="range-in-time" class="percentage"></span>
+                                <input type="radio" id="range" name="temporal" value="range-in-time" data-related-item="geography-regional" checked />
+                                <div class="slider-container">
+                                    <%--<div class="ui-slider-popup-button"></div>--%>
+                                    <div class="temporal" id="range-in-time-slider" data-strtyr="2010" data-endyr="2050"></div>
+                                    <div class="scale">
+                                        <span style="left: 0%">2000</span>
+                                        <span style="left: 20%">2010</span>
+                                        <span style="left: 40%">2020</span>
+                                        <span style="left: 60%">2030</span>
+                                        <span style="left: 80%">2040</span>
+                                        <span style="left: 100%">2050</span>
+                                    </div>
+                                </div>
+                        </h3>
+
+                </div>
+
+                <div id="settings-tabs-geography-2">
+                    <ul id="providersList">
+                        <li><input type="radio" name="geography" value="reg" data-related-item="geography-regional"/><label id="reg">Regional</label></li>
+                        <li><input type="radio" name="geography" value="bu" data-related-item="geography-regional"/><label id="bu">Buckeye</label></li>
+                        <li><input type="radio" name="geography" value="ch" data-related-item="geography-regional"/><label id="ch">Chandler</label></li>
+                        <li><input type="radio" name="geography" value="gi" data-related-item="geography-regional"/><label id="gi">Gilbert</label></li>
+                        <li><input type="radio" name="geography" value="ph" data-related-item="geography-regional"/><label id="ph">Phoenix</label></li>
+                        <li><input type="radio" name="geography" value="sc" data-related-item="geography-regional"/><label id="sc">Scottsdale</label></li>
+                    </ul>
+                </div>
+                </div>
+            
+            
+
+            <!-- Slider for colorado river flow climate adjustment. This changes the graphs within the trace area under the climate tab.  -->
+            <!-- Same for Salt-Verde -->
+
+           <%-- <div id="settings-tabs-climate">
+
+                    <ul>
+                        <li><a href="#settings-tabs-climate-1">Colorado River</a></li>
+                        <li><a href="#settings-tabs-climate-2">Salt-Verde River</a></li>
+                    </ul>
+
+                    <div id="settings-tabs-climate-1">
+                        <h3><Wsmi:InputUserControl ID="climatecolorado" FieldKeyWord="COCLMADJ" runat="server" />
+                    </div>
+
+                    <div id="settings-tabs-climate-2">
+                        <h3><Wsmi:InputUserControl ID="climatesaltverde" FieldKeyWord="SVCLMADJ" runat="server" />
+                    </div>
+
+            </div>--%>
+
+            <div id="settings-tabs-scenarios">
+
+                    <ul>
+                        <li><a href="#settings-tabs-scenarios-1">Scenario:Base</a></li>
+                        <li><a href="#settings-tabs-scenarios-2">Scenario:Derived</a></li>
+                    </ul>
+
+                    <div id="settings-tabs-scenarios-1">
+                        <ul>
+                            <li><input type="button" id="loadBSbutton" class="button" name="base-scenario-button" value="Load Base Scenario"/></li>
+                        </ul>
+                    </div>
+
+                    <div id="settings-tabs-scenarios-2">
+                        <ul id="adj-scenarios-list">
+                            Oops!!! No Saved Scenarios...
+                        </ul>
+                        <input type="button" id="loadASbutton" class="button" name="saved-scenario-button" value="Load Saved Scenario"/>
+                    </div>
+                <input type="button" value="Save Scenario" id="savebutton" class="button" /style="width:247px; margin-left: 10px">
+                <input type="button" value="Create New Scenario" id="createbutton" class="button" / style="width:247px; margin-left: 10px">
+              </div>
+               <div style="border:solid 2px #990033; width:200px; margin-left: 30px">
+<%--         <input type="button" value="Decision Theater Mode" id="fsbutton" class="decision-theater-mode-button button" /style="width:200px; margin-left: 35px">
+                <input type="button" value="Decision Theater Mode Off" class="decision-theater-mode-button-off button" /style="width:200px; margin-left: 35px">--%>
+            <!-- QUAY EDIT 6/30/14 ---------------------------------------------> 
+            <input type="button" value="Create Report" id="ReportButton" class="button"/style="margin-left:5px" >
+             <!-- END QUAY EDIT 6/30/14 ------------------------------------- -->    
+             <%--   <input type="button" value="Expand Window" id="OpenNew" class="button"/>--%>            
+             </div>
+             <br />   <br />   <br />   <br />
+ <%--               <input type="button" value="Decision Theater Mode" id="fsbutton" class="decision-theater-mode-button button" /style="width:247px; margin-left: 10px">
+                <input type="button" value="Decision Theater Mode Off" class="decision-theater-mode-button-off button" /style="width:247px; margin-left: 10px">--%>
+
+	</div>
+
+    </div>
+
+    <div id="dialog" title="Saving Scenario" style="display:none; text-align:center;">
+        <strong>Enter Scenario Name:</strong><br />
+        <input id="tbdialogScenarioName" type="text" style="background-color:#4F5557; color:white;"/>
+    </div>
+</div>
+</div>
+    <script src="Scripts/Custom/jquery-functions.js"></script>
+    <script src="Scripts/Isotope/isotope.js"></script>
+    <script>
+    
+    $(document).ready(function () {
+        $("#slider").zAccordion({
+            tabWidth: "15%",
+            speed: 650,
+            startingSlide: 0,
+            auto: false,
+            trigger: "click",
+            slideClass: 'slider',
+            animationStart: function () {
+                $('#slider').find('li.slider-open div').css('display', 'none');
+                $('#slider').find('li.slider-previous div').css('display', 'none');
+            },
+            animationComplete: function () {
+                $('#slider').find('li div').fadeIn(600);
+            },
+            width: "100%",
+            height: "200px"
+        });
+
+
+
+    });
+    </script>
+        
+
+    </form>
+    <script src="Scripts/Custom/Slider/SettingRun.js"></script>
+    <script src="Scripts/Custom/Slider/SettingSlider.js"></script>
+    <script src="Assets/indicators/Scripts/IndicatorControl_v_4.js"></script>
+    <!-- QUAY EDIT 6/30/14 ---------------------------------------------> 
+    <!-- <script src="Assets/indicators/Scripts/indicatorsCore.js"></script> -->
+    <script src="Assets/indicators/Scripts/indicatorsCore_v2.js"></script>
+    <script src="Scripts/Custom/Core/ReportTools.js"></script>
+    <!-- END QUAY EDIT 6/30/14 ------------------------------------ -->    
+    <script src="Scripts/Custom/Core/RiverFlow.js"> </script>
+    <script src="Scripts/Custom/Core/Core.js"></script>
+    <!-- QUAY - and SAMPSON EDIT BEGIN 3/20/14 -->
+    <script src="Scripts/Custom/Core/AddInput.js"></script>
+    <!-- QUAY EDIT END 3/20/14 -->
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+﻿
+Notes for WaterSIm AMerica to WaterSIm West conversion
+Ray Quay
+
+Initial conversion Jan/Feb 2017
+
+Concepts
+    A basic co9ncept of this conversion is that each major class should be functional on its own using classes below it but not above it.  Here the basic hierarchy
+	WaterSimManager
+		WaterSimModel
+			WaterSimCRFModel
+			   WaterSim_APA_Water_CRF (Group of Classes)
+					ConsumerResourceData (Group of Classes                                          )
+
+	WaterSimManager provides simulation support which includes model input and output and control of a simulation on an annual time step.
+
+    The Class WaterSimModel is intended to be a pass through from WaterSImManager to the classs Generic.WaterSimCRFModel.
+	Model logic or controls should either be in WaterSimCRFModel or WaterSimManager.  WaterSimModel holds multiple models.  Most of its methods replicate methods in 
+	WaterSimCRFModel, the take int[] and call each models orresponding int method.  WaterSimModel does provide some classes to access values in specific Models by name or code.
+	These are convienent but slow.   Though WaterSimModel should be usable on its own with references to WaterSimCRFModel and the lower CRF classes, it utility is pretty limited.
+
+	WaterSimCRFModel is the heart of the model, it uses the classes in WaterSimDCDC_API_Water_CRF which are water related classes 
+	dreived from the general resource, consumer and network classes of ConsumerResourceData.
+	Each model has a CRF_Network class object, which "holds" the resources and consumers.  Any fucntionality of this network, like balancing or communication between resource and/or consumer objects should be 
+	done with in the CRF_Network class.   The WaterSimCRFModel should be usable in its own, with references to WaterSim_APA_Water_CRF classes.
+	
+	WaterSim_APA_Water_CRF Which basically defines a set of water related resource and consumer classes, derived from CRF_Resource and CRF_Consumer. 
+	It also defines a CRF_Unit_Network that is derived from CRF_Network.  This classes should be usable on there own with a reference to the CRF Base classes.
+
+	
+	
+Structure Notes
+	A new set of eModelParam values for Resource, Consumers etc have been added for provider properties, these are teh same as previous but they all now start with epP_ with the 
+	phrases used for the single value parameters.  
+	The provider parameters have all been created, but none of the single value parameters were created.
+
+CRF_Network 
+   CRF_Unit_Network
+
+Changed int reference to model to be the code in the USGS file, not an index of the order in the file.
+Ok, the above is supported but is really slow, so for now all data files, USGS, Growth, and Indicator files must be in the same order and they must match the
+order of eprovider.  The management of the model input and output assumes they are in this order.  No code reference is done.  The providerIntArrays and the providerPropertyArrays, as well as the data arrays are all
+assumed to be in the same order, which matches the eprovider order.
+
+2/8/17
+
+Rewrote code for Agricultural Demand, was not working and could not figure it out.
+
+2/13/18
+
+Converted the data to west regions, USGS Data and Growth Rate Data.  Just copied state data to each region in state, need to develop region specific growth rates
+
+2/16/18
+
+WSmith, the single CRF model object is now gone.  Only the multi model framework is now supported
+converted indictor data file to west regions, Just copied Wyoming state to all other regions, all other data is just made up by copying other states to west regions
+
+
+
+
+

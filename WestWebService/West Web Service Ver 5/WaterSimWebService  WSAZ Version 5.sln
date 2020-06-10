@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterSimWebService  WSAZ Version 6", "WaterSimWebService  WSAZ Version 6.csproj", "{481E0F77-2E2E-418C-B6EB-E65CF906D1FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterSim_WestStates_SIO_DB WEST 5", "..\..\WaterSim_West\Base_SIO_DB_WEST 4\WaterSim_WestStates_SIO_DB WEST 5.csproj", "{37DE308B-D74B-4DE2-9B78-D5671F63C14D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniDb5", "..\..\UniDB\Projects\UNIDB5\UniDb5.csproj", "{3838C648-920B-4009-A546-63C3229672BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{481E0F77-2E2E-418C-B6EB-E65CF906D1FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{481E0F77-2E2E-418C-B6EB-E65CF906D1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{481E0F77-2E2E-418C-B6EB-E65CF906D1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{481E0F77-2E2E-418C-B6EB-E65CF906D1FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37DE308B-D74B-4DE2-9B78-D5671F63C14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37DE308B-D74B-4DE2-9B78-D5671F63C14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37DE308B-D74B-4DE2-9B78-D5671F63C14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37DE308B-D74B-4DE2-9B78-D5671F63C14D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3838C648-920B-4009-A546-63C3229672BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3838C648-920B-4009-A546-63C3229672BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3838C648-920B-4009-A546-63C3229672BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3838C648-920B-4009-A546-63C3229672BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {399E9AD5-07C5-41A2-A44B-79D01EA23348}
+	EndGlobalSection
+EndGlobal

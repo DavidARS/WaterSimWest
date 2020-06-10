@@ -1,0 +1,64 @@
+[LOG],4/29/2020,2:23 AM,[CREATED],[::1]
+
+[LOG],4/29/2020,2:23 AM,[VER],[::1],WebService: 5.5 6/13/19 A:11.0.0:4/29/20 2:23 M:WSAZ.2.0.25
+
+[LOG],4/29/2020,2:51 AM,[VER],[::1],Error Creating : Value cannot be null.
+
+[LOG],4/29/2020,3:02 AM,[VER],[::1],Error Creating : Value cannot be null.
+
+[LOG],4/29/2020,3:02 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:02 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:03 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:04 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:08 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:08 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:10 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:13 AM,[VER],[::1],Error Creating : WaterSim Error: Only one object of WaterSim can be instatiated at time! Dispose() must be called before a WaterSim object loses scope.
+
+[LOG],4/29/2020,3:15 AM,[VER],[::1],Error Creating : Value cannot be null.
+
+[LOG],4/29/2020,3:16 AM,[VER],[::1],Error Creating : Value cannot be null.
+
+[LOG],4/29/2020,3:20 AM,[CREATED],[::1]
+
+[LOG],4/29/2020,3:20 AM,[VER],[::1],WebService: 5.5 6/13/19 A:11.0.0:4/29/20 2:55 M:WSW.3.0.1
+
+[LOG],4/29/2020,3:28 AM,[CREATED],[::1]
+
+[LOG],4/29/2020,3:28 AM,[VER],[::1],WebService: 6.0 4/28/20 A:11.0.0:4/29/20 3:28 M:WSW.6.0.1
+
+[LOG],4/29/2020,4:00 AM,[RUN->],[::1],{"Inputs":[{"FLD":"STOPYR","VAL":"2050"},{"FLD":"STOPYR","VAL":"2050"}],"User":"WSA_UI: 23.5.2  "},{"Outputs":["SWM_P","GWM_P","RECM_P","UCON_P","ACON_P","ICON_P","PCON_P","POPGRM_P","DSCN_P","STOPYR","STOPYR","GW_P","REC_P","SUR_P","SURL_P","SAL_P","UD_P","AD_P","ID_P","PD_P","UDN_P","ADN_P","IDN_P","PDN_P","SUR_UD_P","SUR_AD_P","SUR_ID_P","SUR_PD_P","SURL_UD_P","SURL_AD_P","SURL_ID_P","SURL_PD_P","GW_UD_P","GW_AD_P","GW_ID_P","GW_PD_P","SAL_UD_P","SAL_AD_P","SAL_ID_P","SAL_PD_P","REC_UD_P","REC_AD_P","REC_ID_P","REC_PD_P","ECOR_P","EVIND_P","GWSYA_P","UEF_P","AGIND_P","IEF_P","PEF_P","SAI_P","RNDR_P","ASI_P"],"Providers":["AZSE23"]}
+
+[LOG],4/29/2020,4:00 AM,[CREATED],[::1]
+
+[LOG],4/29/2020,4:00 AM,[VER],[::1],WebService: 6.0 4/28/20 A:11.0.0:4/29/20 3:28 M:WSW.6.0.1
+
+[LOG],4/29/2020,4:00 AM,[DATA],[::1 , ],{"MODELSTATUS":{"STATUS":"ERROR","MESSAGE":"FETCH:(Created)   FIELD SET:(No Error)   FIELD GET:(No Error)   MODEL:(No ErrorIndex was outside the bounds of the array.)","STARTYEAR":0,"ENDYEAR":0,"SCNNAME":"","USER":"WSA_UI: 23.5.2  "},"RESULTS":[]}
+
+[LOG],4/29/2020,4:00 AM,[RUN<-],[::1 , ],"MODELSTATUS":{"STATUS":"ERROR","MESSAGE":"FETCH:(Created)   FIELD SET:(No Error)   FIELD GET:(No Error)   MODEL:(No ErrorIndex was outside the bounds of the array.)","STARTYEAR":0,"ENDYEAR":0,"SCNNAME":"","USER":"WSA_UI: 23.5.2  "}
+
+[LOG],4/29/2020,4:01 AM,[VER],[::1],WebService: 6.0 4/28/20 A:11.0.0:4/29/20 3:28 M:WSW.6.0.1
+
+[LOG],4/29/2020,4:01 AM,[RUN->],[::1],{"Inputs":[{"FLD":"STOPYR","VAL":"2050"},{"FLD":"STOPYR","VAL":"2050"}],"User":"WSA_UI: 23.5.2  "},{"Outputs":["SWM_P","GWM_P","RECM_P","UCON_P","ACON_P","ICON_P","PCON_P","POPGRM_P","DSCN_P","STOPYR","STOPYR","GW_P","REC_P","SUR_P","SURL_P","SAL_P","UD_P","AD_P","ID_P","PD_P","UDN_P","ADN_P","IDN_P","PDN_P","SUR_UD_P","SUR_AD_P","SUR_ID_P","SUR_PD_P","SURL_UD_P","SURL_AD_P","SURL_ID_P","SURL_PD_P","GW_UD_P","GW_AD_P","GW_ID_P","GW_PD_P","SAL_UD_P","SAL_AD_P","SAL_ID_P","SAL_PD_P","REC_UD_P","REC_AD_P","REC_ID_P","REC_PD_P","ECOR_P","EVIND_P","GWSYA_P","UEF_P","AGIND_P","IEF_P","PEF_P","SAI_P","RNDR_P","ASI_P"],"Providers":["AZSE23"]}
+
+[LOG],4/29/2020,4:01 AM,[VER],[::1],WebService: 6.0 4/28/20 A:11.0.0:4/29/20 3:28 M:WSW.6.0.1
+
+[LOG],4/29/2020,4:01 AM,[DATA],[::1 , ],{"MODELSTATUS":{"STATUS":"ERROR","MESSAGE":"FETCH:(Retreived)   FIELD SET:(No Error)   FIELD GET:(No Error)   MODEL:(No ErrorIndex was outside the bounds of the array.)","STARTYEAR":0,"ENDYEAR":0,"SCNNAME":"","USER":"WSA_UI: 23.5.2  "},"RESULTS":[]}
+
+[LOG],4/29/2020,4:01 AM,[RUN<-],[::1 , ],"MODELSTATUS":{"STATUS":"ERROR","MESSAGE":"FETCH:(Retreived)   FIELD SET:(No Error)   FIELD GET:(No Error)   MODEL:(No ErrorIndex was outside the bounds of the array.)","STARTYEAR":0,"ENDYEAR":0,"SCNNAME":"","USER":"WSA_UI: 23.5.2  "}
+
+[LOG],4/29/2020,4:04 AM,[VER],[::1],WebService: 6.0 4/28/20 A:11.0.0:4/29/20 3:28 M:WSW.6.0.1
+
+[LOG],4/29/2020,4:04 AM,[RUN->],[::1],{"Inputs":[{"FLD":"STOPYR","VAL":"2050"},{"FLD":"STOPYR","VAL":"2050"}],"User":"WSA_UI: 23.5.2  "},{"Outputs":["SWM_P","GWM_P","RECM_P","UCON_P","ACON_P","ICON_P","PCON_P","POPGRM_P","DSCN_P","STOPYR","STOPYR","GW_P","REC_P","SUR_P","SURL_P","SAL_P","UD_P","AD_P","ID_P","PD_P","UDN_P","ADN_P","IDN_P","PDN_P","SUR_UD_P","SUR_AD_P","SUR_ID_P","SUR_PD_P","SURL_UD_P","SURL_AD_P","SURL_ID_P","SURL_PD_P","GW_UD_P","GW_AD_P","GW_ID_P","GW_PD_P","SAL_UD_P","SAL_AD_P","SAL_ID_P","SAL_PD_P","REC_UD_P","REC_AD_P","REC_ID_P","REC_PD_P","ECOR_P","EVIND_P","GWSYA_P","UEF_P","AGIND_P","IEF_P","PEF_P","SAI_P","RNDR_P","ASI_P"],"Providers":["AZSE23"]}
+
+[LOG],4/29/2020,4:04 AM,[DATA],[::1 , ],{"MODELSTATUS":{"STATUS":"ERROR","MESSAGE":"FETCH:(Retreived)   FIELD SET:(No Error)   FIELD GET:(No Error)   MODEL:(No ErrorIndex was outside the bounds of the array.)","STARTYEAR":0,"ENDYEAR":0,"SCNNAME":"","USER":"WSA_UI: 23.5.2  "},"RESULTS":[]}
+
+[LOG],4/29/2020,4:04 AM,[RUN<-],[::1 , ],"MODELSTATUS":{"STATUS":"ERROR","MESSAGE":"FETCH:(Retreived)   FIELD SET:(No Error)   FIELD GET:(No Error)   MODEL:(No ErrorIndex was outside the bounds of the array.)","STARTYEAR":0,"ENDYEAR":0,"SCNNAME":"","USER":"WSA_UI: 23.5.2  "}
+
