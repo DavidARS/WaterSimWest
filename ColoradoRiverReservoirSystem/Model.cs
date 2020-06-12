@@ -11,7 +11,7 @@ namespace WaterSimDCDC.Generic
 {
     public class Model
     {
-        //UnitData FUnitData;
+        
         //UnitData2 FUnitData2;
         Powell_mead PM;
         IndianMunicipalAg IMA;
@@ -49,6 +49,8 @@ namespace WaterSimDCDC.Generic
                 throw ex;
             }
         }
+        //
+   
         // this will need a parameter in the WS manager. 06.09.20 DAS
         string _defineCOriverFileName = "COflowDataExtended.csv";
         //string _defineCOriverFileName = "COriver_paleo.csv";
@@ -106,6 +108,17 @@ namespace WaterSimDCDC.Generic
             sw.WriteLine(year + "," + (PM.StateMead- Constants.meadDeadPool)  + "," +( PM.StatePowell-Constants.powellDeadPool));
             DownStream();
         }
+        //
+        // Enable COriverAccounting class access to these DATA
+        //edits 06.12.20 das
+        internal double _pmUpperBasin = 0;
+        public double pmUpperBasin
+        {
+            get { return PM.upperBasinAnnual; }
+
+        }
+
+        //
         internal void UpStream(int year)
         {
         }

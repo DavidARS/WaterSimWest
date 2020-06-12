@@ -297,6 +297,7 @@ namespace WaterSimDCDC.Generic
         /// This is the central class for the Colorado River System
         /// </summary>
         public Model COS;
+        public COriverAccounting COA;
         //COS = new WaterSimDCDC.Generic.Model(DataDirectoryName, TempDirectoryName);
 
         ///-------------------------------------------------------------------------------------------------
@@ -340,7 +341,9 @@ namespace WaterSimDCDC.Generic
                 //
                 // 06.08.20 DAS
                 string COdata = "DataCOriver";
+
                 COS = new Model(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName);
+                COA = new COriverAccounting(DataDirectoryName, UnitDataFielname, COS);
                 //FScenarioData = new ScenarioDataClass(DataDirectoryName ,ScenarioDataFilename);
 
                 foreach (string Name in FUnitData.UnitNames)

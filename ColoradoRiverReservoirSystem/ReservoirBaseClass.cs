@@ -22,8 +22,7 @@ namespace COReservoir_Base
 
         public abstract void Initialize();
         public abstract void ModifyFlows(int year);
-        public abstract void ModifyFlows(int year, int choice);
-        //
+         //
         public abstract void Flows(int year);
         //
         public abstract void FutureState(int year);

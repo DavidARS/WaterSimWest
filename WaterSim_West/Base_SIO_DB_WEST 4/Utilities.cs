@@ -194,6 +194,23 @@ namespace WaterSimDCDC.Generic
         }
         // End Sampson edits 07.08.2018
         // ===============================
+
+        // edits 06.12.20 das
+        const double galAF = 325851.43326;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datain"> available in million acre-feet</param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static double MAFtoMGD(double datain, int year)
+        {
+            double dataOut = 0;
+            //dataOut = (((datain * 1000000) * galAF ) / 1000000 ) / daysInAYear(year);
+            dataOut = ((datain) * galAF) / daysInAYear(year);
+            return dataOut;
+        }
+        // end edits 06.12.20 das
     }
     public struct DataTemperature
     {

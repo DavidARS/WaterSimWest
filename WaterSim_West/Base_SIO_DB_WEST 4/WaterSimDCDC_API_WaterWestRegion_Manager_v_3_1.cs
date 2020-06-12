@@ -53,6 +53,28 @@ namespace WaterSimDCDC
     // ver 2.0.8   3/19/18  Quay, fixed Power and Industry Conservation and added parameters for GPED and GPMWD
     // 
     // ver 2.0.14  3/30/18  Quay, Changed Efficiency controls button labels
+    //
+    // NOT sure where the other version NOTES went to 6.0.1 was the last in rays property declaration
+    //
+    // ver 7.0.  06.10.20  DAS added the Colorado River Reservoirs project. Added a new Upper Basin Consumptive use estimate
+    //
+    // ===============================
+    /// <summary>
+    /// The model version
+    /// </summary>
+    public static class Version
+    {
+        /// <summary>
+        /// version
+        /// </summary>
+        internal static string version;
+        static Version()
+        {
+         version = "7.0";
+        }
+    }
+    // ===============================
+    //
     //=============================================================================================================================================================================================
     // Enums 
     //==========================================================
@@ -731,8 +753,11 @@ namespace WaterSimDCDC
             bool runCOmodel = WestModel.COS.RunCOoneYear(year);
             // DAS end edits 06.09.20
             //
+            bool testAccounting = WestModel.COA.CORassess(year);
+            //
             // WATERSIMMODEL
             int  testrun = WestModel.runOneYear(year);
+            
 
             return testrun;
          }
@@ -782,12 +807,20 @@ namespace WaterSimDCDC
         /// <returns> The model version.</returns>
         ///-------------------------------------------------------------------------------------------------
 
+       // protected override string GetModelVersion()
+       // {
+// QUAY EDIT 4/28/20
+       //     return "WSW.6.0.1";
+// END EDIT 
+       // }
         protected override string GetModelVersion()
         {
-// QUAY EDIT 4/28/20
-            return "WSW.6.0.1";
-// END EDIT 
+
+            return Version.version;
+
         }
+
+
         // =======================================
         protected override void initialize_ExtendedDocumentation()
         {

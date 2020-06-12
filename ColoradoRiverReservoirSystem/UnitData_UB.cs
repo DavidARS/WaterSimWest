@@ -18,13 +18,15 @@ namespace WaterSimDCDC.Generic
         int FYear;
         double FCOUBasin_1;
         double FCOUBasin_2;
+        double FCOUBasin_3;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="UB_1"></param>
         /// <param name="UB_2"></param>
         /// <param name="aYear"></param>
-        public UBData(double UB_1, double UB_2, int aYear)
+        public UBData(double UB_1, double UB_2, double UB_3, int aYear)
         {
             bool isErr = false;
            /// string errMsg = "";
@@ -38,6 +40,8 @@ namespace WaterSimDCDC.Generic
             }
             FCOUBasin_1 = UB_1;
             FCOUBasin_2 = UB_2;
+            FCOUBasin_3 = UB_3;
+
             FYear = aYear;
         }
 
@@ -64,6 +68,10 @@ namespace WaterSimDCDC.Generic
         {
             get { return FCOUBasin_2; }
         }
+        public double COUpperBasin_3
+        {
+            get { return FCOUBasin_3; }
+        }
 
         public int TheYear
         {
@@ -87,6 +95,8 @@ namespace WaterSimDCDC.Generic
         const string FRnameFieldStr = "UB1";
         string FColoradoUBasinData1 = "UB1";
         string FColoradoUBasinData2 = "UB2";
+        string FColoradoUBasinData3 = "UB3";
+
         string FNameFieldStr = FRnameFieldStr;
         string FcurrentYearFieldStr = "Year";
 
@@ -98,6 +108,8 @@ namespace WaterSimDCDC.Generic
 
         double[] FCOUBasin_1 = null;
         double[] FCOUBasin_2 = null;
+        double[] FCOUBasin_3 = null;
+
         List<UBData> FDataList = new List<UBData>();
         /// <summary>
         /// 
@@ -124,6 +136,7 @@ namespace WaterSimDCDC.Generic
             int arraysize = TheData.Rows.Count;
             FCOUBasin_1 = new double[arraysize];
             FCOUBasin_2 = new double[arraysize];
+            FCOUBasin_3 = new double[arraysize];
             //int CodeI = 0;
             foreach (DataRow DR in TheData.Rows)
             {
@@ -140,6 +153,8 @@ namespace WaterSimDCDC.Generic
 
                     string rCOUB_1 = DR[FColoradoUBasinData1].ToString();
                     string rCOUB_2 = DR[FColoradoUBasinData2].ToString();
+                    string rCOUB_3 = DR[FColoradoUBasinData3].ToString();
+
                     string ryearsstr = DR[FcurrentYearFieldStr].ToString();
 
                     double TempUB1 = Tools.ConvertToDouble(rCOUB_1, ref isErr, ref errMessage);
@@ -148,15 +163,18 @@ namespace WaterSimDCDC.Generic
                         double TempUB2 = Tools.ConvertToDouble(rCOUB_2, ref isErr, ref errMessage);
                         if (!isErr)
                         {
-
-                            int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
+                            double TempUB3 = Tools.ConvertToDouble(rCOUB_3, ref isErr, ref errMessage);
                             if (!isErr)
                             {
-                                // OK 
-                                //string aUnitName, string aUnitCode, double anAcerageUrban, double anAcerageAg, double anAcerageInd, int aYear
-                                UBData UD = new UBData(TempUB1, TempUB2, TempYear);
-                                FDataList.Add(UD);
-                                //// add to dictionary 
+                                int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
+                                if (!isErr)
+                                {
+                                    // OK 
+                                    //string aUnitName, string aUnitCode, double anAcerageUrban, double anAcerageAg, double anAcerageInd, int aYear
+                                    UBData UD = new UBData(TempUB1, TempUB2, TempUB3, TempYear);
+                                    FDataList.Add(UD);
+                                    //// add to dictionary 
+                                }
                             }
                         }
                     }
@@ -201,7 +219,21 @@ namespace WaterSimDCDC.Generic
             temp = TheData.COUpperBasin_2;
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public double FastUB3(int year)
+        {
+            double temp = InvalidRate;
+            UBData TheData = FDataList.Find(delegate (UBData FD) {
+                return ((FD.TheYear == year));
+            });
 
+            temp = TheData.COUpperBasin_3;
+            return temp;
+        }
 
     }
 

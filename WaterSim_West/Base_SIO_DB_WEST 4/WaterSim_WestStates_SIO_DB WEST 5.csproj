@@ -87,6 +87,7 @@
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_Water_CRF v6.2.cs">
       <Link>WaterSimDCDC_API_Water_CRF v6.2.cs</Link>
     </Compile>
+    <Compile Include="COriverAccounting.cs" />
     <Compile Include="DemandModel.cs" />
     <Compile Include="Demand_Ag.cs" />
     <Compile Include="Demand_Industry.cs" />

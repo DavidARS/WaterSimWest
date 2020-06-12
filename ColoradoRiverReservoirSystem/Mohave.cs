@@ -44,11 +44,7 @@ namespace WaterSimDCDC.Generic
             throw new NotImplementedException();
         }
         // 
-        public override void ModifyFlows(int year, int choice)
-        {
-            throw new NotImplementedException();
-        }
-        //
+          //
         public override void Reservoirs(int year)
         {
             throw new NotImplementedException();

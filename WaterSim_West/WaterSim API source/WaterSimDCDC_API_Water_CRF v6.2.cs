@@ -1354,7 +1354,10 @@ namespace WaterSimDCDC.Generic
             FInitialPowerGen = value;
             // END NOTE 3 9 18
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="aUnitName"></param>
         protected virtual void BuildResources(string aUnitName)
         {
             UDI.eResource er;
@@ -1562,7 +1565,7 @@ namespace WaterSimDCDC.Generic
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Change state. </summary>
         ///
-        /// <param name="NewStateName"> Name of the new state. </param>
+        /// <param name="NewUnitName"> Name of the new state. </param>
         ///-------------------------------------------------------------------------------------------------
 
         public void ChangeUnit(string NewUnitName)

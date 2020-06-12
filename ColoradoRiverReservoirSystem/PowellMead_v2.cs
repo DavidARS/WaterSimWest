@@ -21,7 +21,7 @@ namespace WaterSimDCDC.Generic
 
         //string UnitDataFIDContempory = "COflowDataExtended.csv";
         //string UnitDataFIDPaleo = "COflowDataExtended.csv";
-        string UnitData2Filename = "UpperBasin_deliveries.csv";
+        string UnitData2Filename = "UpperBasin_deliveries2020.csv";
         //string Unitdata3Filename = "ICS.csv";
         //
         internal StreamWriter sw;
@@ -34,12 +34,12 @@ namespace WaterSimDCDC.Generic
         //DateTime now = DateTime.Now;
         // =========================================
         #region constructors
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="DataDirectoryName"></param>
-            /// <param name="CORiverFile"></param>
-            /// <param name="ICSdataFile"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DataDirectoryName"></param>
+        /// <param name="CORiverFile"></param>
+        /// <param name="ICSdataFile"></param>
         public Powell_mead(string DataDirectoryName, string CORiverFile, string ICSdataFile)
         {
 
@@ -89,7 +89,7 @@ namespace WaterSimDCDC.Generic
             FUDC = FUnitData;
             FUBD = FUnitData2;
             Initialize();
-           
+
         }
         #endregion constructors
         /// <summary>
@@ -97,7 +97,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         public override void Initialize()
         {
-            StatePowell =Constants.initialPowellStorage;
+            StatePowell = Constants.initialPowellStorage;
             StateMead = Constants.initialMeadStorage;
             PanEvapMead = Constants.pan_mead;
             PanEvapPowell = Constants.pan_powell;
@@ -118,7 +118,7 @@ namespace WaterSimDCDC.Generic
         double _ics = 0;
         public void Seti_ICS(int value)
         {
-            _ics = (double)value; 
+            _ics = (double)value;
         }
         public int Geti_ICS()
         {
@@ -156,17 +156,19 @@ namespace WaterSimDCDC.Generic
         //
         public override void UpStream(int year)
         {
-             IcsTotal = IntentionallyCreatedSurplus(year);
-         }
+            IcsTotal = IntentionallyCreatedSurplus(year);
+        }
         public void StreamPowellMead(int year)
         {
-            int use = 1; // Upper Basin Schedules
+            // edits 06.10.20 DAS
+            int use = 3; // Upper Basin Schedules. This may need a parameter in WaterSim Manager
+            UBchoice = 3;
             //
             UpStream(year);
             //
             Flows(year);
             UpperBasinDeliveries(year);
-            ModifyFlows(year, use);
+            ModifyFlows(year);
             Reservoirs(year);
             Designations();
             //
@@ -177,29 +179,29 @@ namespace WaterSimDCDC.Generic
             // last
 
             CoInFlowTminus1 = COInFlow;
-           // startSimulation = true;
+            // startSimulation = true;
         }
         //
         // =================================================
         // River flow data, Upper Basin designations
         // start here
         #region trace estimates
-        const int _defaultCO=17;
+        const int _defaultCO = 17;
         public double[] COriverTraceEmpirical = new double[_defaultCO];
         internal void DefaultCO()
         {
-            int year=2000;
+            int year = 2000;
             int i = 0;
             do
             {
-             COriverTraceEmpirical[i] = FUDC.FastFlow(year) * (1 / Constants.oneMillion); 
+                COriverTraceEmpirical[i] = FUDC.FastFlow(year) * (1 / Constants.oneMillion);
                 i++;
                 year++;
-            } while (year >=2000 && year <= defaultYearCO );
+            } while (year >= 2000 && year <= defaultYearCO);
         }
         // 
         const int _CO = 30;
-        double[,] COriverTrace = new double[_CO,_CO];
+        double[,] COriverTrace = new double[_CO, _CO];
         //
         static int tracePeriod = 30;
         int startTrace = 1950;
@@ -207,11 +209,11 @@ namespace WaterSimDCDC.Generic
         double[] COriverTraceArray = new double[tracePeriod];
         public void SeekTrace()
         {
-           int year = startTrace;
+            int year = startTrace;
             int i = 0;
             do
             {
-              COriverTraceArray[i] = FUDC.FastFlow(year) * (1 / Constants.oneMillion); 
+                COriverTraceArray[i] = FUDC.FastFlow(year) * (1 / Constants.oneMillion);
                 i++;
                 year++;
             } while (year < startTrace + tracePeriod);
@@ -256,7 +258,7 @@ namespace WaterSimDCDC.Generic
         const double slope = 0.04002;
         #region flows and additions
         // ==================================
-      public override void Flows(int year)
+        public override void Flows(int year)
         {
             // Units in million acre-feet
             if (year <= defaultYearCO)
@@ -267,15 +269,15 @@ namespace WaterSimDCDC.Generic
             else
             {
                 ReturnFlowsEstimate();
-            }            
-             // COInFlow = InFlowEstimate(year);
+            }
+            // COInFlow = InFlowEstimate(year);
         }
         // ==============================================
         //
         internal void ReturnFlowsEstimate()
         {
             if (LoopCount < COriverTraceArray.Length) {
-            } else  {
+            } else {
                 LoopCount = 0;
             }
             COflow = COriverTraceArray[LoopCount];
@@ -291,7 +293,7 @@ namespace WaterSimDCDC.Generic
         }
         // ==============================================
 
-          /// <summary>
+        /// <summary>
         ///  If no inflow data are available, estimate inflow from flow data
         ///  SAS program file on disk (r2 is low) 04.18.19 das
         /// </summary>
@@ -299,8 +301,8 @@ namespace WaterSimDCDC.Generic
         /// <returns></returns>
         double InFlowEstimate(int year)
         {
-             double estimate = 0;
-            estimate=FUDC.FastInFlow(year) * (1 / Constants.oneMillion);
+            double estimate = 0;
+            estimate = FUDC.FastInFlow(year) * (1 / Constants.oneMillion);
             if (estimate != 0) { }
             else
             {
@@ -309,6 +311,16 @@ namespace WaterSimDCDC.Generic
             return estimate;
         }
         #region Upper Basin
+        // projections
+        //http://www.ucrcommission.com/RepDoc/DepSchedules/CurFutDemandSchedule.pdf
+        // historic
+        // https://www.usbr.gov/uc/envdocs/plans.html
+        //
+        // edits DAS 06.10.20. I created a new Upper basin consumptive use file based on
+        // historic and projections of use listed in the top URL. Historic are from reports
+        // in the second URL. I used PROC EXPAND in SAS
+        // to create the time series...file is  "UpperBasin_deliveries2020.csv";
+        // end edits DAS 06.10.20
         /// <summary>
         /// Initialize the canned upper basin deliveries
         /// </summary>
@@ -320,6 +332,11 @@ namespace WaterSimDCDC.Generic
             // Units in million acre-feet
             UpperBasin_1 = temp * FUBD.FastUB1(year) * (1 / Constants.oneThousandth);
             UpperBasin_2 = FUBD.FastUB2(year) * (1 / Constants.oneThousandth);
+            // edits 06.10.20 DAS
+            // Upper basin 3 is actual up until 2018 (except for 2000)
+            // end edits 06.10.20 DAS
+            UpperBasin_3 = FUBD.FastUB3(year) * (1 / Constants.oneThousandth);
+
             if (year <= 2012)
             {
                 actual = CORiverUtilities.UpperBasinActual(year);
@@ -337,34 +354,64 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="year"></param>
         /// <param name="choice"></param>
-        public override void ModifyFlows(int year, int choice)
+        public override void ModifyFlows(int year)
         {
             // Units in thousand acre-feet
             // 1 = 2007 Upper CO River Comission Schedule
             //2 = Arizona Upper Basin Depletion schedule-Don Gross - ADWR, 30 November 2012
-
+            double UB = 0;
+            int choice = UBchoice;
             switch (choice)
             {
+
                 case 1:
                     COflow -= UpperBasin_1;
+                    UB = UpperBasin_1;
                     break;
                 case 2:
                     COflow -= UpperBasin_2;
+                    UB = UpperBasin_2;
                     break;
                 case 3:
                     COflow -= UpperBasin_3;
+                    UB = UpperBasin_2;
                     break;
             }
 
+            upperBasinAnnual = UB;
         }
-        #endregion Upper Basin
-        public override void ModifyFlows(int year)
+        //
+        internal double _upperBasinAnnual=0;
+        public double upperBasinAnnual
         {
-            throw new NotImplementedException();
+            get { return _upperBasinAnnual; }
+            set { _upperBasinAnnual = value; }
         }
+
+
+        //
+        #endregion Upper Basin
+
+        //public override void ModifyFlows(int year)
+        //{
+        //    throw new NotImplementedException();
+        //}
         #endregion flows and additions
         //
         // =========================================
+        //
+        private int _UBchoice = 3;
+        /// <summary>
+        /// This property sets which estimte of Upper
+        /// basin consumptive use estimate is used.
+        /// edits 06.10.20 DAS
+        /// </summary>
+        public int UBchoice
+        {
+            set { _UBchoice = value; }
+            get { return _UBchoice; }
+        }
+        //
         // =======================================
         // Intentionally created Surplus
         #region ICS
