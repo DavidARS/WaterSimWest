@@ -49,6 +49,7 @@ namespace WaterSimDCDC.Generic
             {
                 double Temp = UBasinMGD(year);
                 double urb = DC.FastUCOL(8);
+                string str = DC.FastRNCOL(8);
                 temp = true;
             }
             catch (Exception e)
@@ -73,6 +74,7 @@ namespace WaterSimDCDC.Generic
             double FICOL;
             double FOCOL;
             double FTCOL;
+            string RName;
             /// <summary>
             /// 
             /// </summary>
@@ -83,7 +85,7 @@ namespace WaterSimDCDC.Generic
             /// <param name="Industry"></param>
             /// <param name="Other"></param>
             /// <param name="Total"></param>
-            public USGSData(int Region, double Urban, double Ag, double Power, double Industry, double Other, double Total)
+            public USGSData(int Region, double Urban, double Ag, double Power, double Industry, double Other, double Total, string Rname)
             {
                 bool isErr = false;
                 /// string errMsg = "";
@@ -103,7 +105,8 @@ namespace WaterSimDCDC.Generic
                 FPCOL = Power;
                 FICOL = Industry;
                 FOCOL = Other;
-                FTCOL = Total;               
+                FTCOL = Total;
+                RName = Rname;
             }
 
             ///-------------------------------------------------------------------------------------------------
@@ -149,6 +152,10 @@ namespace WaterSimDCDC.Generic
             {
                 get { return FTCOL; }
             }
+            public string regionName
+            {
+                get { return RName; }
+            }
         }
         // ==============================================================================================================================
         //
@@ -164,6 +171,7 @@ namespace WaterSimDCDC.Generic
             // EDIT end 2 13 18
 
             // string FNameFieldStr = FRnameFieldStr;
+
             string FRnameFieldStr1 = "RC";
             string FColoradoRiverUse_1 = "UCOL";
             string FColoradoRiverUse_2 = "ACOL";
@@ -171,12 +179,15 @@ namespace WaterSimDCDC.Generic
             string FColoradoRiverUse_4 = "ICOL";
             string FColoradoRiverUse_5 = "OCOL";
             string FColoradoRiverUse_6 = "COL";
-             //
-             // Data Array Parameters
+            string FRnameFieldStr2 = "RN";
+            //
+            // Data Array Parameters
 
             Dictionary<string, int> RegionCodes = new Dictionary<string, int>();
             const double InvalidRate = -1;//double.NaN;
+            const string InvalidString = "-1";
 
+            string[] FString = null;
             int[] FRegion = null;
             double[] FCORuse_1 = null;
             double[] FCORuse_2 = null;
@@ -211,6 +222,7 @@ namespace WaterSimDCDC.Generic
                 // build data arrays
                 int arraysize = TheData.Rows.Count;
 
+                FString = new string[arraysize];
                 FRegion = new int[arraysize];
                 FCORuse_1 = new double[arraysize];
                 FCORuse_2 = new double[arraysize];
@@ -237,7 +249,9 @@ namespace WaterSimDCDC.Generic
                         string rCORuse_4 = DR[FColoradoRiverUse_4].ToString();
                         string rCORuse_5 = DR[FColoradoRiverUse_5].ToString();
                         string rCORuse_6 = DR[FColoradoRiverUse_6].ToString();
+                        string FString = DR[FRnameFieldStr2].ToString();
                         //
+                        
                         int Temp1 = Tools.ConvertToInt32(FRegion, ref isErr, ref errMessage);
                         if (!isErr)
                         {
@@ -262,11 +276,16 @@ namespace WaterSimDCDC.Generic
                                                 double Temp7 = Tools.ConvertToDouble(rCORuse_6, ref isErr, ref errMessage);
                                                 if (!isErr)
                                                 {
-                                                    // OK 
-                                                    //string aUnitName, string aUnitCode, double anAcerageUrban, double anAcerageAg, double anAcerageInd, int aYear
-                                                    USGSData USGSD = new USGSData(Temp1, Temp2, Temp3, Temp4, Temp5, Temp6, Temp7);
-                                                    FDataList.Add(USGSD);
-                                                    //// add to dictionary 
+                                                    string Temp8 = Tools.ConvertToString(FString, ref isErr, ref errMessage);
+                                                    if (!isErr)
+                                                    {
+                                                        // OK 
+                                                        //string aUnitName, string aUnitCode, double anAcerageUrban, double anAcerageAg, double anAcerageInd, int aYear
+                                                        USGSData USGSD = new USGSData(Temp1, Temp2, Temp3, Temp4, Temp5, Temp6, Temp7,Temp8);
+                                                        FDataList.Add(USGSD);
+                                                        //// add to dictionary 
+                                                        ///
+                                                    }
                                                 }
                                             }
                                         }
@@ -307,12 +326,22 @@ namespace WaterSimDCDC.Generic
                 temp = TheData.urban;
                 return temp;
             }
-          
+            public string FastRNCOL(int rc)
+            {
+                string temp = InvalidString;
+                USGSData TheData = FDataList.Find(delegate (USGSData FD) {
+                    return ((FD.rc == rc));
+                });
+
+                temp = TheData.regionName;
+                return temp;
+            }
+
 
         }
         //
         // ==============================================================================================================================
-  
+
 
     }
 }
