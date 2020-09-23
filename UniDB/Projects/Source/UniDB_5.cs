@@ -5724,44 +5724,6 @@ namespace UniDB
             return result;
         }
         //-----------------------------------------------------------------------
-        //
-        // edits 06.15.20 das
-        public static String ConvertToString(string valueStr, ref bool IsError, ref string errMessage)
-        {
-            string result = "";
-            IsError = true;
-            if (valueStr != "")
-            {
-                try
-                {
-                    int periodIndex = valueStr.LastIndexOf(".");
-                    if (periodIndex >= 0)
-                    {
-                        result = valueStr;
-                        //String TempD = Convert.ToString(valueStr);
-                       // string TempD = valueStr;
-                        //result = Convert.ToString(TempD);
-                    }
-                    else
-                    {
-                        // result = Convert.ToInt16(valueStr);
-                        result = valueStr;
-                    }
-                    IsError = false;
-                    errMessage = "";
-                }
-                catch (Exception ex)
-                {
-                    errMessage = "Conversion Error: " + ex.Message;
-                }
-            }
-            else
-            {
-                IsError = true;
-                errMessage = "Value is Null String";
-            }
-            return result;
-        }
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Converts this object to an int 16. </summary>

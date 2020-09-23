@@ -180,7 +180,7 @@ namespace WaterSimDCDC.Generic
     /// <summary>   List of model errors. </summary>
     /// <remarks> Used to keep track of model errors </remarks>
     ///
-    /// <seealso cref="System.Collections.Generic.List<WaterSimDCDC.Generic.ModelError>"/>
+    /// <seealso cref="System.Collections.Generic.List" />  <seealso cref="WaterSimDCDC.Generic.ModelError"/>
     ///-------------------------------------------------------------------------------------------------
 
     public class ModelErrorList : List<ModelError>
@@ -293,12 +293,6 @@ namespace WaterSimDCDC.Generic
         //
         WaterSimCRFModel TempModel;
         //
-        /// <summary>
-        /// This is the central class for the Colorado River System
-        /// </summary>
-        public Model COS;
-        public COriverAccounting COA;
-        //COS = new WaterSimDCDC.Generic.Model(DataDirectoryName, TempDirectoryName);
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Constructor.</summary>
@@ -329,7 +323,6 @@ namespace WaterSimDCDC.Generic
             string RateDataFilename = "WestModelGrowthRates_4.csv";
             string AcerageDataFilename = "LCLUAcres.csv";
             string TemperatureDataFilename = "Temperature.csv";
-
             // EDIT END 2 13 18
             try
             {
@@ -338,12 +331,7 @@ namespace WaterSimDCDC.Generic
                 FRateData = new RateDataClass(DataDirectoryName, RateDataFilename);
                 FDataLCLU = new DataClassLCLU(DataDirectoryName, AcerageDataFilename);
                 FDataTemperature = new DataClassTemperature(DataDirectoryName, TemperatureDataFilename);
-                //
-                // 06.08.20 DAS
-                string COdata = "DataCOriver";
 
-                COS = new Model(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName);
-                COA = new COriverAccounting(DataDirectoryName, UnitDataFielname, COS);
                 //FScenarioData = new ScenarioDataClass(DataDirectoryName ,ScenarioDataFilename);
 
                 foreach (string Name in FUnitData.UnitNames)

@@ -6062,18 +6062,10 @@ namespace WaterSimDCDC
 
                 // The Assessment indicators
                 // Only including Grounwater, Environment, and Economic for now becuase the other indicators have sweet spots iwe could be tohigh or tolow
-                // List<WebIndicator> TheIndicatorList = new List<WebIndicator>();
-                // TheIndicatorList.Add(GWIndicator);
-                // TheIndicatorList.Add(ECOINdicator);
-                // TheIndicatorList.Add(ENVIndicator);
-                List<WebIndicator> TheIndicatorList = new List<WebIndicator>()
-                {
-                    GWIndicator,
-                    ECOINdicator,
-                    ENVIndicator
-                };
-               
-
+                List<WebIndicator> TheIndicatorList = new List<WebIndicator>();
+                TheIndicatorList.Add(GWIndicator);
+                TheIndicatorList.Add(ECOINdicator);
+                TheIndicatorList.Add(ENVIndicator);
 
                 AssessIndicator = new WebAssessmentIndicator(this, TheIndicatorList);
 

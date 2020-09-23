@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ColoradoRiverReservoirSystem</RootNamespace>
     <AssemblyName>ColoradoRiverReservoirSystem</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -47,13 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseConveyance.cs" />
+    <Compile Include="BasinDesignations_v1.cs" />
     <Compile Include="COConveyance_AZ.cs" />
+    <Compile Include="CORiver.cs" />
+    <Compile Include="COriverAccounting_v2.cs" />
     <Compile Include="FunctionsAndConstants.cs" />
     <Compile Include="IndianMunicipalAg.cs" />
-    <Compile Include="LowerBasinDesignations.cs" />
-    <Compile Include="Model.cs" />
+    <Compile Include="Model_v2.cs" />
     <Compile Include="Mohave.cs" />
-    <Compile Include="PowellMead_v2.cs" />
+    <Compile Include="PowellMead_v4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReservoirBaseClass.cs" />
@@ -64,6 +66,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DCDC_Utilities\DCDC_Utilities.csproj">
+      <Project>{abddc4ed-9145-4e68-aecd-46604eff2cf2}</Project>
+      <Name>DCDC_Utilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UniDB\Projects\UNIDB5\UniDb5.csproj">
       <Project>{3838c648-920b-4009-a546-63c3229672be}</Project>
       <Name>UniDb5</Name>

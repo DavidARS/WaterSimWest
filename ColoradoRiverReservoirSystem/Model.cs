@@ -1,56 +1,58 @@
 ﻿using System;
 using System.IO;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using PowellMead;
+using WaterSimDCDC.Generic;
 using CORiverDesignations;
 
 namespace WaterSimDCDC.Generic
+//namespace CORiverModel
 {
-    public class Model
+    public class COriverModel
     {
         
         //UnitData2 FUnitData2;
         Powell_mead PM;
         IndianMunicipalAg IMA;
-        internal StreamWriter sw;
+        // internal StreamWriter sw;
         DateTime now = DateTime.Now;
-        // bool startSimulation = false;
+        //
+        // WaterSimModel WASM = null;
+         // bool startSimulation = false;
         //string UnitDataFIDContempory = "COflowDataExtended.csv";
         //string UnitDataFIDPaleo = "COflowDataExtended.csv";
         //string ICSfileName = "ICS.csv";
         readonly string ICSfileName = "ICS_Regions.csv";
 
         //
-        /// <summary>
+         /// <summary>
         /// 
         /// </summary>
         /// <param name="DataDirectoryName"></param>
         /// <param name="TempDirectoryName"></param>
-        public Model(string DataDirectoryName, string TempDirectoryName)
+        public COriverModel(string DataDirectoryName, string TempDirectoryName)
         {
             string COriverFileName = DefineCOriverFileName;
             // this file will need a getter/setter in the WS manager 06.09.20 DAS
             string DataFileID = "RightsP1.txt";
+
             try
             {
                 //PM = new Powell_mead(DataDirectoryName); // FUnitData, FUnitData2);
                 //PM = new Powell_mead(DataDirectoryName, COriverFileName) ;
                 PM = new Powell_mead(DataDirectoryName, COriverFileName, ICSfileName);
                 IMA = new IndianMunicipalAg(DataDirectoryName + "\\" + DataFileID);
-                //  PM.IcsArizona = 100000;
- 
-                //Loop();
-            }
+  
+             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
         //
-   
+        // 09.03.20 das
+        public int COriverTraceStartYear
+        {
+            get; set;
+        }
         // this will need a parameter in the WS manager. 06.09.20 DAS
         string _defineCOriverFileName = "COflowDataExtended.csv";
         //string _defineCOriverFileName = "COriver_paleo.csv";
@@ -79,7 +81,7 @@ namespace WaterSimDCDC.Generic
             int year = 2000;
             //int i = 0;
              string directory = "";
-            StreamW(directory);
+            //StreamW(directory);
             //  PM.Initialize();
             do
             {
@@ -88,7 +90,7 @@ namespace WaterSimDCDC.Generic
                // i++;
             } while (year <= Syear-1);
             pass = true;
-            sw.Flush();
+           // sw.Flush();
 
          }
         /// <summary>
@@ -105,14 +107,14 @@ namespace WaterSimDCDC.Generic
             PM.StreamPowellMead(year);      //StreamPowellMead(year);
             IMA.Allocate(year, PM.Capwater);
             //
-            sw.WriteLine(year + "," + (PM.StateMead- Constants.meadDeadPool)  + "," +( PM.StatePowell-Constants.powellDeadPool));
+           // sw.WriteLine(year + "," + (PM.StateMead- Constants.meadDeadPool)  + "," +( PM.StatePowell-Constants.powellDeadPool));
             DownStream();
         }
         //
         // Enable COriverAccounting class access to these DATA
         //edits 06.12.20 das
         internal double _pmUpperBasin = 0;
-        public double pmUpperBasin
+        public double PmUpperBasin
         {
             get { return PM.upperBasinAnnual; }
 
@@ -125,19 +127,20 @@ namespace WaterSimDCDC.Generic
         internal void DownStream()
         {
             //startSimulation = true;
-            if (streamCO) sw.Close();
+           // if (streamCO) sw.Close();
         }
+
         #region streamwriter
-        public void StreamW(string TempDirectoryName)
-        {
-            //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
-            //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-            //    + "_" + ".csv");
-            string filename = string.Concat("Outputs/Output" + now.Month.ToString()
-               + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-               + "_" + ".csv");
-            sw = File.AppendText(filename);
-        }
+        //public void StreamW(string TempDirectoryName)
+        //{
+        //    //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
+        //    //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+        //    //    + "_" + ".csv");
+        //    string filename = string.Concat("Outputs/Output" + now.Month.ToString()
+        //       + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+        //       + "_" + ".csv");
+        //    sw = File.AppendText(filename);
+        //}
         private bool _streamWcolorado = false;
         public bool streamCO
         { set { _streamWcolorado = value; }

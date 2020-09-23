@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CORiverModel;
+// EDIT QUAY 9/10/20
+// REMOVED REFERENCE TO WATERSIM NAMESPACE
+// ADDED WaterSim Class Objects
+//using WaterSimDCDC.Generic;
+// END EDIT 9/10/20
 
 namespace ColoradoRiverReservoirSystem
 {
@@ -10,8 +16,10 @@ namespace ColoradoRiverReservoirSystem
     {
         static void Main(string[] args)
         {
-            WaterSimDCDC.Generic.Model COS;
-            COS = new WaterSimDCDC.Generic.Model(DataDirectoryName, TempDirectoryName);
+            //WaterSimDCDC.Generic.Model COS;
+            COriverModel COS;
+            //COS = new WaterSimDCDC.Generic.Model(DataDirectoryName, TempDirectoryName);
+            COS = new COriverModel(DataDirectoryName, TempDirectoryName);
         }
 
         #region Website directory faking

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace WaterSimDCDC.Generic
 {
-    static class Utilities
+    public static class Utilities
     {
         /// <summary>
         ///  This constant is multiplied against gallons to obtain liters

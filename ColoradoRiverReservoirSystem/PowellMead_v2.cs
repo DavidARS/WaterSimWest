@@ -24,7 +24,7 @@ namespace WaterSimDCDC.Generic
         string UnitData2Filename = "UpperBasin_deliveries2020.csv";
         //string Unitdata3Filename = "ICS.csv";
         //
-        internal StreamWriter sw;
+        //internal StreamWriter sw;
         DateTime now = DateTime.Now;
         //
         const int defaultYearCO = 2016;
@@ -1731,16 +1731,16 @@ namespace WaterSimDCDC.Generic
         }
         //
         #region streamwriter
-        public void StreamW(string TempDirectoryName)
-        {
-            //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
-            //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-            //    + "_" + ".csv");
-            string filename = string.Concat("Outputs/Output" + now.Month.ToString()
-               + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-               + "_" + ".csv");
-            sw = File.AppendText(filename);
-        }
+        //public void StreamW(string TempDirectoryName)
+        //{
+        //    //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
+        //    //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+        //    //    + "_" + ".csv");
+        //    string filename = string.Concat("Outputs/Output" + now.Month.ToString()
+        //       + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+        //       + "_" + ".csv");
+        //    sw = File.AppendText(filename);
+        //}
         #endregion streamwriter
         // ==================================================================================================================================
         //

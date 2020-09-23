@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+// EDIT QUAY 9/10/20
+// Restored CORiverModel namespace
+namespace CORiverModel
+//namespace WaterSimDCDC.Generic
+// END EDit
 
-namespace WaterSimDCDC.Generic
 {
     public struct Constants
     {
@@ -191,6 +195,9 @@ namespace WaterSimDCDC.Generic
         public const double oneMillion = 1000000;
         public const double oneThousandth = 1000;
         public const double acreFeetToMAF = 0.000001;
+        //
+        public const double AFtoMGD = (325851.43326/ oneMillion) / 365;
+        public const double MAFtoMGD = 325851.43326  / 365;
     }
     //
     public static class CORiverUtilities

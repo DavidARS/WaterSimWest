@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WaterSim_Base</RootNamespace>
     <AssemblyName>WaterSim_Base</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -72,22 +72,22 @@
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_Base_Ver_3.cs">
       <Link>WaterSimDCDC_API_Base_Ver_3.cs</Link>
     </Compile>
+    <Compile Include="..\WaterSim API source\WaterSIMDCDC_API_CRF_Models.cs">
+      <Link>WaterSIMDCDC_API_CRF_Models.cs</Link>
+    </Compile>
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_DB v_12.cs">
       <Link>WaterSimDCDC_API_DB v_12.cs</Link>
     </Compile>
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_SIO_v_9_3.cs">
       <Link>WaterSimDCDC_API_SIO_v_9_3.cs</Link>
     </Compile>
-    <Compile Include="..\WaterSim API source\WaterSimDCDC_API_UnitData West  v 8.01.cs">
-      <Link>WaterSimDCDC_API_UnitData West  v 8.01.cs</Link>
-    </Compile>
+    <Compile Include="..\WaterSim API source\WaterSimDCDC_API_UnitData West  v 8.03.cs" />
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_WaterWest.cs">
       <Link>WaterSimDCDC_API_WaterWest.cs</Link>
     </Compile>
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_Water_CRF v6.2.cs">
       <Link>WaterSimDCDC_API_Water_CRF v6.2.cs</Link>
     </Compile>
-    <Compile Include="COriverAccounting.cs" />
     <Compile Include="DemandModel.cs" />
     <Compile Include="Demand_Ag.cs" />
     <Compile Include="Demand_Industry.cs" />
@@ -95,17 +95,26 @@
     <Compile Include="Demand_Rural_LCLU.cs" />
     <Compile Include="Demand_Urban.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities.cs" />
-    <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_3_1.cs" />
+    <Compile Include="RiverModels_V1.cs" />
+    <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_3_4.cs" />
     <Compile Include="WaterSimDCDC_API_WestTools.cs" />
     <Compile Include="WaterSiMDCDC_API_West_Indicators_v2_3.cs" />
-    <Compile Include="WaterSim_Model_v 4_2.cs" />
+    <Compile Include="WaterSim_CORiverModel.cs" />
+    <Compile Include="WaterSim_Model_v 5_2.cs" />
     <Compile Include="WaterSim_West_RegionUnitModel_5_1.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DenverDemandModel\TestDDM\DenverDemandModel_v1\DenverDemandModel_v1.csproj">
+      <Project>{52164b06-741e-4041-b2cb-f58e647a372d}</Project>
+      <Name>DenverDemandModel_v1</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ColoradoRiverReservoirSystem\ColoradoRiverReservoirSystem.csproj">
       <Project>{277daa85-b7a5-4efd-bd66-c52310f6c87e}</Project>
       <Name>ColoradoRiverReservoirSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DCDC_Utilities\DCDC_Utilities.csproj">
+      <Project>{abddc4ed-9145-4e68-aecd-46604eff2cf2}</Project>
+      <Name>DCDC_Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Sankey\Sankey2.csproj">
       <Project>{2f149e04-d5fe-47c2-9d12-fb9835b1ebdd}</Project>

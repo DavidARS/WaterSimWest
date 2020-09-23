@@ -377,7 +377,9 @@ namespace WaterSim_West_v_1
                         ActiveScenbarioName = ActiveScenbarioName.Substring(0, TagIndex) + "_0";
                     }
                 }
-
+                // Setup Surface Water External Model
+                ProviderIntArray UseSurface = new  ProviderIntArray(1);
+                MyWSIM.ParamManager.Model_Parameter(eModelParam.epP_SURFACE_USE_EXT_MODEL).ProviderProperty.setvalues(UseSurface);
                 //MyWSIM.Simulation_Initialize("TestFile1.csv", "FirstRun");
                 MyWSIM.Simulation_Initialize(TheFileNameForData, ActiveScenbarioName);
                 //MyWSIM.Simulation_Initialize();
@@ -495,7 +497,11 @@ namespace WaterSim_West_v_1
 
         private void resetModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MyWSIM.WaterSimWestModel.ResetVariables();
+            // EDITED QUAY 9/8 2020
+            // This is wrong, should reset network
+            // MyWSIM.WaterSimWestModel.ResetVariables();
+            MyWSIM.WaterSimWestModel.ResetNetwork();
+            // END EDIT
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)

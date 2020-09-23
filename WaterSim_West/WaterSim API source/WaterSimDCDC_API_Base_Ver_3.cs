@@ -676,7 +676,6 @@ namespace WaterSimDCDC
                     _CurrentYear++;
                 }
                 Simulation_Stop();
-                
                 _inSimulationAllYears = false;
             }
         }

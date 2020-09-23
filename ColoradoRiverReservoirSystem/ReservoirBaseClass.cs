@@ -4,7 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WaterSimDCDC.Generic
+// EDIT QUAY 9/10/20
+// Restored CORiverModel namespace
+namespace CORiverModel
+//namespace WaterSimDCDC.Generic
+// END EDit
+
 {
     class ReservoirBaseClass
     {

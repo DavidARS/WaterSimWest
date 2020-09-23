@@ -16,7 +16,7 @@ namespace WaterSimDCDC.Generic
          //
         double _UBallotment = 0;
         USGSdataClass DC;
-        Model theModel;
+        COriverModel theModel;
         //
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="DataDirectory"></param>
         /// <param name="Filename">of the USGS data with Colorado River Water variables</param>
-        public COriverAccounting(string DataDirectory, string Filename, Model Amodel) {
+        public COriverAccounting(string DataDirectory, string Filename, COriverModel Amodel) {
             DC = new USGSdataClass(DataDirectory, Filename);
             theModel = Amodel;
         }
@@ -37,7 +37,7 @@ namespace WaterSimDCDC.Generic
         }
         public double UBasinMGD(int year)
         {
-            UBallotment = Utilities.MAFtoMGD(theModel.pmUpperBasin, year);
+            UBallotment = Utilities.MAFtoMGD(theModel.PmUpperBasin, year);
             return UBallotment;
         }
         // ==================================================================================

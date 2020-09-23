@@ -8,6 +8,7 @@ using WaterSim_Base;
 using DemandModel_Base;
 using UniDB;
 using System.Data;
+using DCDC_Utilities;
 
 // WATERSIM WEST REGIONUNIT MODEL 
 // VERSION 5_0_1
@@ -84,7 +85,7 @@ namespace WaterSimDCDC.Generic
         West_CRF_Unit_Network UnitNetwork;
         //CRF_Unit_Network UnitNetwork;
         // END EDIT
-       
+
         WaterSimManager WS;
         /// <summary> The frdc.</summary>
         /// <remarks>  This is the rate class used to retrieve data from the growth data file</remarks>
@@ -122,8 +123,7 @@ namespace WaterSimDCDC.Generic
         RuralDemand_LCLU_industry IDR;
         //============================
         DataClassTemperature DataClassT;
-        //
-         /// <summary>
+        /// <summary>
         /// 
         ///
         /// </summary>
@@ -637,12 +637,7 @@ namespace WaterSimDCDC.Generic
         //
         // ====================================================
 
-        //
-        void startCOriverModel()
-        {
 
-        }
-        //
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Sets base values at the beginning of a model run.</summary>
@@ -1106,6 +1101,7 @@ namespace WaterSimDCDC.Generic
             // sampson edits 09.06.18
             seti_GrayWaterManagement(zero);
             // end sampson edits 09.06.18
+
         }
         double _defaultPCTreclaimed = 0;
         double defaultPCTReclaimed
@@ -1129,9 +1125,7 @@ namespace WaterSimDCDC.Generic
         public int runOneYear(int year)
         {
             currentYear = year;
-            //
-            //COS
-            //
+
             // Run the model for one year based on current factors
             Model(year);
             // Model clean up, memory , handles etc.
@@ -1300,6 +1294,10 @@ namespace WaterSimDCDC.Generic
         internal void annual_Resources()
 
         {
+            // EDIT QUAY
+            // Added Colorado
+            surfaceColorado();
+            // END EDIT
             surfaceFresh();
             surfaceSaline();
             surfaceLake();
@@ -1776,8 +1774,26 @@ namespace WaterSimDCDC.Generic
         // this is used by the drought formulas to recover from drought
         double InitialSUrfaceAtDrought = 0;
 
-        // QUAY EDIT 3/23/18
-        // Modified Drought
+        // EDIT QUAY 9 8 20
+        // Added support for an external surface water model.  Good template for others
+
+        // FLAG TO use external model  0 = no , 1 = yes
+        int FUseExternalSurface = 0;
+        int FUseExternalColorado = 0;
+
+        // END EDIT
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Gets or sets the use external surface model.</summary>
+        /// <remarks> 0 = use default surface model , 1= Use external surface model </remarks>
+        /// <value> The use external surface model.</value>
+        ///-------------------------------------------------------------------------------------------------
+
+        public int UseExternalSurfaceModel
+        {
+            get { return FUseExternalSurface; }
+            set { FUseExternalSurface = value;  }
+        }
+
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Surfacewater management.</summary>
@@ -1787,101 +1803,67 @@ namespace WaterSimDCDC.Generic
 
         void surfaceFresh()
         {
-// EDIT QUAY 9/13/18
-// This was confusing, this code does not have climate change
-// O modeved the code with climate change in here, but saved by commenting out the old code
-/*
-            double NewSurfaceLimit = 0;
-            int result = 0;
-            // EDIT QUAY 4/2/18
-            // This is the change in how the resources are managed.  Each policy should have its own set of factors
-            // this one is for the surface water manaagement control
-            double tempBase = 0;
-            int SurfacePeriod = currentYear - startYear;
-            //double annualFactor =  ChangeIncrement(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
-            double annualFactor = AnnualExponentialChange(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
-            tempBase = annualFactor * FBaseSurfaceWater;
-            //int one = 100;
-            //tempBase = geti_SurfaceWaterFresh() * d_surfaceWaterControl;
-            // end edit
-
-            // EDIT QUAY
-            // THis is the new drought management
-            NewSurfaceLimit = tempBase;
-            if (FDroughtActive > 0)
+            // check if using default model or external model, if using external model then do nothing
+            if (FUseExternalSurface == 0)
             {
-                if (FDroughtStartYear <= currentYear)
+                double NewSurfaceLimit = 0;
+                int result = 0;
+                // EDIT QUAY 4/2/18
+                // This is the change in how the resources are managed.  Each policy should have its own set of factors
+
+
+                // This is the cumulative effect variable
+                double tempBase = 0;
+                // This is how far into the simulation we are
+                int SurfacePeriod = currentYear - startYear;
+
+                // this one is for the surface water manaagement control
+                //double annualFactor =  ChangeIncrement(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
+                double annualFactor = AnnualExponentialChange(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
+                tempBase = annualFactor * FBaseSurfaceWater;
+
+                //int one = 100;
+                //tempBase = geti_SurfaceWaterFresh() * d_surfaceWaterControl;
+                // end edit
+
+
+                // This one is the climate change Management
+                // Climate Change is affects the values after the surface management has been applied
+                if (FCCChangeTarget != 1.0)
                 {
-                    if (FDroughtStartYear == currentYear)
+                    double CCannualFactor = AnnualExponentialChange(1, SurfacePeriod, FCCChangeCoefficient, FCCChangeLimit);
+                    tempBase = tempBase * CCannualFactor;
+                }
+
+                // THis is the new drought management
+                // drought is applied on top of Climate Change and Surface ater control.
+                if (FDroughtActive > 0)
+                {
+                    if (FDroughtStartYear <= currentYear)
                     {
-                        InitialSUrfaceAtDrought = tempBase;
+                        int period = currentYear - FDroughtStartYear;
+                        int StartPeriod = FDroughtStartYear - StartYear;
+                        int SimulationYears = EndYear - startYear;
+                        double DroughtEffect = DroughtFunction(period, StartPeriod, SimulationYears, FDroughtLength, FDroughtDepth);
+                        tempBase = tempBase * DroughtEffect;
                     }
-                    int period = currentYear - FDroughtStartYear;
-                    int StartPeriod = FDroughtStartYear - StartYear;
-                    int SimulationYears = EndYear - startYear;
-                    double DroughtEffect = DroughtFunction(period, StartPeriod, SimulationYears, FDroughtLength, FDroughtDepth);
-                    NewSurfaceLimit = InitialSUrfaceAtDrought * DroughtEffect;
                 }
-            }
-*/
+                // END EDIT 9/13/18
+
+                // OK, after cascading imapcts, finally set the new surface water limit
+                NewSurfaceLimit = tempBase;
 
 
-            double NewSurfaceLimit = 0;
-            int result = 0;
-            // EDIT QUAY 4/2/18
-            // This is the change in how the resources are managed.  Each policy should have its own set of factors
+                //if (startDroughtYear <= currentYear)
+                //    temp = geti_SurfaceWaterFresh() * d_surfaceWaterControl * d_drought;
+                // End EDIT
 
-
-            // This is the cumulative effect variable
-            double tempBase = 0;
-            // This is how far into the simulation we are
-            int SurfacePeriod = currentYear - startYear;
-
-            // this one is for the surface water manaagement control
-            //double annualFactor =  ChangeIncrement(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
-            double annualFactor = AnnualExponentialChange(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
-            tempBase = annualFactor * FBaseSurfaceWater;
-
-            //int one = 100;
-            //tempBase = geti_SurfaceWaterFresh() * d_surfaceWaterControl;
-            // end edit
-           
-
-            // This one is the climate change Management
-            // Climate Change is affects the values after the surface management has been applied
-            if (FCCChangeTarget!=1.0)
-            {
-                double CCannualFactor = AnnualExponentialChange(1, SurfacePeriod, FCCChangeCoefficient, FCCChangeLimit);
-                tempBase = tempBase * CCannualFactor;
-            }
-
-            // THis is the new drought management
-            // drought is applied on top of Climate Change and Surface ater control.
-            if (FDroughtActive > 0)
-            {
-                if (FDroughtStartYear <= currentYear)
-                {
-                    int period = currentYear - FDroughtStartYear;
-                    int StartPeriod = FDroughtStartYear - StartYear;
-                    int SimulationYears = EndYear - startYear;
-                    double DroughtEffect = DroughtFunction(period, StartPeriod, SimulationYears, FDroughtLength, FDroughtDepth);
-                    tempBase = tempBase * DroughtEffect;
-                }
-            }
-// END EDIT 9/13/18
-
-            // OK, after cascading imapcts, finally set the new surface water limit
-            NewSurfaceLimit = tempBase;
-
-
-            //if (startDroughtYear <= currentYear)
-            //    temp = geti_SurfaceWaterFresh() * d_surfaceWaterControl * d_drought;
-            // End EDIT
-
-            result = Convert.ToInt32(NewSurfaceLimit);
-            seti_SurfaceWaterFresh(result);
-            //if (startDroughtYear <= currentYear) seti_DroughtControl(one);
+                result = Convert.ToInt32(NewSurfaceLimit);
+                seti_SurfaceWaterFresh(result);
+                //if (startDroughtYear <= currentYear) seti_DroughtControl(one);
+            } 
         }
+        // END EDIT QUAY 9 8 20
 
  // QUAY EDIT 9/12/18
         // Add Colordo Water
@@ -1898,51 +1880,53 @@ namespace WaterSimDCDC.Generic
 
         void surfaceColorado()
         {
-            double NewSurfaceLimit = 0;
-            int result = 0;
-
-            // This is the cumulative effect variable
-            double tempBase = 0;
-            // This is how far into the simulation we are
-            int SurfacePeriod = currentYear - startYear;
-
-            // this one is for the surface water manaagement control
-            // We will need to decide what to use here?
-            // I am temprorarily NOT increasing this base on the control
-            //double annualFactor = AnnualExponentialChange(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
-            //tempBase = annualFactor * FBaseColorado; // FBaseSurfaceWater;
-
-            tempBase = FBaseColorado; // FBaseSurfaceWater;
-
-
-            // This one is the climate change Management
-            // Climate Change is affects the values after the surface management has been applied
-            if (FCCChangeTarget != 1.0)
+            if (FUseExternalColorado == 0)
             {
-                double CCannualFactor = AnnualExponentialChange(1, SurfacePeriod, FCCChangeCoefficient, FCCChangeLimit);
-                tempBase = tempBase * CCannualFactor;
-            }
+                double NewSurfaceLimit = 0;
+                int result = 0;
 
-            // THis is the new drought management
-            // drought is applied on top of Climate Change and Surface ater control.
-            if (FDroughtActive > 0)
-            {
-                if (FDroughtStartYear <= currentYear)
+                // This is the cumulative effect variable
+                double tempBase = 0;
+                // This is how far into the simulation we are
+                int SurfacePeriod = currentYear - startYear;
+
+                // this one is for the surface water manaagement control
+                // We will need to decide what to use here?
+                // I am temprorarily NOT increasing this base on the control
+                //double annualFactor = AnnualExponentialChange(1, SurfacePeriod, FSurfaceChangeCoefficient, FSurfaceChangeLimit);
+                //tempBase = annualFactor * FBaseColorado; // FBaseSurfaceWater;
+
+                tempBase = FBaseColorado; // FBaseSurfaceWater;
+
+
+                // This one is the climate change Management
+                // Climate Change is affects the values after the surface management has been applied
+                if (FCCChangeTarget != 1.0)
                 {
-                    int period = currentYear - FDroughtStartYear;
-                    int StartPeriod = FDroughtStartYear - StartYear;
-                    int SimulationYears = EndYear - startYear;
-                    double DroughtEffect = DroughtFunction(period, StartPeriod, SimulationYears, FDroughtLength, FDroughtDepth);
-                    tempBase = tempBase * DroughtEffect;
+                    double CCannualFactor = AnnualExponentialChange(1, SurfacePeriod, FCCChangeCoefficient, FCCChangeLimit);
+                    tempBase = tempBase * CCannualFactor;
                 }
+
+                // THis is the new drought management
+                // drought is applied on top of Climate Change and Surface ater control.
+                if (FDroughtActive > 0)
+                {
+                    if (FDroughtStartYear <= currentYear)
+                    {
+                        int period = currentYear - FDroughtStartYear;
+                        int StartPeriod = FDroughtStartYear - StartYear;
+                        int SimulationYears = EndYear - startYear;
+                        double DroughtEffect = DroughtFunction(period, StartPeriod, SimulationYears, FDroughtLength, FDroughtDepth);
+                        tempBase = tempBase * DroughtEffect;
+                    }
+                }
+
+                // OK, after cascading imapcts, finally set the new surface water limit
+                NewSurfaceLimit = tempBase;
+
+                result = Convert.ToInt32(NewSurfaceLimit);
+                seti_SurfaceColorado(result);
             }
-
-            // OK, after cascading imapcts, finally set the new surface water limit
-            NewSurfaceLimit = tempBase;
-
-            result = Convert.ToInt32(NewSurfaceLimit);
-            seti_SurfaceColorado(result);
-
         }
 
         // END EDIT 9/12
@@ -4375,7 +4359,12 @@ namespace WaterSimDCDC.Generic
             UnitNetwork.SurfaceFresh.Limit = value;
             //WSA.SurfaceFresh.Limit = value;
         }
-        //
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Geti surface water fresh net.</summary>
+        ///
+        /// <returns> An int.</returns>
+        ///-------------------------------------------------------------------------------------------------
 
         public int geti_SurfaceWaterFreshNet()
         {
@@ -4383,6 +4372,54 @@ namespace WaterSimDCDC.Generic
             //int TempInt = Convert.ToInt32(Math.Abs(Math.Round(WSA.SurfaceFresh.Net)) + 0);
             return TempInt;
         }
+
+        // EDIT QUAY 9/8/20 
+        // Added External Model Control
+         
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Geti surface fresh use external.</summary>
+        /// <returns> An int.</returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public int geti_SurfaceFreshUseExternal()
+        {
+            return FUseExternalSurface;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Seti surface fresh use external.</summary>
+        ///
+        /// <param name="value"> The value.</param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public void seti_SurfaceFreshUseExternal(int value)
+        {
+            FUseExternalSurface = value;
+        }
+
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Geti surface fresh use external.</summary>
+        /// <returns> An int.</returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public int geti_ColoradoUseExternal()
+        {
+            return FUseExternalColorado;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Seti surface fresh use external.</summary>
+        ///
+        /// <param name="value"> The value.</param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public void seti_ColoradoUseExternal(int value)
+        {
+            FUseExternalColorado = value;
+        }
+
+        // END EDIT 9/8/20
 
         // QUAY EDIT 9/12/18
         // Add for Colorado

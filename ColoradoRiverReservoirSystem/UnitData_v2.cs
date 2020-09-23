@@ -6,9 +6,13 @@ using System.Collections.Generic;
 using System.Data;
 //using System.IO;
 using UniDB;
-//using WaterSimDCDC.Generic;
 
-namespace WaterSimDCDC.Generic
+// EDIT QUAY 9/10/20
+// Restored CORiverModel namespace
+namespace CORiverModel
+//namespace WaterSimDCDC.Generic
+// END EDit
+
 {
     public struct FlowData
     {

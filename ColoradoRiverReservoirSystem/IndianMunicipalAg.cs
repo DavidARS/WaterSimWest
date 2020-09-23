@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WaterSimDCDC.Generic;
+using CORiverModel;
+// EDIT QUAY 9/10/20
+// REMOVED REFERENCE TO WATERSIM NAMESPACE
+// ADDED WaterSim Class Objects
+//using WaterSimDCDC.Generic;
+// END EDIT 9/10/20
+
 
 namespace CORiverDesignations
 {

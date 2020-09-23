@@ -46,3 +46,35 @@ parameters to the List<> of WaterSimCRFModel objects, thus it changes with Water
 4/28/20
 An effort was made to consolidate the WestModel into a new project to initialize contonued work on the West Model. Also some better 
 documentation was started for the WaterSim West model. 
+
+
+9/8/2020
+
+Some thoughts about colorado River Model
+
+Class WaterSimCRFModel
+Base_SIO_DB_WEST 4\WaterSim_West_RegionUnitModel_5_1.cs
+
+This is the Mass Balance/CRF model that is used for each region.   Data is set, Model is Run, and the output retrieved.  Each region has its own model.  Properties exist to set data (input) and get data (Outpur) each based on an integer, and methods exist to run the model.
+
+Class WaterSimModel
+Base_SIO_DB_WEST 4\WaterSim_Model_v 4_2.cs
+Manages all the basin models.  It has properties the match the set and get properties for the WaterSimCRFModel, but they use arrays of integers.  This class using the array to set the values for each of the region models, and get the values from each of the region models.  It has run methods the run each of the region models.
+
+The WaterSimCRFModel currently has methods that estimate how much of each resource is available each year.  One for Colorado River Water, one for surface water, one for groundwater, and one for reclaimed water.  Essentially internal models for each, each of these uses various variables , such as drought, or percent increase or decrease, wastewater generated, etc, to calculate these values.  These internal models run as part of the overall run command for the model.  Once the WaterSimCRFModel run method is executed, all the data for the region is locked in.  The model uses the values it has and it then runs each of the submodels.
+WaterSimCRFModel allows different models to be used to estimate demand.for the vaiious consumer categories, but this is also part of the Run command and data uses is locked in during the run. And the run method executes the appropriate demand model
+We should use a similar approach for resources.  Allow each to use a different model, that can be plugged in.
+
+
+To this end, I startred on this a couple of months ago, and had to set it aside to work on other projects.  I created a resource model class, similar to the demand  model class.  I created a surface water class. As a model.  IT was a model that basic used the current model in the WaterSimCRFModel for surface water.  I started to create a prototype for a Colorado river model and ran into a snag..  For the surface water each region relied on the data specific to each region.  This is not the case for the Colorado River.  Each region is based on a basin wide (or sub basin wide) model and that model will be using data from all regions in the basin (demand).  So the amount of Colorado River resources is dependent on data outside each region and a model that must be run for all regions before each region’s run method is evoked.  .  Thus a Colorado Ruver Resource model can not be contained within each WaterSimCRFModel like the surface water model or the existing resource submodels for groundwater and reclaimed.
+
+
+I realized that a different concept would be required.  I decided we need two types of models, a river model that would be run by The watersimModel class before running each regions run method, and an allocation model, that allocated water to each region.  The former model is what David has been working on and the allocation model is what we need to discuss.   However, I decided that the allocation model should also be run by the WaterSimManager and the allocations be set in each regions data.  
+The key was each region model needed to know would it use its internal submodels as part of ist run method,  or would the data be set externally before the run method was execuitred.
+
+I started looking at this but this is when I had to set it aside.
+
+The Colorado River Model will need to run one year at a time, utilizing its trace but also the demand data for the Upper Basin, thus it will run AFTER each years region model.   The allocation model
+will use output from the previous River model year to determine allocation for the current year, it will run BEFORE the region models are run and set the data for eacj region.
+
+

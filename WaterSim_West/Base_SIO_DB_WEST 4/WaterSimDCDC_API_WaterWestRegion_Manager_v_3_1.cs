@@ -53,28 +53,6 @@ namespace WaterSimDCDC
     // ver 2.0.8   3/19/18  Quay, fixed Power and Industry Conservation and added parameters for GPED and GPMWD
     // 
     // ver 2.0.14  3/30/18  Quay, Changed Efficiency controls button labels
-    //
-    // NOT sure where the other version NOTES went to 6.0.1 was the last in rays property declaration
-    //
-    // ver 7.0.  06.10.20  DAS added the Colorado River Reservoirs project. Added a new Upper Basin Consumptive use estimate
-    //
-    // ===============================
-    /// <summary>
-    /// The model version
-    /// </summary>
-    public static class Version
-    {
-        /// <summary>
-        /// version
-        /// </summary>
-        internal static string version;
-        static Version()
-        {
-         version = "7.0";
-        }
-    }
-    // ===============================
-    //
     //=============================================================================================================================================================================================
     // Enums 
     //==========================================================
@@ -746,27 +724,13 @@ namespace WaterSimDCDC
         {
             // Quay Edit 2/9/16
             //int testrun = WSmith.runOneYear(year);
-            //
-            // DAS edit 06.09.20
-            // Colorado River Model
-            ToClose(year);
-            bool runCOmodel = WestModel.COS.RunCOoneYear(year);
-            // DAS end edits 06.09.20
-            //
-            bool testAccounting = WestModel.COA.CORassess(year);
-            //
+
             // WATERSIMMODEL
             int  testrun = WestModel.runOneYear(year);
-            
 
             return testrun;
          }
-        //
-        private void ToClose(int year)
-        {
-            if (year == Simulation_End_Year) WestModel.COS.streamCO = true;
-        }
-        //
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Must be called to setup a Simulation All simulations should be stopped with
         ///     StopSimulation(), which will make sure all files are closed.</summary>
@@ -794,10 +758,6 @@ namespace WaterSimDCDC
             // need to reset all the model networks
             WestModel.ResetNetwork();
             // End Edit
-            // Sampson edits 09.04.18 SHOULD NOT BE HERE, but where?
-            // WestModel.set_GrayWaterPotential();
-            // end Sampson edits 09.04.18
-            Simulation_End_Year = 2020;
         }
 
         // -------------------------------------------------------------------------------------------------------------------------
@@ -807,20 +767,12 @@ namespace WaterSimDCDC
         /// <returns> The model version.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-       // protected override string GetModelVersion()
-       // {
-// QUAY EDIT 4/28/20
-       //     return "WSW.6.0.1";
-// END EDIT 
-       // }
         protected override string GetModelVersion()
         {
-
-            return Version.version;
-
+// QUAY EDIT 4/28/20
+            return "WSW.6.0.1";
+// END EDIT 
         }
-
-
         // =======================================
         protected override void initialize_ExtendedDocumentation()
         {

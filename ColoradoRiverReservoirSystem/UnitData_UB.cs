@@ -7,7 +7,12 @@ using System.Data;
 using System.IO;
 using UniDB;
 
-namespace WaterSimDCDC.Generic
+// EDIT QUAY 9/10/20
+// Restored CORiverModel namespace
+namespace CORiverModel
+//namespace WaterSimDCDC.Generic
+// END EDit
+
 {
     public struct UBData
     {

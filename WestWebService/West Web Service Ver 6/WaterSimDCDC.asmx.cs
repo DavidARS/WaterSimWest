@@ -1751,8 +1751,8 @@ namespace WaterSimWebServiceVersion2
             //string RemoteAddr = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
             //string RemoteHost = HttpContext.Current.Request.ServerVariables["REMOTE_HOST"];
 
-
-            string functionReturnValue = null;
+            // 08.14.20 das
+            //string functionReturnValue = null;
 
             string ModelStatus = "";
             string SessionPassword = "";

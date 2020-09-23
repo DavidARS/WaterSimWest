@@ -1,6 +1,11 @@
 ﻿using System;
-using WaterSimDCDC.Generic;
+// EDIT QUAY 9/10/20
+// REMOVED REFERENCE TO WATERSIM NAMESPACE
+// ADDED WaterSim Class Objects
+// using WaterSimDCDC.Generic;
+// END EDIT
 using System.Linq;
+using CORiverModel;
 namespace CORiverDesignations 
 {
     public class COConveyance_AZ : BaseAllottments
