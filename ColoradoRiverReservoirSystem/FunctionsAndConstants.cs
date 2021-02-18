@@ -51,6 +51,44 @@ namespace CORiverModel
         public static double powellSevenFourEight = 7.48;
         public static double powellSevenZero = 7.0;
         //
+        // ==========================================================================
+        // DCP 10.13.20 das
+        // trigger elevations
+        // units feet msl
+        public static int meadTierZero = 1090;
+        public static int mead1045 = 1045;
+        public static int mead1040 = 1040;
+        public static int mead1035 = 1035;
+        public static int mead1030 = 1030;
+        // units acre-feet year-1
+        // ICS contributions
+        // ===================================
+        public static int azMead192k = 192000;
+        public static int azMead240k = 240000;
+        //
+        public static int nvMead8k = 8000;
+        public static int nvMead10k = 10000;
+        //
+        public static int caMead200k = 200000;
+        public static int caMead250k = 250000;
+        public static int caMead300k = 300000;
+        public static int caMead350k = 350000;
+        // ===================================
+        // Misc subtractions
+        // 2015 Coloraod Research Group 2016 Tribes and Colorado River Rights.pdf
+        // units are in acre-feet year-1
+        public static int UBTribalDiversions = 1358385;
+        // units are in acre-feet year-1
+        // Data from:
+        //https://knowyourwaternews.com/cap-water-orders-planning-for-1-4-million-acre-feet-of-deliveries/
+        public static int CAPsystemLosses = 75000;
+        //
+        // Forebearance and conservation agreements
+        // units acre-feet year-1
+        public static int LBAgForebearance3 = 57000;
+        public static int MWDconservationAgree = 3500;
+
+        // ==========================================================================
         // Evaporation Rates
         // units are meters
         //(http://pubs.usgs.gov/sir/2006/5252/pdf/sir20065252.pdf)
@@ -198,6 +236,13 @@ namespace CORiverModel
         //
         public const double AFtoMGD = (325851.43326/ oneMillion) / 365;
         public const double MAFtoMGD = 325851.43326  / 365;
+        //
+        public const int AZ = 4;
+        public const int CA = 6;
+        public const int NV = 32;
+        //
+        public const int DCPstartYear = 2020;
+
     }
     //
     public static class CORiverUtilities

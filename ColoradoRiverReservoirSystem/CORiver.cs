@@ -65,7 +65,9 @@ namespace CORiverModel
 
         /// <summary> variable and Default value for River Trace State Year.</summary>
         int FRiverTraceStartYear = 1950;
-
+        //
+        int FContemporaryICSyear = 2019;
+        bool FOverRideICSDataFile = false;
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Seti co river trace start year.</summary>
         /// <param name="value"> The value.</param>
@@ -127,10 +129,31 @@ namespace CORiverModel
         // 09.17.20 das
         public double DroughtManagerForCORiver { get; set; } = 1;
         // 09.17.20 das end
-        #endregion properties
+
+        // 10.13.20 das
+        public void Seti_ContemporaryICSYear(int value)
+        {
+            FContemporaryICSyear = value;
+        }
+        public int Geti_ContemporaryICSYear()
+        {
+            return FContemporaryICSyear;
+        }
+        public void Setb_OverRideICSDataFile(bool value)
+        {
+            FOverRideICSDataFile = value;
+        }
+        public bool Getb_OverRideICSDataFile()
+        {
+            return FOverRideICSDataFile;
+        }
+
+
+
+        // end 10.13.20 das
         //
-
-
+        public int OverrideICSfile { get; set; } = 0;
+        #endregion properties
         //
         #region trace estimates
 

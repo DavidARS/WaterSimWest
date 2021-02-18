@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseConveyance.cs" />
+    <Compile Include="BasinDCP.cs" />
     <Compile Include="BasinDesignations_v1.cs" />
     <Compile Include="COConveyance_AZ.cs" />
     <Compile Include="CORiver.cs" />

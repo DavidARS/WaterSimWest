@@ -219,10 +219,10 @@ namespace CORiverModel
         string FUnitCodeStr;
         int FUnitCode;
         int FYear;
- 
+        int StateCode;
         double FICS_R;
 
-        public ICSDataStruct(string aUnitName, string aUnitCode, int aYEAR, double aICS)
+        public ICSDataStruct(int aStateCode,string aUnitName, string aUnitCode, int aYEAR, double aICS)
         {
             bool isErr = false;
             string errMsg = "";
@@ -243,6 +243,7 @@ namespace CORiverModel
             FICS_R = aICS;
             //
             FYear = aYEAR;
+            StateCode = aStateCode;
         }
         public string UnitName
         {
@@ -269,6 +270,10 @@ namespace CORiverModel
         public double ICS
         {
             get { return FICS_R; }
+        }
+        public int SC
+        {
+            get { return StateCode; }
         }
         /// <summary>
         /// Returns the Data year
@@ -297,6 +302,7 @@ namespace CORiverModel
         const string FRnameFieldStr = "RN";
         const string FRcodeFieldStr = "RC";
 
+        string FSCFieldStr = FScodeFieldStr;
         string FNameFieldStr = FRnameFieldStr;
         string FCodeFieldStr = FRcodeFieldStr;
 
@@ -310,8 +316,9 @@ namespace CORiverModel
         const double InvalidData = -1;//double.NaN;
 
         double[] FRC_ICS = null;
+        public List<ICSDataStruct> FDataList = new List<ICSDataStruct>();
 
-        List<ICSDataStruct> FDataList = new List<ICSDataStruct>();
+        //FDataList = new List<ICSDataStruct>();
         /// <summary>
         /// 
         /// </summary>
@@ -342,6 +349,7 @@ namespace CORiverModel
             {
                 // Get name and code
                 // Setup to use region or state codes
+                string statestr = DR[FSCFieldStr].ToString();
                 string namestr = DR[FNameFieldStr].ToString();
                 string codestr = DR[FCodeFieldStr].ToString();
                 // Decided not to use code in DataTable
@@ -351,18 +359,24 @@ namespace CORiverModel
                 {
                     string rICS = DR[FICSFieldStr].ToString();
                     string ryearsstr = DR[FcurrentYearFieldStr].ToString();
+                    string rstatestr = DR[FScodeFieldStr].ToString();
                     //
-                    double TempICS = Tools.ConvertToDouble(rICS, ref isErr, ref errMessage);
+                    int TempSC = Tools.ConvertToInt32(rstatestr, ref isErr, ref errMessage);
                     if (!isErr)
                     {
 
-                        int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
+                        double TempICS = Tools.ConvertToDouble(rICS, ref isErr, ref errMessage);
                         if (!isErr)
                         {
-                            // OK 
-                            ICSDataStruct ICS = new ICSDataStruct(namestr, codestr, TempYear, TempICS);
-                            FDataList.Add(ICS);
-                            //// add to dictionary 
+
+                            int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
+                            if (!isErr)
+                            {
+                                // OK 
+                                ICSDataStruct ICS = new ICSDataStruct(TempSC, namestr, codestr, TempYear, TempICS);
+                                FDataList.Add(ICS);
+                                //// add to dictionary 
+                            }
                         }
                     }
                 }
@@ -408,7 +422,21 @@ namespace CORiverModel
             }
             return temp;
         }
-      
+        public bool Fast_SC(int StateCode)
+        {
+            bool temp = false;
+            foreach (ICSDataStruct ID in FDataList)
+            {
+                if (ID.SC == StateCode)
+                {
+                    temp = true;
+                }
+
+                if (temp == true) break;
+            }
+            return temp;
+        }
+        
 
         //
     }

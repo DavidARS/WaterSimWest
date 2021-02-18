@@ -19,6 +19,7 @@ namespace CORiverModel
         //UnitData2 FUnitData2;
         Powell_mead PM;
         IndianMunicipalAg IMA;
+        BasinDCP BDP;
         // internal StreamWriter sw;
         readonly DateTime now = DateTime.Now;
         //
@@ -28,9 +29,9 @@ namespace CORiverModel
         //string UnitDataFIDPaleo = "COflowDataExtended.csv";
         //string ICSfileName = "ICS.csv";
         readonly string ICSfileName = "ICS_Regions.csv";
-
+        string FICSdataFileID= "ICS_Regions.csv";
         //
-         /// <summary>
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="DataDirectoryName"></param>
@@ -40,10 +41,14 @@ namespace CORiverModel
             string COriverFileName = GetDefineCOriverFileName();
             // this file will need a getter/setter in the WS manager 06.09.20 DAS
             string DataFileID = "RightsP1.txt";
+            string PathFileID = DataDirectoryName + "\\" + DataFileID;
             try
             {
-                PM = new Powell_mead(DataDirectoryName, COriverFileName, ICSfileName);
-                IMA = new IndianMunicipalAg(DataDirectoryName + "\\" + DataFileID);
+                //BDP = new BasinDCP(PathFileID, DataDirectoryName, ICSfileName);
+                //PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, ICSfileName);
+                PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, Gets_ICSdataFileID());
+                IMA = new IndianMunicipalAg(PathFileID);
+                Initialize();
                 RunToDefaultYearCOempirical();
             }
             catch (Exception ex)
@@ -51,12 +56,33 @@ namespace CORiverModel
                 throw ex;
             }
         }
+        void Initialize()
+        {
+            // Historical and contemporary ICS storage
+            Seti_ContemporaryICSyear(2019);
+            Seti_OverRideICSDataFile(false);
+        }
         #region properties
+        // 10.13.20 das
+        public string Gets_ICSdataFileID()
+        { return FICSdataFileID; }
+
+        // 10.13.20 das
+        public void Sets_ICSdataFileID(string value)
+        { FICSdataFileID = value; }
+        // end 10.13.20 das
         // 09.03.20 das
         public int COriverTraceStartYear
         {
             get; set;
         }
+        //==============================
+        //public int NumberRegions()
+        //{
+            
+        //}
+
+        //==============================
         // this will need a parameter in the WS manager. 06.09.20 DAS
         readonly string _defineCOriverFileName = "COflowDataExtended.csv";
 
@@ -79,7 +105,7 @@ namespace CORiverModel
         //
         public double CAPwaterAZ => PM.GetCapwater();
         public double OnRiverAZ => PM.GetOnRiverAZ();
-        public double UBtotal => PM.GetOnRiverAZ();
+        public double UBtotal => PM.GetUBtotal();
         #endregion properties
 
         // 09.15.20 das
@@ -90,13 +116,7 @@ namespace CORiverModel
             Loop(PM.TheRiver.DefaultYearCOempirical);
         }
 
-
-
-
-
-
         // =========================================
-
         public virtual bool RunCOoneYear(int year)
         {
             if (GetPass()) { RunMeadPowellReservoirs(year); }
@@ -116,7 +136,7 @@ namespace CORiverModel
                 RunMeadPowellReservoirs(year);
                 year +=1;
                // i++;
-            } while (year <= Syear-1);
+            } while (year <= Syear);
             SetPass(true);
            // sw.Flush();
 
@@ -153,6 +173,27 @@ namespace CORiverModel
         public void Seti_CoRiverTraceStartYear(int value)
         {
             PM.Seti_CoRiverTraceStartYear(value);
+        }
+        //
+        /// <summary>
+        /// This is the last year of the current ICS storage estimates
+        /// i.e., historical and contemporary data
+        /// </summary>
+        /// <param name="value"></param>
+        public void Seti_ContemporaryICSyear(int value)
+        {
+            PM.Seti_ContemporaryICSyear(value);
+        }
+
+        /// <summary>
+        /// 10.13.20 das
+        ///  Override the csv file that has the ICS data
+        ///  This would nomially be used for scenarios
+        /// </summary>
+        /// <param name="value"></param>
+        public void Seti_OverRideICSDataFile(bool value)
+        {
+            PM.Setb_OverRideICSDataFile(value);
         }
 
         ///-------------------------------------------------------------------------------------------------

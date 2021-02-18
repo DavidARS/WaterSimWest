@@ -49,7 +49,11 @@ namespace CORiverModel
             throw new NotImplementedException();
         }
         // 
-          //
+        public override void SelectUBuse(int year)
+        {
+            throw new NotImplementedException();
+        }
+        //
         public override void Reservoirs(int year)
         {
             throw new NotImplementedException();

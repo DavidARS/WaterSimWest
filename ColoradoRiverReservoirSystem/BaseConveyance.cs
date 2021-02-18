@@ -17,7 +17,9 @@ namespace CORiverDesignations
         public abstract void Initialize();
        // public abstract void Allottments();
         public abstract void Allottments(int year, double convey);
+        public abstract void Allottments(int year, int elevation, int state, out double convey);
         public abstract void Allocate(int year, double convey);
+        public abstract void Allocate(int year, int elevation, int state, double convey);
         /// <summary>
         /// 
         /// </summary>
@@ -63,6 +65,8 @@ namespace CORiverDesignations
             FLivePool = volumePool;
             FThreshold = threshold; 
         }
+
+
         // =========================================
         // properties;
         double _initial = 0;
@@ -184,6 +188,8 @@ namespace CORiverDesignations
         public abstract double LivePoolVolume();
         public abstract bool VolumeAllottments(int priority, double volume);
         public abstract void Allottments(int year, double volume);
+        public abstract void Allottments(int year, int elevation, double volume);
+        public abstract void Allottments(int year, int elevation, int state,double volume);
         //
         public abstract void Initialize();
         //

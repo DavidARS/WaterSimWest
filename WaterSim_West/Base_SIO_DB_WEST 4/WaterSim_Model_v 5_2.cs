@@ -1415,8 +1415,10 @@ namespace WaterSimDCDC.Generic
 
         public void seti_UseColoradoExternal(int[] Values)
         {
-            if (FResourceModels.ContainsType(Type.GetType("WaterSim_CORiverMode")))
-            {
+            // 10.07.20 das is this a typo?
+            //if (FResourceModels.ContainsType(Type.GetType("WaterSim_CORiverMode")))
+            if (FResourceModels.ContainsType(Type.GetType("WaterSim_CORiverModel")))
+                {
                 int ArraySize = FUnitModels.Count;
                 if (ArraySize > Values.Length)
                 {

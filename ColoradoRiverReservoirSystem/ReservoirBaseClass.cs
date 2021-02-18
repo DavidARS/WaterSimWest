@@ -26,6 +26,7 @@ namespace COReservoir_Base
         public COReservoirs() { }
 
         public abstract void Initialize();
+        public abstract void SelectUBuse(int year);
         public abstract void ModifyFlows(int year);
          //
         public abstract void Flows(int year);
@@ -37,6 +38,7 @@ namespace COReservoir_Base
         public abstract void UpStream(int year);
         //
         public abstract void DownStream(int year);
+        //
         /// <summary>
         /// 
         /// </summary>

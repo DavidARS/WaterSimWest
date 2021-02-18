@@ -8,7 +8,7 @@ using UniDB;
 using DCDC_Utilities;
 
 // EDIT QUAY 9/10/20
-// Restored CORiverModel namespac
+// Restored CORiverModel namespace
 namespace CORiverModel
 //namespace WaterSimDCDC.Generic
 // END EDit

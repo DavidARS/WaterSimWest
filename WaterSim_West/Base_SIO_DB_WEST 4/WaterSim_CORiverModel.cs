@@ -20,6 +20,9 @@ namespace WaterSimDCDC.Generic
         COBasinModelManager FCOModels;
         readonly COriverAccounting FCOA;
         //
+        /// <summary>
+        /// 
+        /// </summary>
         public int FnumModels = 24;
         // 
 
@@ -275,39 +278,34 @@ namespace WaterSimDCDC.Generic
         ///     This needs to be implemented , this allocates to the various models Pseudo ocde is
         ///     provided.</remarks>
         ///
-        /// <param name="year"> A list of watersim crf models.</param>
+        /// <param name="runningYear"> A list of watersim crf models.</param>
         ///
         /// <returns> True if it succeeds, false if it fails.</returns>
         ///-------------------------------------------------------------------------------------------------
-        public override BasinWater Allocate(int year)
+        public override BasinWater Allocate(int runningYear)
         {
             // get number of regions
             int NumberofRegions = Owner.ModelCount;
             // Arrays for proportions and raw CO limit data from USGS
             //int[] BasinRaw = new int[NumberofRegions];
-            double[] COratio = new double[NumberofRegions];
+            //double[] COratio = new double[NumberofRegions];
             int[] COLdata = new int[NumberofRegions];
             double[] COdiff = new double[NumberofRegions];
 
             // create Basin Water object
             BasinWater Temp = new BasinWater(NumberofRegions);
 
-            // Raw CO limit data from USGS- assume their right to othe water (for now); BasinRaw
-            // Calculate the ratio of the region to the sum of the waterfrom the reservoir
+            // Raw CO limit data from USGS- assume their right to othe water (for now)- BasinRaw
+            // Calculate the ratio of the region to the sum of the water from the reservoir - 
             // Calculate if there is enough water from the source to meet the USGS limit
-            // Calculate the difference between the limit and the source
-            CalculateCOavailabledata(out COratio, out COLdata, out COdiff);     
+            // Calculate the colorado river water to distribute -           COLdata
+            // Calculate the difference between the limit and the source -  COdiff
+            CalculateCOavailabledata(out COLdata, out COdiff);     
             //
-            // calculate the difference
-
             for (int i = 0; i < Owner.ModelUnitData.UnitNames.Count; i++)
             {
                 string t = Owner.ModelUnitData.UnitNames[i];
             }
-
-
-
-
             // gather some data ie amount of colorado river water for each of the 24 regions
 
   
@@ -321,19 +319,19 @@ namespace WaterSimDCDC.Generic
         internal double returnWater(double water)
         {
             double result = 0;
+            // million acre feet annually to MGD
             result = water * Constants.MAFtoMGD;
             return result;
         }
         //
-        internal void CalculateCOavailabledata(out double[] Ratios,out int[] ColData, out double[] difference)
+        internal void CalculateCOavailabledata(out int[] ColData, out double[] difference)
         {
             // get number of regions
             int NumberofRegions = Owner.ModelCount;
             int[] BasinRaw = new int[NumberofRegions];
-
-             // Raw CO limit data from USGS- assume their right to othe water (for now)
-            RetrieveCObaseData(Bcode, Bcode, BasinRaw);
-
+            // Raw CO limit data from USGS- assume their right to othe water (for now)
+            RetrieveCObaseData(Bcode, BasinRaw); 
+            //
             int[] Col = new int[NumberofRegions];
             double[] Ratio = new double[NumberofRegions];
             double[] diff = new double[NumberofRegions];
@@ -356,7 +354,6 @@ namespace WaterSimDCDC.Generic
             water = returnWater(CRM.UBtotal);
             CreateCOavail(a, 5, water, BasinRaw, Ratio, Col, diff);
             //
-            Ratios = Ratio;
             ColData = Col;
             difference = diff;
         }
@@ -376,21 +373,13 @@ namespace WaterSimDCDC.Generic
             }
 
         }
-        void RetrieveCObaseData(int[] region, int[] Bcodes, int[] dataOut)
+        private void RetrieveCObaseData(int[] Bcodes, int[] dataOut)
         {
             int sum = 0;
-            int all = 0;
-            int basin = 0;
             for (int i = 0; i < Bcodes.Length; i++)
             {
-                all = Bcodes[i];
-                basin = region[i];
-                if (all == basin)
-                {
-                    sum = Owner.FastUnitModel(i).geti_SurfaceColorado();
-                    dataOut[i] = sum;
-                }
-                else { }
+                sum = Owner.FastUnitModel(i).geti_SurfaceColorado();
+                dataOut[i] = sum;
             }
         }
         // =============================================================================================================
@@ -398,15 +387,12 @@ namespace WaterSimDCDC.Generic
         private void CreateCOavail(double[,] a, int c, double sum, int[] raw, double[] ratios, int[] COwater, double[] diff)
         {
             double sumUBraw = 0;
-            if (c == 5) // If this is upper basin regions, need to calculate the individual limit ratios
-            {
-                sumUBraw = CalculateUBLimitSum(raw);
-            }
-            //
+            double minDiff = 0.001;
             for (int i = 0; i < raw.Length; i++)
             {
+                // only bother to loop if the regionhas Colorado River Water
                  if (0 < raw[i])
-                {
+                 {
                     if (0 < COwater[i]) continue;
                     for (int j = 0; j < 6; j++)
                     {
@@ -414,18 +400,31 @@ namespace WaterSimDCDC.Generic
                         if (j == c)
                         {
                             double Raw = raw[i];
-                            if(0 < sum)ratios[i] = Raw * a[i,c] / sum;
-                            if (c == 5)
+                            if( c != 5)
                             {
-                                if (0 < sumUBraw) ratios[i] = Raw * a[i, c] / sumUBraw;
+                                if (0 < sum)
+                                {
+                                    ratios[i] = Raw * a[i, c] / sum;
+                                }
+                            }
+                            else
+                            {
+                                sumUBraw = CalculateUBLimitSum(raw);
+                                if (0 < sumUBraw)
+                                {
+                                    ratios[i] = Raw * a[i, c] / sumUBraw;
+                                }
                             }
                             temp = sum * ratios[i]; // est of potentially available CO water
-                            double Temp= Math.Min(temp, raw[i]);
-                            COwater[i] = Convert.ToInt32(Temp);
-                            diff[i] =  temp-raw[i];                            
+                            COwater[i] = Convert.ToInt32(Math.Min(temp, raw[i]));
+                            diff[i] = temp - raw[i];
+                            if (Math.Abs(diff[i]) < minDiff)
+                            {
+                                diff[i] = 0;
+                            }
                         }
                     }
-                }
+                 }
             }
         }
         // =============================================================
@@ -446,7 +445,7 @@ namespace WaterSimDCDC.Generic
         private double[,] a = new double[24, 6] {
             {1,0,0,0,0,0},   /*  CAP	ONRIVERAZ	IMPERIAL	MWD	SNWA	UBASIN */
             {0,1,0,0,0,0},
-            {0,0,0,0,0,1},
+            {0,1,0,0,0,0},
             {0,0,0,0,0,0},
             {0,0,0,0,0,0},
             {0,0,0,1,0,0},
@@ -518,7 +517,7 @@ namespace WaterSimDCDC.Generic
             "New Mexico Not In Basin","New Mexico Gila"};
 
         static readonly int[] LBcode = new int[LBproviders + UBproviders] { 1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 12, 13, 14, 15, 16, 17, 18, 0, 0, 0, 0, 0, 0 };
-        private readonly int[] UBcode = new int[LBproviders + UBproviders] { 0, 0, 3, 0, 0, 0, 0, 0, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 19, 20, 21, 22, 23, 24 };
+        private readonly int[] UBcode = new int[LBproviders + UBproviders] { 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 19, 20, 21, 22, 23, 24 };
         private readonly int[] Bcode = new int[LBproviders + UBproviders] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
         //
         //static readonly int[] LBasin = new int[LBproviders + UBproviders] { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 };

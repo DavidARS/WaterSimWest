@@ -262,6 +262,14 @@ namespace CORiverDesignations
 
         //}
         #region allottments
+        public override void Allottments(int year, int elevation, int state, double volume)
+        {
+  
+        }
+        public override void Allottments(int year, int elevation, double volume)
+        {
+
+        }
         public override void Allottments(int year, double cap)
         {
             //Excess = 0;

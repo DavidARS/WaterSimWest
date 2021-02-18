@@ -756,7 +756,7 @@ namespace WaterSimDCDC
         {
             get { return DefaultStartYear(); }
         }
-          /// end 09.15.20 das
+        /// end 09.15.20 das
         /// 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Executes the year operation. </summary>
@@ -1372,9 +1372,19 @@ namespace WaterSimDCDC
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_SAL_PD, "SAL Water Supply allocated to PTOT water consumption", "MGD", "Million Gallons Per Day", "SAL to PTOT", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
             // Demand Model Parameters
-            // Last Write: 06.01.18
+            // Last Write: 06.01.18, 02.16.21
             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             // Demand Model to Use
+            //
+            // Urban: 1 = GPCD , 2 = Land-cover land-use
+            // Ag: 1 = standard GPDD (gallons per dollar per day), 2 = land-cover land-use
+            // Industrial: 1= jobs/ employment, 2 = land-cover land-use
+            //
+            // Efficiency indicators
+            // Urban:
+            // Ag: Annual Farm Net Income, by county- USDA Agricultural Census Data and USGS County water data
+            //     growth increases net income over time (based on a historical rate of change) Rate.csv file for the data
+            // ========================================================
             WestModel.DemandModelUrban_Index = new providerArrayProperty(_pm, eModelParam.epP_DM_MODELtoUSE_Urban_P, WestModel.geti_DemandModelUrbanIndex, WestModel.seti_DemandModelUrbanIndex, eProviderAggregateMode.agNone);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_DM_MODELtoUSE_Urban_P, "Urban Demand Model to Use", "DEMMODELU_P", rangeChecktype.rctCheckRange, 0, 5, RangeCheck.NoSpecialProvider, WestModel.DemandModelUrban_Index));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_DM_MODELtoUSE_Urban_P, "The Water Demand Model to Use", "NA", "No Units", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));

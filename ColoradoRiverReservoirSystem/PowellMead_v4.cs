@@ -1,10 +1,12 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using CORiverDesignations;
 using COReservoir_Base;
 
 // EDIT QUAY 9/10/20
 // Restored CORiverModel namespace
 namespace CORiverModel
+
 //namespace WaterSimDCDC.Generic
 // END EDit
 
@@ -18,8 +20,12 @@ namespace CORiverModel
         public UnitDataCO FUDC;
         public UnitData2 FUBD;
         public UnitData_ICS FICS;
+        public BasinDCP FBDCP;
         //
         ColoradoRiver COriver;
+        COriverModel CRM;
+        BasinDCP BDP;
+        // internal StreamWriter
 
         //
         //string UnitDataFIDContempory = "COflowDataExtended.csv";
@@ -32,9 +38,12 @@ namespace CORiverModel
         //
         //const int defaultYearCO = 2014;
 
+        List<int> FICSRegions = new List<int>();
+
         //bool startSimulation = false;
         //internal StreamWriter sw;
         //DateTime now = DateTime.Now;
+        int FMeadElevation=1095;
         // =========================================
         #region constructors
         /// <summary>
@@ -43,18 +52,21 @@ namespace CORiverModel
         /// <param name="DataDirectoryName"></param>
         /// <param name="CORiverFile"></param>
         /// <param name="ICSdataFile"></param>
-        public Powell_mead(string DataDirectoryName, string CORiverFile, string ICSdataFile)
+        public Powell_mead(string DataDirectoryName, string FileID,string CORiverFile, string ICSdataFile)
         {
-
+            string PathFileID = DataDirectoryName + "\\" + FileID;
             FUnitData = new UnitDataCO(DataDirectoryName, CORiverFile);
             FUnitData2 = new UnitData2(DataDirectoryName, UnitData2Filename);
             FUnitData3 = new UnitData_ICS(DataDirectoryName, ICSdataFile);
             //
             COriver = new ColoradoRiver(DataDirectoryName, CORiverFile);
             //
+            BDP = new BasinDCP(PathFileID, DataDirectoryName, FUnitData3);
+            //
             FUDC = FUnitData;
             FUBD = FUnitData2;
             FICS = FUnitData3;
+            FBDCP = BDP;
             Initialize();
 
         }
@@ -107,8 +119,13 @@ namespace CORiverModel
             PanEvapPowell = Constants.pan_powell;
             PanEvapPowellMeadReach = Constants.pan_reach;
             DroughtManagerLeeFerryPM = 1;
+            IntentioinallyCreatedSurplusRegions();
         }
-
+        public COriverModel Owner
+        {
+            get { return CRM; }
+            set { CRM = value; }
+        }
 
         public UnitDataCO ModelUnitData
         {
@@ -122,21 +139,106 @@ namespace CORiverModel
         }
 
         #region properties
-
-        double _ics = 0;
-        public void Seti_ICS(int value)
+        // 10.07.20 das
+        //==============================================
+        // this needs fixing
+        double[,] _ics = new double[65,24];
+        /// <summary>
+        /// Set the Intentionally Created Surplus estimate for each region
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="value"></param>
+        public void Setd_ICS(int year,double[] value)
         {
-            _ics = (double)value;
+            foreach (int i in FICSRegions)
+            {
+                _ics[year,i] = (double)value[i];
+            }
         }
-        public int Geti_ICS()
+        /// <summary>
+        ///  Get the Intentionally Created Surplus for a region
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public double[,] Getd_ICS(int year)
         {
-            return (int)(_ics);
+            int ArraySize = FICSRegions.Count;
+            double[,] result = new double[65,ArraySize];
+            for(int i =0; i < ArraySize; i++)
+            {
+                result[year,i] =_ics[year,i];
+            }
+            return result;
         }
+        //=============================================
+        // end 10.07.20 das
 
         // ===========================================
         public double DroughtManagerLeeFerryPM { get; set; } = 1;
         // ===========================================
 
+
+
+        int _loopCount = 0;
+        internal int LoopCount
+        {
+            set { _loopCount = value; }
+            get { return _loopCount; }
+        }
+
+        private int _UBchoice = 3;
+        /// <summary>
+        /// This property sets which estimte of Upper
+        /// basin consumptive use estimate is used.
+        /// edits 06.10.20 DAS
+        /// </summary>
+        public int UBchoice
+        {
+            set { _UBchoice = value; }
+            get { return _UBchoice; }
+        }
+        //
+        // EDIT QUAY 9/10/20
+        // Added River Start Trace year, to bring this through to WaterSimModel
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Seti co river trace start year.</summary>
+        /// <param name="value"> The value.</param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public void Seti_CoRiverTraceStartYear(int value)
+        {
+            COriver.Seti_CoRiverTraceStartYear(value);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Geti co river trace start year.</summary>
+        /// <returns> An int.</returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public int Geti_CoRiverTraceStartYear()
+        {
+            return COriver.Geti_CoRiverTraceStartYear();
+        }
+        //
+        public void Seti_ContemporaryICSyear(int value)
+        {
+            COriver.Seti_ContemporaryICSYear(value);
+        }
+        public int Geti_ContemporaryICSyear()
+        {
+            return COriver.Geti_ContemporaryICSYear();
+        }
+        //
+        public void Setb_OverRideICSDataFile(bool value)
+        {
+            COriver.Setb_OverRideICSDataFile(value);
+        }
+        public bool Getb_OverRideICSDataFile()
+        {
+            return COriver.Getb_OverRideICSDataFile();
+        }
+        //
         #endregion properties
         //
         public override void UpStream(int year)
@@ -147,13 +249,14 @@ namespace CORiverModel
         {
             // edits 06.10.20 DAS
             //int use = 3; // Upper Basin Schedules. This may need a parameter in WaterSim Manager
+            // upper basin data are in thousand acre-feet
             UBchoice = 3;
             //
             UpStream(year);
             //
             Flows(year);
             UpperBasinDeliveries(year);
-            ModifyFlows(year);
+            SelectUBuse(year);
             Reservoirs(year);
             Designations();
             //
@@ -210,13 +313,7 @@ namespace CORiverModel
             LoopCount++;
         }
         //
-        int _loopCount = 0;
-        internal int LoopCount
-        {
-            set { _loopCount = value; }
-            get { return _loopCount; }
-        }
-        // ==============================================
+           // ==============================================
 
         /// <summary>
         ///  If no inflow data are available, estimate inflow from flow data
@@ -273,18 +370,22 @@ namespace CORiverModel
                 UpperBasin_1 = temp * FUBD.FastUB1(year) * (1 / Constants.oneThousandth);
             }
           }
-
+        public override void ModifyFlows(int year)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         ///  Subtract Upper basin deliveries from the flow estimates
         /// </summary>
         /// <param name="year"></param>
         /// <param name="choice"></param>
-        public override void ModifyFlows(int year)
+        public override void SelectUBuse(int year)
         {
-            // Units in thousand acre-feet
+            // Base Units in thousand acre-feet; modified in MAF
             // 1 = 2007 Upper CO River Comission Schedule
             //2 = Arizona Upper Basin Depletion schedule-Don Gross - ADWR, 30 November 2012
             double UB = 0;
+            double UBout = 0;
             int choice = UBchoice;
             switch (choice)
             {
@@ -299,15 +400,22 @@ namespace CORiverModel
                     break;
                 case 3:
                     COflow -= UpperBasin_3;
-                    UB = UpperBasin_2;
+                    UB = UpperBasin_3;
                     break;
             }
-
-            SetUBtotal(UB);
-
+            RemoveICSfromUB(UB,out UBout);
+            SetUBtotal(UBout);
         }
         //
-   
+        // Need to remove ICS from Upper Basin deliveries
+        // 10.14.20 das
+        // placeholder for now
+        internal void RemoveICSfromUB(double UB,out double conveyout)
+        {
+            // UB is in units MAF
+            double UBTribal = Constants.UBTribalDiversions * 1 / Constants.oneMillion;
+            conveyout = UB -= UBTribal;
+        }
 
         //
         #endregion Upper Basin
@@ -320,53 +428,119 @@ namespace CORiverModel
         //
         // =========================================
         //
-        private int _UBchoice = 3;
-        /// <summary>
-        /// This property sets which estimte of Upper
-        /// basin consumptive use estimate is used.
-        /// edits 06.10.20 DAS
-        /// </summary>
-        public int UBchoice
-        {
-            set { _UBchoice = value; }
-            get { return _UBchoice; }
-        }
-        //
-        // =======================================
+         // =======================================
         // Intentionally created Surplus
         #region ICS
         internal double IntentionallyCreatedSurplus(int year)
         {
             double result = 0;
+            double Result = 0;
             //https://www.usbr.gov/lc/region/programs/PilotSysConsProg/pilotsystem.html
-            if (year < 2020)
+            //
+            bool OverRide = COriver.Getb_OverRideICSDataFile();
+            if(OverRide || year <= COriver.Geti_ContemporaryICSYear())
             {
                 //result = FICS.Fast_ICS(1, year) * Constants.acreFeetToMAF;
                 //result += FICS.Fast_ICS(2, year) * Constants.acreFeetToMAF;
                 //result += FICS.Fast_ICS(5, year) * Constants.acreFeetToMAF;
                 //result += FICS.Fast_ICS(8, year) * Constants.acreFeetToMAF;
-                for (int i = 1; i < 9; i++)
+                //
+                // What are the units HERE?
+                //
+                for (int i = 0; i < 24; i++)
                 {
-                    if (FICS.Fast_CODE(i)) { result += FICS.Fast_ICS(i, year) * Constants.acreFeetToMAF; }
+                    if (FICS.Fast_CODE(i))
+                    {
+                        result += FICS.Fast_ICS(i, year) * Constants.acreFeetToMAF;                
+                    }
                 }
+                if (OverRide)
+                {
+                    Result = DCPICS(year);
+                }
+                if(0 < Result) result = Math.Min(result, Result);
             }
             else
             {
-
+                result = DCPICS(year);
             }
             return result;
         }
         //
-        #endregion ICS
-        // ---------------------------------------
+        internal double DCPICS(int year)
+        {
+            double result = 0;
+            int elm = Geti_MeadElevation();
+            double dcp = 0;
+            for (int i = 0; i < 24; i++)
+            {
+                if (FICSRegions.Contains(i))
+                {
+                    FBDCP.Allottments(year, elm, i, out dcp);
+                    ICS(i, dcp);
+                    result += dcp;
+                }
+            }
+            return result;
+        }
+        internal double stateLevel_DCPICS(int year, int state)
+        {
+            double result = 0;
+            int elm = Geti_MeadElevation();
+            double dcp = 0;
+            //for (int i = 0; i < 24; i++)
+            //{
+                if (FICSRegions.Contains(state))
+                {
+                    FBDCP.Allottments(year, elm, state, out dcp);
+                    ICS(state, dcp);
+                    result = dcp;
+                }
+            //}
+            return result;
+        }
+
+
+
+
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="dcp"></param>
+        internal void ICS(int state, double dcp)
+        {
+            if (state == 4) IcsArizona = dcp;
+            if (state == 6) IcsCalifornia = dcp;
+            if (state == 32)
+            {
+                IcsNevada = dcp;
+                IcsSNWA = 0;
+            }
+        }
         //
-        // All properties
-        // =======================================
-        #region Properties
-        // ---------------------------------------------------------------------
-        // ---------------------------------------------------------------------
-        // outside constructor 
-        double _flow = 0;
+        internal void IntentioinallyCreatedSurplusRegions()
+        {
+
+            for (int i = 0; i < FICS.FDataList.Count; i++)
+            {
+
+                if (FICS.Fast_SC(i))
+                {
+                   FICSRegions.Add(i);
+                }
+            }
+        }
+        #endregion ICS
+            // ---------------------------------------
+            //
+            // All properties
+            // =======================================
+            #region Properties
+            // ---------------------------------------------------------------------
+            // ---------------------------------------------------------------------
+            // outside constructor 
+            double _flow = 0;
         double CORiverFlow
         {
             get { return _flow; }
@@ -725,6 +899,12 @@ namespace CORiverModel
             set { _azshareCO = value; }
             get { return _azshareCO; }
         }
+        public double GetAZshareCO()
+        { return _azshareCO; }
+        public void SetAZshareCO(double value)
+        { _azshareCO = value; }
+
+
         double _azshortageCO = 0;
         public double AzShortageCOwater
         {
@@ -742,12 +922,13 @@ namespace CORiverModel
         public void SetCapwater(double value)
         { _capwater = value; }
         //
+
         public double GetOnRiverAZ()
         { return _onriver; }
         public void SetOnRiverAZ(double value)
         { _onriver = value; }
 
-        //
+        // million acre-feet annually
         public double GetUBtotal()
         { return _ubtotal; }
         public void SetUBtotal(double value)
@@ -763,7 +944,17 @@ namespace CORiverModel
         public void SetNVshareCO(double value)
         { _nvshare = value; }
         //
-
+        //
+        // 10.13.20 das
+        public void Seti_MeadElevation(int value)
+        {
+            FMeadElevation = value;
+        }
+        public int Geti_MeadElevation()
+        {
+            return FMeadElevation;
+        }
+        // end 10.13.20 das
 
 
         #endregion  Properties
@@ -1285,7 +1476,9 @@ namespace CORiverModel
             double available = baseStateMead - Constants.meadDeadPool + Flux;
             double preCAavailable = available;
             double eM = CORiverUtilities.MeadElevation(baseStateMead - evapM);
-
+            // 10.13.20 das
+            Seti_MeadElevation(Convert.ToInt32(eM));
+            // end 10.13.20 das
             // ===========================
             // ----------------
             // for testing ONLY
@@ -1302,14 +1495,29 @@ namespace CORiverModel
             double shortfall = Math.Max(0, -available + allocationNormal - sss);
             // start here
             double azShortageT = sss * az;
-            if (Constants.meadDeadPool < State_bb)
+            double caDCP = 0;
+            double azDCP = 0;
+            double nvDCP = 0;
+            //
+            // New code - 02.11.2021 - Tier zero takes precedence. State Codes: AZ=4, CA=6, CO=8, NV=32, NM=35, UT=49, WY=56
+            // 02.15.21 - note: by this point state_bb has already accounted for ICS, so this code was moved out of
+            // The if block. Elevation is still valid
+            if (eM <= Constants.meadTierZero)
             {
-                if (Constants.meadDeadPool < State_bb - Constants.allocation_ca)
+                caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
+                azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
+                nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+            }
+            // State_bb alread has ICS removed
+            if (Constants.meadDeadPool < State_bb+caDCP)
+            {
+                if (Constants.meadDeadPool < State_bb+caDCP    -  (Constants.allocation_ca-caDCP))
                 {
-                    StateMead = State_bb - Constants.allocation_ca;
-                    if (Constants.allocation_ca < Flux)
+                    // 02.15.21 I think this is now correct
+                    StateMead = State_bb+caDCP  - Constants.allocation_ca -caDCP;
+                    if (Constants.allocation_ca - caDCP < Flux)
                     {
-                        allocation_CA = Constants.allocation_ca;
+                        allocation_CA = Constants.allocation_ca- caDCP;
                     }
                     else
                     {
@@ -1352,8 +1560,8 @@ namespace CORiverModel
                         if (0 < postCAavailable)
                         {
                             postMXavailable = postCAavailable;
-                            allocation_NV = Math.Max(0, (postMXavailable * NvShortage));
-                            allocation_AZ = Math.Max(0, postMXavailable * AzShortage);
+                            allocation_NV = Math.Max(0, postMXavailable * NvShortage  );
+                            allocation_AZ = Math.Max(0, postMXavailable * AzShortage  ) ;
                             allocation_MX = Math.Max(0, (postMXavailable - (allocation_NV + allocation_AZ)));
                         }
                     }
@@ -1361,8 +1569,8 @@ namespace CORiverModel
                     {
                         normalShortage = true;
                         allocation_MX = Math.Max(0, Constants.allocation_mx - MxShortage * sss);
-                        allocation_NV = Math.Max(0, Constants.allocation_nv - NvShortage * sss);
-                        allocation_AZ = Math.Min(2.8, Math.Max(0, Constants.allocation_az - AzShortage * sss));
+                        allocation_NV = Math.Max(0, Constants.allocation_nv  - NvShortage * sss);
+                        allocation_AZ = Math.Min(2.8, Math.Max(0, Constants.allocation_az  - AzShortage * sss));
                     }
                 }
                 else
@@ -1419,10 +1627,10 @@ namespace CORiverModel
             // Subtract the ICS values from allocations
             //  10.26.2018
             // -----------------------------
-            allocation_NV -= (IcsNevada * Constants.acreFeetToMAF);
+            allocation_NV -= (IcsNevada * Constants.acreFeetToMAF) - nvDCP ;
             allocation_MX -= 0;
             allocation_CA -= (IcsCalifornia * 1 / Constants.oneMillion);
-            allocation_AZ -= (IcsArizona * 1 / Constants.oneMillion);
+            allocation_AZ -= (IcsArizona * 1 / Constants.oneMillion) - azDCP;
             // -----------------------------
 
             // ================================================================
@@ -1436,7 +1644,8 @@ namespace CORiverModel
             double total = allocation_NV + allocation_MX + allocation_CA + allocation_AZ;
             // ----------------------------
             AzShortageCOwater = Constants.allocation_az - allocation_AZ;
-            AZshareCO = allocation_AZ;
+            //AZshareCO = allocation_AZ;
+            SetAZshareCO(allocation_AZ);
             SetCAshareCO(allocation_CA);
             SetNVshareCO(allocation_NV);
 
@@ -1524,7 +1733,9 @@ namespace CORiverModel
             double preCAavailable = available;
             double postCAavailable = 0;
             double eM = CORiverUtilities.MeadElevation(baseStateMead - evapM);
-
+            // 10.13.20 das
+            Seti_MeadElevation(Convert.ToInt32(eM));
+            // end 10.13.20 das
             // ===========================
             // ----------------
             // for testing ONLY
@@ -1566,21 +1777,33 @@ namespace CORiverModel
             NV = LowerBasinRights * nv;
             MX = LowerBasinRights * mx;
             //
+            double caDCP = 0;
+            double azDCP = 0;
+            double nvDCP = 0;
+            //
             if (Constants.meadDeadPool < State_bb) // NOT State_bb?
                                                    // if (Constants.meadDeadPool < StateMead) // NOT State_bb?
             {
-                if (Constants.meadDeadPool < State_bb - CA)
+                // New code - 02.11.2021 - Tier zero takes precedence. State Codes: AZ=4, CA=6, CO=8, NV=32, NM=35, UT=49, WY=56
+                if (eM <= Constants.meadTierZero)
+                {
+                    caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
+                    azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
+                    nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+                }
+
+                if (Constants.meadDeadPool < State_bb - CA - caDCP)
                 {
                     // Normal Opperations
                     //
                     // Give CA water regardless
-                    StateMead = State_bb - CA;
+                    StateMead = State_bb - CA - caDCP;
                 }
                 else
                 {
                     double difference = 0;
                     difference = State_bb - Constants.meadDeadPool;
-                    CA = difference;
+                    CA = difference - caDCP;
                     StateMead = Constants.meadDeadPool;
                 }
             }
@@ -1639,8 +1862,8 @@ namespace CORiverModel
             }
             //
             allocation_CA = CA;
-            allocation_AZ = AZ;
-            allocation_NV = NV;
+            allocation_AZ = AZ ;
+            allocation_NV = NV ;
             allocation_MX = MX;
             //
             if (deltaBurden)
@@ -1655,10 +1878,10 @@ namespace CORiverModel
             // Subtract the ICS values from allocations
             //  10.26.2018
             // -----------------------------
-            allocation_NV -= IcsNevada * Constants.acreFeetToMAF;
+            allocation_NV -= IcsNevada * Constants.acreFeetToMAF - nvDCP;
             allocation_MX -= 0;
             allocation_CA -= IcsCalifornia * Constants.acreFeetToMAF;
-            allocation_AZ -= IcsArizona * Constants.acreFeetToMAF;
+            allocation_AZ -= IcsArizona * Constants.acreFeetToMAF - azDCP;
             // -----------------------------
 
             // Note differences in the reservoir states being used
@@ -1783,14 +2006,15 @@ namespace CORiverModel
             SetOnRiverAZ( Math.Min(AZshareCO, tempOnRiverAZ - (0.1 * AzShortageCOwater)));
             preCAP = Math.Max(0, AZshareCO - GetOnRiverAZ());
             //
+            // System losses added on 10.15.20 das
+            // Units MAF (after modifying)
             if (preCAP <= Constants.CAPcapacity)
             {
-                SetCapwater(preCAP);
+                SetCapwater(preCAP - Constants.CAPsystemLosses * 1/ Constants.oneMillion);
             }
             else
             {
-                SetCapwater(Constants.CAPcapacity);
- 
+                SetCapwater(Constants.CAPcapacity- Constants.CAPsystemLosses * 1/ Constants.oneMillion);
             }
             // 09.19.20 das
            // COriver.CAPwater = GetCapwater();
@@ -1859,28 +2083,7 @@ namespace CORiverModel
         //}
         //#endregion streamwriter
 
-        // EDIT QUAY 9/10/20
-        // Added River Start Trace year, to bring this through to WaterSimModel
-
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Seti co river trace start year.</summary>
-        /// <param name="value"> The value.</param>
-        ///-------------------------------------------------------------------------------------------------
-
-        public void Seti_CoRiverTraceStartYear(int value)
-        {
-            COriver.Seti_CoRiverTraceStartYear(value);
-        }
-
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Geti co river trace start year.</summary>
-        /// <returns> An int.</returns>
-        ///-------------------------------------------------------------------------------------------------
-
-        public int Geti_CoRiverTraceStartYear()
-        {
-            return COriver.Geti_CoRiverTraceStartYear();
-        }
+      
 
     }
 }

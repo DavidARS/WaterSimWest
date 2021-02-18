@@ -230,12 +230,15 @@ namespace CORiverDesignations
 
         #endregion CO water designations
         #endregion properties
-      
+
         // ====================================================================== 
         //
         // Methods
         //
         #region allottments
+        public override void Allottments(int year, int elevation, int state, out double cap) {
+            throw new NotImplementedException();
+        }
         //public override void Allottments(int year, double cap)
         public override void Allottments(int year, double cap)
         {
@@ -469,6 +472,10 @@ namespace CORiverDesignations
         #endregion partition
         //
         // allocate
+        public override void Allocate(int year, int elevation, int state, double cap)
+        {
+            throw new NotImplementedException();
+        }
        public override void Allocate(int year, double cap)
         {
             //Allottments(year, cap);
