@@ -15,16 +15,16 @@ using WaterSimDCDC.Generic;
 using WaterSimDCDC.Controls;
 using UniDB;
 
-
 namespace WaterSim_West_v_1
 {
 
     public partial class Form1 : Form
     {
         WaterSimManager_DB MyWSIM;
-//        WaterSimManager_SIO MyWSIM;
+        //        WaterSimManager_SIO MyWSIM;
 
         //WaterSimManager MyWSIM;
+       
 
         List<Form> SankeyForms = new List<Form>();
 
@@ -32,6 +32,8 @@ namespace WaterSim_West_v_1
         string ModelUnitName = "Arizona North";
 
         ChartManager MyCM = null;
+
+        StreamManager MyStream = null;
 
         ShowMultipleSankeyV1 MyMultiSankey = null;
 
@@ -47,12 +49,14 @@ namespace WaterSim_West_v_1
         string ActiveScenbarioName = TheDefaultScenarioName;
         //
         DateTime now = DateTime.Now;
-        StreamWriter sw;
         //
-        ProviderIntArray Out = new ProviderIntArray(0);
+        string path = "C:\\Users\\dasamps1\\Source\\Repos\\WaterSimWest\\WaterSim West API 2020\\WaterSim_West\\WaterSim_West_v_2\bin\\Debug\\LCLU.txt";
+
         public Form1()
         {
             InitializeComponent();
+           
+             //Utilities_Stream.SimpleWrite SW = new Utilities_Stream.SimpleWrite();
             // MyWSIM = new WaterSimManager_DB(".", ".");
             SQLServer ServerType = SQLServer.stText;
             string TheDefaultDatabase = Path.GetDirectoryName(Application.ExecutablePath);
@@ -61,7 +65,10 @@ namespace WaterSim_West_v_1
             MyWSIM.tempLCLU(MyWSIM);
             //     
             //MyWSIM = new WaterSimManager_SIO(".", ".");
+
+            
             //sw.WriteLine(MyWSIM.WaterSimWestModel.TotalDemand);
+
             //UnitData TheData = null;
             //TheData = MyWSIM.TheCRFNetwork.CRFUnitData;
 
@@ -111,18 +118,8 @@ namespace WaterSim_West_v_1
             
            // LoadParameterDropDown();
         }
-        public void StreamWriter(string TempDirectoryName)
-        {
-            string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
-                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-                + "_" + ".csv");
-            sw = File.AppendText(filename);
-        }
-        public void myClose(StreamWriter sw)
-        {
-            sw.Flush();
-            sw.Close();
-        }
+       
+       
 
         void SetupPhrasesAndColors()
         {
@@ -558,6 +555,8 @@ namespace WaterSim_West_v_1
 
         int CurrentParmChartIndex = 0;
 
+       
+
         private void DrawParameterGraph()
         {
             
@@ -871,6 +870,13 @@ namespace WaterSim_West_v_1
         {
             CreateNewFileDialog CNFD = new CreateNewFileDialog(MyWSIM,MyWSIM.DbConnection.Database);
             CNFD.Show();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+
+            MyStream.BuildAnnualParameterStream(MyWSIM, MyWSIM.SimulationRunResults, ParamFields[CurrentParmChartIndex], ParamLabels[CurrentParmChartIndex], regionTreeViewClass1.SelectedRegions);
+
         }
     }
 

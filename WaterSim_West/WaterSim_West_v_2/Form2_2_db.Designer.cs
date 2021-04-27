@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +63,7 @@
             this.comboBoxParameters = new System.Windows.Forms.ComboBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.ActionPage = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.buttonDoDrought = new System.Windows.Forms.Button();
             this.tabPageAssessment = new System.Windows.Forms.TabPage();
             this.panelGWColor = new System.Windows.Forms.Panel();
@@ -123,7 +124,7 @@
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1054, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1195, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -184,7 +185,7 @@
             this.runModelMenuItem,
             this.resetModelToolStripMenuItem});
             this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
-            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.tasksToolStripMenuItem.Text = "&Tasks";
             // 
             // runModelMenuItem
@@ -221,7 +222,7 @@
             this.Parameters.Location = new System.Drawing.Point(12, 66);
             this.Parameters.Name = "Parameters";
             this.Parameters.SelectedIndex = 0;
-            this.Parameters.Size = new System.Drawing.Size(1042, 479);
+            this.Parameters.Size = new System.Drawing.Size(1183, 479);
             this.Parameters.TabIndex = 3;
             // 
             // tabPage1
@@ -231,7 +232,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1034, 446);
+            this.tabPage1.Size = new System.Drawing.Size(1175, 446);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "SanKey Graph";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -242,10 +243,10 @@
             this.panelUserControls.Controls.Add(this.panelInput);
             this.panelUserControls.Controls.Add(this.panelIndicators);
             this.panelUserControls.Controls.Add(this.SanKeyGarphControlPanel);
-            this.panelUserControls.Location = new System.Drawing.Point(415, 2);
+            this.panelUserControls.Location = new System.Drawing.Point(470, 2);
             this.panelUserControls.Margin = new System.Windows.Forms.Padding(2);
             this.panelUserControls.Name = "panelUserControls";
-            this.panelUserControls.Size = new System.Drawing.Size(612, 448);
+            this.panelUserControls.Size = new System.Drawing.Size(698, 448);
             this.panelUserControls.TabIndex = 4;
             this.panelUserControls.Resize += new System.EventHandler(this.panelUserControls_Resize);
             // 
@@ -260,7 +261,7 @@
             this.panelInput.Location = new System.Drawing.Point(10, 252);
             this.panelInput.Margin = new System.Windows.Forms.Padding(2);
             this.panelInput.Name = "panelInput";
-            this.panelInput.Size = new System.Drawing.Size(596, 187);
+            this.panelInput.Size = new System.Drawing.Size(682, 187);
             this.panelInput.TabIndex = 4;
             this.panelInput.Resize += new System.EventHandler(this.panelInput_Resize);
             // 
@@ -270,10 +271,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanelMPs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanelMPs.BackColor = System.Drawing.Color.LightGray;
-            this.flowLayoutPanelMPs.Location = new System.Drawing.Point(256, 2);
+            this.flowLayoutPanelMPs.Location = new System.Drawing.Point(309, 2);
             this.flowLayoutPanelMPs.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanelMPs.Name = "flowLayoutPanelMPs";
-            this.flowLayoutPanelMPs.Size = new System.Drawing.Size(334, 169);
+            this.flowLayoutPanelMPs.Size = new System.Drawing.Size(367, 169);
             this.flowLayoutPanelMPs.TabIndex = 1;
             this.flowLayoutPanelMPs.Resize += new System.EventHandler(this.flowLayoutPanelMPs_Resize);
             // 
@@ -285,7 +286,7 @@
             this.treeViewInput.Location = new System.Drawing.Point(2, 5);
             this.treeViewInput.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewInput.Name = "treeViewInput";
-            this.treeViewInput.Size = new System.Drawing.Size(243, 166);
+            this.treeViewInput.Size = new System.Drawing.Size(288, 166);
             this.treeViewInput.TabIndex = 0;
             this.treeViewInput.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewInput_AfterCheck);
             this.treeViewInput.Resize += new System.EventHandler(this.treeViewInput_Resize_1);
@@ -299,7 +300,7 @@
             this.panelIndicators.Location = new System.Drawing.Point(10, 41);
             this.panelIndicators.Margin = new System.Windows.Forms.Padding(2);
             this.panelIndicators.Name = "panelIndicators";
-            this.panelIndicators.Size = new System.Drawing.Size(596, 184);
+            this.panelIndicators.Size = new System.Drawing.Size(682, 184);
             this.panelIndicators.TabIndex = 3;
             // 
             // listBoxIndicators
@@ -311,7 +312,7 @@
             this.listBoxIndicators.Location = new System.Drawing.Point(8, 2);
             this.listBoxIndicators.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxIndicators.Name = "listBoxIndicators";
-            this.listBoxIndicators.Size = new System.Drawing.Size(581, 164);
+            this.listBoxIndicators.Size = new System.Drawing.Size(667, 164);
             this.listBoxIndicators.TabIndex = 0;
             // 
             // SanKeyGarphControlPanel
@@ -323,7 +324,7 @@
             this.SanKeyGarphControlPanel.Controls.Add(this.SanKeyGraphcomboBox);
             this.SanKeyGarphControlPanel.Location = new System.Drawing.Point(10, 3);
             this.SanKeyGarphControlPanel.Name = "SanKeyGarphControlPanel";
-            this.SanKeyGarphControlPanel.Size = new System.Drawing.Size(599, 39);
+            this.SanKeyGarphControlPanel.Size = new System.Drawing.Size(685, 39);
             this.SanKeyGarphControlPanel.TabIndex = 2;
             // 
             // SankeyGraphUnitNameLabel
@@ -341,7 +342,7 @@
             this.SanKeyGraphcomboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SanKeyGraphcomboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SanKeyGraphcomboBox.FormattingEnabled = true;
-            this.SanKeyGraphcomboBox.Location = new System.Drawing.Point(222, 6);
+            this.SanKeyGraphcomboBox.Location = new System.Drawing.Point(308, 6);
             this.SanKeyGraphcomboBox.Name = "SanKeyGraphcomboBox";
             this.SanKeyGraphcomboBox.Size = new System.Drawing.Size(229, 28);
             this.SanKeyGraphcomboBox.TabIndex = 0;
@@ -383,7 +384,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1034, 446);
+            this.tabPage2.Size = new System.Drawing.Size(1175, 446);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Parameters by Provider";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -414,31 +415,43 @@
             this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(5, 38);
             this.chart1.Margin = new System.Windows.Forms.Padding(2);
             this.chart1.Name = "chart1";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chart1.Series.Add(series3);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(692, 387);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
             // 
             // ActionPage
             // 
+            this.ActionPage.Controls.Add(this.button1);
             this.ActionPage.Controls.Add(this.buttonDoDrought);
             this.ActionPage.Location = new System.Drawing.Point(4, 29);
             this.ActionPage.Margin = new System.Windows.Forms.Padding(2);
             this.ActionPage.Name = "ActionPage";
-            this.ActionPage.Size = new System.Drawing.Size(1034, 446);
+            this.ActionPage.Size = new System.Drawing.Size(1175, 446);
             this.ActionPage.TabIndex = 2;
             this.ActionPage.Text = "Actions";
             this.ActionPage.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(290, 297);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(185, 27);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Write Out Demand";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // buttonDoDrought
             // 
@@ -477,7 +490,7 @@
             this.tabPageAssessment.Location = new System.Drawing.Point(4, 29);
             this.tabPageAssessment.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageAssessment.Name = "tabPageAssessment";
-            this.tabPageAssessment.Size = new System.Drawing.Size(1034, 446);
+            this.tabPageAssessment.Size = new System.Drawing.Size(1175, 446);
             this.tabPageAssessment.TabIndex = 3;
             this.tabPageAssessment.Text = "Assessment";
             this.tabPageAssessment.UseVisualStyleBackColor = true;
@@ -698,7 +711,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 29);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1034, 446);
+            this.tabPage3.Size = new System.Drawing.Size(1175, 446);
             this.tabPage3.TabIndex = 4;
             this.tabPage3.Text = "Parameter Tree Example";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -725,7 +738,7 @@
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 551);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1054, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1195, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -744,7 +757,7 @@
             this.toolStripButton3});
             this.toolStripTasks.Location = new System.Drawing.Point(0, 24);
             this.toolStripTasks.Name = "toolStripTasks";
-            this.toolStripTasks.Size = new System.Drawing.Size(1054, 39);
+            this.toolStripTasks.Size = new System.Drawing.Size(1195, 39);
             this.toolStripTasks.TabIndex = 5;
             this.toolStripTasks.Text = "toolStrip1";
             // 
@@ -788,7 +801,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1054, 573);
+            this.ClientSize = new System.Drawing.Size(1195, 573);
             this.Controls.Add(this.toolStripTasks);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.Parameters);
@@ -888,6 +901,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

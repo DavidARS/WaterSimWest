@@ -70,6 +70,9 @@
     <Compile Include="..\WaterSim API source\WaterSimDCDC_Controls_RegionTreeView.cs">
       <Link>WaterSimDCDC_Controls_RegionTreeView.cs</Link>
     </Compile>
+    <Compile Include="..\WaterSim API source\WaterSimDCDC_Controls_StreamWriter_ver_1.cs">
+      <Link>WaterSimDCDC_Controls_StreamWriter_ver_1.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
