@@ -30,6 +30,7 @@
 ///-------------------------------------------------------------------------------------------------
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using WaterSim_Base;
 using System.Linq;
@@ -320,6 +321,8 @@ namespace WaterSimDCDC.Generic
         /// <summary> The surface model.</summary>
         readonly SurfaceModel FSurfaceModel;
         readonly WaterSim_CORiverModel FColoradoModel;
+        public StreamWriter swriter;
+        DateTime now = DateTime.Now;
 
         //public WaterSim_CORiverModel COS;
 
@@ -360,21 +363,23 @@ namespace WaterSimDCDC.Generic
                 FRateData = new RateDataClass(DataDirectoryName, RateDataFilename);
                 FDataLCLU = new DataClassLCLU(DataDirectoryName, AcerageDataFilename);
                 FDataTemperature = new DataClassTemperature(DataDirectoryName, TemperatureDataFilename);
+               // string Filename = "CompareDemand.txt";
+                //
+               // swriter = new StreamWriter(Filename); 
 
-                foreach (string Name in FUnitData.UnitNames)
-                {
-                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
-                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
-                    WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
-                    FUnitModels.Add(TempModel);
+                     foreach (string Name in FUnitData.UnitNames)
+                    {
+                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
+                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
+                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
+                        FUnitModels.Add(TempModel);
 
-                    set_DefaultDemandModel(TempModel);
-                    // modelCount += 1;
-                }
-
-                // EDIT QUAY 9/8/20
+                        set_DefaultDemandModel(TempModel);
+                        // modelCount += 1;
+                    }
+                       // EDIT QUAY 9/8/20
                 // Adding Surface Water Model
-                
+
                 FSurfaceModel = new SurfaceModel(FUnitData);
                 AddExternalModel(FSurfaceModel);
                 // Adding Colorado River Model
@@ -389,8 +394,10 @@ namespace WaterSimDCDC.Generic
             {
                 throw ex;
             }
+            /// <param name="TempDirectoryName"></param>
+  
         }
-
+  
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Constructor.</summary>
         ///

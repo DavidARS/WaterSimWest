@@ -52,6 +52,7 @@ namespace CORiverModel
         public static double powellSevenZero = 7.0;
         //
         // ==========================================================================
+        // DCP updated. 04.12.21
         // DCP 10.13.20 das
         // trigger elevations
         // units feet msl
@@ -73,6 +74,8 @@ namespace CORiverModel
         public static int caMead250k = 250000;
         public static int caMead300k = 300000;
         public static int caMead350k = 350000;
+        // ===================================
+        public static double dcpReduction2027 = 0.03;
         // ===================================
         // Misc subtractions
         // 2015 Coloraod Research Group 2016 Tribes and Colorado River Rights.pdf
@@ -242,7 +245,10 @@ namespace CORiverModel
         public const int NV = 32;
         //
         public const int DCPstartYear = 2020;
+        //
 
+
+        //
     }
     //
     public static class CORiverUtilities

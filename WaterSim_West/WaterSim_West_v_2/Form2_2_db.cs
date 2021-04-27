@@ -45,6 +45,11 @@ namespace WaterSim_West_v_1
         string TheFileNameForData = "";
         const string TheDefaultScenarioName = "Scenario_";
         string ActiveScenbarioName = TheDefaultScenarioName;
+        //
+        DateTime now = DateTime.Now;
+        StreamWriter sw;
+        //
+        ProviderIntArray Out = new ProviderIntArray(0);
         public Form1()
         {
             InitializeComponent();
@@ -54,7 +59,9 @@ namespace WaterSim_West_v_1
             //MyWSIM = new WaterSimManager_DB(ServerType, ".", ".", TheDefaultDatabase, "", "", "","");
             MyWSIM = new WaterSimManager_DB(ServerType, TheDefaultDatabase, TheDefaultDatabase, TheDefaultDatabase, "", "", "", "");
             MyWSIM.tempLCLU(MyWSIM);
-            //            MyWSIM = new WaterSimManager_SIO(".", ".");
+            //     
+            //MyWSIM = new WaterSimManager_SIO(".", ".");
+            //sw.WriteLine(MyWSIM.WaterSimWestModel.TotalDemand);
             //UnitData TheData = null;
             //TheData = MyWSIM.TheCRFNetwork.CRFUnitData;
 
@@ -103,6 +110,18 @@ namespace WaterSim_West_v_1
 
             
            // LoadParameterDropDown();
+        }
+        public void StreamWriter(string TempDirectoryName)
+        {
+            string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
+                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+                + "_" + ".csv");
+            sw = File.AppendText(filename);
+        }
+        public void myClose(StreamWriter sw)
+        {
+            sw.Flush();
+            sw.Close();
         }
 
         void SetupPhrasesAndColors()

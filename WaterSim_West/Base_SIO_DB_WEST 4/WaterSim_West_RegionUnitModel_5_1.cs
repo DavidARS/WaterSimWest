@@ -78,7 +78,7 @@ namespace WaterSimDCDC.Generic
     /// <summary>   Water simulation crf model. </summary>
     public class WaterSimCRFModel
     {
-
+ 
         /// <summary> The unit network.</summary>
         // QUAY EDIT
         // Changed to West_CRF_UnitNetwork to add COlorado
@@ -134,14 +134,12 @@ namespace WaterSimDCDC.Generic
         string FComment = "";
 
 
-        internal StreamWriter sw;
-        DateTime now = DateTime.Now;
-        /// <summary> The run call back.</summary>
+         /// <summary> The run call back.</summary>
         /// <remarks> This is the internal field for the Run Call back event handler, is called in run year if not null</remarks>
         /// <seealso cref="OnRunHandler"/>
         /// 
         OnRunModelHandler FRunCallBack = null;
-
+        StreamWriter SW;
         // http://waterdata.usgs.gov/fl/nwis/wu
         // Units
         // All USGS data for consumers, demands, and fluxes is Million Gallons Per Day.
@@ -297,7 +295,7 @@ namespace WaterSimDCDC.Generic
 
         }
         ///-------------------------------------------------------------------------------------------------
-        
+        ///
         public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, DataClassTemperature Tav ,string TheUnitName)
         {
             FUnitName = TheUnitName;
@@ -327,12 +325,9 @@ namespace WaterSimDCDC.Generic
             // This should include intitial values retreived from the database
             // As opposed to resetVariables() that set defaults for each simulation
             Initialize_Variables();
+            
             //initialize_FirstRun();
-            string Filename = "Compare.txt";
-
-          //  sw = new System.IO.StreamWriter(Filename);
-
-            //  isInitialized = true;
+              //  isInitialized = true;
           //  UD = new UrbanDemand_GPCD(this);
           ////  UDA = new UrbanDemand_GPCDa(this);
           //  UDR = new RuralDemand_LCLU_urban(this, TheRateData, DataLCLU);
@@ -341,6 +336,61 @@ namespace WaterSimDCDC.Generic
           //  PD = new PowerDemand_wp(this);
           //  IDR = new RuralDemand_LCLU_industry(this, TheRateData, DataLCLU);
           //  ID = new IndustryDemand_employee(this);
+            //
+
+
+        }
+        /// <summary>
+        ///  Temp constructure for this DAMN code
+        /// </summary>
+        /// <param name="TheUnitData"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="DataLCLU"></param>
+        /// <param name="Tav"></param>
+        /// <param name="TheUnitName"></param>
+        /// <param name="sw"></param>
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, DataClassTemperature Tav, string TheUnitName, StreamWriter sw)
+        {
+            FUnitName = TheUnitName;
+            string errMsg = "";
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            FDClclu = DataLCLU;
+            FDCtemperature = Tav;
+            //
+            SW = sw;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
+
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            // This should be used to initialize variables that will not change from one simulation to another
+            // This should include intitial values retreived from the database
+            // As opposed to resetVariables() that set defaults for each simulation
+            Initialize_Variables();
+
+            //initialize_FirstRun();
+            //  isInitialized = true;
+            //  UD = new UrbanDemand_GPCD(this);
+            ////  UDA = new UrbanDemand_GPCDa(this);
+            //  UDR = new RuralDemand_LCLU_urban(this, TheRateData, DataLCLU);
+            //  ADR = new RuralDemand_LCLU_ag(this, TheRateData, DataLCLU);
+            //  ADI = new AgriculturalDemand_income(this);
+            //  PD = new PowerDemand_wp(this);
+            //  IDR = new RuralDemand_LCLU_industry(this, TheRateData, DataLCLU);
+            //  ID = new IndustryDemand_employee(this);
             //
 
 
@@ -366,7 +416,7 @@ namespace WaterSimDCDC.Generic
         /// <summary>   Performs application-defined tasks associated with freeing, releasing, or
         ///             resetting unmanaged resources. </summary>
         ///
-        /// <seealso cref="System.IDisposable.Dispose()"/>
+        /// <seealso cref="IDisposable.Dispose()"/>
         ///-------------------------------------------------------------------------------------------------
 
         public void Dispose()
@@ -1322,7 +1372,8 @@ namespace WaterSimDCDC.Generic
         internal void annual_Consumers()
         {
             TemperatureData(FDCtemperature, this);
-            Urban();
+            Urban(SW);
+            //Urban();
             calculateGrayWater();
             //
             Agriculture();
@@ -1334,10 +1385,12 @@ namespace WaterSimDCDC.Generic
             // END EDIT 3/9/18
             Industrial();
             //
-
+        
         }
-
-        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 
+        /// </summary>
+         ///-------------------------------------------------------------------------------------------------
         /// <summary> Pre process tasks.</summary>
         /// <remarks>  Sets up fields that may change each year that are need for the consumer and resource management and
         ///            other model functions</remarks>
@@ -2585,7 +2638,48 @@ namespace WaterSimDCDC.Generic
             //        );
         }
         // END EDIT 3/1/18
+        void Urban(StreamWriter sw)
+        {
+            double period = (currentYear - startYear) + 1;
+            //
 
+            // Estimate demand
+            // double NewDemand = EstimateConsumerDemand(population, FBaseUrbanGPCD, UrbanConservation, FUrbanGPCDChangeCoef, FMinUrbanGPCDPercent, period);
+            //// NewDemand += this.TheAddedDemand;
+            // // 
+
+            // double Atemp = UD.GetDemand(currentYear);
+            // double temp = UDR.GetDemand(currentYear);
+
+            // double Mytemp = UD.GetDemand(currentYear);
+            // Mytemp+= this.TheAddedDemand;
+            //
+
+            // Is this the NEW structure?
+            // 07.10.18 das
+            double Demand = this.URBAN.GetDemand(currentYear);
+            // Demand += this.TheAddedDemand;
+            // 
+            // 
+            //// Sampson  Edits - 05.18.18
+
+            // ok this is now in gallons, convert it to MGD
+            // double NewDemandMGD = NewDemand / convertDemand;
+            //double NewDemandMGD = Demand / convertDemand;
+            double NewDemandMGD = Demand;
+            // Set value for parameter
+            seti_Urban((int)NewDemandMGD);
+            //sw.WriteLine(currentYear
+            //        + ","
+            //        + NewDemandMGD
+            //     + ","
+            //     + Atemp / convertDemand
+            //     + ","
+            //     + temp
+            //     + ","
+            //     + Mytemp
+            //        );
+        }
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Gets the urban gpcd.</summary>
@@ -3984,7 +4078,7 @@ namespace WaterSimDCDC.Generic
         }
         private static void CreateDirectory(string directoryName)
         {
-            System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(directoryName);
+            DirectoryInfo dir = new DirectoryInfo(directoryName);
             if (!dir.Exists)
             {
                 dir.Create();
