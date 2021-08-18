@@ -59,6 +59,7 @@ namespace WaterSim_Base
             isInstantiated = true;
             // assigns itself to the owner
             crf.URBAN = this;
+            CRF.URBAN = this; // does this make a difference?
         }
         #endregion Constructors
         // ================================================================================================================================================
@@ -334,6 +335,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             Demand(currentYear);
+
             temp = Math.Round(demandAg);
             return temp;
         }
@@ -848,18 +850,6 @@ namespace WaterSim_Base
             }
             return temp;
         }
-        //public double FastYear(string UnitName)
-        //{
-        //    double temp = InvalidRate;
-        //    DataLCLU TheData = FRuralDataList.Find(delegate (DataLCLU RD) {
-        //        return RD.UnitName == UnitName;
-        //    });
-        //    if (TheData.UnitName == UnitName)
-        //    {
-        //        temp = TheData.TheYear;
-        //    }
-        //    return temp;
-        //}
         #endregion class
         #endregion Data LCLU
 

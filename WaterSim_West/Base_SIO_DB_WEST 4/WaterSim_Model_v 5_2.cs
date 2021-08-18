@@ -301,7 +301,10 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         readonly UrbanDemand_GPCD UD;
         //
-
+        // das edits 06.03.21
+        readonly DataClassLcluArea FDataLCLUarea;
+        readonly DataClassRCN FDataLCLUrcn;
+        // end edits das o6.03.21
         //Resource Model list
         ResourceModelList FResourceModels =  new ResourceModelList();
 
@@ -356,12 +359,24 @@ namespace WaterSimDCDC.Generic
             string AcerageDataFilename = "LCLUAcres.csv";
             string TemperatureDataFilename = "Temperature.csv";
             // EDIT END 2 13 18
+            // das edits 06.03.21
+            string LCLUclassesFilename = "LCLUclassArea.csv";
+            string LCLUrcnFilename = "RCNbyLCLU.csv";
+            // end edits das 06.03.21
+            // edits 08.10.21 das
+            string RainFallFilename = "WSWestRainFall.csv";
+            // end edits 08.10.21 das
             try
             {
                 //StreamW(DataDirectoryName);
                 FUnitData = new UnitData(DataDirectoryName + "//" + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
                 FRateData = new RateDataClass(DataDirectoryName, RateDataFilename);
                 FDataLCLU = new DataClassLCLU(DataDirectoryName, AcerageDataFilename);
+                //
+                FDataLCLUarea = new DataClassLcluArea(DataDirectoryName, LCLUclassesFilename);
+                FDataLCLUrcn = new DataClassRCN(DataDirectoryName, LCLUrcnFilename);
+                //StormWater SW = new StormWater(FDataLCLUarea, FDataLCLUrcn);
+                //
                 FDataTemperature = new DataClassTemperature(DataDirectoryName, TemperatureDataFilename);
                // string Filename = "CompareDemand.txt";
                 //
@@ -377,9 +392,16 @@ namespace WaterSimDCDC.Generic
                         set_DefaultDemandModel(TempModel);
                         // modelCount += 1;
                     }
-                       // EDIT QUAY 9/8/20
+                // EDIT QUAY 9/8/20
                 // Adding Surface Water Model
+                DataClassRainFall RF = new DataClassRainFall(DataDirectoryName, RainFallFilename);
+                StormWater SW = new StormWater(FUnitData,RF, FDataLCLUarea, FDataLCLUrcn);
+                RainWaterHarvesting RW = new RainWaterHarvesting(RF);
+                //int year = 2010;
+                //SW.waterBudgetByClass(FUnitData,year);
+                //
 
+                //
                 FSurfaceModel = new SurfaceModel(FUnitData);
                 AddExternalModel(FSurfaceModel);
                 // Adding Colorado River Model

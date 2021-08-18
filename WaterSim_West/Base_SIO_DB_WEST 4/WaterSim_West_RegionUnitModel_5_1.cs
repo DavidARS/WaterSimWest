@@ -110,7 +110,8 @@ namespace WaterSimDCDC.Generic
         DemandModel AgDEM;
         DemandModel IndustrialDEM;
         DemandModel PowerDEM;
-
+        //
+        StormWater STORM;
         // Direct access models
         UrbanDemand_GPCD UD;
         //UrbanDemand_GPCDa UDA;
@@ -504,6 +505,13 @@ namespace WaterSimDCDC.Generic
             get { return PowerDEM; }
             set { PowerDEM = value; }
         }
+        // ======================================================
+        public StormWater Storm
+        {
+            get { return STORM; }
+            set { STORM = value; }
+        }
+        //=======================================================
         // ==============================================================================
         /// <summary>
         /// A Method and property to get added water demand due to temperature increases

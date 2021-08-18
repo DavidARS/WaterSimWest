@@ -95,7 +95,9 @@
     <Compile Include="Demand_Rural_LCLU.cs" />
     <Compile Include="Demand_Urban.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RainWaterHarvesting.cs" />
     <Compile Include="RiverModels_V1.cs" />
+    <Compile Include="StormWater_v2.cs" />
     <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_3_4.cs" />
     <Compile Include="WaterSimDCDC_API_WestTools.cs" />
     <Compile Include="WaterSiMDCDC_API_West_Indicators_v2_3.cs" />

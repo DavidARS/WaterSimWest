@@ -98,6 +98,7 @@ namespace WaterSim_West_v_1
             ResetSanKeyGraphUnit(ModelUnitName);
             // Create the chart manager
             MyCM = new ChartManager(chart1, "MyCHart");
+            MyStream = new StreamManager("Demand");
             // Setup Input Tree
             treeViewInput.CheckBoxes = true;
             foreach (int emp in MyWSIM.ParamManager.eModelParameters())
@@ -548,7 +549,10 @@ namespace WaterSim_West_v_1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MyCM.BuildAnnualParameterGraph(MyWSIM, MyWSIM.SimulationRunResults, "POP_P", "Population");
+            //MyCM.BuildAnnualParameterGraph(MyWSIM, MyWSIM.SimulationRunResults, "POP_P", "Population");
+            MyCM.BuildAnnualParameterGraph(MyWSIM, MyWSIM.SimulationRunResults, "UD_P", "Population");
+
+
 
             //waterSimChartControl1.ChartManager.BuildAnnualParameterGraph(MyWSIM, MyWSIM.SimulationRunResults, "POP_P", "Population");
         }
@@ -872,12 +876,18 @@ namespace WaterSim_West_v_1
             CNFD.Show();
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void Button2_Click_1(object sender, EventArgs e)
         {
-
-            MyStream.BuildAnnualParameterStream(MyWSIM, MyWSIM.SimulationRunResults, ParamFields[CurrentParmChartIndex], ParamLabels[CurrentParmChartIndex], regionTreeViewClass1.SelectedRegions);
-
+            bool start = true;
+            for (int i = 0; i < ParamFields.Length; i++)
+            {             
+                CurrentParmChartIndex = i;
+                MyStream.BuildAnnualParameterStream(MyWSIM, MyWSIM.SimulationRunResults, ParamFields[CurrentParmChartIndex], ParamLabels[CurrentParmChartIndex],start);
+                start = false;
+                
+            }
         }
+
     }
 
     

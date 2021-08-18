@@ -29,6 +29,7 @@
 //====================================================================================
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
@@ -212,82 +213,178 @@ namespace WaterSimDCDC.Controls
 
     public class StreamManager
     {
+        DateTime now = DateTime.Now;
+        internal StreamWriter sw;
+        internal StreamWriter sw1;
+        internal StreamWriter sw2;
+        internal StreamWriter sw3;
 
-        //------------------------------------------------------
-        public void BuildAnnualParameterStream(WaterSimManagerClass WSIM, SimulationResults SimRes, string fldname, string fieldlabel)
-        {
-            BuildAnnualParameterStream(WSIM, SimRes, fldname, fieldlabel, null);
-
-
+        string STitle;
+        public StreamManager(string StreamTitle)
+        {           
+            STitle = StreamTitle;
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Builds an annual parameter graph. </summary>
-        /// <param name="DT">           The datatable. </param>
-        /// <param name="DbConnection"> The database connection. </param>
-        /// <param name="Providers">    The providers to be charted. </param>
-        /// <param name="fldname">      The fldname or column name to be charted. </param>
-        ///-------------------------------------------------------------------------------------------------
-        //public void BuildAnnualParameterGraph(DataTable DT, UniDbConnection DbConnection, string ScenarioName, List<providerinfo> Providers, string fldname, string fieldlabel)
-
+        //------------------------------------------------------
+        public void BuildAnnualParameterStream(WaterSimManagerClass WSIM, SimulationResults SimRes, string fldname, string fieldlabel, bool start)
+        {
+            if (start) { StreamW(@"Outputs\\"); StreamW1(@"Outputs\\"); StreamW2(@"Outputs\\"); StreamW3(@"Outputs\\"); }
+            //if (fldname == "POP_P") { StreamW(@"Outputs\\"); StreamW1(@"Outputs\\"); StreamW2(@"Outputs\\"); StreamW3(@"Outputs\\"); }
+            BuildAnnualParameterStream(WSIM, SimRes, fldname, fieldlabel, null);
+         
+        }
         public void BuildAnnualParameterStream(WaterSimManagerClass WSIM, SimulationResults SimRes, string fldname, string fieldlabel, string[] Regions)
         {
             List<string> debug = new List<string>();
-
-            // create a lits for data
-  
-            int pIndex = -1;
             int year = 0;
-            int pop = 0;
-            string pcode = "";
-            int yearCount = 0;
-            int yearIndex = 0;
-            // OK, figure out the years Min Max and Count
-            int MaxYear = -1;
-            int MinYear = 9999;
+           
+            int yearCount = SimRes.Length;     
 
-
-            // There must be a way to speed this up!
-            foreach (AnnualSimulationResults ASR in SimRes)
+            // run through once
+            if (fldname == "AD_P")
             {
-                year = ASR.year;
-                if (year > MaxYear) MaxYear = year;
-                if (year < MinYear) MinYear = year;
+                int ProviderCount = SimRes[0].Outputs.ProviderOutput[0].Values.Length;
+              
+             
+                for (int i = 0; i < 89; i++)
+                {
+                    // cities and towns demand
+                    if (i == 18)
+                    {
+                        for (int j = 0; j < 36; j++)
+                        {
+                            year = j + 2015;
+                            for (int k = 0; k < 24; k++)
+                            {
+                                string ProviderName = ProviderClass.ProviderNameList[k];
+                                int[] R = SimRes[j].Outputs.ProviderOutput[i].Values;
+                                sw.WriteLine(ProviderName + "," +  i + "," + j + "," + k + "," + year + "," + R[k]);
+
+                            }
+                        }
+                    }
+                 }
+                sw.Flush();
+                sw.Close();
+                for (int i = 0; i < 89; i++)
+                {
+                    // industry
+                    if (i == 22)
+                    {
+                        for (int j = 0; j < 36; j++)
+                        {
+                            year = j + 2015;
+                              for (int k = 0; k < 24; k++)
+                            {
+                                string ProviderName = ProviderClass.ProviderNameList[k];
+                                int[] R = SimRes[j].Outputs.ProviderOutput[i].Values;
+                                sw1.WriteLine(ProviderName + "," + i + "," + j + "," + k + "," + year + "," + R[k]);
+
+                            }
+                        }
+                    }
+                }
+                sw1.Flush();
+                sw1.Close();
+                for (int i = 0; i < 89; i++)
+                {
+                    // power
+                    if (i == 26)
+                    {
+                        for (int j = 0; j < 36; j++)
+                        {
+                            year = j + 2015;
+                            for (int k = 0; k < 24; k++)
+                            {
+                                string ProviderName = ProviderClass.ProviderNameList[k];
+                                int[] R = SimRes[j].Outputs.ProviderOutput[i].Values;
+                                sw2.WriteLine(ProviderName + "," + i + "," + j + "," + k + "," + year + "," + R[k]);
+
+                            }
+                        }
+                    }
+                }
+                sw2.Flush();
+                sw2.Close();
+                for (int i = 0; i < 89; i++)
+                {
+                    // Agriculture
+                    if (i == 20)
+                    {
+                        for (int j = 0; j < 36; j++)
+                        {
+                            year = j + 2015;
+                            for (int k = 0; k < 24; k++)
+                            {
+                                string ProviderName = ProviderClass.ProviderNameList[k];
+                                int[] R = SimRes[j].Outputs.ProviderOutput[i].Values;
+                                sw3.WriteLine(ProviderName + "," + i + "," + j + "," + k + "," + year + "," + R[k]);
+
+                            }
+                        }
+                    }
+                }
+                sw3.Flush();
+                sw3.Close();
+
+
             }
 
-         
-          
+        }
 
-          
+        public void StreamW(string TempDirectoryName)
+        {
+            string filename = string.Concat(TempDirectoryName + "Urban" + now.Month.ToString()
+                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+                + "_" + ".csv");
+            sw = File.AppendText(filename);
+        }
 
-
+        public void StreamW1(string TempDirectoryName)
+        {
+            string filename = string.Concat(TempDirectoryName + "Industry" + now.Month.ToString()
+                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+                + "_" + ".csv");
+            sw1 = File.AppendText(filename);
+        }
+        public void StreamW2(string TempDirectoryName)
+        {
+            string filename = string.Concat(TempDirectoryName + "Power" + now.Month.ToString()
+                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+                + "_" + ".csv");
+            sw2 = File.AppendText(filename);
+        }
+        public void StreamW3(string TempDirectoryName)
+        {
+            string filename = string.Concat(TempDirectoryName + "Agriculture" + now.Month.ToString()
+                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+                + "_" + ".csv");
+            sw3 = File.AppendText(filename);
         }
 
 
 
-
-
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary> Constructor. </summary>
-            /// <param name="AChart">     The chart. </param>
-            /// <param name="ChartTitle"> The chart title. </param>
-            ///-------------------------------------------------------------------------------------------------
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Constructor. </summary>
+        /// <param name="AChart">     The chart. </param>
+        /// <param name="ChartTitle"> The chart title. </param>
+        ///-------------------------------------------------------------------------------------------------
 
 
 
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary> Grab parameter provider data.</summary>
-            ///
-            /// <remarks> Quay, 3/1/2018.</remarks>
-            /// 
-            /// <param name="SimResults"> The simulation results.</param>
-            /// <param name="ParmType">   Type of the parameter.</param>
-            /// <param name="index">      Zero-based index of the.</param>
-            ///
-            /// <returns> An int[] if parmtype an index are correct, else returns a null</returns>
-            ///-------------------------------------------------------------------------------------------------
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Grab parameter provider data.</summary>
+        ///
+        /// <remarks> Quay, 3/1/2018.</remarks>
+        /// 
+        /// <param name="SimResults"> The simulation results.</param>
+        /// <param name="ParmType">   Type of the parameter.</param>
+        /// <param name="index">      Zero-based index of the.</param>
+        ///
+        /// <returns> An int[] if parmtype an index are correct, else returns a null</returns>
+        ///-------------------------------------------------------------------------------------------------
 
-            public int[] grabParmProviderData(AnnualSimulationResults SimResults, modelParamtype ParmType, int index)
+        public int[] grabParmProviderData(AnnualSimulationResults SimResults, modelParamtype ParmType, int index)
         {
             // check if index is 0 or greater
             if (index >= 0)

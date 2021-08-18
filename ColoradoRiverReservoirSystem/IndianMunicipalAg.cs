@@ -236,6 +236,10 @@ namespace CORiverDesignations
         // Methods
         //
         #region allottments
+        public override void Allottments(int year, int elevation, int state, bool update, out double convey)
+        {
+            throw new NotImplementedException();
+        }
         public override void Allottments(int year, int elevation, int state, out double cap) {
             throw new NotImplementedException();
         }
@@ -310,6 +314,18 @@ namespace CORiverDesignations
             CAPNIA = MandIPriority_NIA + AgPool + Excess;
             CAPMandI = CitiesP3 + CitiesMandIPriority;
             //
+        }
+        public override void Mitigation(int year, int elevation)
+        {
+            throw new NotImplementedException();
+        }
+        public override void Mitigation(int year, int elevation, int state, int priority, string pool, out double mit)
+        {
+            throw new NotImplementedException();
+        }
+        public override void Mitigation(int year, int elevation, int state, out double mit)
+        {
+            throw new NotImplementedException();
         }
         #endregion allotments
         //

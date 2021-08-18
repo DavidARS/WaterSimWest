@@ -57,23 +57,52 @@ namespace CORiverModel
         // trigger elevations
         // units feet msl
         public static int meadTierZero = 1090;
+        // added 04.29.21
+        public static int mead1075 = 1075;
+        public static int mead1050 = 1050;
         public static int mead1045 = 1045;
         public static int mead1040 = 1040;
         public static int mead1035 = 1035;
         public static int mead1030 = 1030;
+        public static int mead1025 = 1025;
         // units acre-feet year-1
         // ICS contributions
         // ===================================
         public static int azMead192k = 192000;
         public static int azMead240k = 240000;
         //
-        public static int nvMead8k = 8000;
+        public static int nvMead8k = 8000; // Mead at 1090 feet mls
         public static int nvMead10k = 10000;
+        // 04.29.21 das update
+        public static int nvMead21k = 21000; // Mead at 1075 feet mls
+        public static int nvMead25k = 25000; // Mead at 1050 feet mls
+        public static int nvMead27k = 27000; // Mead at 1045 feet mls
+        public static int nvMead30k = 30000; // Mead at 1025 feet mls
         //
         public static int caMead200k = 200000;
         public static int caMead250k = 250000;
         public static int caMead300k = 300000;
         public static int caMead350k = 350000;
+        //
+        // 04.29.21 das update
+        public static int azMead512k = 512000; // 1075 feet mls
+        public static int azMead592k = 592000; // 1050 feet mls
+        public static int azMead640k = 640000; // 1045 feet mls
+        public static int azMead720k = 720000; // 1025 feet mls
+        // 04.29.21 das update                                   //
+        public static int mxMead41k = 41000; // Mead at 1090 feet mls
+        public static int mxMead80k = 80000; // Mead at 1075 feet mls
+        public static int mxMead104k = 104000; // Mead at 1050 feet mls
+        public static int mxMead146k = 146000; // Mead at 1045 feet mls
+        public static int mxMead275k = 275000; // Mead at 1025 feet mls
+        //
+        // Mitigation water for shortage conditions
+        public static int azMitigation_Tier1_NIA = 147900;
+        public static int azMitigation_Tier1_AgPool = 105000;
+        public static int azMit_CAWCD_ICStoAg = 42000;
+        public static int azMit_UrbanToAg = 46500;
+        public static int azMit_CAWCD_ICStoNIA = 72100;
+        //
         // ===================================
         public static double dcpReduction2027 = 0.03;
         // ===================================
@@ -243,8 +272,10 @@ namespace CORiverModel
         public const int AZ = 4;
         public const int CA = 6;
         public const int NV = 32;
+        public const int MX = -1;
         //
         public const int DCPstartYear = 2020;
+        public const int MitigationstartYear = 2022;
         //
 
 

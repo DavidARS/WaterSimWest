@@ -642,7 +642,10 @@ namespace WaterSimDCDC
         ProviderIntArray In = new ProviderIntArray(0);
 
         internal int[] MyValue = new int[ProviderClass.NumberOfProviders];
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="MyWSIM"></param>
         public void tempLCLU(WaterSimManager MyWSIM)
         {
             for (int i = 0; i < ProviderClass.NumberOfProviders; i++) { MyValue[i] = 2; }

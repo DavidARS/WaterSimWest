@@ -18,8 +18,13 @@ namespace CORiverDesignations
        // public abstract void Allottments();
         public abstract void Allottments(int year, double convey);
         public abstract void Allottments(int year, int elevation, int state, out double convey);
+        public abstract void Allottments(int year, int elevation, int state, bool update, out double convey);
         public abstract void Allocate(int year, double convey);
         public abstract void Allocate(int year, int elevation, int state, double convey);
+        //
+        public abstract void Mitigation(int year, int elevation, int state, out double mit);
+        public abstract void Mitigation(int year, int elevation, int state, int priority,string pool, out double mit);
+        public abstract void Mitigation(int year, int elevation);
         /// <summary>
         /// 
         /// </summary>

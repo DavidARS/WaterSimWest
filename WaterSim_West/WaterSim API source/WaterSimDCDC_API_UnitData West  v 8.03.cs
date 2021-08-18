@@ -1205,6 +1205,11 @@ namespace WaterSimDCDC.Generic
         //
         // ========================================
         // 06.29.18 LCLU rates
+        // 05.28.21 das
+        // What are the units? Where did these come from? 05.28.21
+        //Million gallons per day per acre
+        // SSp2 scenario acerage from ICLUS 2
+        //----------------------------------------
         string FUubanRateLCLUFieldStr = "RURBRATE";
         string FINDRateLCLUFieldStr = "RINDRATE";
         string FAGRateLCLUFieldStr = "RAGRATE";
@@ -1228,7 +1233,11 @@ namespace WaterSimDCDC.Generic
         // ===========================
 
         List<RateData> FRateDataList = new List<RateData>();
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DataDirectory"></param>
+        /// <param name="Filename"></param>
         public RateDataClass(string DataDirectory, string Filename)
         {
             string errMessage = "";

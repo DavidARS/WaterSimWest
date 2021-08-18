@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using CORiverDesignations;
 using COReservoir_Base;
@@ -25,7 +26,7 @@ namespace CORiverModel
         ColoradoRiver COriver;
         COriverModel CRM;
         BasinDCP BDP;
-        // internal StreamWriter
+        internal StreamWriter sw;
 
         //
         //string UnitDataFIDContempory = "COflowDataExtended.csv";
@@ -68,7 +69,7 @@ namespace CORiverModel
             FICS = FUnitData3;
             FBDCP = BDP;
             Initialize();
-
+            StreamW("out");
         }
         /// <summary>
         /// 
@@ -258,7 +259,7 @@ namespace CORiverModel
             UpperBasinDeliveries(year);
             SelectUBuse(year);
             Reservoirs(year);
-            Designations();
+            Designations(year);
             //
             DownStream(year);
         }
@@ -486,22 +487,44 @@ namespace CORiverModel
         internal double stateLevel_DCPICS(int year, int state)
         {
             double result = 0;
+            bool update = true;
             int elm = Geti_MeadElevation();
+            //int elm = Convert.ToInt32(ElevationMead);
             double dcp = 0;
-            //for (int i = 0; i < 24; i++)
-            //{
+            // 05.06.21 edits das
+            if (state != -1)
+            {
                 if (FICSRegions.Contains(state))
                 {
-                    FBDCP.Allottments(year, elm, state, out dcp);
-                    ICS(state, dcp);
-                    result = dcp;
+
+                    if (update == true)
+                    {
+                        FBDCP.Allottments(year, elm, state, update, out dcp);
+                        ICS(state, dcp);
+                        result = dcp;
+                    }
+                    else
+                    {
+                        FBDCP.Allottments(year, elm, state, out dcp);
+                        ICS(state, dcp);
+                        result = dcp;
+                    }
                 }
+            }
+            else
+            {
+                // 05.06.21 added because Mexico is NOT in our data stream
+                FBDCP.Allottments(year, elm, state, update, out dcp);
+                ICS(state, dcp);
+                result = dcp;
+            }
+           
+            //else
+            //{
+            //    throw new Exception("state level DCP asked for, but states not provided - line 510 in PowellMead.cs");
             //}
             return result;
         }
-
-
-
 
         /// <summary>
         /// /
@@ -517,6 +540,7 @@ namespace CORiverModel
                 IcsNevada = dcp;
                 IcsSNWA = 0;
             }
+            if(state == -1) { }
         }
         //
         internal void IntentioinallyCreatedSurplusRegions()
@@ -686,6 +710,10 @@ namespace CORiverModel
         {
             set { _overFlowMead = value; }
             get { return _overFlowMead; }
+        }
+        double ElevationMead
+        {
+            get; set;
         }
         // ---------------------------------------------------------------------
         //
@@ -1399,7 +1427,7 @@ namespace CORiverModel
         }
         #endregion Powell
         #region Mead
-        //
+        //  years < 2019 
         public void FutureStateMeadInterimGuidelines(int year)
         {
             //double sM = 0;
@@ -1470,12 +1498,32 @@ namespace CORiverModel
             Flux = fluxPreBank + bankStorage - channelEvap + inFlowBanked;
             //
             //double State_bb = baseStateMead + Flux;
-            double State_bb = baseStateMead + Flux + IcsTotal; // 04.22.19 - unsure yet how to deal with this...
-            double fluxMead = Flux - IcsTotal; // added ICS here.. this needs rethinking
-            //
-            double available = baseStateMead - Constants.meadDeadPool + Flux;
+            double State_bb = baseStateMead + Flux; // + IcsTotal; //04.29.21 override of code 04.22.19 - unsure yet how to deal with this...
+            // 04.29.21 das
+            double fluxMead = 0;
+            fluxMead = Flux;
+            double available = 0;
+            /// for this code this will always be the case for 2019
+            if (year < Constants.DCPstartYear)
+            {
+                State_bb += State_bb + IcsTotal;
+                fluxMead = Flux;// - IcsTotal;
+                available = baseStateMead - Constants.meadDeadPool + Flux + IcsTotal; // ???????
+            }
+            else
+            {
+                // 2020 and on
+                available = baseStateMead - Constants.meadDeadPool + Flux;
+            }
+            // end 04.29.21 das
+           // double available = baseStateMead - Constants.meadDeadPool + Flux;
+
             double preCAavailable = available;
             double eM = CORiverUtilities.MeadElevation(baseStateMead - evapM);
+            // 04.29.21 das
+            ElevationMead = eM;
+            // end 04.29.21 das
+
             // 10.13.20 das
             Seti_MeadElevation(Convert.ToInt32(eM));
             // end 10.13.20 das
@@ -1498,6 +1546,7 @@ namespace CORiverModel
             double caDCP = 0;
             double azDCP = 0;
             double nvDCP = 0;
+            double mxDCP = 0;
             //
             // New code - 02.11.2021 - Tier zero takes precedence. State Codes: AZ=4, CA=6, CO=8, NV=32, NM=35, UT=49, WY=56
             // 02.15.21 - note: by this point state_bb has already accounted for ICS, so this code was moved out of
@@ -1507,27 +1556,44 @@ namespace CORiverModel
                 caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
                 azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
                 nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+                mxDCP = stateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
             }
-            // State_bb alread has ICS removed
-            if (Constants.meadDeadPool < State_bb+caDCP)
+            // 
+            if (Constants.meadDeadPool < State_bb+ (caDCP * Constants.acreFeetToMAF))
             {
-                if (Constants.meadDeadPool < State_bb+caDCP    -  (Constants.allocation_ca-caDCP))
+                if (Constants.meadDeadPool < State_bb + caDCP - (Constants.allocation_ca - caDCP))
                 {
-                    // 02.15.21 I think this is now correct
-                    StateMead = State_bb+caDCP  - Constants.allocation_ca -caDCP;
-                    if (Constants.allocation_ca - caDCP < Flux)
-                    {
-                        allocation_CA = Constants.allocation_ca- caDCP;
+                    // 02.15.21 I think this is now correct - NOPE!
+                    // 04.29.21 das start 
+                    if (eM >= Constants.mead1045) {
+                        StateMead = State_bb - Constants.allocation_ca;
                     }
                     else
                     {
-                        allocation_CA = Math.Max(0, Flux);
+                        // 04.29.21 - this was addded
+                        StateMead = State_bb  - Constants.allocation_ca;
+                        if (year >= Constants.DCPstartYear)
+                        {
+                            StateMead = State_bb + caDCP - (Constants.allocation_ca - caDCP );
+                            if (Constants.allocation_ca - caDCP < Flux)
+                            {
+                                allocation_CA = Constants.allocation_ca - caDCP ;
+                            }
+                            else
+                            {
+                                allocation_CA = Math.Max(0, Flux);
+                            }
+                        }
                     }
+                    // end 04.29.21 das   
                 }
                 else
                 {
                     StateMead = Constants.meadDeadPool;
                     allocation_CA = Flux;
+                    allocation_AZ = 0;
+                    allocation_NV = 0;
+                    allocation_MX = 0;
                 }
             }
             else
@@ -1540,15 +1606,28 @@ namespace CORiverModel
             allocation_AZ = 0;
             allocation_MX = 0;
             //
-            double postCAavailable = Math.Max(0, StateMead - Constants.meadDeadPool);
+            double postCAavailable = 0;
+            // NOTE: the DCPstartYear reflects a major change in how I amhandeling DCP ICS water
+            // based on a 04.29.21 briefing by CAP and AZDWR
+            //
+            if (year >= Constants.DCPstartYear)
+            {
+                postCAavailable = Math.Max(0, (StateMead + (azDCP+nvDCP+mxDCP )- Constants.meadDeadPool));
+            }
+            else
+            {
+                postCAavailable = Math.Max(0, StateMead - Constants.meadDeadPool);
+            }
+            //
             if (allocation_CA < preCAavailable)
             { }
             else
             {
+                // okay
                 allocation_CA = preCAavailable;
                 postCAavailable = 0;
             }
-            //
+            // if shortage sharing is happening, do someting!
             if (0 < sss)
             {
                 if (Constants.meadDeadPool < StateMead)
@@ -1556,21 +1635,38 @@ namespace CORiverModel
                     double postMXavailable = 0;
                     if (0 < shortfall)
                     {
-                        // Abnormal operatins on the reservoir
+                        // Abnormal operations on the reservoir
                         if (0 < postCAavailable)
                         {
-                            postMXavailable = postCAavailable;
-                            allocation_NV = Math.Max(0, postMXavailable * NvShortage  );
-                            allocation_AZ = Math.Max(0, postMXavailable * AzShortage  ) ;
-                            allocation_MX = Math.Max(0, (postMXavailable - (allocation_NV + allocation_AZ)));
+                            //postMXavailable = postCAavailable;
+                            //allocation_NV = Math.Max(0, postMXavailable * NvShortage  );
+                            //allocation_AZ = Math.Max(0, postMXavailable * AzShortage  ) ;
+                            //allocation_MX = Math.Max(0, (postMXavailable - (allocation_NV + allocation_AZ)));
+                            if (postCAavailable < allocation_AZ + allocation_NV + allocation_MX)
+                            {
+                                postMXavailable = postCAavailable;
+                                allocation_NV = Math.Max(0, postMXavailable * NvShortage);
+                                allocation_AZ = Math.Max(0, postMXavailable * AzShortage);
+                                allocation_MX = Math.Max(0, (postMXavailable - (allocation_NV + allocation_AZ)));
+                            }
+                            else
+                            {
+                                // should never be here - 04.29.21 das
+                                throw new Exception("Should not be in this shortage loop- abnormal allocations");
+                            }
+
                         }
                     }
                     else
                     {
-                        normalShortage = true;
-                        allocation_MX = Math.Max(0, Constants.allocation_mx - MxShortage * sss);
-                        allocation_NV = Math.Max(0, Constants.allocation_nv  - NvShortage * sss);
-                        allocation_AZ = Math.Min(2.8, Math.Max(0, Constants.allocation_az  - AzShortage * sss));
+                        // 04.29.21 das added this if block
+                        if (0 < postCAavailable)
+                        {
+                            normalShortage = true;
+                            allocation_MX = Math.Max(0, Constants.allocation_mx - MxShortage * sss);
+                            allocation_NV = Math.Max(0, Constants.allocation_nv - NvShortage * sss);
+                            allocation_AZ = Math.Min(2.8, Math.Max(0, Constants.allocation_az - AzShortage * sss));
+                        }
                     }
                 }
                 else
@@ -1578,14 +1674,24 @@ namespace CORiverModel
                     StateMead = Constants.meadDeadPool;
                     abnormalDifference = true;
                 }
+
+
             }
             else
             {
+                // no shortages- dcp added in postCAavailable
                 if (postCAavailable >= Constants.allocation_az + Constants.allocation_nv + Constants.allocation_mx)
                 {
-                    allocation_NV = Constants.allocation_nv;
-                    allocation_AZ = Constants.allocation_az;
-                    allocation_MX = Constants.allocation_mx;
+                    // th DCP's should be equal to zero at this point
+                    // 04.29.21 added the DCP subtractions
+                    allocation_NV = Constants.allocation_nv;// - nvDCP ;
+                    allocation_AZ = Constants.allocation_az;// - azDCP ;
+                    allocation_MX = Constants.allocation_mx;// - mxDCP ;
+                }
+                else
+                {
+                    // would we ever be here? 
+                    throw new Exception("no shortages, but postCAavailable < allocations");
                 }
             }
             //
@@ -1617,9 +1723,13 @@ namespace CORiverModel
             {
                 // ensure that units are the same here
                 allocation_NV = Math.Max(0, allocation_NV - requestCOdelta_nv);
+                if(allocation_NV < 1) { throw new Exception("CO delta request for NV water > allocation"); }
                 allocation_MX = Math.Max(0, allocation_MX - requestCOdelta_mx);
+                if (allocation_MX < 1) { throw new Exception("CO delta request for MX water > allocation"); }
                 allocation_CA = Math.Max(0, allocation_CA - requestCOdelta_ca);
+                if (allocation_CA < 1) { throw new Exception("CO delta request for CA water > allocation"); }
                 allocation_AZ = Math.Max(0, allocation_AZ - requestCOdelta_az);
+                if (allocation_AZ < 1) { throw new Exception("CO delta request for AZ water > allocation"); }
             }
 
 
@@ -1627,10 +1737,30 @@ namespace CORiverModel
             // Subtract the ICS values from allocations
             //  10.26.2018
             // -----------------------------
-            allocation_NV -= (IcsNevada * Constants.acreFeetToMAF) - nvDCP ;
-            allocation_MX -= 0;
-            allocation_CA -= (IcsCalifornia * 1 / Constants.oneMillion);
-            allocation_AZ -= (IcsArizona * 1 / Constants.oneMillion) - azDCP;
+            // 04.29.21 das added
+            if (year >= Constants.DCPstartYear)
+            {
+                if(year > Constants.MitigationstartYear)
+                {
+                    if (eM > Constants.mead1050)
+                    {
+                        if (eM < Constants.mead1075)
+                        {
+                           double temp = Constants.azMitigation_Tier1_AgPool + Constants.azMitigation_Tier1_NIA;
+                            /// allocations already have dcp removed after the DCPstartYear
+                        }
+                    }
+                }
+            }
+            else
+            { 
+                // subtracting dcp contributions
+                allocation_NV -= (IcsNevada * Constants.acreFeetToMAF);
+                allocation_MX -= 0;
+                allocation_CA -= (IcsCalifornia * 1 / Constants.oneMillion);
+                allocation_AZ -= (IcsArizona * 1 / Constants.oneMillion);
+            }
+            // end 04.29.21 das
             // -----------------------------
 
             // ================================================================
@@ -1726,27 +1856,56 @@ namespace CORiverModel
             Flux = fluxPreBank + bankStorage - channelEvap + inFlowBanked;
             //
             // 04.22.19 added ICS here... not sure yet on this fix
-            double State_bb = baseStateMead + Flux + IcsTotal;
-            double fluxMead = Flux - IcsTotal;
-            //
-            double available = baseStateMead - Constants.meadDeadPool + Flux;
+            // 04.29.21 NEW CODE
+            // edits das
+            // 
+            // 05.04.21 das edits
+            double State_bb = 0;
+            double available = 0;
+            double fluxMead = 0;
+            if (year < Constants.DCPstartYear)
+            {
+                // Runs for 2019 only - in this if block
+                State_bb = baseStateMead + Flux + IcsTotal;
+                available = baseStateMead - Constants.meadDeadPool + Flux + IcsTotal;
+                fluxMead = Flux - IcsTotal;
+            }
+            else
+            {
+                // This will always be the case with  this code for 2020 and on
+                State_bb = baseStateMead + Flux;
+                available = baseStateMead - Constants.meadDeadPool + Flux;
+                fluxMead = Flux;
+            }
+            // end edits 05.04.21 das
+            //      
             double preCAavailable = available;
             double postCAavailable = 0;
+            //
             double eM = CORiverUtilities.MeadElevation(baseStateMead - evapM);
+            ElevationMead = eM;
             // 10.13.20 das
             Seti_MeadElevation(Convert.ToInt32(eM));
             // end 10.13.20 das
-            // ===========================
-            // ----------------
-            // for testing ONLY
-            //double test = Math.Pow((2), (2));
-            //eM = 1015;
-            //sM = CORiverUtilities.StateFromElevationMead(eM);
-            // ----------------
-            // ==============================================
-            // Use Guidlines shortage SevenStates(eM)
-            //-----------------------
-            // sss is a ratio - NEED a way to override this variable
+            //
+            // edits 05.07.21 das
+            double caDCP = 0;
+            double azDCP = 0;
+            double nvDCP = 0;
+            double mxDCP = 0;
+            //         
+            // end edits 05.07.21 das
+           // ===========================
+           // ----------------
+           // for testing ONLY
+           //double test = Math.Pow((2), (2));
+           //eM = 1015;
+           //sM = CORiverUtilities.StateFromElevationMead(eM);
+           // ----------------
+           // ==============================================
+           // Use Guidlines shortage SevenStates(eM)
+           //-----------------------
+           // sss is a ratio - NEED a way to override this variable
             double sss = 0;
             sss = SevenStates(eM);
             //
@@ -1768,43 +1927,72 @@ namespace CORiverModel
             // Presumes that California has senior rights
             // Both caps will be used to define rights in MAF
             // ----------------------------
+            // 05.07.21 das
+            bool skipCode = false;
+            // end edits 05.07.21
             double CA = 0;
             CA = LowerBasinRights * ca;
             //
             double AZ = 0; double NV = 0; double MX = 0;
             // Modifyable rights
+            // Maximum rights that will be adjusted, if needed below
             AZ = LowerBasinRights * az;
             NV = LowerBasinRights * nv;
             MX = LowerBasinRights * mx;
             //
-            double caDCP = 0;
-            double azDCP = 0;
-            double nvDCP = 0;
+            // testing
+            //eM = 1024;
+            //Seti_MeadElevation(Convert.ToInt32(eM));
             //
-            if (Constants.meadDeadPool < State_bb) // NOT State_bb?
-                                                   // if (Constants.meadDeadPool < StateMead) // NOT State_bb?
+            if (eM <= Constants.meadTierZero)
             {
-                // New code - 02.11.2021 - Tier zero takes precedence. State Codes: AZ=4, CA=6, CO=8, NV=32, NM=35, UT=49, WY=56
-                if (eM <= Constants.meadTierZero)
-                {
-                    caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
-                    azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
-                    nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
-                }
+                // calculate DCP regardless of elevation...estimated elevation is seen by the method
+                caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
+                azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
+                nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+                mxDCP = stateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
+            }
 
-                if (Constants.meadDeadPool < State_bb - CA - caDCP)
+            // 1 January of every year - state for Mead reflects initial pool
+            if (Constants.meadDeadPool < State_bb) //                                                 
+             {
+                // New code - 02.11.2021 - Tier zero takes precedence. State Codes: AZ=4, CA=6, CO=8, NV=32, NM=35, UT=49, WY=56
+                //if (eM <= Constants.meadTierZero)
+                //{
+                //    // calculate DCP regardless of elevation...estimated elevation is seen by the method
+                //    caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
+                //    azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
+                //    nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+                //    mxDCP = stateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
+                //}
+                //05.04.21
+                // edits... I do not know why I was subtracting out the caDCP
+                //if (Constants.meadDeadPool < State_bb - CA - caDCP)
+                // edits 05.05.21 das
+                CA -= caDCP;
+                // end edits 05.05.21 das
+                if (Constants.meadDeadPool < State_bb - CA )
                 {
                     // Normal Opperations
                     //
                     // Give CA water regardless
-                    StateMead = State_bb - CA - caDCP;
-                }
+                    // caDCP remains in the lake
+                    StateMead = State_bb - CA ;
+                 }
                 else
                 {
                     double difference = 0;
                     difference = State_bb - Constants.meadDeadPool;
-                    CA = difference - caDCP;
+                    // 05.04.21 das
+                    CA =  difference;                  
+                    // end edits 05.04.21 das
                     StateMead = Constants.meadDeadPool;
+                    // 05.04.21 das
+                    AZ = 0;
+                    NV = 0;
+                    MX = 0;
+                    // end edits 05.04.21 das
+                    skipCode = true;
                 }
             }
             else
@@ -1813,76 +2001,163 @@ namespace CORiverModel
                 AZ = 0;
                 NV = 0;
                 MX = 0;
+                // 05.07.21 edits das
+                StateMead = caDCP + azDCP + nvDCP + mxDCP;
+                // end edits 05.07.21 das
+                // 05.07.21
+                skipCode = true;
+                // end edits 05.07.21
             }
             //
-            postCAavailable = Math.Max(0, StateMead - Constants.meadDeadPool);
-            //
-            if (0 < sss)
+            // edits 05.07.21 added this skipCode loop
+            // Mead at dead pool or nearly so.
+            if (skipCode)
             {
-                if (Constants.meadDeadPool < StateMead)
-                {
-                    double normalShortageConditions = Math.Max(0, -(StateMead - Constants.meadDeadPool) + totalCOallocated_LB);
-                    if (0 < normalShortageConditions)
-                    {
-                        // abnormal shortage
-                        AZ = postCAavailable * AzShortage;
-                        NV = postCAavailable * NvShortage;
-                        MX = postCAavailable - (AZ + NV);
-                    }
-                    else
-                    {
-                        // normal shortage
-                        MX = Math.Max(0, LowerBasinRights * mx - MxShortage * sss);
-                        NV = Math.Max(0, LowerBasinRights * nv - NvShortage * sss);
-                        AZ = Math.Min(2.8, Math.Max(0, LowerBasinRights * az - AzShortage * sss));
-                    }
-                }
-                else
-                {
-                    // mead at dead pool
-                }
+                allocation_CA = CA;
+                allocation_AZ = AZ;
+                allocation_NV = NV;
+                allocation_MX = MX;
             }
             else
             {
-                // This code is new to the C# program (not in the FORTRAN code)
-                if (AZ + NV + MX < (StateMead - Constants.meadDeadPool))
+                // Normal River Obligations
+                // ===============================================================
+                postCAavailable = Math.Max(0, StateMead - Constants.meadDeadPool);
+                //
+                // 05.04.21 das edits
+                AZ -= azDCP;
+                NV -= nvDCP;
+                MX -= mxDCP;
+                // end edits 05.04.21 das
+                if (0 < sss)
                 {
-                    StateMead -= (AZ + NV + MX);
+                    if (Constants.meadDeadPool < StateMead) //
+                    {
+                        double normalShortageConditions = Math.Max(0, -(StateMead - Constants.meadDeadPool) + totalCOallocated_LB);
+                        if (0 < normalShortageConditions)
+                        {
+                            // abnormal shortage
+                            // should never be here - 04.29.21 das
+                            // 05.07.21 das
+                            // I am no longer clear as to why I wrote this if block....
+
+                            //MX = LowerBasinRights * mx - MxShortage * sss;
+                            //AZ = LowerBasinRights * az - AzShortage * sss;
+                            //NV = LowerBasinRights * nv - MxShortage * sss;
+                            //StateMead -= (AZ + NV + MX);
+
+                            throw new Exception("Should not be in this shortage loop- abnormal allocations- line 2048- PowellMead");
+                        }
+                        else
+                        {
+                            // 05.07.21 das
+                            // ===============================
+                            if (year >= Constants.DCPstartYear)
+                            {
+                                StateMead -= (AZ + NV + MX);
+                            }
+                            else
+                            {
+                                // 05.04.21 das edits
+                                //
+                                MX = LowerBasinRights * mx - MxShortage * sss;
+                                AZ = LowerBasinRights * az - AzShortage * sss;
+                                NV = LowerBasinRights * nv - MxShortage * sss;
+                                StateMead -= (AZ + NV + MX);
+                                // end edits 05.05.21 das
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // mead at dead pool
+                        // edits 05.04.21 das added this line
+                        StateMead = Constants.meadDeadPool;
+                        // edits 05.07.21 das
+                        // add the DCP back in
+                        StateMead += caDCP + azDCP + nvDCP + mxDCP;
+                        // end edits 05.07.21 das
+                    }
                 }
                 else
                 {
-                    // divy up that which is available
-                    double difference = 0;
-                    difference = StateMead - Constants.meadDeadPool;
-                    AZ = difference * az;
-                    NV = difference * nv;
-                    MX = difference * mx;
-                    StateMead = Constants.meadDeadPool;
+                    // no shortage.... but I have added the DCP code above.. so Tier one accounted for
+                    // This code is new to the C# program (not in the FORTRAN code)
+                    if (AZ + NV + MX < (StateMead - Constants.meadDeadPool))
+                    {
+                        StateMead -= (AZ + NV + MX);
+                    }
+                    else
+                    {
+                        // divy up that which is available
+                        double difference = 0;
+                        // 05.07.21 das edits
+                        difference = StateMead - Constants.meadDeadPool;
+                        AZ = Math.Min(difference * az, AZ);
+                        NV = Math.Min(difference * nv, NV);
+                        MX = Math.Min(difference * mx, MX);
+                        //
+                        double Atotal = AZ + NV + MX;
+                        if (Atotal < difference)
+                        {
+                            StateMead = Constants.meadDeadPool + (difference - Atotal);
+                        }
+                        else
+                        {
+                            StateMead = Constants.meadDeadPool;
+                        }
+                        //difference = StateMead - Constants.meadDeadPool;
+                        //AZ = difference * az;
+                        //NV = difference * nv;
+                        //MX = difference * mx;
+                        //StateMead = Constants.meadDeadPool;
+
+                        // end edits 05.07.21 das
+                    }
                 }
-            }
-            //
-            allocation_CA = CA;
-            allocation_AZ = AZ ;
-            allocation_NV = NV ;
-            allocation_MX = MX;
-            //
-            if (deltaBurden)
-            {
-                // ensure that units are the same here
-                allocation_NV = Math.Max(0, allocation_NV - requestCOdelta_nv);
-                allocation_MX = Math.Max(0, allocation_MX - requestCOdelta_mx);
-                allocation_CA = Math.Max(0, allocation_CA - requestCOdelta_ca);
-                allocation_AZ = Math.Max(0, allocation_AZ - requestCOdelta_az);
-            }
-            // ================================================================
-            // Subtract the ICS values from allocations
-            //  10.26.2018
-            // -----------------------------
-            allocation_NV -= IcsNevada * Constants.acreFeetToMAF - nvDCP;
-            allocation_MX -= 0;
-            allocation_CA -= IcsCalifornia * Constants.acreFeetToMAF;
-            allocation_AZ -= IcsArizona * Constants.acreFeetToMAF - azDCP;
-            // -----------------------------
+                //
+                // 05.04.21 this code never check to see if CA rights were available......
+                allocation_CA = CA;
+                allocation_AZ = AZ;
+                allocation_NV = NV;
+                allocation_MX = MX;
+                //
+                if (deltaBurden)
+                {
+                    // ensure that units are the same here
+                    allocation_NV = Math.Max(0, allocation_NV - requestCOdelta_nv);
+                    if (allocation_NV < 1) { throw new Exception("CO delta request for NV water > allocation"); }
+                    allocation_MX = Math.Max(0, allocation_MX - requestCOdelta_mx);
+                    if (allocation_MX < 1) { throw new Exception("CO delta request for MX water > allocation"); }
+                    allocation_CA = Math.Max(0, allocation_CA - requestCOdelta_ca);
+                    if (allocation_CA < 1) { throw new Exception("CO delta request for CA water > allocation"); }
+                    allocation_AZ = Math.Max(0, allocation_AZ - requestCOdelta_az);
+                    if (allocation_AZ < 1) { throw new Exception("CO delta request for AZ water > allocation"); }
+
+                    // ensure that units are the same here
+                    //allocation_NV = Math.Max(0, allocation_NV - requestCOdelta_nv);
+                    //allocation_MX = Math.Max(0, allocation_MX - requestCOdelta_mx);
+                    //allocation_CA = Math.Max(0, allocation_CA - requestCOdelta_ca);
+                    //allocation_AZ = Math.Max(0, allocation_AZ - requestCOdelta_az);
+                }
+                // ================================================================
+                // Subtract the ICS values from allocations
+                //  10.26.2018
+                // -----------------------------
+                // 05.07.21 NOT sure about this code
+                if (year < Constants.DCPstartYear)
+                {
+                    allocation_NV -= IcsNevada * Constants.acreFeetToMAF;
+                    allocation_MX -= 0;
+                    allocation_CA -= IcsCalifornia * Constants.acreFeetToMAF;
+                    allocation_AZ -= IcsArizona * Constants.acreFeetToMAF;
+                }
+                else
+                {
+                    // 05.05.21 edits by DAS added the if block
+                }
+                // -----------------------------
+            } // skipCode block end
 
             // Note differences in the reservoir states being used
             // ensure that the Powell State is set
@@ -1896,15 +2171,16 @@ namespace CORiverModel
 
             //
             AzShortageCOwater = Constants.allocation_az - allocation_AZ;
-            AZshareCO = allocation_AZ;
+            // edits 05.05.21 das
+            //AZshareCO = allocation_AZ;
+            SetAZshareCO(allocation_AZ);
+            // end edits 05.05.21 das
             SetCAshareCO(allocation_CA);
             SetNVshareCO(allocation_NV);
-            //double deadM = Constants.meadDeadPool;
-            //double deadP = Constants.powellDeadPool;
-            //double mead = StateMead - deadM;
-            //double powell = StatePowell - deadP;
+            //
+
             //double evapP = (CORiverUtilities.EvaporationPowell(StatePowell, PanEvapPowell) * 1000000);
-            // sw.WriteLine(year + "," + mead + "," + powell + "," + PowellRelease + "," + total + "," + eM + "," + eP + "," + (1000000 * evapM) + "," + evapP);
+            // sw.WriteLine(year + "," + StateMead + "," + StatePowell + "," + PowellRelease + "," + total + "," + eM + "," + eP + "," + (1000000 * evapM) + "," + evapP);
         }
         //
         #region streamwriter
@@ -1921,6 +2197,7 @@ namespace CORiverModel
         #endregion streamwriter
         // ==================================================================================================================================
         //
+        #region shortage
         internal double SevenStates(double elevMead)
         {
             double result = 0;
@@ -1984,15 +2261,38 @@ namespace CORiverModel
                 MxShortage = 1.0 - AzShortage - NvShortage;
             }
         }
-
+        #endregion shortage
         #endregion Mead
         //
         #endregion Reservoirs = Powell and Mead
+        #region mitigation
+        internal double Mitigation(int year)
+        {
+            double addToCAP = 0;
+            if (ElevationMead < Constants.mead1075)
+            {
+                if (ElevationMead > Constants.mead1050)
+                {
+                    if (year > Constants.MitigationstartYear)
+                    {
+                        // these may need changing to properties if they are subjst to be changed as elevations drop
+                        addToCAP = Constants.azMitigation_Tier1_AgPool + Constants.azMitigation_Tier1_NIA;
+                    }
+                }
+                else
+                {
+                    addToCAP = Constants.azMitigation_Tier1_AgPool + Constants.azMitigation_Tier1_NIA;
+                    //throw new Exception("Mitigation of CO River water not possible under current formulation");
+                }
+            }
+            return addToCAP;
+        }
+        #endregion mitigation
         //// =====================================================================
         //// designations from operations
-        //#region designations
+        #region CAP designations
         public double onRiver = 1.2;
-        internal void Designations()
+        internal void Designations(int year)
         {
             double tempOnRiverAZ = 0;
             tempOnRiverAZ=onRiver;
@@ -2004,24 +2304,34 @@ namespace CORiverModel
             // AHS meeting in PHX - CAP has to take 90 % of the AZ shortage..On - river take 10 %
 
             SetOnRiverAZ( Math.Min(AZshareCO, tempOnRiverAZ - (0.1 * AzShortageCOwater)));
-            preCAP = Math.Max(0, AZshareCO - GetOnRiverAZ());
-            //
+            // edit 04.29.21 das
+             // edit 05.06.21
+            double azMitigation_CAP = Mitigation(year);
+             // end edits 05.06.21 das
+            // end edits 04.29.21 das
+            // edits 04.29.21 das - added CAP mitigation to the equation
+            preCAP = Math.Max(0, (AZshareCO + azMitigation_CAP) - GetOnRiverAZ()) ;
+            // end edits 04.29.21 das
+
             // System losses added on 10.15.20 das
             // Units MAF (after modifying)
-            if (preCAP <= Constants.CAPcapacity)
+            // 04.29.21 
+            // Mitigation water added here (now)
+            //
+           if (preCAP <= Constants.CAPcapacity)
             {
-                SetCapwater(preCAP - Constants.CAPsystemLosses * 1/ Constants.oneMillion);
+                SetCapwater(preCAP - (Constants.CAPsystemLosses * 1/ Constants.oneMillion));
             }
             else
             {
-                SetCapwater(Constants.CAPcapacity- Constants.CAPsystemLosses * 1/ Constants.oneMillion);
+                SetCapwater(Constants.CAPcapacity- (Constants.CAPsystemLosses * 1/ Constants.oneMillion));
             }
             // 09.19.20 das
            // COriver.CAPwater = GetCapwater();
            // COriver.OnRiverAZ = OnRiverAZ;
             // --------------------
         }
-        // #endregion designations
+        #endregion designations
         #region Expected Storage
         /// <summary>
         /// 
@@ -2071,19 +2381,19 @@ namespace CORiverModel
 
         #endregion Expected Storage
         //#region streamwriter
-        //public void StreamW(string TempDirectoryName)
-        //{
-        //    //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
-        //    //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-        //    //    + "_" + ".csv");
-        //    string filename = string.Concat("Outputs/Output" + now.Month.ToString()
-        //       + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-        //       + "_" + ".csv");
-        //    sw = File.AppendText(filename);
-        //}
+        public void StreamW(string TempDirectoryName)
+        {
+            //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
+            //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+            //    + "_" + ".csv");
+            string filename = string.Concat("Outputs/Output" + now.Month.ToString()
+               + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+               + "_" + ".csv");
+            sw = File.AppendText(filename);
+        }
         //#endregion streamwriter
 
-      
+
 
     }
 }
