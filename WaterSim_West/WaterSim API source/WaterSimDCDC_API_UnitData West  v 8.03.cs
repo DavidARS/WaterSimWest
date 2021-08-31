@@ -232,7 +232,9 @@ namespace WaterSimDCDC.Generic
         List<SDResourceConsumerLink> FFluxes = new List<SDResourceConsumerLink>();
 
         protected List<string> FUnitNames = new List<string>();
- 
+        // das 08.25.21
+        protected List<string> FUnitCodes = new List<string>();
+        // end edits
         Color[] ResColors = new Color[] { Color.Aqua, Color.Blue, Color.Beige, Color.LightSeaGreen };
         Color[] ConsColors = new Color[] { Color.LightGray, Color.LightCoral, Color.DarkGreen, Color.SandyBrown, Color.LightSkyBlue };
 
@@ -266,7 +268,13 @@ namespace WaterSimDCDC.Generic
                     string TempName = DR[UDI.UnitNameField].ToString();
                     FUnitNames.Add(TempName);
                 }
-
+                //
+                FUnitCodes.Clear();
+                foreach (DataRow DR in FDataTable.Rows)
+                {
+                    string TempCode = DR[UDI.UnitCodeField].ToString();
+                    FUnitCodes.Add(TempCode);
+                }
             }
         }
 
@@ -660,7 +668,14 @@ namespace WaterSimDCDC.Generic
             }
 
         }
-     
+        public List<string> UnitCodes
+        {
+            get
+            {
+                return FUnitNames;
+            }
+
+        }
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Construct flux list. 

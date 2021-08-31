@@ -124,6 +124,10 @@ namespace WaterSimDCDC.Generic
         RuralDemand_LCLU_industry IDR;
         //============================
         DataClassTemperature DataClassT;
+        //
+        RainWaterHarvesting RWH;
+        //StormWater SWB;
+
         /// <summary>
         /// 
         ///
@@ -506,11 +510,19 @@ namespace WaterSimDCDC.Generic
             set { PowerDEM = value; }
         }
         // ======================================================
-        public StormWater Storm
+        // 08.23.21
+        public StormWater StormW
         {
             get { return STORM; }
             set { STORM = value; }
         }
+        public RainWaterHarvesting RainW
+        {
+            get { return RWH; }
+            set { RWH = value; }
+        }
+
+
         //=======================================================
         // ==============================================================================
         /// <summary>
@@ -1247,7 +1259,7 @@ namespace WaterSimDCDC.Generic
         // ===========================
         //
         #region Model kernel Calls
-
+        // das 2021
         //  Pretty Obvious
         // CLEAN UP int baseyear = 2015;
 

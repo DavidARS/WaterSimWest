@@ -38,6 +38,7 @@ namespace WaterSim_Base
         public DataClassLcluArea RCNarea;
         public DataClassRCN RCN;
         DataClassRainFall RainFall;
+        RainWaterHarvesting RW;
         //
         public bool isInstantiated = false;
         //
@@ -77,8 +78,18 @@ namespace WaterSim_Base
             Initialize_Variables();
             isInstantiated = true;
         }
-      
-        
+        public StormWater(UnitData UnitData, DataClassRainFall Rain, RainWaterHarvesting RWH, DataClassLcluArea DC, DataClassRCN rcn)
+        {
+            RCNarea = DC;
+            RCN = rcn;
+            FUnitData = UnitData;
+            RainFall = Rain;
+            RW = RWH;
+            Initialize_Variables();
+            isInstantiated = true;
+        }
+
+
         internal void Initialize_Variables()
         {
             //throw new NotImplementedException();
@@ -105,20 +116,19 @@ namespace WaterSim_Base
 
 
 
-        //
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="FUnitData"></param>
+        /// <param name="Name"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public double AreaByRCN(UnitData FUnitData, int year)
+        public double AreaByRCN(string Name, int year)
         {
             string soil = "A";
             double total = 0;
 
-            foreach (string Name in FUnitData.UnitNames)
-            {
+            //foreach (string Name in FUnitData.UnitNames)
+            //{
                 foreach (LcluClasses e in Enum.GetValues(typeof(LcluClasses)))
                 {
                     double temp = 0;
@@ -147,7 +157,7 @@ namespace WaterSim_Base
                     total += temp;
                 }
                 //Storage(FUnitData, total);
-            }
+            //}
 
             return total;
         }
@@ -156,27 +166,36 @@ namespace WaterSim_Base
         ///  Main method to calculate the rainfall butgets- call from WaterSim_model
         /// </summary>
         /// <param name="FUnitData"></param>
-        /// <param name="year"></param>
+        /// 
         /// <returns></returns>
-        public double waterBudgetByClass(UnitData FUnitData, int year)
+        public double waterBudgetByClass(UnitData FUnitData)
         {
 
             double total = 0;
-
-            foreach (string Name in FUnitData.UnitNames)
+            int i = 0;
+            int j = 0;
+            for (int year = RainFall.FirstYear; year < RainFall.LastYear; year++)
+            //while (int year <= RainFall.DataTableRows)
             {
-                double rcn = AreaByRCN(FUnitData, year);
-                double rainFall=getRainFall(FUnitData, year);
-                StreamThroughPut(rainFall, rcn);
+                foreach (string Name in FUnitData.UnitNames)
+                {
+                    double rcn = AreaByRCN(Name, year);
+                    double rainFall = getRainFall(Name, year);
+                    double remove = rainFall * RW.RWcaptureYear_ratio[i,j];
+                    StreamThroughPut(rainFall, rcn, remove);
+                    i++;
+                }
+                j++;
+                i = 0;
             }
             return total;
         }
         // Neeed to add a data file to extract rainfall for this method
-        internal double getRainFall(UnitData fUnitData, int year)
+        internal double getRainFall(string Name, int year)
         {
             double temp = 0;
-
-            return temp;
+            double T = RainFall.FastRainFall(Name, year);
+            return temp=T;
         }
 
 
@@ -228,13 +247,15 @@ namespace WaterSim_Base
         }
         //
         /// <summary>
-        /// 
+        ///  rainfall uints = mm
+        ///  remove units = MGD
         /// </summary>
         /// <param name="rainFall"></param>
         /// <param name="rcn"></param>
-        public void StreamThroughPut(double rainFall, double rcn)
+        /// <param name="remove"></param>
+        public void StreamThroughPut(double rainFall, double rcn, double remove)
         {
-            ThroughPut(rainFall, rcn);
+            ThroughPut(Math.Max(0,rainFall-remove), rcn);
         }
 
 
@@ -247,11 +268,33 @@ namespace WaterSim_Base
         public void ThroughPut(double rainFall, double rcn)
         {
             SoilEvaporation = Evaporation(rainFall);
-            double rainPost = rainFall - SoilEvaporation;
+            double rainPost = rainFall * (1-SoilEvaporation);
             SoilRunoff = Runoff(rainPost,rcn);
             SoilPercolation = Percolation(rainPost);
         }
+        //========================================================
+        //internal double MGDtomm3()
+        //{
+        //    // rainfall in mm yr-1
+        //    // output is MGD year-1
+        //    double temp = 0;
+        //    double t1 = 365* (1 / RWconstants.gallons_to_MG * 1 / RWconstants.cubicmeters_to_gallons * 1 / RWconstants.cubicmm_to_cubicmeters);// mm3
+        //    temp = t1;
+        //    return temp;
+        //}
+        //internal double AcresTomm2(double area)
+        //{
+        //    // rainfall in mm yr-1
+        //    // output is MGD year-1
+        //    // area in acres yr-1
+        //    double temp = 1;
+        //    double t2 = area * RWconstants.acres_to_ft2 * RWconstants.ft2_to_inches2 * RWconstants.inches2_to_mm2;
+        //    if(0 < t2)temp = t2;
+        //    return temp;
+        //}
 
+        // ==============================================================
+        //
         //
         /// <summary>
         /// 
@@ -271,6 +314,7 @@ namespace WaterSim_Base
         //    SoilWaterStorage = temp;
 
         //}
+        ///
         public void Storage(double rainFall, double rcn)
         {
             double temp = 0;
@@ -296,10 +340,10 @@ namespace WaterSim_Base
             }         
             return temp;
         }
-        double Evaporation(double precipitation)
+        internal double Evaporation(double precipitation)
         {
             // Hyperbola estimate of evaporation based on rainfall - From the FORTRAN code function "fHyperbolaRunoff(lv_annualRain(i,1))"
-            double temp = 0;
+            double temp = 1;
             double a = 25;
             double b = 1;
             if (0 < precipitation)
@@ -595,6 +639,11 @@ namespace WaterSim_Base
         {
             get { return FAreaTotal; }
         }
+        // ==================================
+
+
+
+        // ===================================
     }
     #endregion struct
     #region DataClasses

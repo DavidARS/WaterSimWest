@@ -99,6 +99,8 @@ namespace WaterSim_Base
         get;
         set;
         }
+        int Tyear = 0;
+
         /// <summary>
         /// 
         /// </summary>
@@ -143,8 +145,7 @@ namespace WaterSim_Base
 
                 // Decided not to use code in DataTable
                 // int codeint = Tools.ConvertToInt32(codestr,ref isErr,ref errMessage);
-
-
+   
                 if (!isErr)
                 {
                     string rrainfallstr = DR[FRainFallFieldStr].ToString();
@@ -159,6 +160,8 @@ namespace WaterSim_Base
                             int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
                             if (!isErr)
                             {
+                                if (i == 1) FirstYear = TempYear;
+                                Tyear = TempYear;
                                 double TempRain = Tools.ConvertToInt32(rrainfallstr, ref isErr, ref errMessage);
                                 if (!isErr)
                                 {
@@ -171,9 +174,10 @@ namespace WaterSim_Base
                         }
                     }
                 }
+               
                 DataTableRows = i;
             }
-
+            LastYear = Tyear;
         }
         // ==============================================================
         private double[] GetDataArray(string FieldStr)
@@ -190,7 +194,10 @@ namespace WaterSim_Base
             }
             return result;
         }
-
+        public int LastYear
+        { get; set; }
+        public int FirstYear
+        { get; set; }
         // ==============================================================
         //   
         //public double[] AGRate()
@@ -206,7 +213,7 @@ namespace WaterSim_Base
         /// <returns></returns>
         public double FastRainFall(string UnitName, int year)
         {
-            double temp = InvalidRate;
+            double temp = InvalidRate;         
             DataStructRainWater TheData = FRainFallDataList.Find(delegate (DataStructRainWater RW)
             {
                 return ((RW.Year == year) && (RW.Region == UnitName));
@@ -218,6 +225,12 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        //
+     
+
+
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -273,9 +286,33 @@ namespace WaterSim_Base
         public const double Roof_Area_SMF = 464;
         public const double Roof_Area_WMF = 464;
         //
+        // THese will repressnt the proportional area of impervious area total for each class
+        // that is usuable roof area for rainwater/ storm water capture. Data come from
+        // US EPA LCLU ICLUS ssp2 and ssp5 scenarios. I am simply estimating the propotional 
+        // area that could be usuable roof area
+        // 08.25.21 das
+        internal const double RoofAreaLoss = 0.95;
+        internal const double RoofAreaEfficiency = 0.9; // roof evaporation/ other losses so 90% efficient
+
+        // 75% max in this document https://www.pdskc.org/portals/pdskc/documents/zoning_pdf/crestview_hills/chip.pdf
+        internal const double IND_RoofAreaProp = 0.63; // 63% of land occupied From file:///C:/Users/dasamps1/Downloads/sustainability-12-10611-v2.pdf
+        internal const double IND_Impervious = 0.72;
+        //
+        internal const double COM_RoofAreaProp = 0.33; // 33% of land occupied (2.5:1 to 3.5:1 lot to building size ratio) From https://www.thebalancesmb.com/how-to-calculate-the-land-to-building-ratio-2866427
+        internal const double COM_Impervious = 0.85;
+        //
+        internal const double EA_RoofAreaProp = 0.224; // 22% of land occupied https://www.storagecafe.com/blog/lot-size-home-size-in-top-20-biggest-us-cities/
+        internal const double EA_Impervious = 0.65;
+
+        //
         public const double mm_to_meters = 0.001;
+        public const double acres_to_ft2 = 43560;
+        public const double mm_to_inches= 0.03937007874;
+        public const double ft2_to_inches2 = 144;
+        public const double inches2_to_mm2 = 645.16;
+        public const double cubicmm_to_cubicmeters = 0.0000000001;
         public const double cubicmeters_to_gallons = 264.17205236;
-        public const double gallons_to_MGD =  0.000001;
+        public const double gallons_to_MG =  0.000001;
         //
         public const double MultiFamily_households = 100;
         public const double households = 0;
@@ -284,6 +321,9 @@ namespace WaterSim_Base
     {
         DataClassRainFall RainFall;
         UnitData FUnitData;
+        DataClassLcluArea LCLUclasses;
+        public int FUnitCount = 0;
+        public int FYearCount = 0;
         /// <summary>
         ///  Constructor
         /// </summary>
@@ -292,30 +332,308 @@ namespace WaterSim_Base
         {
             RainFall = Rain;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Rain"></param>
+        /// <param name="LCLUclass"></param>
+        public RainWaterHarvesting(DataClassRainFall Rain, DataClassLcluArea LCLUclass)
+        {
+            RainFall = Rain;
+            LCLUclasses = LCLUclass;
+        }
+        //
+        public RainWaterHarvesting(DataClassRainFall Rain, DataClassLcluArea LCLUclass, UnitData UnitData)
+        {
+            RainFall = Rain;
+            LCLUclasses = LCLUclass;
+            FUnitData = UnitData;
+            FUnitCount = FUnitData.UnitCount;
+            FYearCount = RainFall.LastYear - RainFall.FirstYear;
 
-        public double harvest(UnitData FUnitData, int year)
+        }
+        //
+        public double [] IND_harvesting
+        {
+            get; set;
+        }
+        public double [] COMM_harvesting
+        {
+            get; set;
+        }
+        public double [] EA_harvesting
+        {
+            get; set;
+        }
+        public double [] QA_harvesting
+        {
+            get; set;
+        }
+        public double [] TA_harvesting
+        {
+            get; set;
+        }
+        public double [] HA_harvesting
+        {
+            get; set;
+        }
+        public double [] A_harvesting
+        {
+            get; set;
+        }
+
+        public double [] RWcapture
+        {
+            get; set;
+        }
+        public double[,] RWcaptureYear_MGD
+        {
+            get; set;
+        }
+        public double[,] RWcaptureYear_ratio
+        {
+            get; set;
+        }
+        public double[,] RWYear_MGD
+        {
+            get; set;
+        }
+        public double[] RWacres
+        {
+            get; set;
+        }
+
+        // ====================================================================================================
+        // Percent impervious by class
+        // ICLUS 4th national climate assessment US EPA
+        // Industrial-72%, Commercial-85%, EigthAcre-65%, QuarterAcre-38%, ThirdAcre-30%, HalfAcre-25%, Acre-20%
+        //
+        // =============================================================
+        // Industrial Buildings - roof area, rainfall runoff, capture
+        internal double INDroof(int year)
         {
             double temp = 0;
-
-            foreach (string Name in FUnitData.UnitNames)
+            int i = 0;
+            int j = 0;
+             IND_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
+            {           
+                double ind = LCLUclasses.FastArea_UN(name, "Ind", year);
+                RWacres[i] = ind;
+                // acres
+                temp = ind * RWconstants.IND_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency 
+                    * RWconstants.IND_Impervious ;
+                IND_harvesting[i] = temp;
+                i++;
+            }
+            return temp;
+        }
+        internal double COMroof(int year)
+        {
+            double temp = 0;
+            int i = 0;
+            COMM_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
             {
-                int i = 0;
-                try
-                {
-                    while (year <= RainFall.DataTableRows)
-                    {
-
-                        double T = RainFall.FastRainFall(Name, year);
-                    }
-
-
-
-                }
-                catch { }
+                double comm = LCLUclasses.FastArea_UN(name, "Comm", year);
+                RWacres[i] += comm;
+                // acres
+                temp = comm * RWconstants.COM_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency
+                    * RWconstants.COM_Impervious;
+                COMM_harvesting[i] = temp;
+                i++;
+            }
+            return temp;
+        }
+        internal double EigthAcreroof(int year)
+        {
+            double temp = 0;
+            int i = 0;
+            EA_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
+            {
+                double EA = LCLUclasses.FastArea_UN(name, "EigthAcre", year);
+                RWacres[i] += EA;
+                // acres
+                temp = EA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+                EA_harvesting[i] = temp;
+                i++;
+            }
+            return temp;
+        }
+        internal double QuarterAcreroof(int year)
+        {
+            double temp = 0;
+            int i = 0;
+            QA_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
+            {
+                double QA = LCLUclasses.FastArea_UN(name, "QuarterAcre", year);
+                RWacres[i] += QA;
+                // acres
+                temp = QA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+                QA_harvesting[i] = temp;
+                i++;
+            }
+            return temp;
+        }
+        internal double ThirdAcreroof(int year)
+        {
+            double temp = 0;
+            int i = 0;
+            TA_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
+            {
+                double TA = LCLUclasses.FastArea_UN(name, "ThirdAcre", year);
+                RWacres[i] += TA;
+                // acres
+                temp = TA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+                TA_harvesting[i] = temp;
+                i++;
             }
             return temp;
         }
 
+        internal double HalfAcreroof(int year)
+        {
+            double temp = 0;
+            int i = 0;
+            HA_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
+            {
+                double HA = LCLUclasses.FastArea_UN(name, "HalfAcre", year);
+                RWacres[i] += HA;
+                // acres
+                temp = HA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+                HA_harvesting [i] = temp;
+                i++;
+            }
+            return temp;
+        }
+        internal double Acreroof(int year)
+        {
+            double temp = 0;
+            int i = 0;
+            A_harvesting = new double[FUnitCount];
+            //RWacres = new double[FUnitCount];
+            foreach (string name in FUnitData.UnitNames)
+            {
+                double A = LCLUclasses.FastArea_UN(name, "Acre", year);
+                RWacres[i] += A;
+                // acres
+                temp = A * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+                A_harvesting[i] = temp;
+                i++;
+            }
+            return temp;
+        }
+        internal void roofCapture(int year)
+        {
+            double temp = 0;
+            RWacres = new double[FUnitCount];
+            temp = INDroof(year) + COMroof(year)+ EigthAcreroof(year) + QuarterAcreroof(year)+ThirdAcreroof(year) + 
+                HalfAcreroof(year) + Acreroof(year);
+        }
+        public void  rwHarvesting()
+        {
+            // rainfall in mm yr-1
+            // output is MGD year-1
+            double temp = 0;
+            int i = 0;
+            int j = 0;
+            RWcaptureYear_MGD = new double[FUnitCount, FYearCount];
+            RWYear_MGD = new double[FUnitCount, FYearCount];
+            RWcaptureYear_ratio = new double[FUnitCount, FYearCount]; 
+            //RWcapture = new double[FUnitCount];
 
+            for (int year = RainFall.FirstYear; year < RainFall.LastYear; year++)
+            //while (int year <= RainFall.DataTableRows)
+            {
+                roofCapture(year);
+                foreach (string code in FUnitData.UnitNames)
+                {             
+                    double T = RainFall.FastRainFall(code, year);
+                    RWYear_MGD[i,j] = RWacres[i] * UnitConvert(T) / Utilities.daysInAYear(year);
+                    temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
+                       TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MG;
+                    RWcaptureYear_MGD[i,j] = temp/ Utilities.daysInAYear(year);
+                    if(0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
+                        RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
+                    i++;
+                }
+                j++;
+                i = 0;
+            }
+           // return temp;
+        }
+        /// <summary>
+        ///  Called yearly
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        internal double rwHarvestingYear(int year)
+        {
+            // rainfall in mm yr-1
+            // output is MGD year-1
+            double temp = 0;
+            int i = 0;
+            int j = 0;
+            RWcapture = new double[FUnitCount];
+
+            roofCapture(year);
+            foreach (string code in FUnitData.UnitNames)
+            {
+                double T = RainFall.FastRainFall(code, year);
+
+                temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
+                TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
+                RWcapture[i] = temp;
+                i++;
+            }
+
+            return temp;
+        }
+
+        //========================================================
+        internal double UnitConvert(double rainFall)
+        {
+            // rainfall in mm yr-1
+            // output is MGD year-1
+            double temp = 0;
+            temp = (RWconstants.acres_to_ft2 * RWconstants.ft2_to_inches2 * RWconstants.inches2_to_mm2 * rainFall
+                   * RWconstants.cubicmm_to_cubicmeters * RWconstants.cubicmeters_to_gallons * RWconstants.gallons_to_MG); // MGD         
+            return temp;
+        }
+        //
+        internal double UnitConvert_()
+        {
+            // rainfall in mm yr-1
+            // output is MGD year-1
+            double temp = 0;
+            temp = 1/RWconstants.cubicmm_to_cubicmeters * 1/RWconstants.cubicmeters_to_gallons * 1/RWconstants.gallons_to_MG; // MGD         
+            return temp;
+        }
+
+        // ==============================================================
+        //
+        //
+        //
+
+        enum classs
+        {
+            Ind=0,
+            Com=1,
+            EigthAcre=2,
+            QuarterAcre=3,
+            ThirdAcre=4,
+            HalfAcre=5,
+            Acre=6
+        }
     }
 }

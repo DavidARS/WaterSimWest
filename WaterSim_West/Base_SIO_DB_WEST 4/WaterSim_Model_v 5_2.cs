@@ -360,6 +360,7 @@ namespace WaterSimDCDC.Generic
             string TemperatureDataFilename = "Temperature.csv";
             // EDIT END 2 13 18
             // das edits 06.03.21
+            // ICLUS ssp2 and ssp5 lclu data ;
             string LCLUclassesFilename = "LCLUclassArea.csv";
             string LCLUrcnFilename = "RCNbyLCLU.csv";
             // end edits das 06.03.21
@@ -395,10 +396,12 @@ namespace WaterSimDCDC.Generic
                 // EDIT QUAY 9/8/20
                 // Adding Surface Water Model
                 DataClassRainFall RF = new DataClassRainFall(DataDirectoryName, RainFallFilename);
-                StormWater SW = new StormWater(FUnitData,RF, FDataLCLUarea, FDataLCLUrcn);
-                RainWaterHarvesting RW = new RainWaterHarvesting(RF);
-                //int year = 2010;
-                //SW.waterBudgetByClass(FUnitData,year);
+                //RainWaterHarvesting RW = new RainWaterHarvesting(RF);
+                RainWaterHarvesting RW = new RainWaterHarvesting(RF, FDataLCLUarea, FUnitData);
+                StormWater SW = new StormWater(FUnitData,RF, RW,FDataLCLUarea, FDataLCLUrcn);
+                // debug, at least...
+                RW.rwHarvesting();
+                SW.waterBudgetByClass(FUnitData);
                 //
 
                 //

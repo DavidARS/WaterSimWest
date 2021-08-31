@@ -634,6 +634,7 @@ namespace WaterSimDCDC
         }
 
         //----------------------------------------------------------------------------------
+        // das august 2021
         bool _inSimulationAllYears = false;
         int FDataPostingResult = 0;
         /// <summary>
