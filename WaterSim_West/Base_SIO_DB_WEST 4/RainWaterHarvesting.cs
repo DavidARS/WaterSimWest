@@ -350,8 +350,18 @@ namespace WaterSim_Base
             FUnitData = UnitData;
             FUnitCount = FUnitData.UnitCount;
             FYearCount = RainFall.LastYear - RainFall.FirstYear;
+            Initialize();
 
         }
+        internal void Initialize()
+        {
+            RWcaptureYear_MGD = new double[FUnitCount, FYearCount];
+            RWYear_MGD = new double[FUnitCount, FYearCount];
+            RWcaptureYear_ratio = new double[FUnitCount, FYearCount];
+            RWcapture = new double[FUnitCount];
+
+        }
+
         //
         public double [] IND_harvesting
         {
@@ -547,10 +557,10 @@ namespace WaterSim_Base
             double temp = 0;
             int i = 0;
             int j = 0;
-            RWcaptureYear_MGD = new double[FUnitCount, FYearCount];
-            RWYear_MGD = new double[FUnitCount, FYearCount];
-            RWcaptureYear_ratio = new double[FUnitCount, FYearCount]; 
-            //RWcapture = new double[FUnitCount];
+            //RWcaptureYear_MGD = new double[FUnitCount, FYearCount];
+            //RWYear_MGD = new double[FUnitCount, FYearCount];
+            //RWcaptureYear_ratio = new double[FUnitCount, FYearCount]; 
+            RWcapture = new double[FUnitCount];
 
             for (int year = RainFall.FirstYear; year < RainFall.LastYear; year++)
             //while (int year <= RainFall.DataTableRows)
@@ -573,30 +583,35 @@ namespace WaterSim_Base
            // return temp;
         }
         /// <summary>
-        ///  Called yearly
+        /// 
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        internal double rwHarvestingYear(int year)
+        public double rwHarvestingYearly(string name, int year)
         {
             // rainfall in mm yr-1
             // output is MGD year-1
             double temp = 0;
             int i = 0;
             int j = 0;
-            RWcapture = new double[FUnitCount];
+            //RWcaptureYear_MGD = new double[FUnitCount, FYearCount];
+            //RWYear_MGD = new double[FUnitCount, FYearCount];
+            //RWcaptureYear_ratio = new double[FUnitCount, FYearCount];
 
-            roofCapture(year);
-            foreach (string code in FUnitData.UnitNames)
-            {
-                double T = RainFall.FastRainFall(code, year);
+            j = year;
+            int cYear = year + 2020;
 
-                temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
-                TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
-                RWcapture[i] = temp;
-                i++;
-            }
+           // RWcapture = new double[FUnitCount];
+            roofCapture(cYear);
+            double T = RainFall.FastRainFall(name, cYear);
 
+            temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
+            TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
+            RWcapture[i] = temp;
+            RWcaptureYear_MGD[i, j] = temp / Utilities.daysInAYear(cYear);
+            if (0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
+                 RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
             return temp;
         }
 
@@ -624,7 +639,90 @@ namespace WaterSim_Base
         //
         //
         //
+        int Region(string name)
+        {
+            int iout = 0;
+            switch (name)
+            {
+                case "Arizona Central South":
+                    iout = 0;
+                    break;
+                case "Arizona West":
+                    iout = 1;
+                    break;
+                case "Arizona North":
+                    iout = 2;
+                    break;
+                case "Arizona Southeast":
+                    iout = 3;
+                    break;
+                case "Arizona Central North":
+                    iout = 4;
+                    break;
+                case "California Southwest":
+                    iout = 5;
+                    break;
+                case "California Southeast":
+                    iout = 6;
+                    break;
+                case "California North":
+                    iout = 7;
+                    break;
+                case "Colorado Front Range":
+                    iout = 8;
+                    break;
+                case "Colorado In Basin":
+                    iout = 9;
+                    break;
+                case "Colorado Not In Basin":
+                    iout = 10;
+                    break;
+                case "Nevada South":
+                    iout = 11;
+                    break;
+                case "Nevada In Basin":
+                    iout = 12;
+                    break;
+                case "Nevada Not In Basin":
+                    iout = 13;
+                    break;
+                case "New Mexico Central":
+                    iout = 14;
+                    break;
+                case "New Mexico In Basin":
+                    iout = 15;
+                    break;
+                case "New Mexico Not In Basin":
+                    iout = 16;
+                    break;
+                case "New Mexico Gila":
+                    iout = 17;
+                    break;
+                case "Utah Salt Lake":
+                    iout = 18;
+                    break;
+                case "Utah In Basin":
+                    iout = 19;
+                    break;
+                case "Utah Not In Basin":
+                    iout = 20;
+                    break;
+                case "Wyoming Southwest":
+                    iout = 21;
+                    break;
+                case "Wyoming In Basin":
+                    iout = 22;
+                    break;
+                case "Wyoming Not In Basin":
+                    iout = 23;
+                    break;
+                    //case "Colorado River Basin":
+                    //    iout = 24;
+                    //    break;
 
+            }
+            return iout;
+        }
         enum classs
         {
             Ind=0,

@@ -168,7 +168,7 @@ namespace WaterSim_Base
         /// <param name="FUnitData"></param>
         /// 
         /// <returns></returns>
-        public double waterBudgetByClass(UnitData FUnitData)
+        public double waterBudgetByClass()
         {
 
             double total = 0;
@@ -190,8 +190,111 @@ namespace WaterSim_Base
             }
             return total;
         }
-        // Neeed to add a data file to extract rainfall for this method
-        internal double getRainFall(string Name, int year)
+        // =====================================================================
+        public double waterBudgetByClassYearly(string name, int year)
+        {
+
+            double total = 0;
+            int i = 0;
+            int j = 0;
+            j = year;
+            int cYear = year + 2020;
+                    double rcn = AreaByRCN(name, cYear);
+                    double rainFall = getRainFall(name, cYear);
+                    i = Region(name);
+                    double remove = rainFall * RW.RWcaptureYear_ratio[i, j];
+                    StreamThroughPut(rainFall, rcn, remove);
+           
+            return total;
+        }
+        //
+        int Region(string name)
+        {
+            int iout= 0;
+            switch (name)
+            {
+                case "Arizona Central South":
+                    iout = 0;
+                    break;
+                case "Arizona West":
+                    iout = 1;
+                    break;
+                case "Arizona North":
+                    iout = 2;
+                    break;
+                case "Arizona Southeast":
+                    iout = 3;
+                    break;
+                case "Arizona Central North":
+                    iout = 4;
+                    break;
+                case "California Southwest":
+                    iout = 5;
+                    break;
+                case "California Southeast":
+                    iout = 6;
+                    break;
+                case "California North":
+                    iout = 7;
+                    break;
+                case "Colorado Front Range":
+                    iout = 8;
+                    break;
+                case "Colorado In Basin":
+                    iout = 9;
+                    break;
+                case "Colorado Not In Basin":
+                    iout = 10;
+                    break;
+                case "Nevada South":
+                    iout = 11;
+                    break;
+                case "Nevada In Basin":
+                    iout = 12;
+                    break;
+                case "Nevada Not In Basin":
+                    iout = 13;
+                    break;
+                case "New Mexico Central":
+                    iout = 14;
+                    break;
+                case "New Mexico In Basin":
+                    iout = 15;
+                    break;
+                case "New Mexico Not In Basin":
+                    iout = 16;
+                    break;
+                case "New Mexico Gila":
+                    iout = 17;
+                    break;
+                case "Utah Salt Lake":
+                    iout = 18;
+                    break;
+                case "Utah In Basin":
+                    iout = 19;
+                    break;
+                case "Utah Not In Basin":
+                    iout = 20;
+                    break;
+                case "Wyoming Southwest":
+                    iout = 21;
+                    break;
+                case "Wyoming In Basin":
+                    iout = 22;
+                    break;
+                case "Wyoming Not In Basin":
+                    iout = 23;
+                    break;
+                //case "Colorado River Basin":
+                //    iout = 24;
+                //    break;
+                  
+            }
+            return iout;
+        }
+    // ======================================================================
+    // Neeed to add a data file to extract rainfall for this method
+    internal double getRainFall(string Name, int year)
         {
             double temp = 0;
             double T = RainFall.FastRainFall(Name, year);

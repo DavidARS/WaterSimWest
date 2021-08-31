@@ -98,7 +98,12 @@ namespace WaterSimDCDC.Generic
         /// <summary> Information describing the unit.</summary>
         /// <remarks>  This is the unit Data class used to retrieve USGS combined and summary data by region </remarks>
         UnitData FUnitData = null;
+        //
+        // ====================================
+     
 
+        // ====================================
+        //
         // ===========================
         // Demand Classes
         // ==============
@@ -125,9 +130,11 @@ namespace WaterSimDCDC.Generic
         //============================
         DataClassTemperature DataClassT;
         //
-        RainWaterHarvesting RWH;
-        //StormWater SWB;
-
+        // 08.31.21 das
+        RainWaterHarvesting CRFRWH;
+        readonly StormWater CRFSWB;
+        const int StartRainYear = 2020;
+        // end edits 08.31.21
         /// <summary>
         /// 
         ///
@@ -345,6 +352,42 @@ namespace WaterSimDCDC.Generic
 
 
         }
+        ///-------------------------------------------------------------------------------------------------
+        ///
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW,StormWater SW)
+        {
+            FUnitName = TheUnitName;
+            string errMsg = "";
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            FDClclu = DataLCLU;
+            FDCtemperature = Tav;
+            CRFRWH = RW;
+            CRFSWB = SW;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
+
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            Initialize_Variables();
+
+         
+
+
+        }
+
         /// <summary>
         ///  Temp constructure for this DAMN code
         /// </summary>
@@ -518,8 +561,8 @@ namespace WaterSimDCDC.Generic
         }
         public RainWaterHarvesting RainW
         {
-            get { return RWH; }
-            set { RWH = value; }
+            get { return CRFRWH; }
+            set { CRFRWH = value; }
         }
 
 
@@ -1286,10 +1329,23 @@ namespace WaterSimDCDC.Generic
             // So commented this out
             //initializeRun();
             // END EDIT
-
-            // This method is to prepare vaious coefficients that change each year.  
+              // This method is to prepare vaious coefficients that change each year.  
             // In this case there are growth factors be calculated for this period
             preProcess(year);
+
+
+            // ===================================================================
+            // 08.31.21 das 2021
+            // Run annually
+            if(StartRainYear <= year)
+            {
+                string name = UnitName;
+                RainW.rwHarvestingYearly(name, year - StartRainYear);
+                CRFSWB.waterBudgetByClassYearly(name, year- StartRainYear);
+                 //StormW.waterBudgetByClassYearly(name, year- StartRainYear);
+            }
+            // end edits 08.31.21 das
+            // ===================================================================
 
             // EDIT QUAY 4/2/18
             // OK, the original method of changing resources levels is no longer going work given how the web interface is
