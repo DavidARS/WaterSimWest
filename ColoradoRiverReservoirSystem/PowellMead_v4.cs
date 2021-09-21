@@ -69,7 +69,7 @@ namespace CORiverModel
             FICS = FUnitData3;
             FBDCP = BDP;
             Initialize();
-            StreamW("out");
+            //StreamW("out");
         }
         /// <summary>
         /// 
@@ -2381,16 +2381,16 @@ namespace CORiverModel
 
         #endregion Expected Storage
         //#region streamwriter
-        public void StreamW(string TempDirectoryName)
-        {
-            //string filename = string.Concat(TempDirectoryName + "Output" + now.Month.ToString()
-            //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-            //    + "_" + ".csv");
-            string filename = string.Concat("Outputs/Output" + now.Month.ToString()
-               + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
-               + "_" + ".csv");
-            sw = File.AppendText(filename);
-        }
+        //public void StreamW(string TempDirectoryName)
+        //{
+        //    //string filename = string.Concat(TempDirectoryName + "\\" + "Outputs" + "\\" + "Output" + now.Month.ToString()
+        //    //    + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+        //    //    + "_" + ".csv");
+        //    string filename = string.Concat("Outputs/Output" + now.Month.ToString()
+        //       + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+        //       + "_" + ".csv");
+        //    sw = File.AppendText(filename);
+        //}
         //#endregion streamwriter
 
 

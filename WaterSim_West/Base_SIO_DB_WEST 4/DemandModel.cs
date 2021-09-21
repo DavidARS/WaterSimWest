@@ -98,7 +98,7 @@ namespace DemandModel_Base
         public abstract void preProcessDemand();
 
         public abstract void preProcessDemand(int year);
-
+        public abstract void switchUrbanLCLU(int year);
         /// <summary>
         /// 
         /// </summary>
@@ -216,7 +216,40 @@ namespace DemandModel_Base
 
 
         }
+        public double EstimateConsumerDemands(double ConsumerUnits, double GallonsPerUnit, double AdjustEfficiency, double AdjustDamper, double period, out double outRate)
+        {
+            double result = 0;
+            double ModifyRate = 1;
+            try
+            {
+                // Get the modify factor to apply for this period using the coefficient AdjustDamper
+                //double ModifyRate = ChangeIncrement(1, period, AdjustDamper, MinValue); // NOT MinValue ... its the Limit in his code
+                double target = AdjustEfficiency;
+                double startValue = 1;
+                ModifyRate = utilities.AnnualExponentialChange(startValue, period, AdjustDamper, target);
+                // only use the Modifyrate if your target change is not 1.
+                if (AdjustEfficiency != 1)
+                {
+                    // demand = units * a modified resource per unit value
+                    result = ConsumerUnits * (GallonsPerUnit * ModifyRate);
+                }
+                else
+                {
+                    // staright forward resources = units * resources per unit
+                    result = ConsumerUnits * GallonsPerUnit;
+                }
+            }
+            // Why is this here?  Good question, ChangeIncrement uses the Math.POW() method which can
+            // throw an exception.  Hopefully that does not happen and if it does we will just use a 
+            // zero as the default value
+            catch (Exception ex)
+            {
+                // Ouch Only thing going here is the Change Increment Function
+            }
+            outRate = ModifyRate;
 
+            return result;
+        }
         /// <summary>
         /// 
         /// </summary>

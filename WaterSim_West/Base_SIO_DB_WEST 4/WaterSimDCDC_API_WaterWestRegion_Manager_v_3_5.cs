@@ -432,10 +432,15 @@ namespace WaterSimDCDC
         // EDIT END 3/3/2018 
         // 
         // edit 09.20.21 das
-         public const int epP_UrbanDensityManagement = 1030;
+         public const int epP_UrbanHighDensityManagement = 200;
+        public const int epP_UrbanLowDensityManagement = 201;
+        public const int epP_SuburbanDensityManagement = 202;
+        public const int epP_ExurbanHighDensityManagement = 203;
+        public const int epP_ExurbanLowDensityManagement = 204;
+
         // end edit 09.20.21 das
-        
-        
+
+
         // Resources
         public const int epP_SurfaceFresh = 1031;
        // public const int epP_SurfaceLake = 1032;
@@ -645,19 +650,31 @@ namespace WaterSimDCDC
         ProviderIntArray In = new ProviderIntArray(0);
 
         internal int[] MyValue = new int[ProviderClass.NumberOfProviders];
+        //
+        // Original LCLU data, model is set to = an index of 2
+        internal int defaultUrban = 2;
+        internal int defaultAg = 2;
+        internal int defaultIndustry = 2;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="MyWSIM"></param>
         public void tempLCLU(WaterSimManager MyWSIM)
         {
-            for (int i = 0; i < ProviderClass.NumberOfProviders; i++) { MyValue[i] = 2; }
+            for (int i = 0; i < ProviderClass.NumberOfProviders; i++) { MyValue[i] = defaultUrban; }
             Out.Values = MyValue;
             //
             MyWSIM.WaterSimWestModel.DemandModelUrban_Index.setvalues(Out);
+
             //
+            for (int i = 0; i < ProviderClass.NumberOfProviders; i++) { MyValue[i] = defaultAg; }
+            Out.Values = MyValue;
+
             MyWSIM.WaterSimWestModel.DemandModelAg_Index.setvalues(Out);
             //
+            for (int i = 0; i < ProviderClass.NumberOfProviders; i++) { MyValue[i] = defaultIndustry; }
+            Out.Values = MyValue;
+
             MyWSIM.WaterSimWestModel.DemandModelInd_Index.setvalues(Out);
 
         }
@@ -1155,6 +1172,9 @@ namespace WaterSimDCDC
             // add controls on urban density- ICLUS urban classes
             // 09.20.21 das
 
+            WestModel.UrbanHighDensity = new providerArrayProperty(_pm, eModelParam.epP_UrbanHighDensityManagement, WestModel.geti_UrbanHighDensityManagement, WestModel.seti_UrbanHighDensityManagement, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanHighDensityManagement, "Adjust Urban High Intensity Density", "UHD_P", WestModel.UrbanHighDensity));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanHighDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
 
             // End edits 09.20.21 das

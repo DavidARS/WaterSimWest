@@ -98,12 +98,12 @@
     <Compile Include="RainWaterHarvesting.cs" />
     <Compile Include="RiverModels_V1.cs" />
     <Compile Include="StormWater_v2.cs" />
-    <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_3_4.cs" />
+    <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_3_5.cs" />
     <Compile Include="WaterSimDCDC_API_WestTools.cs" />
     <Compile Include="WaterSiMDCDC_API_West_Indicators_v2_3.cs" />
     <Compile Include="WaterSim_CORiverModel.cs" />
-    <Compile Include="WaterSim_Model_v 5_2.cs" />
-    <Compile Include="WaterSim_West_RegionUnitModel_5_1.cs" />
+    <Compile Include="WaterSim_Model_v 5_3.cs" />
+    <Compile Include="WaterSim_West_RegionUnitModel_5_3.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DenverDemandModel\TestDDM\DenverDemandModel_v1\DenverDemandModel_v1.csproj">

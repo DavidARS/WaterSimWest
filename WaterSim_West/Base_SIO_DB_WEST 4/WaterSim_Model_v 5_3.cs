@@ -293,6 +293,8 @@ namespace WaterSimDCDC.Generic
         //
         readonly DataClassLCLU FDataLCLU;
         //
+     
+        //
         readonly DataClassTemperature FDataTemperature;
         /// <summary> Information describing the unit.</summary>
         UnitData FUnitData;
@@ -367,16 +369,17 @@ namespace WaterSimDCDC.Generic
             // edits 08.10.21 das
             string RainFallFilename = "WSWestRainFall.csv";
             // end edits 08.10.21 das
+            string outputs = "\\Outputs\\";
             try
             {
-                //StreamW(DataDirectoryName);
+                StreamWriter(TempDirectoryName + outputs);
                 FUnitData = new UnitData(DataDirectoryName + "//" + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
                 FRateData = new RateDataClass(DataDirectoryName, RateDataFilename);
                 FDataLCLU = new DataClassLCLU(DataDirectoryName, AcerageDataFilename);
                 // Impervious area
                 FDataLCLUarea = new DataClassLcluArea(DataDirectoryName, LCLUclassesFilename);
                 FDataLCLUrcn = new DataClassRCN(DataDirectoryName, LCLUrcnFilename);
-                //StormWater SW = new StormWater(FDataLCLUarea, FDataLCLUrcn);
+                //
                 //
                 FDataTemperature = new DataClassTemperature(DataDirectoryName, TemperatureDataFilename);
                 // string Filename = "CompareDemand.txt";
@@ -393,7 +396,7 @@ namespace WaterSimDCDC.Generic
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
-                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW); // 08.31.21 das
+                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
                         FUnitModels.Add(TempModel);
                         set_DefaultDemandModel(TempModel);
                         // modelCount += 1;
@@ -424,7 +427,17 @@ namespace WaterSimDCDC.Generic
             /// <param name="TempDirectoryName"></param>
   
         }
-  
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="TempDirectoryName"></param>
+        public void StreamWriter(string TempDirectoryName)
+        {
+            string filename = string.Concat(TempDirectoryName + "MyOutput" + "_" + now.Month.ToString()
+                + now.Day.ToString() + now.Minute.ToString() + now.Second.ToString()
+                + "_" + ".csv");
+            swriter = File.AppendText(filename);
+        }
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Constructor.</summary>
         ///
@@ -3170,8 +3183,11 @@ namespace WaterSimDCDC.Generic
                     TempModel.URBAN = tempUrban_2;
                     break;
                 case 3:
+                    // ICLUS version II data - urban classes
+                    DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea);
+                    TempModel.URBAN = tempUrban_3;
 
-                      break;
+                    break;
 
                 default:
                     DemandModel tempUrban_d = new UrbanDemand_GPCD(TempModel);
@@ -3324,9 +3340,52 @@ namespace WaterSimDCDC.Generic
 
         //
         #endregion Model To Use
-        
+
         // ------------------------------------------------------
-      
+        //=======================================================
+        //  Urban Density Management of ICLUS urban classes
+        // 09.20.21 das
+        //=======================================================
+        #region Urban Density
+        ///------------------------------------------------------
+        
+        ///<summary> Urban High intensity management control</summary>
+        public providerArrayProperty UrbanHighDensity;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_UrbanHighDensityManagement()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_UrbanHighDensity();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_UrbanHighDensityManagement(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_UrbanHighDensity(Values[i]);
+            }
+        }
+
+
+
+
+        #endregion Urban Density Management
         //=======================================================
         //  ClimateDrought
         //=======================================================

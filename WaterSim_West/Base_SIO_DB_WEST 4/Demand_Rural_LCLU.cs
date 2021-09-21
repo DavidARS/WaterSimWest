@@ -26,6 +26,9 @@ namespace WaterSim_Base
         public RateDataClass FRDC;
         public DataClassLCLU FDClclu;
         //
+        // Version 2 ICLUS
+        public DataClassLcluArea FDLCLU;
+        //
         double Fdemand;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
@@ -37,7 +40,21 @@ namespace WaterSim_Base
         /// </summary>
         public bool isInstantiated = false;
         //
+        /// <summary>
+        ///  The region names
+        /// </summary>
         public string FUnitName = "";
+
+        // edits 09.21.21 das
+        // LCLU classes acreage density 
+        // urban classes - density  thresholds
+        // Urban high intensity             > 10 DUA (dwelling units per acre)
+        // Urban Low              1.6  < UL < 10 DUA
+        // Suburban               0.4  < S  < 1.6 DUA
+        // Exurban high intensity 0.1  < EH < 0.4
+        // Exurban low   " "      0.02 < EL < 0.1
+
+
         //
         #region Constructors
         // ==================================================================================
@@ -61,6 +78,26 @@ namespace WaterSim_Base
             crf.URBAN = this;
             CRF.URBAN = this; // does this make a difference?
         }
+        /// <summary>
+        /// "FD - the version 2 of ICLUS lclu data - five urban classes"
+        /// </summary>
+        /// <param name="crf"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="TheAcreData - the original data we used: Ag, Industry, and urban classes"></param>
+        /// <param name="FD" ></param>
+        public RuralDemand_LCLU_urban(WaterSimCRFModel crf, RateDataClass TheRateData, DataClassLCLU TheAcreData, DataClassLcluArea FD)
+        {
+            CRF = crf;
+            FRDC = TheRateData;
+            FDClclu = TheAcreData;
+            FDLCLU = FD;
+            //
+            SetBaseValues();
+            isInstantiated = true;
+            // assigns itself to the owner
+            crf.URBAN = this;
+            CRF.URBAN = this; // does this make a difference?
+        }
         #endregion Constructors
         // ================================================================================================================================================
         /// <summary>
@@ -72,8 +109,13 @@ namespace WaterSim_Base
             double temp = 0;
             preProcessDemand(currentYear);
             double period = (currentYear - CRF.startYear) + 1;
+            double outValue;
             //
-            double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
+            //double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
+            double NewDemand = EstimateConsumerDemands(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, period, out outValue);
+            //
+
+            //
             temp = NewDemand;
             demandUrban = temp;
         }
@@ -94,7 +136,28 @@ namespace WaterSim_Base
             get { return _rate; }
             set { _rate = value; }
         }
-
+        // =========================================
+        double UH
+        {
+            get; set;
+        }
+        double UL
+        {
+            get; set;
+        }
+        double Sub
+        {
+            get; set;
+        }
+        double ExH
+        {
+            get; set;
+        }
+        double ExL
+        {
+            get; set;
+        }
+        // =========================================
         // =========================================
         // Conservation
         double _urbanConservation = 0.99;
@@ -161,6 +224,11 @@ namespace WaterSim_Base
         {
             throw new NotImplementedException();
         }
+        public override void switchUrbanLCLU(int year)
+        { 
+
+
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -187,25 +255,40 @@ namespace WaterSim_Base
         /// <param name="currentYear"></param>
         public override void preProcessDemand(int currentYear)
         {
-
+            // Old data - Ag, Urban, Industry
+            string region = CRF.UnitName;
             Lacres = FDClclu.FastUrbanAcres(CRF.UnitName, currentYear);
+            //           
+            switchLCLU(region,currentYear);
+            // New data - 
             LBaseRate = 0;
             LurbanConservation = CRF.UrbanConservation;
             LurbanLCLUChangeCoef = CRF.PUrbanLCLUChangeCoef;
             LminUrban = CRF.PminUrbanLCLU;
             LBaseRate= FRDC.FastUrbanRateLCLU(CRF.FUnitName);
         }
+        /// <summary>
+        /// ICLUS version 2 data - Five Urban Classes
+        /// 09.21.21 das
+        /// 
+        /// </summary>
+        /// <param name="currentYear"></param>
+        public void switchLCLU( string region, int currentYear)
+        {
 
-    }
-    #endregion Rural Demand Class- LCLU Urban
-    // ==============================================================================================================================================
+        }
 
-    // ==============================================================================================================================================
-    #region Rural Demand Class- LCLU Ag
-    /// <summary>
-    /// 
-    /// </summary>
-    public class RuralDemand_LCLU_ag : DemandModel
+
+        }
+        #endregion Rural Demand Class- LCLU Urban
+        // ==============================================================================================================================================
+
+        // ==============================================================================================================================================
+        #region Rural Demand Class- LCLU Ag
+        /// <summary>
+        /// 
+        /// </summary>
+        public class RuralDemand_LCLU_ag : DemandModel
     {
         // objects
         WaterSimCRFModel CRF;
@@ -357,7 +440,7 @@ namespace WaterSim_Base
             LBaseRate = FRDC.FastAgRateLCLU(CRF.UnitName);
             Lacres = FDClclu.FastAgAcres(CRF.UnitName, year);
         }
-
+        public override void switchUrbanLCLU(int year) { }
         // ========================================================================================
         //
         // Process
@@ -534,7 +617,7 @@ namespace WaterSim_Base
             LBaseRate = FRDC.FastIndRateLCLU(CRF.UnitName);
             Lacres = FDClclu.FastIndAcres(CRF.UnitName, year);
         }
-
+        public override void switchUrbanLCLU(int year) { }
         // ========================================================================================
         //
         // Process

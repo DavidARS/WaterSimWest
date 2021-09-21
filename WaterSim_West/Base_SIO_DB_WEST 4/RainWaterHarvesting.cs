@@ -10,6 +10,12 @@ using System.Data;
 namespace WaterSim_Base
 {
     // =======================================================================
+    //https://www.ncei.noaa.gov/news/noaa-offers-climate-data-counties
+    // This might be a good place to obtain data for the rainwater
+
+
+
+    //
     /// <summary>
     /// Daa Struct to handle the regional rainfall estimates
     /// </summary>
@@ -457,6 +463,16 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        // edits 09.13.21 das 
+        // Why do the urban methods have no constants for impervious? Have I simply NOT put them in yet?
+        // end edits
+
+        /// <summary>
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
         internal double EigthAcreroof(int year)
         {
             double temp = 0;
