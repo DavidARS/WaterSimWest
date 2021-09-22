@@ -652,7 +652,7 @@ namespace WaterSimDCDC
         internal int[] MyValue = new int[ProviderClass.NumberOfProviders];
         //
         // Original LCLU data, model is set to = an index of 2
-        internal int defaultUrban = 2;
+        internal int defaultUrban = 3;
         internal int defaultAg = 2;
         internal int defaultIndustry = 2;
         /// <summary>

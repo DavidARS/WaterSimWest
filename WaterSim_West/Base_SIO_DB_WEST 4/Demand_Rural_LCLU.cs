@@ -275,11 +275,41 @@ namespace WaterSim_Base
         /// <param name="currentYear"></param>
         public void switchLCLU( string region, int currentYear)
         {
+            if (currentYear == 2020)
+            {
+                assignLCLU(region, currentYear);
+                double total = totalAcres(region, currentYear);
+
+
+
+                double t = Convert.ToDouble(CRF.geti_UrbanHighDensity()) / 100;
+                double UHRate = FRDC.FastExurbanHighRate(region);
+
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="currentYear"></param>
+        public void assignLCLU(string region, int currentYear)
+        {
+            UH = FDLCLU.FastArea_UN(region, "EigthAcre", currentYear);
+            UL = FDLCLU.FastArea_UN(region, "QuarterAcre", currentYear);
+            Sub = FDLCLU.FastArea_UN(region, "ThirdAcre", currentYear);
+            ExH = FDLCLU.FastArea_UN(region, "HalfAcre", currentYear);
+            ExL = FDLCLU.FastArea_UN(region, "Acre", currentYear);
+        }
+        internal double totalAcres(string region, int year)
+        {
+            return FDLCLU.FastTotalArea_UN(region, year);
+        }
+        internal void rearrangeAcres()
+        {
 
         }
 
-
-        }
+    }
         #endregion Rural Demand Class- LCLU Urban
         // ==============================================================================================================================================
 

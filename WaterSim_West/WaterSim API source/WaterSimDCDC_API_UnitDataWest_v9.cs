@@ -132,7 +132,7 @@ namespace WaterSimDCDC.Generic
         // EDIT QUAY 9/11/18 Colorado
         public const string ColoradoFld = "COL";
         // END EDIT   
-        
+
         // Consumers
         public const string UrbanDemandFld = "UTOT";
         public const string RuralDemandFld = "RTOT";
@@ -172,7 +172,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> The resource list label.</summary>
         // QUAY EDIT 8/11/18 Colorado
         // Added Colorado to this list
-         static public string[] ResourceListLabel = new string[] { "Surface Water", "Surface Water Lake ", "Groundwater", "Reclaimed Water", "Saline Surface Water", "Augmented" , "Colorado"};
+        static public string[] ResourceListLabel = new string[] { "Surface Water", "Surface Water Lake ", "Groundwater", "Reclaimed Water", "Saline Surface Water", "Augmented", "Colorado" };
         // END EDIT
         static public string[] ConsumerList = new string[] { UrbanDemandFld, RuralDemandFld, AgricultureDemandFld, IndustrialDemandFld, PowerDemandFld };
         static public string[] ConsumerListLabel = new string[] { "Urban Public Supply Demand", "Non-Urban Residential Demand", "Agricultural Demand", "Industrial Demand", "Power Generation Demand" };
@@ -578,7 +578,7 @@ namespace WaterSimDCDC.Generic
             get { return UDI.ColoradoFld; }
         }
         // EDNT EDIT
-         
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the urban water fieldname. </summary>
         ///
@@ -801,7 +801,7 @@ namespace WaterSimDCDC.Generic
         public bool GetIntValues(string Field, out int[] values, out string ErrMessage)
         {
             // Setup For Failure
-            values = null; 
+            values = null;
             bool error = true;
             string errMessage = "Data Not Loaded";
             // CHeck if Data laoded
@@ -1004,11 +1004,11 @@ namespace WaterSimDCDC.Generic
         public int[] BaseUnitData(string fieldname)
         {
             int[] data = null;
-            if ((UnitCount >= 0) && IsIdField(fieldname) )
+            if ((UnitCount >= 0) && IsIdField(fieldname))
             {
                 data = new int[UnitCount];
                 int rowcnt = 0;
-                foreach(DataRow DR in FDataTable.Rows)
+                foreach (DataRow DR in FDataTable.Rows)
                 {
                     try
                     {
@@ -1044,21 +1044,23 @@ namespace WaterSimDCDC.Generic
         double FAgRateLCLU;
         double FIndRateLCLU;
         double FUrbanRateLCLU;
+
         // =================
 
         // edits 09.21.21 das
         // ======================
-        double FUHigh;
+        private double FUHigh;
         double FULow;
         double FSub;
         double FExUH;
         double FExUL;
+
         // ===========
-        double FUHigh_;
-        double FULow_;
-        double FSub_;
-        double FExUH_;
-        double ExUL_;
+        readonly double fUHigh;
+        readonly double fULow;
+        readonly double fSub;
+        readonly double fExUH;
+        readonly double fExUL;
         // ======================
         // end edits das 09.21.21
 
@@ -1076,47 +1078,53 @@ namespace WaterSimDCDC.Generic
         /// <param name="anAgRateLCLU"></param>
         /// <param name="anUrbanRateLCLU"></param>
         /// <param name="anIndRateLCLU"></param>
-                public RateData(string aUnitName, string aUnitCode, double anAgRate, double anIndRate, double aPopRate, double anAgNet,
-                               double anAgRateLCLU, double anUrbanRateLCLU, double anIndRateLCLU, double FUHigh_,
-                               double FULow_, double FSub_; double FExUH_, double FExUL_)
-                {
-                    bool isErr = false;
-                    string errMsg = "";
+        /// <param name="fUHigh"></param>
+        /// <param name="fULow"></param>
+        /// <param name="fSub"></param>
+        /// <param name="fExUH"></param>
+        /// <param name="fExUL"></param>
+        public RateData(string aUnitName, string aUnitCode, double anAgRate, double anIndRate, double aPopRate,
+            double anAgNet, double anAgRateLCLU, double anUrbanRateLCLU, double anIndRateLCLU, double fUHigh, 
+            double fULow, double fSub, double fExUH, double fExUL) : this()
+        {
+            bool isErr = false;
+            string errMsg = "";
 
-                    FUnitName = aUnitName;
-                    FUnitCodeStr = aUnitCode;
+            FUnitName = aUnitName;
+            FUnitCodeStr = aUnitCode;
 
-                    int temp = Tools.ConvertToInt32(FUnitCodeStr, ref isErr, ref errMsg);
-                    if (!isErr)
-                    {
-                        FUnitCode = temp;
-                    }
-                    else
-                    {
-                        FUnitCode = UDI.BadIntValue;
-                    }
-                    FAgRate = anAgRate;
-                    FIndRate = anIndRate;
-                    FPopRate = aPopRate;
-                    FAgNet = anAgNet;
-                    //
-                    FAgRateLCLU = anAgRateLCLU;
-                    FIndRateLCLU = anIndRateLCLU;
-                    FUrbanRateLCLU = anUrbanRateLCLU;
-                    //
-                    FUHigh= FUHigh_;
-                    FULow = FULow_;
-                    FSub = Fsub_;
-                    FExUH = FExUH_;
-                    FExUL= FExUL_;
-                    //
-                }
+            int temp = Tools.ConvertToInt32(FUnitCodeStr, ref isErr, ref errMsg);
+            if (!isErr)
+            {
+                FUnitCode = temp;
+            }
+            else
+            {
+                FUnitCode = UDI.BadIntValue;
+            }
+            //
+            FAgRate = anAgRate;
+            FIndRate = anIndRate;
+            FPopRate = aPopRate;
+            FAgNet = anAgNet;
+            //
+            FAgRateLCLU = anAgRateLCLU;
+            FIndRateLCLU = anIndRateLCLU;
+            FUrbanRateLCLU = anUrbanRateLCLU;
+            //
+            FUHigh = fUHigh;
+            FULow = fULow;
+            FSub = fSub;
+            FExUH = fExUH;
+            FExUL = fExUL;
+            //
+        }
 
-                ///-------------------------------------------------------------------------------------------------
-                /// <summary>   Gets the name of the unit. </summary>
-                ///
-                /// <value> The name of the unit. </value>
-                ///-------------------------------------------------------------------------------------------------
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the name of the unit. </summary>
+        ///
+        /// <value> The name of the unit. </value>
+        ///-------------------------------------------------------------------------------------------------
 
         public string UnitName
         {
@@ -1269,18 +1277,14 @@ namespace WaterSimDCDC.Generic
         string FExUHRateFieldStr = "ExurbanHigh";
         string FExULRateFieldStr = "ExurbanLow";
 
-
-
-
-
-    // ========================================
-    // 06.29.18 LCLU rates
-    // 05.28.21 das
-    // What are the units? Where did these come from? 05.28.21
-    //Million gallons per day per acre
-    // SSp2 scenario acerage from ICLUS 2
-    //----------------------------------------
-    string FUubanRateLCLUFieldStr = "RURBRATE";
+        // ========================================
+        // 06.29.18 LCLU rates
+        // 05.28.21 das
+        // What are the units? Where did these come from? 05.28.21
+        //Million gallons per day per acre
+        // SSp2 scenario acerage from ICLUS 2
+        //----------------------------------------
+        string FUubanRateLCLUFieldStr = "RURBRATE";
         string FINDRateLCLUFieldStr = "RINDRATE";
         string FAGRateLCLUFieldStr = "RAGRATE";
         // ========================================
@@ -1347,7 +1351,7 @@ namespace WaterSimDCDC.Generic
             FRExurbanHighRateArray = new double[arraysize];
             FRExurbanLowRateArray = new double[arraysize];
             // ===========================================
-        int CodeI = 0;
+            int CodeI = 0;
             foreach (DataRow DR in TheData.Rows)
             {
                 // Get name and code
@@ -1378,6 +1382,12 @@ namespace WaterSimDCDC.Generic
                     string urbanrateLCLUstr = DR[FUubanRateLCLUFieldStr].ToString();
                     string indrateLCLUstr = DR[FINDRateLCLUFieldStr].ToString();
                     // =======================================================
+                    string urbanHighstr = DR[FUHRateFieldStr].ToString();
+                    string urbanLowstr = DR[FULRateFieldStr].ToString();
+                    string suburbanstr = DR[FSUBRateFieldStr].ToString();
+                    string exurbanHighstr = DR[FExUHRateFieldStr].ToString();
+                    string exurbanLowstr = DR[FExULRateFieldStr].ToString();
+
                     //
                     double TempAg = Tools.ConvertToDouble(agratestr, ref isErr, ref errMessage);
                     if (!isErr)
@@ -1400,10 +1410,32 @@ namespace WaterSimDCDC.Generic
                                             double TempIndLCLU = Tools.ConvertToDouble(indrateLCLUstr, ref isErr, ref errMessage);
                                             if (!isErr)
                                             {
-                                                // OK Everything is GOOD let's do it
-                                                RateData RD = new RateData(namestr, codestr, TempAg, TempInd, TempPop, TempAgNet, TempAgLCLU, TempULCLU, TempIndLCLU);
-                                                FRateDataList.Add(RD);
-                                                //// add to dictionary 
+                                                double TempUH = Tools.ConvertToDouble(urbanHighstr, ref isErr, ref errMessage);
+                                                if (!isErr)
+                                                {
+                                                    double TempUL = Tools.ConvertToDouble(urbanLowstr, ref isErr, ref errMessage);
+                                                    if (!isErr)
+                                                    {
+                                                        double TempS = Tools.ConvertToDouble(suburbanstr, ref isErr, ref errMessage);
+                                                        if (!isErr)
+                                                        {
+                                                            double TempExH = Tools.ConvertToDouble(exurbanHighstr, ref isErr, ref errMessage);
+                                                            if (!isErr)
+                                                            {
+                                                                double TempExL = Tools.ConvertToDouble(exurbanLowstr, ref isErr, ref errMessage);
+                                                                if (!isErr)
+                                                                {
+                                                                    // OK Everything is GOOD let's do it
+                                                                    RateData RD = new RateData(namestr, codestr, TempAg, TempInd, TempPop,
+                                                                        TempAgNet, TempAgLCLU, TempULCLU, TempIndLCLU,
+                                                                        TempUH, TempUL, TempS, TempExH, TempExL);
+                                                                    FRateDataList.Add(RD);
+                                                                    //// add to dictionary 
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
 
                                         }
@@ -1808,11 +1840,6 @@ namespace WaterSimDCDC.Generic
             return temp;
         }
 
-
-
-
-
-
         // -----------------------------------
         public double FastIndRateLCLU(int Code)
         {
@@ -1847,6 +1874,72 @@ namespace WaterSimDCDC.Generic
             return temp;
         }
         // ==================================================================================================
+        // edits 09.21.21 das
+        public double FastUrbanHighRate(string UnitName)
+        {
+            double temp = InvalidRate;
+            RateData TheData = FRateDataList.Find(delegate (RateData RD)
+            {
+                return RD.UnitName == UnitName;
+            });
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.UrbanRateHigh;
+            }
+            return temp;
+        }
+        public double FastUrbanLowRate(string UnitName)
+        {
+            double temp = InvalidRate;
+            RateData TheData = FRateDataList.Find(delegate (RateData RD)
+            {
+                return RD.UnitName == UnitName;
+            });
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.UrbanRateLow;
+            }
+            return temp;
+        }
+        public double FastSuburbanRate(string UnitName)
+        {
+            double temp = InvalidRate;
+            RateData TheData = FRateDataList.Find(delegate (RateData RD)
+            {
+                return RD.UnitName == UnitName;
+            });
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.SuburbanRate;
+            }
+            return temp;
+        }
+        public double FastExurbanHighRate(string UnitName)
+        {
+            double temp = InvalidRate;
+            RateData TheData = FRateDataList.Find(delegate (RateData RD)
+            {
+                return RD.UnitName == UnitName;
+            });
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.ExurbanRateHigh;
+            }
+            return temp;
+        }
+        public double FastExurbanLowRate(string UnitName)
+        {
+            double temp = InvalidRate;
+            RateData TheData = FRateDataList.Find(delegate (RateData RD)
+            {
+                return RD.UnitName == UnitName;
+            });
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.ExurbanRateLow;
+            }
+            return temp;
+        }
 
 
     }

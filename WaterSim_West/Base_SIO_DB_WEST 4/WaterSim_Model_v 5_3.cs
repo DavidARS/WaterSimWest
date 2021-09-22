@@ -357,7 +357,8 @@ namespace WaterSimDCDC.Generic
             //string RateDataFilename = "ElevenStateGrowthRates3.csv";
             //string RateDataFilename = "West Model Growth Rate 2.csv";
             //string RateDataFilename = "West Model Growth Rate 3.csv";
-            string RateDataFilename = "WestModelGrowthRates_4.csv";
+            //string RateDataFilename = "WestModelGrowthRates_4.csv";
+            string RateDataFilename = "WestModelGrowthRates_5.csv";
             string AcerageDataFilename = "LCLUAcres.csv";
             string TemperatureDataFilename = "Temperature.csv";
             // EDIT END 2 13 18

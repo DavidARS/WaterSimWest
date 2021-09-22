@@ -2051,8 +2051,9 @@ namespace WaterSimDCDC.Generic
                 double annualFactor = AnnualExponentialChange(startValue, UDPeriod, FUrbanHighDensityChangeCoef, UrbanHighDensityManagement);
                 //writeToStream(StreamW, annualFactor);
                 tempBase = annualFactor; // * FBaseGW;
-                result = (int)tempBase;
+                result = (int)tempBase*100;
                 seti_UrbanHighDensity(result);
+                setd_UrbanHighDensity(tempBase);
             }
 
 
@@ -5927,9 +5928,15 @@ namespace WaterSimDCDC.Generic
         double d_urbanHighDensityManagement = 0.00;
         public int geti_UrbanHighDensity()
         {
-            int TempInt = Convert.ToInt32(d_urbanHighDensityManagement);
+            int TempInt = Convert.ToInt32(d_urbanHighDensityManagement*100);
             return TempInt;
         }
+        public double getd_UrbanHighDensity()
+        {
+            double Temp = d_urbanHighDensityManagement;
+            return Temp;
+        }
+
         ///------------------------------------------------------------------
         /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
         ///
@@ -5937,12 +5944,15 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------------------
         public void seti_UrbanHighDensity(int value)
         {
-            d_urbanHighDensityManagement = value;
+            //d_urbanHighDensityManagement = value;
+            d_urbanHighDensityManagement = value / 100;
         }
         public void setd_UrbanHighDensity(double value)
         {
             d_urbanHighDensityManagement = value;
         }
+
+
         public double UrbanHighDensityManagement
         {
             //set { d_urbanHighDensityManagement = value; }
