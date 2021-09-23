@@ -92,7 +92,7 @@
     <Compile Include="Demand_Ag.cs" />
     <Compile Include="Demand_Industry.cs" />
     <Compile Include="Demand_Power.cs" />
-    <Compile Include="Demand_Rural_LCLU.cs" />
+    <Compile Include="Demand_Rural_LCLU_v2.cs" />
     <Compile Include="Demand_Urban.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainWaterHarvesting.cs" />

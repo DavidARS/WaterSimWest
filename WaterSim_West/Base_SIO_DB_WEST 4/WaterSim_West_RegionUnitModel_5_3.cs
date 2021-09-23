@@ -1573,7 +1573,7 @@ namespace WaterSimDCDC.Generic
             //---------------------------------------------------
             // This calculates the change coef for Urban LCLU demand
             //
-            // These have NOT been connected !!!!!!
+            //
             // 09.20.21 das damn
             // 
             YearsToTarget = (EndYear - startYear);
@@ -2053,8 +2053,7 @@ namespace WaterSimDCDC.Generic
                 tempBase = annualFactor; // * FBaseGW;
                 result = (int)tempBase*100;
                 seti_UrbanHighDensity(result);
-                setd_UrbanHighDensity(tempBase);
-            }
+             }
 
 
 
@@ -5917,26 +5916,26 @@ namespace WaterSimDCDC.Generic
         //
         // User Policies - 
         // =======================================================================
-
+        //
+        // High Intensity Urban Density Class ICLUS version 2
+        //
         ///--------------------------------------------------------------
         /// <summary>   Gets the geti Urban Density
         /// Modify the density of the five ICLUS classes. </summary>
         ///
         /// <returns>an int from zero to 150   . </returns>
         ///--------------------------------------------------------------
-        //double d_drought = 1.00;
-        double d_urbanHighDensityManagement = 0.00;
+        double d_urbanHighDensityManagement = 1.00;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public int geti_UrbanHighDensity()
         {
             int TempInt = Convert.ToInt32(d_urbanHighDensityManagement*100);
             return TempInt;
         }
-        public double getd_UrbanHighDensity()
-        {
-            double Temp = d_urbanHighDensityManagement;
-            return Temp;
-        }
-
+ 
         ///------------------------------------------------------------------
         /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
         ///
@@ -5944,20 +5943,52 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------------------
         public void seti_UrbanHighDensity(int value)
         {
-            //d_urbanHighDensityManagement = value;
-            d_urbanHighDensityManagement = value / 100;
+             d_urbanHighDensityManagement = value / 100;
         }
         public void setd_UrbanHighDensity(double value)
         {
             d_urbanHighDensityManagement = value;
         }
-
-
         public double UrbanHighDensityManagement
         {
-            //set { d_urbanHighDensityManagement = value; }
-            get { return d_urbanHighDensityManagement; }
+             get { return d_urbanHighDensityManagement; }
         }
+        // -----------------------------------------------
+        //
+        // Low Intensity Urban Density Class
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        double d_urbanLowDensityManagement = 1.00;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int geti_UrbanLowDensity()
+        {
+            int TempInt = Convert.ToInt32(d_urbanLowDensityManagement * 100);
+            return TempInt;
+        }
+
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void seti_UrbanLowDensity(int value)
+        {
+            d_urbanLowDensityManagement = value / 100;
+        }
+        public double UrbanLowDensityManagement
+        {
+            get { return d_urbanLowDensityManagement; }
+        }
+        // ------------------------------------------------------------------
+
+
+
+
 
         // =======================================================================
         // Urban Water Conservation
@@ -6668,6 +6699,9 @@ namespace WaterSimDCDC.Generic
             get { return _initialFlowModGW; }
             set { _initialFlowModGW = value; }
         }
+
+        public double D_urbanHighDensityManagement { get => d_urbanHighDensityManagement; set => d_urbanHighDensityManagement = value; }
+        public double D_urbanHighDensityManagement1 { get => d_urbanHighDensityManagement; set => d_urbanHighDensityManagement = value; }
 
 
         #endregion

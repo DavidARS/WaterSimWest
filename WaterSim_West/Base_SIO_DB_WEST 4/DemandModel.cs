@@ -1,6 +1,7 @@
 ﻿using System;
 using WaterSimDCDC.Generic;
 using WaterSimDCDC;
+using WaterSim_Base;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace DemandModel_Base
     public abstract class DemandModel : IDisposable
     {
 
-        CRF_Unit_Network UnitNetwork;
+        CRF_Unit_Network UnitNetwork; 
+
         int Fyear;
         double FChangeCoeff;
         double _changeCoeff = 0;
@@ -216,6 +218,16 @@ namespace DemandModel_Base
 
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ConsumerUnits"></param>
+        /// <param name="GallonsPerUnit"></param>
+        /// <param name="AdjustEfficiency"></param>
+        /// <param name="AdjustDamper"></param>
+        /// <param name="period"></param>
+        /// <param name="outRate"></param>
+        /// <returns></returns>
         public double EstimateConsumerDemands(double ConsumerUnits, double GallonsPerUnit, double AdjustEfficiency, double AdjustDamper, double period, out double outRate)
         {
             double result = 0;
@@ -239,9 +251,6 @@ namespace DemandModel_Base
                     result = ConsumerUnits * GallonsPerUnit;
                 }
             }
-            // Why is this here?  Good question, ChangeIncrement uses the Math.POW() method which can
-            // throw an exception.  Hopefully that does not happen and if it does we will just use a 
-            // zero as the default value
             catch (Exception ex)
             {
                 // Ouch Only thing going here is the Change Increment Function
@@ -250,6 +259,7 @@ namespace DemandModel_Base
 
             return result;
         }
+   
         /// <summary>
         /// 
         /// </summary>
