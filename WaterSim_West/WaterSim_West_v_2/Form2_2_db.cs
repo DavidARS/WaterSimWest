@@ -29,7 +29,7 @@ namespace WaterSim_West_v_1
         List<Form> SankeyForms = new List<Form>();
 
         WaterSimCRFModel TheCRFModel = null;
-        string ModelUnitName = "Arizona North";
+        string ModelUnitName = "Arizona Central North";
 
         ChartManager MyCM = null;
 

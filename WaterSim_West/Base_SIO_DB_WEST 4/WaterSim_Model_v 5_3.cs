@@ -406,8 +406,8 @@ namespace WaterSimDCDC.Generic
                 // Adding Surface Water Model
 
                 // 08.31.21 das run ahead of time using this code
-                //  RW.rwHarvesting();
-                //  SW.waterBudgetByClass();
+                  RW.rwHarvesting();
+                  SW.waterBudgetByClass();
                 // end edits 08.31.21 das
 
                 //
@@ -3348,8 +3348,7 @@ namespace WaterSimDCDC.Generic
         // 09.20.21 das
         //=======================================================
         #region Urban Density
-        ///------------------------------------------------------
-        
+        ///------------------------------------------------------      
         ///<summary> Urban High intensity management control</summary>
         public providerArrayProperty UrbanHighDensity;
 
@@ -3382,8 +3381,73 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_UrbanHighDensity(Values[i]);
             }
         }
+        //
+        ///------------------------------------------------------      
+        ///<summary> Urban High intensity management control</summary>
+        public providerArrayProperty UrbanLowDensity;
 
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_UrbanLowDensityManagement()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_UrbanLowDensity();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
 
+        public void seti_UrbanLowDensityManagement(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_UrbanLowDensity(Values[i]);
+            }
+        }
+        ///------------------------------------------------------      
+        ///<summary> Urban High intensity management control</summary>
+        public providerArrayProperty SuburbanDensity;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_SuburbanDensityManagement()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_SuburbanDensity();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_SuburbanDensityManagement(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_SuburbanDensity(Values[i]);
+            }
+        }
 
 
         #endregion Urban Density Management

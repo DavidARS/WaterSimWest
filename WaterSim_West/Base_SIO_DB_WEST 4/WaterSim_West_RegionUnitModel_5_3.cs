@@ -675,11 +675,11 @@ namespace WaterSimDCDC.Generic
 
         // edits das 09.20.21
         double FMinUrbanDensity = 0;
-        double FUrbanHighDensityChangeCoef = 1;
-        double FUrbanLowDensityChangeCoef = 1;
-        double FSuburbanDensityChangeCoef = 1;
-        double FExurbanHighDensityChangeCoef = 1;
-        double FExurbanLowDensityChangeCoef = 1;
+        public double FUrbanHighDensityChangeCoef = 1;
+        public double FUrbanLowDensityChangeCoef = 1;
+        public double FSuburbanDensityChangeCoef = 1;
+        public double FExurbanHighDensityChangeCoef = 1;
+        public double FExurbanLowDensityChangeCoef = 1;
 
         // end edits das 09.20.21
         // ====================================================
@@ -1552,10 +1552,13 @@ namespace WaterSimDCDC.Generic
             // END EDIT
 
 
+            // Urban density classes from ICLUS version 2 data
+            // ==================================================================================================================================
             // das edit 09.21.21
+            // FUCK
             // Here is a start on this issue of how policies need to be implemented
             //    
-            setd_UrbanHighDensity(0.7); // REMOVE THIS Line
+            seti_UrbanLowDensity(140); // REMOVE THIS Line
             //
             YearsToTarget = (EndYear - startYear);
             double initialValue = 1;
@@ -1563,9 +1566,12 @@ namespace WaterSimDCDC.Generic
             FUrbanHighDensityChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagement, initialValue, startYears, YearsToTarget);
             // end das edits 09.21.21
 
-
-
-
+            // edits das 10.06.21
+            FUrbanLowDensityChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagement, initialValue, startYears, YearsToTarget);
+            FSuburbanDensityChangeCoef = utilities.ExponentialCoefficient(SuburbanDensityManagement, initialValue, startYears, YearsToTarget);
+            FExurbanHighDensityChangeCoef = utilities.ExponentialCoefficient(ExurbanHighDensityManagement, initialValue, startYears, YearsToTarget);
+            FExurbanLowDensityChangeCoef = utilities.ExponentialCoefficient(ExurbanLowDensityManagement, initialValue, startYears, YearsToTarget);
+            // end edits das 10.06.21
 
 
             // Edit Sampson
@@ -2038,32 +2044,54 @@ namespace WaterSimDCDC.Generic
         void densityManagement()
         {
             int result = 0;
-            // edit das 09.20.21
+            int UDPeriod = currentYear  - startYear;
+
+            // edit das 09.20.21, 10.06.21
             // This is the change in urban density.  Each policy should have its own set of factors
             // this one is for the urban density management control
-            double tempBase = 0;
-            int UDPeriod = currentYear - startYear;
- //           double year = currentYear;
+            //        
             if (UrbanHighDensityManagement != 1)
             {
-              //  double limit = UrbanHighDensityManagement + 0.01;
-                double startValue = 1;
-                double annualFactor = AnnualExponentialChange(startValue, UDPeriod, FUrbanHighDensityChangeCoef, UrbanHighDensityManagement);
-                //writeToStream(StreamW, annualFactor);
-                tempBase = annualFactor; // * FBaseGW;
-                result = (int)tempBase*100;
+                result = generic(UrbanHighDensityManagement, FUrbanHighDensityChangeCoef, UDPeriod);
                 seti_UrbanHighDensity(result);
-             }
-
-
-
-
-
-
+            }
+            if (UrbanLowDensityManagement != 1)
+            {
+                result = generic(UrbanLowDensityManagement, FUrbanLowDensityChangeCoef, UDPeriod);
+                seti_UrbanLowDensity(result);
+            }
+            if (SuburbanDensityManagement != 1)
+            {
+                result = generic(SuburbanDensityManagement, FSuburbanDensityChangeCoef, UDPeriod);
+                seti_SuburbanDensity(result);
+            }
+            if (ExurbanHighDensityManagement != 1)
+            {
+                result = generic(ExurbanHighDensityManagement, FExurbanHighDensityChangeCoef, UDPeriod);
+                seti_ExurbanHighDensity(result);
+            }
+            if (ExurbanLowDensityManagement != 1)
+            {
+                result = generic(ExurbanLowDensityManagement, FExurbanLowDensityChangeCoef, UDPeriod);
+                seti_ExurbanLowDensity(result);
+            }
+            //
+            //writeToStream(sw, result); 
+            //
         }
-
         // end edits 09.20.21
-
+        // edits das 10.06.21
+        int generic(double DensityChangeValue,double Coef, int period)
+        {
+            int result = 1;
+            double temp = 0;
+            double startValue = 1;
+            double annualFactor = AnnualExponentialChange(startValue, period, Coef, DensityChangeValue);
+            temp = annualFactor * 100;
+            result = Convert.ToInt32(temp);
+            return result;
+        }
+        // end edits das 10.06.21
 
 
         // QUAY EDIT 9/12/18
@@ -5943,12 +5971,12 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------------------
         public void seti_UrbanHighDensity(int value)
         {
-             d_urbanHighDensityManagement = value / 100;
+             d_urbanHighDensityManagement = Convert.ToDouble(value) / 100;
         }
-        public void setd_UrbanHighDensity(double value)
-        {
-            d_urbanHighDensityManagement = value;
-        }
+        //public void setd_UrbanHighDensity(double value)
+        //{
+        //    d_urbanHighDensityManagement = value;
+        //}
         public double UrbanHighDensityManagement
         {
              get { return d_urbanHighDensityManagement; }
@@ -5970,7 +5998,6 @@ namespace WaterSimDCDC.Generic
             int TempInt = Convert.ToInt32(d_urbanLowDensityManagement * 100);
             return TempInt;
         }
-
         ///------------------------------------------------------------------
         /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
         ///
@@ -5978,17 +6005,115 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------------------
         public void seti_UrbanLowDensity(int value)
         {
-            d_urbanLowDensityManagement = value / 100;
+            d_urbanLowDensityManagement = Convert.ToDouble(value) / 100;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double UrbanLowDensityManagement
         {
             get { return d_urbanLowDensityManagement; }
         }
         // ------------------------------------------------------------------
+        // Suburban Density Class
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        double d_suburbanDensityManagement = 1.00;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int geti_SuburbanDensity()
+        {
+            int TempInt = Convert.ToInt32(d_suburbanDensityManagement * 100);
+            return TempInt;
+        }
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void seti_SuburbanDensity(int value)
+        {
+            d_suburbanDensityManagement = Convert.ToDouble(value) / 100;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public double SuburbanDensityManagement
+        {
+            get { return d_suburbanDensityManagement; }
+        }
+        // ------------------------------------------------------------------
+        // ------------------------------------------------------------------
+        // ExUrban High Density (intensity) Class
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        double d_exurbanHighDensityManagement = 1.00;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int geti_ExurbanHighDensity()
+        {
+            int TempInt = Convert.ToInt32(d_exurbanHighDensityManagement * 100);
+            return TempInt;
+        }
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void seti_ExurbanHighDensity(int value)
+        {
+            d_exurbanHighDensityManagement = Convert.ToDouble(value) / 100;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public double ExurbanHighDensityManagement
+        {
+            get { return d_exurbanHighDensityManagement; }
+        }
+        // ------------------------------------------------------------------
 
-
-
-
+        // ------------------------------------------------------------------
+        // ExUrban Low Density (intensity) Class
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        double d_exurbanLowDensityManagement = 1.00;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int geti_ExurbanLowDensity()
+        {
+            int TempInt = Convert.ToInt32(d_exurbanLowDensityManagement * 100);
+            return TempInt;
+        }
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void seti_ExurbanLowDensity(int value)
+        {
+            d_exurbanLowDensityManagement = Convert.ToDouble(value) / 100;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public double ExurbanLowDensityManagement
+        {
+            get { return d_exurbanLowDensityManagement; }
+        }
+        // ------------------------------------------------------------------
 
         // =======================================================================
         // Urban Water Conservation
@@ -7520,7 +7645,7 @@ namespace WaterSimDCDC.Generic
         ///  This constant is multiplied against gallons to obtain liters
         /// </summary>
         public const double convertGallonsToLiters = 3.785411784;
-
+        public const double convertGallonsMG = 0.000001; 
 
         public static double RoundToSignificantDigits(this double d, int digits)
         {

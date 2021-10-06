@@ -652,7 +652,7 @@ namespace WaterSimDCDC
         internal int[] MyValue = new int[ProviderClass.NumberOfProviders];
         //
         // Original LCLU data, model is set to = an index of 2
-        internal int defaultUrban = 3;
+        internal int defaultUrban = 1;
         internal int defaultAg = 2;
         internal int defaultIndustry = 2;
         /// <summary>
@@ -1171,14 +1171,34 @@ namespace WaterSimDCDC
             //
             // add controls on urban density- ICLUS urban classes
             // 09.20.21 das
-
             WestModel.UrbanHighDensity = new providerArrayProperty(_pm, eModelParam.epP_UrbanHighDensityManagement, WestModel.geti_UrbanHighDensityManagement, WestModel.seti_UrbanHighDensityManagement, eProviderAggregateMode.agNone);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanHighDensityManagement, "Adjust Urban High Intensity Density", "UHD_P", WestModel.UrbanHighDensity));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanHighDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-
-
             // End edits 09.20.21 das
             //
+            // 09.20.23 das
+            WestModel.UrbanLowDensity = new providerArrayProperty(_pm, eModelParam.epP_UrbanLowDensityManagement, WestModel.geti_UrbanLowDensityManagement, WestModel.seti_UrbanLowDensityManagement, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanLowDensityManagement, "Adjust Urban Low Intensity Density", "ULD_P", WestModel.UrbanLowDensity));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanLowDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            //
+            WestModel.SuburbanDensity = new providerArrayProperty(_pm, eModelParam.epP_SuburbanDensityManagement, WestModel.geti_SuburbanDensityManagement, WestModel.seti_SuburbanDensityManagement, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_SuburbanDensityManagement, "Adjust Suburban Density", "ULD_P", WestModel.SuburbanDensity));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_SuburbanDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            //
+
+
+
+            // End edits 09.23.21 das
+            //
+
+
+
+
+
+
+
+
+
             //new string[5] {"No Change", "Slight", "Moderate", "Severe", "Extreme"},new int[5] { 100, 85, 70, 55, 40 }
 
             // EDIT QUAY 9/10/20

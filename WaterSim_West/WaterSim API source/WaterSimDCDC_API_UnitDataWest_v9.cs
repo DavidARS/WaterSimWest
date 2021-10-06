@@ -1875,6 +1875,11 @@ namespace WaterSimDCDC.Generic
         }
         // ==================================================================================================
         // edits 09.21.21 das
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <returns></returns>
         public double FastUrbanHighRate(string UnitName)
         {
             double temp = InvalidRate;
@@ -1888,6 +1893,11 @@ namespace WaterSimDCDC.Generic
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <returns></returns>
         public double FastUrbanLowRate(string UnitName)
         {
             double temp = InvalidRate;
@@ -1901,6 +1911,11 @@ namespace WaterSimDCDC.Generic
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <returns></returns>
         public double FastSuburbanRate(string UnitName)
         {
             double temp = InvalidRate;
@@ -1914,6 +1929,11 @@ namespace WaterSimDCDC.Generic
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <returns></returns>
         public double FastExurbanHighRate(string UnitName)
         {
             double temp = InvalidRate;
@@ -1927,6 +1947,11 @@ namespace WaterSimDCDC.Generic
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <returns></returns>
         public double FastExurbanLowRate(string UnitName)
         {
             double temp = InvalidRate;

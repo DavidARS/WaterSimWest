@@ -11,7 +11,35 @@ using System.Data;
 
 namespace WaterSim_Base
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public struct LCLUconstants
+    {
+        int Fyear;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
+        public LCLUconstants(int year)
+        {
+            Fyear = year;
+        }
+        public const double A = 74875.1;
+        public const double B = -0.4306;
+        public const double C = -0.0548;
+        //
+        public const double MandD_slope = 67.25; 
+        public const double MandD_power=0.6541;
+        //
+        public const double UHunitsAcre = 10;
+        public const double ULunitsAcre = 5.8;
+        public const double SUBunitsAcre = 1;
+        public const double ExUHunitsAcre = 0.25;
+        public const double ExULunitsAcre = 0.06;
 
+        //
+    }
    
     // ===================================================================================================================
     #region Rural Demand Class- LCLU Urban
@@ -107,11 +135,13 @@ namespace WaterSim_Base
         internal void Demand(int currentYear)
         {
             double temp = 0;
+            double NewDemand = 0;
+            //
             preProcessDemand(currentYear);
+
             double period = (currentYear - CRF.startYear) + 1;
             double outValue;
-            double NewDemand = 0;
-            string region = CRF.UnitName;
+           // string region = CRF.UnitName;
             //
             //double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
              if (FDLCLU != null)
@@ -154,7 +184,7 @@ namespace WaterSim_Base
         {
             get; set;
         }
-        double Sub
+        double SUB
         {
             get; set;
         }
@@ -163,6 +193,27 @@ namespace WaterSim_Base
             get; set;
         }
         double ExUL
+        {
+            get; set;
+        }
+        // ==============
+        double UHunits
+        {
+            get; set;
+        }
+        double ULunits
+        {
+            get; set;
+        }
+        double Subunits
+        {
+            get; set;
+        }
+        double ExUHunits
+        {
+            get; set;
+        }
+        double ExULunits
         {
             get; set;
         }
@@ -243,10 +294,17 @@ namespace WaterSim_Base
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public override void SetDemandFactors()
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
         public override void switchUrbanLCLU(int year)
         { 
 
@@ -284,14 +342,16 @@ namespace WaterSim_Base
             // Old data - Ag, Urban, Industry
             string region = CRF.UnitName;
             LurbanConservation = CRF.UrbanConservation;
-            LurbanLCLUChangeCoef = CRF.PUrbanLCLUChangeCoef;
             //
             if (FDLCLU != null)
             {
+                DUAdemand = true;
                 switchLCLU(region, currentYear);
             }
             else
             {
+                DUAdemand = false;
+                LurbanLCLUChangeCoef = CRF.PUrbanLCLUChangeCoef;
                 Lacres = FDClclu.FastUrbanAcres(CRF.UnitName, currentYear);
                 LBaseRate = FRDC.FastUrbanRateLCLU(CRF.FUnitName);
             }
@@ -303,14 +363,12 @@ namespace WaterSim_Base
         /// <param name="currentYear"></param>
         public void switchLCLU( string region, int currentYear)
         {
-            double period = (currentYear - CRF.startYear) + 1;
-            if (currentYear == 2020)
-            {
-                assignLCLU(region, currentYear);
-                relativeAcres(region, currentYear);
-                modifyArea(region, currentYear);
-                calculateDemand(region, currentYear, LurbanConservation, LurbanLCLUChangeCoef, period);
-            }
+            double period = (currentYear - CRF.startYear);// + 1;
+            assignLCLU(region, currentYear);
+            relativeAcres(region, currentYear);
+            modifyArea(region, currentYear);
+            convertAcresToUnits();
+            calculateDemand(region, currentYear, LurbanConservation, LurbanLCLUChangeCoef, period);
         }
         /// <summary>
         /// 
@@ -321,65 +379,187 @@ namespace WaterSim_Base
         {
             UH = FDLCLU.FastArea_UN(region, "EigthAcre", currentYear);
             UL = FDLCLU.FastArea_UN(region, "QuarterAcre", currentYear);
-            Sub = FDLCLU.FastArea_UN(region, "ThirdAcre", currentYear);
+            SUB = FDLCLU.FastArea_UN(region, "ThirdAcre", currentYear);
             ExUH = FDLCLU.FastArea_UN(region, "HalfAcre", currentYear);
             ExUL = FDLCLU.FastArea_UN(region, "Acre", currentYear);
         }
         internal double totalAcres(string region, int year)
         {
-            return FDLCLU.FastTotalArea_UN(region, year);
+            return FDLCLU.FastTotalUrbanArea_UN(region, year);
         }
         internal void relativeAcres(string region, int year)
         {
             rUH = UH / totalAcres(region, year);
             rUL = UL / totalAcres(region, year);
-            rSUB = Sub / totalAcres(region, year);
+            rSUB = SUB / totalAcres(region, year);
             rExUH = ExUH / totalAcres(region, year);
             rExUL = ExUH / totalAcres(region, year);
         }
+        //
+        internal double Update(double A, double B, double E)
+        {
+            double temp = 0;
+            temp = (A - B) * E;
+            return temp;
+        }
+        //
+        //Urban high intensity: 10 DUA < UH  (assume 10)
+        //Urban low intensity: 1.6 < UL< 10 DUA (assume 5.8)
+        //Suburban: 0.4 < S< 1.6 DUA (assume 1)
+        //Exurban high intensity: 0.1 < EH< 0.4 DUA (assume 0.25)
+        //Exurban low intensity: 0.02 < EL< 0.1 DUA (assume 0.06)
+        //
+        internal void convertAcresToUnits()
+        {
+            UHunits = LCLUconstants.UHunitsAcre * UH;
+            ULunits = LCLUconstants.ULunitsAcre * UL;
+            Subunits = LCLUconstants.SUBunitsAcre * SUB;
+            ExUHunits = LCLUconstants.ExUHunitsAcre * ExUH;
+            ExULunits = LCLUconstants.ExULunitsAcre * ExUL;
+        }
+
+
+        // ==============================================
+        // NOTE: THe rule would have to be that you can
+        // only change one density class at a time
+        //
         internal void modifyArea(string region, int year)
         {
-            bool IstrueUH = false;
-            bool IstrueUL = false;
+            double TAcres = totalAcres(region, year);
             double densityUH= Convert.ToDouble(CRF.geti_UrbanHighDensity()) / 100;
             double densityUL = Convert.ToDouble(CRF.geti_UrbanLowDensity()) / 100;
+            double densitySUB = Convert.ToDouble(CRF.geti_SuburbanDensity()) / 100;
+            double densityExUH = Convert.ToDouble(CRF.geti_ExurbanHighDensity()) / 100;
+            double densityExUL = Convert.ToDouble(CRF.geti_ExurbanLowDensity()) / 100;
             //
             if (densityUH != 1)
             {
-                IstrueUH = true;
                 double newUH = UH * densityUH;
                 UH = newUH;
-                UL = (totalAcres(region, year) - newUH) * rUL;
-                Sub = (totalAcres(region, year) - newUH) * rSUB;
-                ExUH = (totalAcres(region, year) - newUH) * rExUH;
-                ExUL = (totalAcres(region, year) - newUH) * rExUL;
+                UL = Update(TAcres, newUH,  rUL);
+                SUB = Update(TAcres, newUH, rSUB);
+                ExUH = Update(TAcres, newUH, rExUH);
+                ExUL = Update(TAcres, newUH, rExUL);
+                LurbanLCLUChangeCoef = CRF.FUrbanHighDensityChangeCoef;
             }
             if (densityUL != 1)
             {
-                IstrueUL = true;
                 double newUL = UL * densityUL;
-                if (IstrueUH)
-                {
-                    UL = newUL;
-                    Sub = (totalAcres(region, year) - UH - newUL) * rSUB;
-                    ExUH = (totalAcres(region, year) - UH - newUL) * rExUH;
-                    ExUL = (totalAcres(region, year) - UH - newUL) * rExUL;
-                }
-                else
-                {
-                    UH = (totalAcres(region, year) - newUL) * rUH;
-                    Sub = (totalAcres(region, year) - newUL) * rSUB;
-                    ExUH = (totalAcres(region, year) - newUL) * rExUH;
-                    ExUL = (totalAcres(region, year) - newUL) * rExUL;
-                }
+                UL = newUL;
+                UH = Update(TAcres, newUL, rUH);
+                SUB = Update(TAcres, newUL, rSUB);
+                ExUH = Update(TAcres, newUL, rExUH);
+                ExUL = Update(TAcres, newUL, rExUL);
+                LurbanLCLUChangeCoef = CRF.FUrbanLowDensityChangeCoef;
             }
-            if (densityUL != 1)
+            if (densitySUB != 1)
             {
-
+                double newSUB = SUB * densitySUB;
+                SUB = newSUB;
+                UH = Update(TAcres, newSUB, rUH);
+                UL = Update(TAcres, newSUB, rUL);
+                ExUH = Update(TAcres, newSUB, rExUH);
+                ExUL = Update(TAcres, newSUB, rExUL);
+                LurbanLCLUChangeCoef = CRF.FSuburbanDensityChangeCoef;
             }
-
-            Lacres = UH + UL + Sub + ExUH + ExUL;
+            if (densityExUH != 1) // ok
+            {
+                double newExUH = ExUH * densityExUH;
+                ExUH = newExUH;
+                UH = Update(TAcres, newExUH, rUH);
+                UL = Update(TAcres, newExUH, rUL);
+                SUB = Update(TAcres, newExUH, rSUB);
+                ExUL = Update(TAcres, newExUH, rExUL);
+                LurbanLCLUChangeCoef = CRF.FExurbanHighDensityChangeCoef;
+            }
+            if (densityExUL != 1) // okay
+            {
+                double newExUL = ExUL * densityExUL;
+                ExUL = newExUL;
+                UH = Update(TAcres, newExUL, rUH);
+                UL = Update(TAcres, newExUL, rUL);
+                SUB = Update(TAcres, newExUL, rSUB);
+                ExUH = Update(TAcres, newExUL, rExUH);
+                LurbanLCLUChangeCoef = CRF.FExurbanLowDensityChangeCoef;
+            }
+            Lacres = UH + UL + SUB + ExUH + ExUL;
         }
+        // =====================================================
+        //
+        // Add the DUA estimates for each density class
+        // ICLUS data version 2.
+        //Urban high intensity: 10 DUA < UH 
+        //Urban low intensity: 1.6 < UL< 10 DUA
+        //Suburban: 0.4 < S< 1.6 DUA
+        //Exurban high intensity: 0.1 < EH< 0.4 DUA
+        //Exurban low intensity: 0.02 < EL< 0.1 DUA
+
+        double DUA(string urban)
+        {
+            double temp = 0;
+            double result = 0;
+            temp = FDLCLU.FastDUA_(urban);
+
+            result = temp;
+            return result;
+        }
+        double PPH(string urban)
+        {
+            double temp = 0;
+            double result = 0;
+            temp = FDLCLU.FastPPH_(urban);
+
+            result = temp;
+            return result;
+        }
+        // 
+        /// <summary>
+        /// Gallons per year by LCLU Urban density as dwelling units per acre
+        /// Equation from Denver Water data.
+        /// 10.04.21 das
+        /// </summary>
+        /// <param name="LCLUclass"></param>
+        /// <returns></returns>
+        ///         
+        double OutdoorDemandFromDUA(string LCLUclass)
+        {
+            double temp = 0;
+            double result = 0;
+           // const double A = 74875.1; const double B = -0.4306; const double C = -0.0548;
+            temp = DUA(LCLUclass);
+            if(0 < temp)result = LCLUconstants.A  * Math.Pow(temp, LCLUconstants.B) * Math.Exp(LCLUconstants.C / temp);
+            return result;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="LCLUclass"></param>
+        /// <returns></returns>
+        double IndoorDemandFromPPH(string LCLUclass)
+        {
+            double temp = 0;
+            double result = 0;
+            temp= PPH(LCLUclass);
+            //result = 67.25 * Math.Pow(temp,0.6541);
+            result = LCLUconstants.MandD_slope * Math.Pow(temp, LCLUconstants.MandD_power);
+            return result;
+        }
+        /// <summary>
+        ///  Gallons per unit per year
+        /// </summary>
+        /// <param name="LCLUclass"></param>
+        /// <returns></returns>
+        public double DemandFromDUA(string LCLUclass)
+        {
+            double result = 0;
+            result = OutdoorDemandFromDUA(LCLUclass) + IndoorDemandFromPPH(LCLUclass);
+            return result;
+        }
+        internal bool DUAdemand
+        {
+            get; set;
+        }
+        // =====================================================
         internal void calculateDemand(string region, int year, double AdjustEfficiency, double AdjustDamper, double period)
         {
             double result = 0;
@@ -390,14 +570,39 @@ namespace WaterSim_Base
                 //double ModifyRate = ChangeIncrement(1, period, AdjustDamper, MinValue); // NOT MinValue ... its the Limit in his code
                 double startValue = 1;
                 ModifyRate = utilities.AnnualExponentialChange(startValue, period, AdjustDamper, AdjustEfficiency);
-                result = UH * FRDC.FastUrbanHighRate(region) * ModifyRate;
-                // result += RD.U      
+                if (DUAdemand)
+                {
+                    // Calculate water demand from the Denver Water data outdoor water use per DUA (equation that I created) plus 
+                    // the Meyer and DeOreo equation for indoor water use from the 2016 WRF_ResidentialEndUse2016.pdf document.
+                    // Figure 8.7using the 2016 data
+                    // units are ??????????
+                    // ========================================================
+                    result = UHunits * DemandFromDUA("EigthAcre") * ModifyRate;
+                    result += ULunits * DemandFromDUA("QuarterAcre") * ModifyRate;
+                    result += Subunits * DemandFromDUA("ThirdAcre") * ModifyRate;
+                    result += ExUHunits * DemandFromDUA("HalfAcre") * ModifyRate;
+                    result += ExULunits * DemandFromDUA("Acre") * ModifyRate;
+                }
+                else
+                {
+                    // Use the rates that are read in from the CSV file for each LCLU class
+                    // File is WestModelGrowthRates_5.csv
+                    // NOTE: these data need updating.......
+                    result = UH * FRDC.FastUrbanHighRate(region) * ModifyRate;
+                    result += UL * FRDC.FastUrbanLowRate(region) * ModifyRate;
+                    result += SUB * FRDC.FastSuburbanRate(region) * ModifyRate;
+                    result += ExUH * FRDC.FastExurbanHighRate(region) * ModifyRate;
+                    result += ExUL * FRDC.FastExurbanLowRate(region) * ModifyRate;
+                }
+
             }
             catch (Exception ex)
             {
                 // Ouch Only thing going here is the Change Increment Function
             }
-            demand = result; // set the property labeled "demand"
+            //demand = result; // set the property labeled "demand"
+            double days = utilities.daysInAYear(year);
+            demand = (result * utilities.convertGallonsMG) / days;  // set the property labeled "demand"
         }
 
     }
@@ -765,11 +970,7 @@ namespace WaterSim_Base
     }
     #endregion Rural Demand Class- LCLU Industry
     // ==============================================================================================================================================
-
-
-
-
-
+    
 
     // ==============================================================================================================================================
     #region Rate Data LCLU

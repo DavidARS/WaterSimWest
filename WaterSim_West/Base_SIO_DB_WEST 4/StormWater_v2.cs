@@ -27,6 +27,27 @@ namespace WaterSim_Base
         public const double Perc_scale = 3;
         public const double Perc_store = 0.05;
         public const double Perc_slope = 0.1;
+        //
+        // Impervious as a function  of residential density
+        // From ICLUS manual Graph C-3
+        // Reference: 
+        //Parameter Estimate, Approx Std Error, Approximate 95% Confidence Limits
+        // A= 47.3018         2.1073            (43.1581 < a < 51.4455)
+        // B= -875.3          87.4120           (-1047.1 < b < -703.4) 
+        public const double A = 47.3018; //
+        public const double B = -875.3; // 
+                                        //
+                                        //Industrial - 72 %, Commercial - 85 %, EigthAcre - 65 %, QuarterAcre - 38 %, ThirdAcre - 30 %, HalfAcre - 25 %, Acre - 20 %
+        public const double Ind = 0.72;
+        public const double Com = 0.85;
+        public const double EigthAcre = 0.65;
+        public const double QuarterAcre = 0.38;
+        public const double ThirdAcre = 0.3;
+        public const double HalfAcre = 0.25;
+        public const double Acre = 0.20;
+
+
+        //
     }
     /// <summary>
     /// Class to model stormwater runoff
@@ -78,6 +99,14 @@ namespace WaterSim_Base
             Initialize_Variables();
             isInstantiated = true;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitData"></param>
+        /// <param name="Rain"></param>
+        /// <param name="RWH"></param>
+        /// <param name="DC"></param>
+        /// <param name="rcn"></param>
         public StormWater(UnitData UnitData, DataClassRainFall Rain, RainWaterHarvesting RWH, DataClassLcluArea DC, DataClassRCN rcn)
         {
             RCNarea = DC;
@@ -115,6 +144,7 @@ namespace WaterSim_Base
 
 
 
+        // Industrial-72%, Commercial-85%, EigthAcre-65%, QuarterAcre-38%, ThirdAcre-30%, HalfAcre-25%, Acre-20%
 
         /// <summary>
         /// 
@@ -135,12 +165,13 @@ namespace WaterSim_Base
 
                     double T = RCNvalueByClass(Name, e, soil);
                     double t = RCNareaByClassRN(Name, e, year);
+                    double u = screenClasses(e,t);
                     double a = RCNarea.FastTotalArea_UN(Name, year);
                     try
                     {
                         if (t < a)
                         {
-                            if (0 < a) temp = Math.Max(0, T * (t / a));
+                            if (0 < a) temp = Math.Max(0, T * (u / a));
                         }
                         else
                         {
@@ -161,6 +192,31 @@ namespace WaterSim_Base
 
             return total;
         }
+        // ---------------------------------------------------------------------------------------------------------------
+        //
+        // % impervious area for an individual  residential density class
+        internal double TypeIIexponential(double DUA)
+        {
+            double temp = 0;
+            temp = SWconstants.A * Math.Exp(SWconstants.B / DUA);
+            return temp;
+        }
+        double screenClasses(LcluClasses e, double acres)
+        {
+            double temp = 0;
+            string loop = e.ToString();
+            if (loop == "Ind") { temp = acres * SWconstants.Ind; }
+            if(loop == "Com") { temp = acres * SWconstants.Com; }
+            if(loop == "EigthAcre")  {
+                //double Imp = TypeIIexponential(DUA) / 100.0;
+                temp = acres * SWconstants.EigthAcre;  }
+            if(loop == "QuarterdAcre") { temp = acres * SWconstants.QuarterAcre; }
+            if (loop == "ThirdAcre") { temp = acres * SWconstants.ThirdAcre; }
+            if (loop == "HalfAcre") { temp = acres * SWconstants.HalfAcre; }
+            if (loop == "Acre") { temp = acres * SWconstants.Acre; }
+            return temp;
+         }
+
         //
         /// <summary>
         ///  Main method to calculate the rainfall butgets- call from WaterSim_model
@@ -999,7 +1055,7 @@ namespace WaterSim_Base
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory;
+            FDataDirectory = DataDirectory + "\\Inputs\\";
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;
@@ -1315,6 +1371,31 @@ namespace WaterSim_Base
         /// <param name="UnitName">Region Name</param>
         /// <param name="year"></param>
         /// <returns></returns>
+        public double FastTotalUrbanArea_UN(string UnitName, int year)
+        {
+            double temp = InvalidRate;
+            DataStructRCNArea TheData = FLcluClassesDataList.Find(delegate (DataStructRCNArea AD)
+            {
+                return ((AD.TheYear == year) && (AD.UnitName == UnitName));
+            });
+
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.EigthAcre;
+                temp += TheData.QuarterAcre;
+                temp += TheData.ThirdAcre;
+                temp += TheData.HalfAcre;
+                temp += TheData.Acre;
+                //temp = TheData.TotalArea;
+            }
+            return temp;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public double FastTotalArea_UN(string UnitName, int year)
         {
             double temp = InvalidRate;
@@ -1325,7 +1406,8 @@ namespace WaterSim_Base
 
             if (TheData.UnitName == UnitName)
             {
-                temp = TheData.TotalArea;
+           
+               temp = TheData.TotalArea;
             }
             return temp;
         }
@@ -1349,8 +1431,75 @@ namespace WaterSim_Base
             }
             return temp;
         }
-        // ==========================================================================================
+        //Urban high intensity: 10 DUA < UH 
+        //Urban low intensity: 1.6 < UL< 10 DUA
+        //Suburban: 0.4 < S< 1.6 DUA
+        //Exurban high intensity: 0.1 < EH< 0.4 DUA
+        //Exurban low intensity: 0.02 < EL< 0.1 DUA
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lcluClass"></param>
+        /// <returns></returns>
+        public double FastDUA_(string lcluClass)
+        {
+            double temp = 0;
+            double DUA = 0;
+            switch (lcluClass)
+            {
+                case "EigthAcre":
+                    temp = 10;
+                    break;
+                case "QuarterAcre":
+                    temp = 5.8;
+                    break;
+                case "ThirdAcre":
+                    temp = 1;
+                    break;
+                case "HalfAcre":
+                    temp = 0.25;
+                    break;
+                case "Acre":
+                    temp = 0.06;
+                    break;
+            }
+            DUA = temp;
+            return DUA;
+        }
+        public double FastPPH_(string lcluClass)
+        {
+            double temp = 0;
+            double PPH = 0;
+            switch (lcluClass)
+            {
+                case "EigthAcre":
+                    temp = 2.4;
+                    break;
+                case "QuarterAcre":
+                    temp = 2.45;
+                    break;
+                case "ThirdAcre":
+                    temp = 2.5;
+                    break;
+                case "HalfAcre":
+                    temp = 2.5;
+                    break;
+                case "Acre":
+                    temp = 2.5;
+                    break;
+            }
+            PPH = temp;
+            return PPH;
+        }
+        //Urban high intensity: 10 DUA < UH 
+        //Urban low intensity: 1.6 < UL< 10 DUA
+        //Suburban: 0.4 < S< 1.6 DUA
+        //Exurban high intensity: 0.1 < EH< 0.4 DUA
+        //Exurban low intensity: 0.02 < EL< 0.1 DUA
 
+        // ==========================================================================================
     }
+
     #endregion DataClass
 }
