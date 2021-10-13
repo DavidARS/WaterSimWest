@@ -418,7 +418,10 @@ namespace WaterSim_Base
         {
             get; set;
         }
-
+        internal int I
+        {
+            get; set;
+        }
         // ====================================================================================================
         // Percent impervious by class
         // ICLUS 4th national climate assessment US EPA
@@ -445,6 +448,25 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        // =================================================
+        internal double INDroofYearly(int year, string name)
+        {
+            double temp = 0;
+            int i = I;
+            IND_harvesting = new double[FUnitCount];
+            double ind = LCLUclasses.FastArea_UN(name, "Ind", year);
+            RWacres[i] = ind;
+            // acres
+            temp = ind * RWconstants.IND_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency
+                * RWconstants.IND_Impervious;
+            IND_harvesting[i] = temp;
+
+            return temp;
+        }
+
+
+
+        // ===============================================================
         internal double COMroof(int year)
         {
             double temp = 0;
@@ -461,6 +483,21 @@ namespace WaterSim_Base
                 COMM_harvesting[i] = temp;
                 i++;
             }
+            return temp;
+        }
+        internal double COMroofYearly(int year, string name)
+        {
+            double temp = 0;
+            int i = I;
+            COMM_harvesting = new double[FUnitCount];
+            double comm = LCLUclasses.FastArea_UN(name, "Comm", year);
+            RWacres[i] += comm;
+            // acres
+            temp = comm * RWconstants.COM_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency
+                * RWconstants.COM_Impervious;
+            COMM_harvesting[i] = temp;
+
+            //}
             return temp;
         }
         // edits 09.13.21 das 
@@ -490,6 +527,20 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        internal double EigthAcreroofYearly(int year, string name, WaterSimCRFModel CRF)
+        {
+            double temp = 0;
+            int i = 0;
+            i = I;
+            EA_harvesting = new double[FUnitCount];
+            double EA = LCLUclasses.FastArea_UN(name, "EigthAcre", year) * CRF.UrbanHighDensityChange;
+            RWacres[i] += EA;
+            // acres
+            temp = EA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            EA_harvesting[i] = temp;
+
+            return temp;
+        }
         internal double QuarterAcreroof(int year)
         {
             double temp = 0;
@@ -505,6 +556,19 @@ namespace WaterSim_Base
                 QA_harvesting[i] = temp;
                 i++;
             }
+            return temp;
+        }
+        internal double QuarterAcreroofYearly(int year, string name, WaterSimCRFModel CRF)
+        {
+            double temp = 0;
+            int i = I;
+            QA_harvesting = new double[FUnitCount];
+            double QA = LCLUclasses.FastArea_UN(name, "QuarterAcre", year) * CRF.UrbanLowDensityChange;
+            RWacres[i] += QA;
+            // acres
+            temp = QA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            QA_harvesting[i] = temp;
+
             return temp;
         }
         internal double ThirdAcreroof(int year)
@@ -524,7 +588,19 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        internal double ThirdAcreroofYearly(int year, string name, WaterSimCRFModel CRF)
+        {
+            double temp = 0;
+            int i = I;
+            TA_harvesting = new double[FUnitCount];
+            double TA = LCLUclasses.FastArea_UN(name, "ThirdAcre", year) * CRF.SuburbanDensityChange;
+            RWacres[i] += TA;
+            // acres
+            temp = TA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            TA_harvesting[i] = temp;
 
+            return temp;
+        }
         internal double HalfAcreroof(int year)
         {
             double temp = 0;
@@ -542,6 +618,20 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        internal double HalfAcreroofYearly(int year, string name, WaterSimCRFModel CRF)
+        {
+            double temp = 0;
+            int i = I;
+            HA_harvesting = new double[FUnitCount];
+
+            double HA = LCLUclasses.FastArea_UN(name, "HalfAcre", year) * CRF.ExurbanHighDensityChange;
+            RWacres[i] += HA;
+            // acres
+            temp = HA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            HA_harvesting[i] = temp;
+            return temp;
+        }
+        // ===================================================================
         internal double Acreroof(int year)
         {
             double temp = 0;
@@ -557,8 +647,23 @@ namespace WaterSim_Base
                 A_harvesting[i] = temp;
                 i++;
             }
+          
             return temp;
         }
+        // ================================
+        internal double AcreroofYearly(int year, string name, WaterSimCRFModel CRF)
+        {
+            double temp = 0;
+            int i = I;
+            A_harvesting = new double[FUnitCount];
+            double A = LCLUclasses.FastArea_UN(name, "Acre", year) * CRF.ExurbanLowDensityChange;
+            RWacres[i] += A;
+            // acres
+            temp = A * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            A_harvesting[i] = temp;
+            return temp;
+        }
+        //======================================================================
         internal void roofCapture(int year)
         {
             double temp = 0;
@@ -566,6 +671,20 @@ namespace WaterSim_Base
             temp = INDroof(year) + COMroof(year)+ EigthAcreroof(year) + QuarterAcreroof(year)+ThirdAcreroof(year) + 
                 HalfAcreroof(year) + Acreroof(year);
         }
+        internal void roofCaptureYearly(int year, string name, WaterSimCRFModel CRF)
+        {
+            double temp = 0;
+            RWacres = new double[FUnitCount];
+            RWacres[I] = 0;
+            temp = INDroofYearly(year, name) + COMroofYearly(year,name) + EigthAcreroofYearly(year,name,CRF) + 
+                QuarterAcreroofYearly(year,name,CRF) + ThirdAcreroofYearly(year,name,CRF) +
+                HalfAcreroofYearly(year,name,CRF) + AcreroofYearly(year,name,CRF);
+            I += 1;
+            if (23 < I) I = 0;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
         public void  rwHarvesting()
         {
             // rainfall in mm yr-1
@@ -598,19 +717,24 @@ namespace WaterSim_Base
             }
            // return temp;
         }
+        
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The region name</param>
         /// <param name="year"></param>
+        /// <param name="CRF">the CRF object</param>
         /// <returns></returns>
-        public double rwHarvestingYearly(string name, int year)
+        public double rwHarvestingYearly(string name, int year, WaterSimCRFModel CRF)
         {
             // rainfall in mm yr-1
             // output is MGD year-1
             double temp = 0;
             int i = 0;
+            i = I;
             int j = 0;
+        
+     
             //RWcaptureYear_MGD = new double[FUnitCount, FYearCount];
             //RWYear_MGD = new double[FUnitCount, FYearCount];
             //RWcaptureYear_ratio = new double[FUnitCount, FYearCount];
@@ -619,9 +743,9 @@ namespace WaterSim_Base
             int cYear = year + 2020;
 
            // RWcapture = new double[FUnitCount];
-            roofCapture(cYear);
+            roofCaptureYearly(cYear, name,CRF);
             double T = RainFall.FastRainFall(name, cYear);
-
+            RWYear_MGD[i, j] = RWacres[i] * UnitConvert(T) / Utilities.daysInAYear(year);
             temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
             TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
             RWcapture[i] = temp;

@@ -1332,14 +1332,13 @@ namespace WaterSimDCDC.Generic
 
 
             // ===================================================================
-            // 08.31.21 das 2021
+            // 08.31.21 das 2021, modified on 10.08.21, 10.11.21
             // Run annually
             if(StartRainYear <= year)
             {
-                string name = UnitName;
-                RainW.rwHarvestingYearly(name, year - StartRainYear);
-                CRFSWB.waterBudgetByClassYearly(name, year- StartRainYear);
-                 //StormW.waterBudgetByClassYearly(name, year- StartRainYear);
+               // string name = UnitName;
+                double d = RainW.rwHarvestingYearly(UnitName, year - StartRainYear, this);
+                double e = CRFSWB.waterBudgetByClassYearly(UnitName, year- StartRainYear, this);
             }
             // end edits 08.31.21 das
             // ===================================================================
@@ -1461,7 +1460,7 @@ namespace WaterSimDCDC.Generic
             TemperatureData(FDCtemperature, this);
 
             // edits 09.20.21 das
-            densityManagement();
+            densityManagement(StreamW);
             // end edits das 09.20.21
 
             Urban(StreamW);
@@ -1558,7 +1557,7 @@ namespace WaterSimDCDC.Generic
             // FUCK
             // Here is a start on this issue of how policies need to be implemented
             //    
-            seti_UrbanLowDensity(140); // REMOVE THIS Line
+           
             //
             YearsToTarget = (EndYear - startYear);
             double initialValue = 1;
@@ -2041,10 +2040,12 @@ namespace WaterSimDCDC.Generic
         // this is the field used for change coeeficient, and is the Max or Min values based on desired goal
         double FUDChangeLimit = 1;
         // edit das 09.20.21
-        void densityManagement()
+        void densityManagement(StreamWriter sw)
         {
-            int result = 0;
-            int UDPeriod = currentYear  - startYear;
+            double result = 0;
+            //int UDPeriod = (currentYear  - startYear) +1;
+            int UDPeriod = (currentYear - startYear);// + 1;
+            //
 
             // edit das 09.20.21, 10.06.21
             // This is the change in urban density.  Each policy should have its own set of factors
@@ -2053,27 +2054,32 @@ namespace WaterSimDCDC.Generic
             if (UrbanHighDensityManagement != 1)
             {
                 result = generic(UrbanHighDensityManagement, FUrbanHighDensityChangeCoef, UDPeriod);
-                seti_UrbanHighDensity(result);
+                UrbanHighDensityChange = result;
+                //seti_UrbanHighDensity(result);
             }
             if (UrbanLowDensityManagement != 1)
             {
                 result = generic(UrbanLowDensityManagement, FUrbanLowDensityChangeCoef, UDPeriod);
-                seti_UrbanLowDensity(result);
+                UrbanLowDensityChange = result;
+                //seti_UrbanLowDensity(result);
             }
             if (SuburbanDensityManagement != 1)
             {
                 result = generic(SuburbanDensityManagement, FSuburbanDensityChangeCoef, UDPeriod);
-                seti_SuburbanDensity(result);
+                SuburbanDensityChange = result;
+                //seti_SuburbanDensity(result);
             }
             if (ExurbanHighDensityManagement != 1)
             {
                 result = generic(ExurbanHighDensityManagement, FExurbanHighDensityChangeCoef, UDPeriod);
-                seti_ExurbanHighDensity(result);
+                ExurbanHighDensityChange = result;
+                //seti_ExurbanHighDensity(result);
             }
             if (ExurbanLowDensityManagement != 1)
             {
                 result = generic(ExurbanLowDensityManagement, FExurbanLowDensityChangeCoef, UDPeriod);
-                seti_ExurbanLowDensity(result);
+                ExurbanLowDensityChange = result;
+                //seti_ExurbanLowDensity(result);
             }
             //
             //writeToStream(sw, result); 
@@ -2081,15 +2087,14 @@ namespace WaterSimDCDC.Generic
         }
         // end edits 09.20.21
         // edits das 10.06.21
-        int generic(double DensityChangeValue,double Coef, int period)
+        double generic(double DensityChangeValue,double Coef, int period)
         {
-            int result = 1;
             double temp = 0;
             double startValue = 1;
             double annualFactor = AnnualExponentialChange(startValue, period, Coef, DensityChangeValue);
-            temp = annualFactor * 100;
-            result = Convert.ToInt32(temp);
-            return result;
+            temp = annualFactor;// * 100;
+            //result = Convert.ToInt32(temp);
+            return temp;
         }
         // end edits das 10.06.21
 
@@ -2824,7 +2829,7 @@ namespace WaterSimDCDC.Generic
             double NewDemandMGD = Demand;
             // Set value for parameter
             seti_Urban((int)NewDemandMGD);
-            writeToStream(sw, Demand);
+            //writeToStream(sw, Demand);
         
         }
 
@@ -5981,6 +5986,12 @@ namespace WaterSimDCDC.Generic
         {
              get { return d_urbanHighDensityManagement; }
         }
+        double d_uhdchange = 1.0;
+        public double UrbanHighDensityChange
+        {
+            get { return d_uhdchange; }
+            set { d_uhdchange = value; }
+        }
         // -----------------------------------------------
         //
         // Low Intensity Urban Density Class
@@ -6014,6 +6025,11 @@ namespace WaterSimDCDC.Generic
         {
             get { return d_urbanLowDensityManagement; }
         }
+        double d_uldchange = 1.0;
+        public double UrbanLowDensityChange
+        {
+            get { return d_uldchange; } set { d_uldchange = value; }
+        }
         // ------------------------------------------------------------------
         // Suburban Density Class
         //
@@ -6045,6 +6061,11 @@ namespace WaterSimDCDC.Generic
         public double SuburbanDensityManagement
         {
             get { return d_suburbanDensityManagement; }
+        }
+        double d_sdchange = 1.0;
+        public double SuburbanDensityChange
+        {
+            get { return d_sdchange; } set { d_sdchange = value; }
         }
         // ------------------------------------------------------------------
         // ------------------------------------------------------------------
@@ -6079,6 +6100,11 @@ namespace WaterSimDCDC.Generic
         {
             get { return d_exurbanHighDensityManagement; }
         }
+        double d_ehdchange = 1.0;
+        public double ExurbanHighDensityChange
+        {
+            get { return d_ehdchange; } set { d_ehdchange = value; } 
+        }
         // ------------------------------------------------------------------
 
         // ------------------------------------------------------------------
@@ -6112,6 +6138,12 @@ namespace WaterSimDCDC.Generic
         public double ExurbanLowDensityManagement
         {
             get { return d_exurbanLowDensityManagement; }
+        }
+        double d_eldchange = 1.0;
+        public double ExurbanLowDensityChange
+        {
+            get { return d_eldchange; }
+            set { d_ehdchange = value; }
         }
         // ------------------------------------------------------------------
 

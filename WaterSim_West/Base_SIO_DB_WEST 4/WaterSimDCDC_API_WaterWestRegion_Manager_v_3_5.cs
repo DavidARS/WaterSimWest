@@ -68,7 +68,7 @@ namespace WaterSimDCDC
     //                      D) Added a property to link the USGS start year data to the reservoir model (i.e.,
     //                          WestModel.ColoradoRiverModel.ColoradoRiverModel.seti_COempiricalStopYear(StartYear))
     //
-    //
+    // ver 8       10.12.21 Sampson
     //=============================================================================================================================================================================================
     // Enums 
     //==========================================================
@@ -652,7 +652,7 @@ namespace WaterSimDCDC
         internal int[] MyValue = new int[ProviderClass.NumberOfProviders];
         //
         // Original LCLU data, model is set to = an index of 2
-        internal int defaultUrban = 1;
+        internal int defaultUrban = 3;
         internal int defaultAg = 2;
         internal int defaultIndustry = 2;
         /// <summary>
@@ -1172,31 +1172,31 @@ namespace WaterSimDCDC
             // add controls on urban density- ICLUS urban classes
             // 09.20.21 das
             WestModel.UrbanHighDensity = new providerArrayProperty(_pm, eModelParam.epP_UrbanHighDensityManagement, WestModel.geti_UrbanHighDensityManagement, WestModel.seti_UrbanHighDensityManagement, eProviderAggregateMode.agNone);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanHighDensityManagement, "Adjust Urban High Intensity Density", "UHD_P", WestModel.UrbanHighDensity));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanHighDensityManagement, "Adjust Urban High Intensity Density", "UHD_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.UrbanHighDensity));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanHighDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // End edits 09.20.21 das
             //
             // 09.20.23 das
             WestModel.UrbanLowDensity = new providerArrayProperty(_pm, eModelParam.epP_UrbanLowDensityManagement, WestModel.geti_UrbanLowDensityManagement, WestModel.seti_UrbanLowDensityManagement, eProviderAggregateMode.agNone);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanLowDensityManagement, "Adjust Urban Low Intensity Density", "ULD_P", WestModel.UrbanLowDensity));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanLowDensityManagement, "Adjust Urban Low Intensity Density", "ULD_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.UrbanLowDensity));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanLowDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
             WestModel.SuburbanDensity = new providerArrayProperty(_pm, eModelParam.epP_SuburbanDensityManagement, WestModel.geti_SuburbanDensityManagement, WestModel.seti_SuburbanDensityManagement, eProviderAggregateMode.agNone);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_SuburbanDensityManagement, "Adjust Suburban Density", "ULD_P", WestModel.SuburbanDensity));
-            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_SuburbanDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-            //
-
-
-
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_SuburbanDensityManagement, "Adjust Suburban Density", "SUB_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.SuburbanDensity));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_SuburbanDensityManagement, "Adjust one of the five ICLUS urban density classes- Suburban", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // End edits 09.23.21 das
+            // Edits das 10.07.21
+            WestModel.ExurbanHighDensity = new providerArrayProperty(_pm, eModelParam.epP_ExurbanHighDensityManagement, WestModel.geti_ExurbanHighDensityManagement, WestModel.seti_ExurbanHighDensityManagement, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ExurbanHighDensityManagement, "Adjust Exurban High Density", "ExUH_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.ExurbanHighDensity));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ExurbanHighDensityManagement, "Adjust one of the five ICLUS urban density classes- Exurban High Intensity", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
-
-
-
-
-
-
-
+            WestModel.ExurbanLowDensity = new providerArrayProperty(_pm, eModelParam.epP_ExurbanLowDensityManagement, WestModel.geti_ExurbanLowDensityManagement, WestModel.seti_ExurbanLowDensityManagement, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ExurbanLowDensityManagement, "Adjust Exurban High Density", "ExUH_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.ExurbanLowDensity));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ExurbanLowDensityManagement, "Adjust one of the five ICLUS urban density classes- Exurban Low Intensity", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            // end edits das 10.07.21
+            // 
+ 
+            //
 
 
             //new string[5] {"No Change", "Slight", "Moderate", "Severe", "Extreme"},new int[5] { 100, 85, 70, 55, 40 }
@@ -1478,7 +1478,9 @@ namespace WaterSimDCDC
             //
             // moved below on 09.15.20 das- needed to coordinate the CO river model with the USGS data
             DefaultSettings();
-            //
+            // temp edits das 10.07.21
+            ModelTesting();
+            // end 10.07.21 das
         }
         #endregion WestModelParameters
         //
@@ -1589,7 +1591,14 @@ namespace WaterSimDCDC
             // 09.16.20 end
             // ====================================
         }
+        int[] density = new int[25];
+        void ModelTesting()
+        {
+            int i = 0;
+            do { density[i] = 90; i++; } while (i < 25);
+            //WestModel.seti_UrbanLowDensityManagement(density) ;
 
+        }
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Resets WaterSimManager Parameters.</summary>
         /// <remarks> Any parameters or fields that are maintain at this level, WaterSimManager

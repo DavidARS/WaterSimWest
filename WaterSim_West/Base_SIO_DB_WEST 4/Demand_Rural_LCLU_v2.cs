@@ -426,11 +426,20 @@ namespace WaterSim_Base
         internal void modifyArea(string region, int year)
         {
             double TAcres = totalAcres(region, year);
-            double densityUH= Convert.ToDouble(CRF.geti_UrbanHighDensity()) / 100;
-            double densityUL = Convert.ToDouble(CRF.geti_UrbanLowDensity()) / 100;
-            double densitySUB = Convert.ToDouble(CRF.geti_SuburbanDensity()) / 100;
-            double densityExUH = Convert.ToDouble(CRF.geti_ExurbanHighDensity()) / 100;
-            double densityExUL = Convert.ToDouble(CRF.geti_ExurbanLowDensity()) / 100;
+            //double densityUH= Convert.ToDouble(CRF.geti_UrbanHighDensity()) / 100;
+            double densityUH = CRF.UrbanHighDensityChange;
+            //double densityUL = Convert.ToDouble(CRF.geti_UrbanLowDensity()) / 100;
+            double densityUL = CRF.UrbanLowDensityChange;
+            // double densitySUB = Convert.ToDouble(CRF.geti_SuburbanDensity()) / 100;
+            double densitySUB = CRF.SuburbanDensityChange;
+            //double densityExUH = Convert.ToDouble(CRF.geti_ExurbanHighDensity()) / 100;
+            double densityExUH = CRF.ExurbanHighDensityChange;
+            double densityExUL = CRF.ExurbanLowDensityChange;
+            //
+            if (year == 2020)
+            {
+                bool stop = true;
+            }
             //
             if (densityUH != 1)
             {

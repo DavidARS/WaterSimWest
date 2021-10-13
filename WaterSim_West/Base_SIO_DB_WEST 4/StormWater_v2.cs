@@ -54,7 +54,7 @@ namespace WaterSim_Base
     /// </summary>
     public class StormWater
     {
-        WaterSimCRFModel CRF;
+       // WaterSimCRFModel CRF;
         UnitData FUnitData;
         public DataClassLcluArea RCNarea;
         public DataClassRCN RCN;
@@ -118,7 +118,6 @@ namespace WaterSim_Base
             isInstantiated = true;
         }
 
-
         internal void Initialize_Variables()
         {
             //throw new NotImplementedException();
@@ -147,12 +146,14 @@ namespace WaterSim_Base
         // Industrial-72%, Commercial-85%, EigthAcre-65%, QuarterAcre-38%, ThirdAcre-30%, HalfAcre-25%, Acre-20%
 
         /// <summary>
-        /// 
+        ///  Extract the RCN number for each LCLU type. Fine the area in acres for each
+        ///  Modify the area (for urban classes) if the user changes density of the class
+        ///  Change area into impermeable surface area. Then, calculate the fraction of each
         /// </summary>
         /// <param name="Name"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public double AreaByRCN(string Name, int year)
+        public double AreaByRCNyearly(string Name, int year, WaterSimCRFModel CRF)
         {
             string soil = "A";
             double total = 0;
@@ -164,9 +165,10 @@ namespace WaterSim_Base
                     double temp = 0;
 
                     double T = RCNvalueByClass(Name, e, soil);
-                    double t = RCNareaByClassRN(Name, e, year);
-                    double u = screenClasses(e,t);
-                    double a = RCNarea.FastTotalArea_UN(Name, year);
+                    double t = RCNareaByClassRN(Name, e, year) ;
+                    double r = ModifyAreaByClass(t, e, CRF);
+                    double u = screenClasses(e,r);
+                    double a = RCNarea.FastTotalArea_UN(Name, year) ;
                     try
                     {
                         if (t < a)
@@ -175,7 +177,7 @@ namespace WaterSim_Base
                         }
                         else
                         {
-                            MessageBox.Show("error on acerage data for LCLU RCN classe- line 121 in StormWater.cs");
+                            MessageBox.Show("error on acerage data for LCLU RCN classe- line 178 in StormWater.cs");
                         }
                     }
                     catch (Exception ex)
@@ -192,6 +194,12 @@ namespace WaterSim_Base
 
             return total;
         }
+        double modArea(double area)
+        {
+            double temp = 0;
+            area *= 0; 
+            return temp;
+        }
         // ---------------------------------------------------------------------------------------------------------------
         //
         // % impervious area for an individual  residential density class
@@ -201,16 +209,22 @@ namespace WaterSim_Base
             temp = SWconstants.A * Math.Exp(SWconstants.B / DUA);
             return temp;
         }
+        /// <summary>
+        ///  Change area (in acres) to impervious surface area
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="acres"></param>
+        /// <returns></returns>
         double screenClasses(LcluClasses e, double acres)
         {
             double temp = 0;
             string loop = e.ToString();
             if (loop == "Ind") { temp = acres * SWconstants.Ind; }
-            if(loop == "Com") { temp = acres * SWconstants.Com; }
+            if(loop == "Comm") { temp = acres * SWconstants.Com; }
             if(loop == "EigthAcre")  {
                 //double Imp = TypeIIexponential(DUA) / 100.0;
                 temp = acres * SWconstants.EigthAcre;  }
-            if(loop == "QuarterdAcre") { temp = acres * SWconstants.QuarterAcre; }
+            if(loop == "QuarterAcre") { temp = acres * SWconstants.QuarterAcre; }
             if (loop == "ThirdAcre") { temp = acres * SWconstants.ThirdAcre; }
             if (loop == "HalfAcre") { temp = acres * SWconstants.HalfAcre; }
             if (loop == "Acre") { temp = acres * SWconstants.Acre; }
@@ -224,30 +238,30 @@ namespace WaterSim_Base
         /// <param name="FUnitData"></param>
         /// 
         /// <returns></returns>
-        public double waterBudgetByClass()
-        {
+        //public double waterBudgetByClass()
+        //{
 
-            double total = 0;
-            int i = 0;
-            int j = 0;
-            for (int year = RainFall.FirstYear; year < RainFall.LastYear; year++)
-            //while (int year <= RainFall.DataTableRows)
-            {
-                foreach (string Name in FUnitData.UnitNames)
-                {
-                    double rcn = AreaByRCN(Name, year);
-                    double rainFall = getRainFall(Name, year);
-                    double remove = rainFall * RW.RWcaptureYear_ratio[i,j];
-                    StreamThroughPut(rainFall, rcn, remove);
-                    i++;
-                }
-                j++;
-                i = 0;
-            }
-            return total;
-        }
+        //    double total = 0;
+        //    int i = 0;
+        //    int j = 0;
+        //    for (int year = RainFall.FirstYear; year < RainFall.LastYear; year++)
+        //    //while (int year <= RainFall.DataTableRows)
+        //    {
+        //        foreach (string Name in FUnitData.UnitNames)
+        //        {
+        //            double rcn = AreaByRCN(Name, year);
+        //            double rainFall = getRainFall(Name, year);
+        //            double remove = rainFall * RW.RWcaptureYear_ratio[i,j];
+        //            StreamThroughPut(rainFall, rcn, remove);
+        //            i++;
+        //        }
+        //        j++;
+        //        i = 0;
+        //    }
+        //    return total;
+        //}
         // =====================================================================
-        public double waterBudgetByClassYearly(string name, int year)
+        public double waterBudgetByClassYearly(string name, int year, WaterSimCRFModel CRF)
         {
 
             double total = 0;
@@ -255,9 +269,10 @@ namespace WaterSim_Base
             int j = 0;
             j = year;
             int cYear = year + 2020;
-                    double rcn = AreaByRCN(name, cYear);
+                    double rcn = AreaByRCNyearly(name, cYear,CRF);
                     double rainFall = getRainFall(name, cYear);
                     i = Region(name);
+                    // units on rainfall.... check
                     double remove = rainFall * RW.RWcaptureYear_ratio[i, j];
                     StreamThroughPut(rainFall, rcn, remove);
            
@@ -394,8 +409,22 @@ namespace WaterSim_Base
             double temp = 0;
             string loop = e.ToString();
             temp = RCNarea.FastArea_UN(unitName, loop, year);
+            // Need to add changes to area from user controls.....
             return temp;
         }
+        double ModifyAreaByClass(double area, LcluClasses e, WaterSimCRFModel crf)
+        {
+            double temp = area;
+            string loop = e.ToString();
+            if (loop == "EigthAcre") {
+                temp = area * crf.UrbanHighDensityChange; }
+            if (loop == "QuarterAcre") temp = area * crf.UrbanLowDensityChange;
+            if (loop == "ThirdAcre") temp = area * crf.SuburbanDensityChange;
+            if (loop == "HalfAcre") temp = area * crf.ExurbanHighDensityChange;
+            if (loop == "Acre") temp = area * crf.ExurbanLowDensityChange;
+            return temp;
+         }
+
         double RCNareaByClassRC(int code, LcluClasses e, int year)
         {
             double temp = 0;
