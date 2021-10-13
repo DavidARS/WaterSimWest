@@ -132,6 +132,10 @@
       <Project>{277daa85-b7a5-4efd-bd66-c52310f6c87e}</Project>
       <Name>ColoradoRiverReservoirSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DCDC_Utilities\DCDC_Utilities.csproj">
+      <Project>{abddc4ed-9145-4e68-aecd-46604eff2cf2}</Project>
+      <Name>DCDC_Utilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Sankey\Sankey2.csproj">
       <Project>{2f149e04-d5fe-47c2-9d12-fb9835b1ebdd}</Project>
       <Name>Sankey2</Name>

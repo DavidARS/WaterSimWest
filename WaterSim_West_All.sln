@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterSimWebService  West Ve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoradoRiverReservoirSystem", "ColoradoRiverReservoirSystem\ColoradoRiverReservoirSystem.csproj", "{277DAA85-B7A5-4EFD-BD66-C52310F6C87E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DCDC_Utilities", "DCDC_Utilities\DCDC_Utilities.csproj", "{ABDDC4ED-9145-4E68-AECD-46604EFF2CF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{277DAA85-B7A5-4EFD-BD66-C52310F6C87E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{277DAA85-B7A5-4EFD-BD66-C52310F6C87E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{277DAA85-B7A5-4EFD-BD66-C52310F6C87E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABDDC4ED-9145-4E68-AECD-46604EFF2CF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABDDC4ED-9145-4E68-AECD-46604EFF2CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABDDC4ED-9145-4E68-AECD-46604EFF2CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABDDC4ED-9145-4E68-AECD-46604EFF2CF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

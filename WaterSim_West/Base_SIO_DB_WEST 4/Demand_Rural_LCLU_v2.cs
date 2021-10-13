@@ -1138,7 +1138,7 @@ namespace WaterSim_Base
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory;
+            FDataDirectory = DataDirectory + "\\Inputs\\";
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;

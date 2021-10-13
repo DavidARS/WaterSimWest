@@ -752,7 +752,9 @@ namespace WaterSim_Base
             RWcaptureYear_MGD[i, j] = temp / Utilities.daysInAYear(cYear);
             if (0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
                  RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
-            return temp;
+                                                             //
+            return RWacres[i];// RWcaptureYear_ratio[i, j];
+            //return temp;
         }
 
         //========================================================

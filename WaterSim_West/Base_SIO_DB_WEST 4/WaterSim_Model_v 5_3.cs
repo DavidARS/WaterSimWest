@@ -371,10 +371,12 @@ namespace WaterSimDCDC.Generic
             string RainFallFilename = "WSWestRainFall.csv";
             // end edits 08.10.21 das
             string outputs = "\\Outputs\\";
+            string addInputs = "\\Inputs\\";
             try
             {
                 StreamWriter(TempDirectoryName + outputs);
-                FUnitData = new UnitData(DataDirectoryName + "//" + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
+                //FUnitData = new UnitData(DataDirectoryName +  "//"  + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
+                FUnitData = new UnitData(DataDirectoryName + addInputs + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
                 FRateData = new RateDataClass(DataDirectoryName, RateDataFilename);
                 FDataLCLU = new DataClassLCLU(DataDirectoryName, AcerageDataFilename);
                 // Impervious area

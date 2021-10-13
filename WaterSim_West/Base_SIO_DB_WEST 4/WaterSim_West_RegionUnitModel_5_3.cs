@@ -447,11 +447,11 @@ namespace WaterSimDCDC.Generic
             }
 
         }
-        internal void writeToStream(StreamWriter sw, double y)
+        internal void writeToStream(StreamWriter sw, double y, string region)
         {
-            if (FUnitName == "Wyoming Not In Basin")
+            if (FUnitName != "Wyoming Not In Basin")
             {
-                sw.WriteLine(currentYear + "," + y);
+                sw.WriteLine(currentYear + "," + y + "," + region);
 
             }
         }
@@ -1334,12 +1334,15 @@ namespace WaterSimDCDC.Generic
             // ===================================================================
             // 08.31.21 das 2021, modified on 10.08.21, 10.11.21
             // Run annually
+            double D = 0;
             if(StartRainYear <= year)
             {
                // string name = UnitName;
                 double d = RainW.rwHarvestingYearly(UnitName, year - StartRainYear, this);
                 double e = CRFSWB.waterBudgetByClassYearly(UnitName, year- StartRainYear, this);
+                D = d;
             }
+             writeToStream(StreamW, D, UnitName);
             // end edits 08.31.21 das
             // ===================================================================
 

@@ -602,7 +602,7 @@ namespace WaterSimDCDC
     {
         //        protected WaterSimAmerica WSmith=null;
         // 09.16.20 das added this
-        const string version = "WSB 7.5.1";
+        const string version = "WSB 8.0";
         // 09.16.20 das end
 
         //protected WaterSimCRFModel WSmith = null;
