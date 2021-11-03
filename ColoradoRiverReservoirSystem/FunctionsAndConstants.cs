@@ -277,7 +277,9 @@ namespace CORiverModel
         public const int DCPstartYear = 2020;
         public const int MitigationstartYear = 2022;
         //
-
+        // 10.27.21
+        //https://lpputah.org/
+        public const double UtahPipelineMax_AFyr = 83756; // $ 1.8 billion estimated cost -  AF yr-1
 
         //
     }

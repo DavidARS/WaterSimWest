@@ -86,7 +86,7 @@ namespace WaterSimDCDC.Generic
         //CRF_Unit_Network UnitNetwork;
         // END EDIT
 
-        WaterSimManager WS;
+        
         /// <summary> The frdc.</summary>
         /// <remarks>  This is the rate class used to retrieve data from the growth data file</remarks>
         //  RateDataClass FRDC;
@@ -129,6 +129,8 @@ namespace WaterSimDCDC.Generic
         RuralDemand_LCLU_industry IDR;
         //============================
         DataClassTemperature DataClassT;
+        //
+        NewWater NWater;
         //
         // 08.31.21 das
         RainWaterHarvesting CRFRWH;
@@ -316,7 +318,9 @@ namespace WaterSimDCDC.Generic
         ///-------------------------------------------------------------------------------------------------
         /// 09.21.21 - current constructor
         ///       
-        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW,StormWater SW, StreamWriter sw)
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, 
+            DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW,StormWater SW, 
+            StreamWriter sw)
         {
             FUnitName = TheUnitName;
             string errMsg = "";
@@ -347,7 +351,53 @@ namespace WaterSimDCDC.Generic
 
             Initialize_Variables();
         }
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="TheUnitData"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="DataLCLU"></param>
+        /// <param name="Tav">Climate data </param>
+        /// <param name="TheUnitName"></param>
+        /// <param name="RW">Rainwater harvesting</param>
+        /// <param name="SW">Storm water capture from the surface</param>
+        /// <param name="New">New water supplies. Starting with "Air Water" - panels that capture moisture from the air</param>
+        /// <param name="sw"></param>
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU,
+           DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW, StormWater SW, NewWater New,
+           StreamWriter sw)
+        {
+            FUnitName = TheUnitName;
+            string errMsg = "";
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            FDClclu = DataLCLU;
+            FDCtemperature = Tav;
+            CRFRWH = RW;
+            CRFSWB = SW;
+            NWater = New;
+            //      
+            StreamW = sw;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
 
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            Initialize_Variables();
+        }
         /// <summary>
         ///  Temp constructure for this DAMN code
         /// </summary>
@@ -455,6 +505,15 @@ namespace WaterSimDCDC.Generic
 
             }
         }
+        internal void writeToStream2(StreamWriter sw, double y, double z, string region)
+        {
+            if (FUnitName != "Wyoming Not In Basin")
+            {
+                sw.WriteLine(currentYear + "," + y + "," + z+ "," + region);
+
+            }
+        }
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the crf network for this model. </summary>
         ///
@@ -1013,6 +1072,12 @@ namespace WaterSimDCDC.Generic
             FBaseColorado = UnitNetwork.Colorado.Limit;
             // end edit
 
+            // 10.28.21 das
+            // set the Boolean switch to be able to use "Air Water." A NewWater source
+            if (AirWaterManagement)
+            {
+                seti_AirWater(1);
+            }
         }
 
 
@@ -1332,22 +1397,22 @@ namespace WaterSimDCDC.Generic
 
 
             // ===================================================================
-            // 08.31.21 das 2021, modified on 10.08.21, 10.11.21
+            // 08.31.21 das 2021, modified on 10.08.21, 10.11.21, 10.20.21, 
             // Run annually
-            double D = 0;
+            //double D = 0;
+            //double E = 0;
             if(StartRainYear <= year)
             {
-               // string name = UnitName;
                 double d = RainW.rwHarvestingYearly(UnitName, year - StartRainYear, this);
                 double e = CRFSWB.waterBudgetByClassYearly(UnitName, year- StartRainYear, this);
-                D = d;
-            }
-             writeToStream(StreamW, D, UnitName);
+                //D = (d * 1000000) / population;
+                //E = (e * 1000000) / population;
+                RainAndStormWater = d + e;
+            }      
+            
+            // writeToStream2(StreamW, D, E, UnitName);
             // end edits 08.31.21 das
             // ===================================================================
-
-
-
 
             // EDIT QUAY 4/2/18
             // OK, the original method of changing resources levels is no longer going work given how the web interface is
@@ -1430,14 +1495,13 @@ namespace WaterSimDCDC.Generic
 
             //internal void annual_delta()
             internal void annual_Resources()
-
             {
-  
-            // EDIT QUAY
+              // EDIT QUAY
             // Added Colorado
             surfaceColorado();
             // END EDIT
             surfaceFresh();
+            surfaceNew(StreamW);
             surfaceSaline();
             surfaceLake();
             groundwater();
@@ -1479,8 +1543,7 @@ namespace WaterSimDCDC.Generic
             Power();
             // END EDIT 3/9/18
             Industrial();
-            //
-        
+            //      
         }
         /// <summary>
         /// 
@@ -1692,6 +1755,10 @@ namespace WaterSimDCDC.Generic
         // Properties to pass variables to other Classes for Demand Estimation
         //
         //
+        public double RainAndStormWater
+        {
+            get; set;
+        }
         //
 
         // Added on 06.14.18 by DAS. To pass to the UrbanDemand_GPCD class
@@ -2039,7 +2106,22 @@ namespace WaterSimDCDC.Generic
             } 
         }
         // END EDIT QUAY 9 8 20
-
+        //
+        // 10.28.21, 11.02.21 das
+        void surfaceNew(StreamWriter sw)
+        {
+            int result = 0;
+            if (AirWaterManagement)
+            {
+                double rh = FDCtemperature.FastRH(FUnitName, currentYear);
+                double d = Math.Round(NWater.AirWaterUse(this, rh));
+                result = Convert.ToInt32(d);
+                seti_SurfaceWaterFreshNew(result);
+            }
+            writeToStream(sw, result, UnitName); 
+        }
+        // end edits 10.28.21, 11.02.21 das
+        //
         // this is the field used for change coeeficient, and is the Max or Min values based on desired goal
         double FUDChangeLimit = 1;
         // edit das 09.20.21
@@ -4608,6 +4690,32 @@ namespace WaterSimDCDC.Generic
             UnitNetwork.SurfaceFresh.Limit = value;
             //WSA.SurfaceFresh.Limit = value;
         }
+        //
+        // ===========================================================================
+        // 11.02.21 not sure yet how I want to add this water into the system das
+        //
+        public int geti_SurfaceWaterFreshNew()
+        {
+            int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.SurfaceFresh.Limit));
+            //int TempInt = Convert.ToInt32(Math.Round(WSA.SurfaceFresh.Limit));
+            return TempInt;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Seti surface water fresh. </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public void seti_SurfaceWaterFreshNew(int value)
+        {
+            UnitNetwork.SurfaceFresh.Limit += value;
+            //WSA.SurfaceFresh.Limit = value;
+        }
+        // end edits 11.02.21 das
+
+
+
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Geti surface water fresh net.</summary>
@@ -6149,7 +6257,65 @@ namespace WaterSimDCDC.Generic
             set { d_ehdchange = value; }
         }
         // ------------------------------------------------------------------
+        // Added policies - October 2021
+        // ------------------------------------------------------------------
+        // edits 10.27.21 das
+        //
+        // Water from the air using SOURCE hydropanels
+        bool b_airWaterManagement = false;
+        public int geti_AirWater()
+        {
+            int TempInt = Convert.ToInt32(b_airWaterManagement);
+            return TempInt;
+        }
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void seti_AirWater(int value)
+        {
+            b_airWaterManagement = Convert.ToBoolean(value);
+        }
+        public bool AirWaterManagement
+        {
+            set { b_airWaterManagement = value; } get{ return b_airWaterManagement; }
+            
+        }
+        //
+       // =========================================================
+           int i_airWaterInstallations = 0;
+        double d_airWaterInstallations = 0;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double AirWaterInstallations
+        {
+            set { d_airWaterInstallations = Convert.ToDouble(i_airWaterInstallations) / 100; }
+            get { return d_airWaterInstallations; }
+        }
+        // end edits 10.27.21 das    
+        public int geti_AirWaterInstallations()
+        {
+            int TempInt =i_airWaterInstallations;
+           // AirWaterInstallations;
 
+            return TempInt;
+        }
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void seti_AirWaterInstallations(int value)
+        {
+            i_airWaterInstallations = value;
+            AirWaterInstallations = value;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+   
         // =======================================================================
         // Urban Water Conservation
         //--------------------------------

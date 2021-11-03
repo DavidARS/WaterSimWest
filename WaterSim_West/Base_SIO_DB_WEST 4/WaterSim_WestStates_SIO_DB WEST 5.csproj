@@ -94,6 +94,7 @@
     <Compile Include="Demand_Power.cs" />
     <Compile Include="Demand_Rural_LCLU_v2.cs" />
     <Compile Include="Demand_Urban.cs" />
+    <Compile Include="NewWater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainWaterHarvesting.cs" />
     <Compile Include="RiverModels_V1.cs" />

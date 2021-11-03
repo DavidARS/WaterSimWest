@@ -293,7 +293,7 @@ namespace WaterSimDCDC.Generic
         //
         readonly DataClassLCLU FDataLCLU;
         //
-     
+       // readonly WaterSimManager WS;
         //
         readonly DataClassTemperature FDataTemperature;
         /// <summary> Information describing the unit.</summary>
@@ -358,13 +358,16 @@ namespace WaterSimDCDC.Generic
             //string RateDataFilename = "West Model Growth Rate 2.csv";
             //string RateDataFilename = "West Model Growth Rate 3.csv";
             //string RateDataFilename = "WestModelGrowthRates_4.csv";
-            string RateDataFilename = "WestModelGrowthRates_5.csv";
+            //string RateDataFilename = "WestModelGrowthRates_5.csv";
+            string RateDataFilename = "WestModelGrowthRates_6.csv";
             string AcerageDataFilename = "LCLUAcres.csv";
-            string TemperatureDataFilename = "Temperature.csv";
+            //string TemperatureDataFilename = "Temperature.csv";
+            string ClimateDataFilename = "Climate.csv";
             // EDIT END 2 13 18
             // das edits 06.03.21
             // ICLUS ssp2 and ssp5 lclu data  - impervious area ..;
-            string LCLUclassesFilename = "LCLUclassArea.csv";
+            string LCLUclassesFilename = "Oct21_Acres_ssp2.csv";
+            //
             string LCLUrcnFilename = "RCNbyLCLU.csv";
             // end edits das 06.03.21
             // edits 08.10.21 das
@@ -384,7 +387,8 @@ namespace WaterSimDCDC.Generic
                 FDataLCLUrcn = new DataClassRCN(DataDirectoryName, LCLUrcnFilename);
                 //
                 //
-                FDataTemperature = new DataClassTemperature(DataDirectoryName, TemperatureDataFilename);
+                FDataTemperature = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
+                DataClassTemperature TD = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
                 // string Filename = "CompareDemand.txt";
                 //
                 // swriter = new StreamWriter(Filename); 
@@ -393,14 +397,18 @@ namespace WaterSimDCDC.Generic
                 RainWaterHarvesting RW = new RainWaterHarvesting(RF, FDataLCLUarea, FUnitData);
                 StormWater SW = new StormWater(FUnitData, RF, RW, FDataLCLUarea, FDataLCLUrcn);
                 // end edits 08.31.21 das
-
+                // edits 11.02.21 das
+                NewWater NW = new NewWater(FUnitData);
+                // end edits 11.02.21 das
                 foreach (string Name in FUnitData.UnitNames)
                     {
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
-                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
-                        FUnitModels.Add(TempModel);
+                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
+                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
+
+                    FUnitModels.Add(TempModel);
                         set_DefaultDemandModel(TempModel);
                     
                         // modelCount += 1;
@@ -412,8 +420,10 @@ namespace WaterSimDCDC.Generic
                 FSurfaceModel = new SurfaceModel(FUnitData);
                 AddExternalModel(FSurfaceModel);
                 // Adding Colorado River Model
-                FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName, TempDirectoryName, UnitDataFieldname);
-                 AddExternalModel(FColoradoModel);
+                FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName, TempDirectoryName, UnitDataFieldname);             
+                //FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName, TempDirectoryName, UnitDataFieldname, UTwaterTransfers);
+                AddExternalModel(FColoradoModel);
+
                  // sampson edits 09.04.18
                 //set_GrayWaterPotential();
                 // end sampson edits 09.04.18
@@ -426,6 +436,12 @@ namespace WaterSimDCDC.Generic
             /// <param name="TempDirectoryName"></param>
   
         }
+        //
+        //public bool UTwaterTransfers
+        //{
+        //    get; set;
+        //}
+        //
         /// <summary>
         /// 
         /// </summary>
@@ -530,8 +546,6 @@ namespace WaterSimDCDC.Generic
             get { return FColoradoModel; }
         }
 
-        // END EDIT 9/10/20
-        
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Gets information describing the model unit.</summary>
         ///
@@ -3255,6 +3269,9 @@ namespace WaterSimDCDC.Generic
                     TempModel.AG = tempAg_2;
                     break;
                 case 3:
+                    DemandModel tempAg_3 = new RuralDemand_LCLU_ag(TempModel, FRateData, FDataLCLU, FDataLCLUarea);
+                    TempModel.AG = tempAg_3;
+
                     break;
 
 
@@ -3512,10 +3529,82 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_ExurbanLowDensity(Values[i]);
             }
         }
-
-
         #endregion Urban Density Management
         //=======================================================
+        #region Updated Policies- October 2021
+
+        ///------------------------------------------------------      
+        ///<summary> Urban High intensity management control</summary>
+        public providerArrayProperty AirWaterExtraction;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_AirWaterManagement()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_AirWater();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_AirWaterManagement(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_AirWater(Values[i]);
+            }
+        }
+
+        //
+        public providerArrayProperty AirWaterCompliance;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_AirWaterInstallations()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_AirWaterInstallations();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_AirWaterInstallations(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_AirWaterInstallations(Values[i]);
+            }
+        }
+        #endregion Updated Policies - October 2021
+        //=======================================================
+
+
+
+
         //  ClimateDrought
         //=======================================================
         #region ClimateDrought

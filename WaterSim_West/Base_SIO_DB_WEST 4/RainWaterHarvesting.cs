@@ -309,10 +309,14 @@ namespace WaterSim_Base
         //
         internal const double EA_RoofAreaProp = 0.224; // 22% of land occupied https://www.storagecafe.com/blog/lot-size-home-size-in-top-20-biggest-us-cities/
         internal const double EA_Impervious = 0.65;
-
+        // 1.0541
+        internal const double Mod_roof = 0.5; // adjust 1/2 acre and acre lots (reduce roof area)
+        internal const double compliance = 0.3; // proportion of population that installs rainwater systems
         //
         public const double mm_to_meters = 0.001;
         public const double acres_to_ft2 = 43560;
+        public const double acres_to_m2 = 4046.8564224;
+        public const double Liters_to_Gallons=0.26417205236;
         public const double mm_to_inches= 0.03937007874;
         public const double ft2_to_inches2 = 144;
         public const double inches2_to_mm2 = 645.16;
@@ -323,6 +327,9 @@ namespace WaterSim_Base
         public const double MultiFamily_households = 100;
         public const double households = 0;
     }
+    /// <summary>
+    /// 
+    /// </summary>
     public class RainWaterHarvesting
     {
         DataClassRainFall RainFall;
@@ -457,8 +464,8 @@ namespace WaterSim_Base
             double ind = LCLUclasses.FastArea_UN(name, "Ind", year);
             RWacres[i] = ind;
             // acres
-            temp = ind * RWconstants.IND_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency
-                * RWconstants.IND_Impervious;
+            temp = ind * RWconstants.IND_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+               // * RWconstants.IND_Impervious;
             IND_harvesting[i] = temp;
 
             return temp;
@@ -493,8 +500,8 @@ namespace WaterSim_Base
             double comm = LCLUclasses.FastArea_UN(name, "Comm", year);
             RWacres[i] += comm;
             // acres
-            temp = comm * RWconstants.COM_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency
-                * RWconstants.COM_Impervious;
+            temp = comm * RWconstants.COM_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+                //* RWconstants.COM_Impervious;
             COMM_harvesting[i] = temp;
 
             //}
@@ -536,7 +543,8 @@ namespace WaterSim_Base
             double EA = LCLUclasses.FastArea_UN(name, "EigthAcre", year) * CRF.UrbanHighDensityChange;
             RWacres[i] += EA;
             // acres
-            temp = EA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            temp = EA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency 
+                * RWconstants.compliance;
             EA_harvesting[i] = temp;
 
             return temp;
@@ -566,7 +574,7 @@ namespace WaterSim_Base
             double QA = LCLUclasses.FastArea_UN(name, "QuarterAcre", year) * CRF.UrbanLowDensityChange;
             RWacres[i] += QA;
             // acres
-            temp = QA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            temp = QA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency * RWconstants.compliance;
             QA_harvesting[i] = temp;
 
             return temp;
@@ -596,7 +604,7 @@ namespace WaterSim_Base
             double TA = LCLUclasses.FastArea_UN(name, "ThirdAcre", year) * CRF.SuburbanDensityChange;
             RWacres[i] += TA;
             // acres
-            temp = TA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            temp = TA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency * RWconstants.compliance;
             TA_harvesting[i] = temp;
 
             return temp;
@@ -627,7 +635,8 @@ namespace WaterSim_Base
             double HA = LCLUclasses.FastArea_UN(name, "HalfAcre", year) * CRF.ExurbanHighDensityChange;
             RWacres[i] += HA;
             // acres
-            temp = HA * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            temp = HA * (RWconstants.EA_RoofAreaProp * RWconstants.Mod_roof) * RWconstants.RoofAreaLoss *
+                RWconstants.RoofAreaEfficiency * RWconstants.compliance ;
             HA_harvesting[i] = temp;
             return temp;
         }
@@ -659,7 +668,8 @@ namespace WaterSim_Base
             double A = LCLUclasses.FastArea_UN(name, "Acre", year) * CRF.ExurbanLowDensityChange;
             RWacres[i] += A;
             // acres
-            temp = A * RWconstants.EA_RoofAreaProp * RWconstants.RoofAreaLoss * RWconstants.RoofAreaEfficiency;
+            temp = A * (RWconstants.EA_RoofAreaProp * RWconstants.Mod_roof ) * RWconstants.RoofAreaLoss * 
+                RWconstants.RoofAreaEfficiency * RWconstants.compliance;
             A_harvesting[i] = temp;
             return temp;
         }
@@ -704,9 +714,9 @@ namespace WaterSim_Base
                 foreach (string code in FUnitData.UnitNames)
                 {             
                     double T = RainFall.FastRainFall(code, year);
-                    RWYear_MGD[i,j] = RWacres[i] * UnitConvert(T) / Utilities.daysInAYear(year);
+                    RWYear_MGD[i,j] = RWacres[i] * UnitConvertLiters(T) / Utilities.daysInAYear(year);
                     temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
-                       TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MG;
+                       TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvertLiters(T); // MG;
                     RWcaptureYear_MGD[i,j] = temp/ Utilities.daysInAYear(year);
                     if(0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
                         RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
@@ -728,8 +738,9 @@ namespace WaterSim_Base
         public double rwHarvestingYearly(string name, int year, WaterSimCRFModel CRF)
         {
             // rainfall in mm yr-1
-            // output is MGD year-1
+            // output is supposed to be MGD year-1
             double temp = 0;
+           // double check = 0;
             int i = 0;
             i = I;
             int j = 0;
@@ -745,26 +756,38 @@ namespace WaterSim_Base
            // RWcapture = new double[FUnitCount];
             roofCaptureYearly(cYear, name,CRF);
             double T = RainFall.FastRainFall(name, cYear);
-            RWYear_MGD[i, j] = RWacres[i] * UnitConvert(T) / Utilities.daysInAYear(year);
+            RWYear_MGD[i, j] = RWacres[i] * UnitConvertLiters(T) / Utilities.daysInAYear(cYear);
+            // area in acres * rainfall conversion
+            //temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
+            // TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
             temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
-            TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
-            RWcapture[i] = temp;
+             TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvertLiters(T); // MGD;
             RWcaptureYear_MGD[i, j] = temp / Utilities.daysInAYear(cYear);
             if (0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
                  RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
                                                              //
-            return RWacres[i];// RWcaptureYear_ratio[i, j];
-            //return temp;
+             //return RWacres[i];// RWcaptureYear_ratio[i, j];
+            return RWcaptureYear_MGD[i, j];
+            //return RWcaptureYear_ratio[i, j];
         }
 
         //========================================================
-        internal double UnitConvert(double rainFall)
+        //internal double UnitConvert(double rainFall)
+        //{
+        //    // rainfall in mm yr-1 (which is also L m-2)
+        //    // output is MGD year-1
+        //    double temp = 0;
+        //    temp = (RWconstants.acres_to_ft2 * RWconstants.ft2_to_inches2 * RWconstants.inches2_to_mm2 * rainFall
+        //           * RWconstants.cubicmm_to_cubicmeters * RWconstants.cubicmeters_to_gallons * RWconstants.gallons_to_MG); // MGD         
+        //    return temp;
+        //}
+        //
+        internal double UnitConvertLiters(double rainFall)
         {
-            // rainfall in mm yr-1
+            // rainfall in mm yr-1 (which is also L m-2)
             // output is MGD year-1
             double temp = 0;
-            temp = (RWconstants.acres_to_ft2 * RWconstants.ft2_to_inches2 * RWconstants.inches2_to_mm2 * rainFall
-                   * RWconstants.cubicmm_to_cubicmeters * RWconstants.cubicmeters_to_gallons * RWconstants.gallons_to_MG); // MGD         
+            temp = (RWconstants.Liters_to_Gallons * RWconstants.gallons_to_MG * rainFall * RWconstants.acres_to_m2 ); // MG       
             return temp;
         }
         //

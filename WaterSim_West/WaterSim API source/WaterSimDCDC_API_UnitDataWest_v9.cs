@@ -1276,15 +1276,29 @@ namespace WaterSimDCDC.Generic
         string FSUBRateFieldStr = "Suburban";
         string FExUHRateFieldStr = "ExurbanHigh";
         string FExULRateFieldStr = "ExurbanLow";
+        //
+        // 10.22.21 - From Ray Quay email
+        //
+        //I have a “WestModelGrowthRates_4.csv” (9/6/18) file that I created with base growth rates 
+        //for Population, Ag, and Industrial.It has the following Columns RC, RN, POPGRATE, INDGRATE, 
+        //AGGRATE, AGNET., RURBRATE, RAGRATE, RINDRATE.Population is based on projections we found for 
+        //planning agency’s in the various regions and states, POPGRATE.Agriculture is based on USDA 
+        //Net Farm Income (AGNET) growth (AGGRATE) rates over last few decades.  Ag growth is in Net Farm 
+        //Income and the water per $ income is estimated in the first year using USGS initial AG water use.
+        //I thought industrial was based on industrial job growth rate (INDGRATE) and water per job was 
+        //again estimated at the start, but I do not think that is the case.
+
+
+
 
         // ========================================
         // 06.29.18 LCLU rates
         // 05.28.21 das
         // What are the units? Where did these come from? 05.28.21
-        //Million gallons per day per acre
+        // Million gallons per day per acre
         // SSp2 scenario acerage from ICLUS 2
         //----------------------------------------
-        string FUubanRateLCLUFieldStr = "RURBRATE";
+ string FUubanRateLCLUFieldStr = "RURBRATE";
         string FINDRateLCLUFieldStr = "RINDRATE";
         string FAGRateLCLUFieldStr = "RAGRATE";
         // ========================================

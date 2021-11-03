@@ -357,7 +357,8 @@ namespace WaterSim_Base
             }
          }
         /// <summary>
-        /// ICLUS version 2 with five urban classes
+        /// ICLUS version 2 with five urban classes- This is invoked with the default urban
+        /// setting is equal to a value of 3
         /// </summary>
         /// <param name="region"></param>
         /// <param name="currentYear"></param>
@@ -584,7 +585,7 @@ namespace WaterSim_Base
                     // Calculate water demand from the Denver Water data outdoor water use per DUA (equation that I created) plus 
                     // the Meyer and DeOreo equation for indoor water use from the 2016 WRF_ResidentialEndUse2016.pdf document.
                     // Figure 8.7using the 2016 data
-                    // units are ??????????
+                    // units: units * gallons per unit = gallons
                     // ========================================================
                     result = UHunits * DemandFromDUA("EigthAcre") * ModifyRate;
                     result += ULunits * DemandFromDUA("QuarterAcre") * ModifyRate;
@@ -629,8 +630,11 @@ namespace WaterSim_Base
         WaterSimCRFModel CRF;
         public RateDataClass FRDC;
         public DataClassLCLU FDClclu;
-
         //
+        // Version 2 ICLUS
+        public DataClassLcluArea FDLCLU;
+
+         //
         double Fdemand;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
@@ -663,6 +667,26 @@ namespace WaterSim_Base
             // assigns itself to the owner
             crf.AG = this;
         }
+        /// <summary>
+        ///  with the version II of ICLUS data for ag
+        /// </summary>
+        /// <param name="crf"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="TheAcreData"></param>
+        /// <param name="FD"></param>
+        public RuralDemand_LCLU_ag(WaterSimCRFModel crf, RateDataClass TheRateData, DataClassLCLU TheAcreData, DataClassLcluArea FD)
+        {
+            CRF = crf;
+            FRDC = TheRateData;
+            FDClclu = TheAcreData;
+            FDLCLU = FD;
+            //
+            SetBaseValues();
+            isInstantiated = true;
+            // assigns itself to the owner
+            crf.AG = this;
+        }
+
         #endregion Constructors
         // =================================================================================================================
         /// <summary>
@@ -779,9 +803,19 @@ namespace WaterSim_Base
         // ========================================================================================
         //
         // Process
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentYear"></param>
         public override void preProcessDemand(int currentYear) {
 
             Lacres = FDClclu.FastAgAcres(CRF.UnitName, currentYear);
+            // edits 10.20.21 das
+            if(FDLCLU != null)
+            {
+                Lacres = FDLCLU.FastAgArea_UN(CRF.UnitName, currentYear);
+            }
+            // end edits 10.20.21 das
             LagConservation = CRF.AgConservation;
             LagLCLUChangeCoef = CRF.PAgLCLUChangeCoef;
             LminAg = CRF.PminAgLCLU;

@@ -437,9 +437,13 @@ namespace WaterSimDCDC
         public const int epP_SuburbanDensityManagement = 202;
         public const int epP_ExurbanHighDensityManagement = 203;
         public const int epP_ExurbanLowDensityManagement = 204;
-
         // end edit 09.20.21 das
+        // edits 10.27.21 das
+        public const int epP_UtahPipeline = 300;
+        public const int epP_AirWater = 301;
+        public const int epP_AirWaterCompliance = 302;
 
+        // end edits 10.27.21 das
 
         // Resources
         public const int epP_SurfaceFresh = 1031;
@@ -1191,15 +1195,27 @@ namespace WaterSimDCDC
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ExurbanHighDensityManagement, "Adjust one of the five ICLUS urban density classes- Exurban High Intensity", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
             WestModel.ExurbanLowDensity = new providerArrayProperty(_pm, eModelParam.epP_ExurbanLowDensityManagement, WestModel.geti_ExurbanLowDensityManagement, WestModel.seti_ExurbanLowDensityManagement, eProviderAggregateMode.agNone);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ExurbanLowDensityManagement, "Adjust Exurban High Density", "ExUH_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.ExurbanLowDensity));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ExurbanLowDensityManagement, "Adjust Exurban Low Density", "ExUH_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.ExurbanLowDensity));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ExurbanLowDensityManagement, "Adjust one of the five ICLUS urban density classes- Exurban Low Intensity", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // end edits das 10.07.21
             // 
- 
+            // Edits das 10.27.21 
             //
-
-
-            //new string[5] {"No Change", "Slight", "Moderate", "Severe", "Extreme"},new int[5] { 100, 85, 70, 55, 40 }
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UtahPipeline, "Utah Pipeline Installation", "UTPIPE_P", rangeChecktype.rctUnknown, 0, 1,geti_UtahPipelineManagement, seti_UtahPipelineManagement, RangeCheck.NoSpecialBase));
+             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UtahPipeline, "Creation/ use of a Utah pipeline to St. Georg: 0=no, 1=yes", "", "YES 1/No 0", "Transfers", new string[] { }, new int[] {}, new ModelParameterGroupClass[] { }));
+            //
+            //
+            WestModel.AirWaterExtraction = new providerArrayProperty(_pm, eModelParam.epP_AirWater, WestModel.geti_AirWaterManagement, WestModel.seti_AirWaterManagement, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_AirWater, "Create New Water using condensation technologies", "AIRWAT_P", rangeChecktype.rctCheckRange, 0, 1, null, WestModel.AirWaterExtraction));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_AirWater, "Creation/ use of new condensate water: 0=no, 1=yes", "New Water", "Condensate", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            //
+            // 11.02.21 das
+            WestModel.AirWaterCompliance = new providerArrayProperty(_pm, eModelParam.epP_AirWaterCompliance, WestModel.geti_AirWaterInstallations, WestModel.seti_AirWaterInstallations, eProviderAggregateMode.agNone);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_AirWaterCompliance, "Compliance of installing Air Water Systems", "AWATC_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.AirWaterCompliance));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_AirWaterCompliance, "What percent of households install Air Water Systems:", "New Water", "Condensate", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            // end edits 11.02.21 das
+            //
+            // end edits das 10.27.21
 
             // EDIT QUAY 9/10/20
             // Added External Model Parameters             
@@ -1558,9 +1574,48 @@ namespace WaterSimDCDC
 
         #endregion SimpleDrought
 
+        #region Updated Policies October 20021
+        // ===============================================
+        // New policies that are NOT region specific
+        // edits 10.27.21 das
+        bool b_utahPipelineSwitch = false;
+        public int geti_UtahPipelineManagement()
+        {
+            return Convert.ToInt32(b_utahPipelineSwitch);
+        }
+        public void seti_UtahPipelineManagement(int value)
+        {
+            b_utahPipelineSwitch=Convert.ToBoolean(value);
+            WestModel.ColoradoRiverModel.CORiverModel.PMead.UTwaterTransfers = b_utahPipelineSwitch;
+        }
+        // =========================================================================================
+        // Extract water out of the air using SOURCE hydropanels (SOURCE-Tech-Spec-Sheet.pdf)
+        bool b_airWaterSwitch = false;
+        public int geti_AirWaterManagement()
+        {
+            return Convert.ToInt32(b_airWaterSwitch);
+        }
+        public void seti_AirWaterManagement(int value)
+        {
+            b_airWaterSwitch = Convert.ToBoolean(value);
+            //WestModel.ColoradoRiverModel.CORiverModel.PMead.UTwaterTransfers = b_utahPipelineSwitch;
+        }
+
+
+
+
+
+        // end edits 10.27.21, 10.28.21 das
+        // ===============================================
+        #endregion Updated Policies October 2021
+
+
+
         const int maxEmpiricalYear = 2018;
         void DefaultSettings()
         {
+            // WestModel.UTwaterTransfers = false;
+            WestModel.ColoradoRiverModel.CORiverModel.PMead.UTwaterTransfers = false;
             // default settings
             // ------------------------------------
             // temporary check of variables-trace start year - 09.15.20 das
@@ -1583,7 +1638,7 @@ namespace WaterSimDCDC
             // This coordinates the WaterSim Manager start of the USGS data to the CO river reservoir
             // code, where Powell and Mead must run through to the beginning of the start of the
             // USGS data and, thus, the WaterSim Model
-            WestModel.ColoradoRiverModel.ColoradoRiverModel.Seti_COempiricalStopYear(Math.Min(maxEmpiricalYear,StartYear));
+            WestModel.ColoradoRiverModel.CORiverModel.Seti_COempiricalStopYear(Math.Min(maxEmpiricalYear,StartYear));
             // end 09.15.20 das
             // 09.16.20 - needed to set the empirical flow data
             WestModel.ColoradoRiverModel.WSMstartYear = StartYear;

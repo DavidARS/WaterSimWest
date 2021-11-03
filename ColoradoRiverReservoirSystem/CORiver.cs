@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 // EDIT QUAY 9/10/20
 // Restored CORiverModel namespace
 namespace CORiverModel
@@ -11,6 +12,7 @@ namespace CORiverModel
 {
     public class ColoradoRiver
     {
+      
         // EDIT QUAY 9/10/20
         // Restored CORiverModel namespace
         // WaterSimDCDC.Generic.COriverModel West;

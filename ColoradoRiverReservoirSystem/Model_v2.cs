@@ -31,6 +31,27 @@ namespace CORiverModel
         readonly string ICSfileName = "ICS_Regions.csv";
         string FICSdataFileID= "ICS_Regions.csv";
         //
+        #region constructors
+        public COriverModel(string DataDirectoryName, string TempDirectoryName, bool UTwaterTransfers)
+        {
+            string COriverFileName = GetDefineCOriverFileName();
+            // this file will need a getter/setter in the WS manager 06.09.20 DAS
+            string DataFileID = "RightsP1.txt";
+            string PathFileID = DataDirectoryName + "\\" + DataFileID;
+            try
+            {
+                //BDP = new BasinDCP(PathFileID, DataDirectoryName, ICSfileName);
+                PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, ICSfileName);
+                //PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, Gets_ICSdataFileID(), UTwaterTransfers);
+                IMA = new IndianMunicipalAg(PathFileID);
+                Initialize();
+                RunToDefaultYearCOempirical();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -46,7 +67,7 @@ namespace CORiverModel
             {
                 //BDP = new BasinDCP(PathFileID, DataDirectoryName, ICSfileName);
                 //PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, ICSfileName);
-                PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, Gets_ICSdataFileID());
+                 PM = new Powell_mead(DataDirectoryName, DataFileID, COriverFileName, Gets_ICSdataFileID());
                 IMA = new IndianMunicipalAg(PathFileID);
                 Initialize();
                 RunToDefaultYearCOempirical();
@@ -56,6 +77,14 @@ namespace CORiverModel
                 throw ex;
             }
         }
+        #endregion Constructors
+        //
+      
+        public Powell_mead PMead
+        {
+            get { return PM; }
+        }
+        //
         void Initialize()
         {
             // Historical and contemporary ICS storage

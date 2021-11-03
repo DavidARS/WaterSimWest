@@ -47,6 +47,23 @@ namespace CORiverModel
         int FMeadElevation=1095;
         // =========================================
         #region constructors
+        //public Powell_mead(string DataDirectoryName, string FileID, string CORiverFile, string ICSdataFile)
+        //{
+        //    string PathFileID = DataDirectoryName + "\\" + FileID;
+        //    FUnitData = new UnitDataCO(DataDirectoryName, CORiverFile);
+        //    FUnitData2 = new UnitData2(DataDirectoryName, UnitData2Filename);
+        //    FUnitData3 = new UnitData_ICS(DataDirectoryName, ICSdataFile);
+        //    COriver = new ColoradoRiver(DataDirectoryName, CORiverFile);
+        //    FBDCP = new BasinDCP(PathFileID, DataDirectoryName, FUnitData3);
+        //    //
+        //    FUDC = FUnitData;
+        //    FUBD = FUnitData2;
+        //    FICS = FUnitData3;
+        //    //FBDCP = BDP;
+        //    UtahPipelineInacted = UtahPipeline;
+        //    Initialize();
+        //    //StreamW("out");
+        //}
         /// <summary>
         /// 
         /// </summary>
@@ -59,15 +76,13 @@ namespace CORiverModel
             FUnitData = new UnitDataCO(DataDirectoryName, CORiverFile);
             FUnitData2 = new UnitData2(DataDirectoryName, UnitData2Filename);
             FUnitData3 = new UnitData_ICS(DataDirectoryName, ICSdataFile);
-            //
             COriver = new ColoradoRiver(DataDirectoryName, CORiverFile);
-            //
-            BDP = new BasinDCP(PathFileID, DataDirectoryName, FUnitData3);
+            FBDCP = new BasinDCP(PathFileID, DataDirectoryName, FUnitData3);
             //
             FUDC = FUnitData;
             FUBD = FUnitData2;
             FICS = FUnitData3;
-            FBDCP = BDP;
+            //FBDCP = BDP;        
             Initialize();
             //StreamW("out");
         }
@@ -138,7 +153,14 @@ namespace CORiverModel
         {
             get { return COriver; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool UTwaterTransfers
+        {
+            get; set;
+        }
+        //
         #region properties
         // 10.07.20 das
         //==============================================
@@ -404,6 +426,7 @@ namespace CORiverModel
                     UB = UpperBasin_3;
                     break;
             }
+            UB += UtahPipelineTransfers;
             RemoveICSfromUB(UB,out UBout);
             SetUBtotal(UBout);
         }
@@ -556,11 +579,11 @@ namespace CORiverModel
             }
         }
         #endregion ICS
-            // ---------------------------------------
-            //
-            // All properties
-            // =======================================
-            #region Properties
+        // ---------------------------------------
+        //
+        // All properties
+        // =======================================
+        #region Properties
             // ---------------------------------------------------------------------
             // ---------------------------------------------------------------------
             // outside constructor 
@@ -983,6 +1006,12 @@ namespace CORiverModel
             return FMeadElevation;
         }
         // end 10.13.20 das
+        // edits 10.27.21 das
+        public double UtahPipelineTransfers
+        {
+            get; set;
+        }    
+        // end edits 10.27.21 das
 
 
         #endregion  Properties
@@ -1035,7 +1064,21 @@ namespace CORiverModel
             //
             PrebankFluxPowell = COflow - PowelToMeadFlux - temp;
             BankStoragePowell = CORiverUtilities.BankStorage(diffBanked, Constants.bankStorage_powell);
-            FluxPowell = PrebankFluxPowell + BankStoragePowell;
+            //
+            // 10.27.21 das
+            UtahPipelineTransfers = 0;
+             //FluxPowell = PrebankFluxPowell + BankStoragePowell;
+            if (UTwaterTransfers)
+            {
+                if (Constants.UtahPipelineMax_AFyr / 1e6 < PrebankFluxPowell)
+                {
+                    UtahPipelineTransfers = Constants.UtahPipelineMax_AFyr / 1e6;
+                }
+            }
+            FluxPowell = PrebankFluxPowell + BankStoragePowell - UtahPipelineTransfers;
+            //
+            // end edits 10.27.21. 10.28.21 das
+            //
             annual = State + FluxPowell;
             // ----------------------------------------
             if (annual < Constants.maxPowellTotalPool)

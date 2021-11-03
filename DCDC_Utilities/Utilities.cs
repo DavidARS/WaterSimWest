@@ -227,6 +227,7 @@ namespace DCDC_Utilities
         int FYear;
         double FTav;
         double FContemporary;
+        double FRH;
  
 
         /// <summary>
@@ -237,7 +238,28 @@ namespace DCDC_Utilities
         /// <param name="aTav"></param>
         /// <param name="aContemporary"></param>
         /// <param name="aYear"></param>
-        public DataTemperature(string aUnitName, string aUnitCode, double aTav, double aContemporary, int aYear)
+        //public DataTemperature(string aUnitName, string aUnitCode, double aTav, double aContemporary, int aYear)
+        //{
+        //    bool isErr = false;
+        //    string errMsg = "";
+
+        //    FUnitName = aUnitName;
+        //    FUnitCodeStr = aUnitCode;
+
+        //    int temp = Tools.ConvertToInt32(FUnitCodeStr, ref isErr, ref errMsg);
+        //    if (!isErr)
+        //    {
+        //        FUnitCode = temp;
+        //    }
+        //    else
+        //    {
+        //        FUnitCode = Utilities.BadIntValue;
+        //    }
+        //    FTav = aTav;
+        //    FContemporary = aContemporary;
+        //    FYear = aYear;
+        //}
+        public DataTemperature(string aUnitName, string aUnitCode, double aTav, double aContemporary, double frh, int aYear)
         {
             bool isErr = false;
             string errMsg = "";
@@ -256,9 +278,9 @@ namespace DCDC_Utilities
             }
             FTav = aTav;
             FContemporary = aContemporary;
+            FRH = frh;
             FYear = aYear;
         }
-
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the name of the unit. </summary>
         ///
@@ -305,6 +327,10 @@ namespace DCDC_Utilities
         {
             get { return FContemporary; }
         }
+        public double RelativeHumidity
+        {
+            get { return FRH; }
+        }
         public int TheYear
         {
             get { return FYear; }
@@ -336,6 +362,7 @@ namespace DCDC_Utilities
 
         string FMaximumTempFieldStr = "TAV";
         string FContemporaryTempFieldStr = "TC";
+        string FRelativeHumidityFieldStr = "RH";
         string FcurrentYearFieldStr = "YEAR";
 
         // Data Array Parameters
@@ -345,6 +372,7 @@ namespace DCDC_Utilities
 
         double[] FTavArray = null;
         double[] FContemporaryArray = null;
+        double[] FRHArray = null;
         double[] FYearArray = null;
 
         List<DataTemperature> FTemperatureDataList = new List<DataTemperature>();
@@ -371,6 +399,7 @@ namespace DCDC_Utilities
             int arraysize = TheData.Rows.Count;
             FTavArray = new double[arraysize];
             FContemporaryArray = new double[arraysize];
+            FRHArray = new double[arraysize];
             FYearArray = new double[arraysize];
 
             //int CodeI = 0;
@@ -392,6 +421,7 @@ namespace DCDC_Utilities
 
                     string maximumtempstr = DR[FMaximumTempFieldStr].ToString();
                     string contemporarytempstr = DR[FContemporaryTempFieldStr].ToString();
+                    string relativeHumidity = DR[FRelativeHumidityFieldStr].ToString();
                     string ryearsstr = DR[FcurrentYearFieldStr].ToString();
 
                     double TempTav = Tools.ConvertToDouble(maximumtempstr, ref isErr, ref errMessage);
@@ -400,16 +430,21 @@ namespace DCDC_Utilities
                         double TempTC = Tools.ConvertToDouble(contemporarytempstr, ref isErr, ref errMessage);
                         if (!isErr)
                         {
-                            int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
+                            double TempRH = Tools.ConvertToDouble(relativeHumidity, ref isErr, ref errMessage);
                             if (!isErr)
                             {
-                                // OK 
-                                DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempYear);
-                                FTemperatureDataList.Add(DT);
-                                //// add to dictionary 
+
+
+                                int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
+                                if (!isErr)
+                                {
+                                    // OK 
+                                    DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempRH, TempYear);
+                                    FTemperatureDataList.Add(DT);
+                                    //// add to dictionary 
+                                }
+
                             }
-
-
                         }
                     }
                 }
@@ -450,8 +485,22 @@ namespace DCDC_Utilities
             }
             return temp;
         }
+        // 11.02.21 das
+        public double FastRH(string UnitName, int year)
+        {
+            double temp = InvalidRate;
+            DataTemperature TheData = FTemperatureDataList.Find(delegate (DataTemperature DT)
+            {
+                return ((DT.TheYear == year) && (DT.UnitName == UnitName));
+            });
 
-
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.RelativeHumidity;
+            }
+            return temp;
+        }
+        // end edits 11.02.21 das
         // =============================================================================================================
     }   // End of Class DataClass
 

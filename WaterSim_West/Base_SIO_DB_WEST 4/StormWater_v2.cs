@@ -45,8 +45,11 @@ namespace WaterSim_Base
         public const double ThirdAcre = 0.3;
         public const double HalfAcre = 0.25;
         public const double Acre = 0.20;
-
-
+        //1 acre = 4,046.8564224 square meters
+        public const double AcrestoSquaremeters = 4046.8564224;
+        // Liters to Million gallons - 1 liter = 0.264 172 052 36 gallon [US, liquid]
+        public const double LitersToGallons = 0.26417205236;
+        public const double GallonsToMillionGallons = 0.000001;
         //
     }
     /// <summary>
@@ -160,14 +163,16 @@ namespace WaterSim_Base
 
             //foreach (string Name in FUnitData.UnitNames)
             //{
-                foreach (LcluClasses e in Enum.GetValues(typeof(LcluClasses)))
+            double area = 0;
+
+            foreach (LcluClasses e in Enum.GetValues(typeof(LcluClasses)))
                 {
                     double temp = 0;
-
-                    double T = RCNvalueByClass(Name, e, soil);
+                     double T = RCNvalueByClass(Name, e, soil);
                     double t = RCNareaByClassRN(Name, e, year) ;
                     double r = ModifyAreaByClass(t, e, CRF);
                     double u = screenClasses(e,r);
+                    
                     double a = RCNarea.FastTotalArea_UN(Name, year) ;
                     try
                     {
@@ -188,6 +193,8 @@ namespace WaterSim_Base
  
                     //
                     total += temp;
+                area += u;
+                AreaAcres = area;
                 }
                 //Storage(FUnitData, total);
             //}
@@ -199,6 +206,10 @@ namespace WaterSim_Base
             double temp = 0;
             area *= 0; 
             return temp;
+        }
+        double AreaAcres
+        {
+            get; set;
         }
         // ---------------------------------------------------------------------------------------------------------------
         //
@@ -263,19 +274,22 @@ namespace WaterSim_Base
         // =====================================================================
         public double waterBudgetByClassYearly(string name, int year, WaterSimCRFModel CRF)
         {
-
             double total = 0;
             int i = 0;
             int j = 0;
             j = year;
             int cYear = year + 2020;
-                    double rcn = AreaByRCNyearly(name, cYear,CRF);
-                    double rainFall = getRainFall(name, cYear);
-                    i = Region(name);
-                    // units on rainfall.... check
-                    double remove = rainFall * RW.RWcaptureYear_ratio[i, j];
-                    StreamThroughPut(rainFall, rcn, remove);
-           
+            double rcn = AreaByRCNyearly(name, cYear, CRF);
+            double rainFall = getRainFall(name, cYear);
+            i = Region(name);
+            // units on rainfall.... check
+            double remove = rainFall * RW.RWcaptureYear_ratio[i, j];
+            StreamThroughPut(rainFall, rcn, remove);
+            //total = SoilEvaporation + SoilRunoff + SoilPercolation;
+            // mm year-1 : (or L per m2) need to change to MGD
+            double days = utilities.daysInAYear(cYear);
+            total = ( (SoilRunoff * (AreaAcres * SWconstants.AcrestoSquaremeters) * SWconstants.LitersToGallons) 
+                * SWconstants.GallonsToMillionGallons )/days;
             return total;
         }
         //
@@ -455,8 +469,10 @@ namespace WaterSim_Base
         /// <param name="rcn"></param>
         public void ThroughPut(double rainFall, double rcn)
         {
-            SoilEvaporation = Evaporation(rainFall);
-            double rainPost = rainFall * (1-SoilEvaporation);
+            double ratio= Evaporation(rainFall);
+           // SoilEvaporation = Evaporation(rainFall);
+            double rainPost = rainFall * (1-ratio);
+            SoilEvaporation = rainFall * ratio;
             SoilRunoff = Runoff(rainPost,rcn);
             SoilPercolation = Percolation(rainPost);
         }
@@ -1419,6 +1435,30 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        //
+        /// <summary>
+        ///  Version II of ICLUS 
+        ///  10.20.21 das - seems pasture estimates cause excessively high demands, row crops by themselves, excessively low
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public double FastAgArea_UN(string UnitName, int year)
+        {
+            double temp = InvalidRate;
+            DataStructRCNArea TheData = FLcluClassesDataList.Find(delegate (DataStructRCNArea AD)
+            {
+                return ((AD.TheYear == year) && (AD.UnitName == UnitName));
+            });
+
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.RowCrops;
+                temp += TheData.Pasture * 0.25;            
+            }
+            return temp;
+        }
+
         /// <summary>
         /// 
         /// </summary>

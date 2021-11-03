@@ -18,6 +18,7 @@ namespace WaterSimDCDC.Generic
         // The External Model
         COriverModel FCORiverModel;
         COBasinModelManager FCOModels;
+     
         readonly COriverAccounting FCOA;
         //
         /// <summary>
@@ -25,7 +26,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         public int FnumModels = 24;
         // 
-
+  
         // string UnitDataFilename = "West Regions USGS with Colorado Ver 5.csv";
 
         // NOTE! Though Owner:WaerSimModel is not defined here it is deined in ResourceModel and will be set when model is
@@ -38,6 +39,27 @@ namespace WaterSimDCDC.Generic
         ///-------------------------------------------------------------------------------------------------
         ///
         //==================================================================================================================================
+        public WaterSim_CORiverModel(string DataDirectoryName, string TempDirectoryName, string UnitDataFilename, bool UTtransfers)
+        {
+            // 10.27.21 das
+            string COdata = "DataCOriver";
+            try
+            {
+                //FCORiverModel = new COriverModel(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName);
+                FCORiverModel = new COriverModel(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName, UTwaterTransfers);
+
+                FCOA = new COriverAccounting(DataDirectoryName, UnitDataFilename, FCORiverModel);
+                FCOModels = new COBasinModelManager();
+                ResetModel();
+            }
+            catch (Exception ex)
+            {
+                FCORiverModel = null;
+                FCOA = null;
+                MessageBox.Show(" WaterSim_CORiverModel constructor was not created" + ex);
+            }
+            // end 09.14.20 das
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -63,14 +85,20 @@ namespace WaterSimDCDC.Generic
             }
             // end 09.14.20 das
         }
-   
-           ///-------------------------------------------------------------------------------------------------
+        public COriverModel COriverModel
+        {
+            get
+            {
+                return FCORiverModel;
+            }
+        }
+        ///-------------------------------------------------------------------------------------------------
         /// <summary> Gets the colorado river model.</summary>
         ///
         /// <value> The colorado river model.</value>
         ///-------------------------------------------------------------------------------------------------
 
-        public COriverModel ColoradoRiverModel
+        public COriverModel CORiverModel
         {
             get { return FCORiverModel; }
         }
@@ -78,7 +106,13 @@ namespace WaterSimDCDC.Generic
         {
             get { return FCORiverModel; }
         }
+        //
+        public bool UTwaterTransfers
+        {
+            get; set;
+        }
 
+        //
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Gets the manager for co model.</summary>
         ///
@@ -217,7 +251,7 @@ namespace WaterSimDCDC.Generic
             try
             {
                 COdroughtAtLeeFerry(year);
-                ColoradoRiverModel.RunMeadPowellReservoirs(year);
+                CORiverModel.RunMeadPowellReservoirs(year);
                 result = true;
             }
             catch (Exception ex)
