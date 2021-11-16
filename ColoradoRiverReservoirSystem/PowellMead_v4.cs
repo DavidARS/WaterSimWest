@@ -1070,7 +1070,7 @@ namespace CORiverModel
              //FluxPowell = PrebankFluxPowell + BankStoragePowell;
             if (UTwaterTransfers)
             {
-                if (Constants.UtahPipelineMax_AFyr / 1e6 < PrebankFluxPowell)
+                if (Constants.UtahPipelineMax_AFyr / 1e6 < State)
                 {
                     UtahPipelineTransfers = Constants.UtahPipelineMax_AFyr / 1e6;
                 }

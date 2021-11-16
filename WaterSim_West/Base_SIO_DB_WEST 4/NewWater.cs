@@ -6,6 +6,10 @@ using WaterSimDCDC.Generic;
 
 namespace WaterSim_Base
 {
+    /// <summary>
+    /// A class to hold new water available to users. Includes condensate water but also desalinization water.
+    /// 11.10.21 David A Sampson
+    /// </summary>
     public class NewWater
     {
         internal struct NWconstants
@@ -30,22 +34,31 @@ namespace WaterSim_Base
             internal const double AC = 4.4804; // 3.5146 5.4462
             internal const double BC = 0.2015; // 0.1003 0.3028
             internal const double CC = 0.2447; // 0.1203 0.3691
+            // ==================================================
+            internal const double PuertoPenascoPipelineToPHX = 0;
 
         }
+        #region Condensate water
         //
         UnitData FUnitData;
-        bool FactionAirWater=false;
-        NewWater NW = null;
+        #region constructors
+        // DCDC_Utilities.DataClassTemperature FDCclimate;
+        /// <summary>
+        /// Condensate water
+        /// </summary>
+        /// <param name="UnitData"></param>
         public NewWater(UnitData UnitData)
         {
             FUnitData = UnitData;
             initialize();
         }
+
         //
         void initialize()
         {
 
         }
+        #endregion constructors
         #region getsAndsets
         internal double AirWaterMax
         {
@@ -65,6 +78,7 @@ namespace WaterSim_Base
         }
         #endregion  getsAndsets
         // ===========================================================
+        #region methods and functions
         internal void calculateHouseholds(WaterSimCRFModel CRF)
         {
             Households = CRF.population * 1 / NWconstants.ppH;
@@ -80,12 +94,13 @@ namespace WaterSim_Base
                 TotalPanels = AirWaterMax * Households * NWconstants.panelsHouse;
             }
         }
-        internal void calculateDailyRate(double rh)
+        internal double calculateDailyRate(double rh)
         {
             double dailyRate = 0;
             int solar = 3;
             dailyRate = DailyWaterRatePerPanel(rh, solar);
-            DailyRateLitersAllHouseholds = TotalPanels * dailyRate;
+            //DailyRateLitersAllHouseholds += TotalPanels * dailyRate;
+            return dailyRate;
         }    
         // ==============================================
         internal double DailyWaterRatePerPanel(double rh, int sun)
@@ -128,17 +143,41 @@ namespace WaterSim_Base
         /// <param name="CRF"></param>
         /// <param name="rh"></param>
         /// <returns></returns>
-        public double AirWaterUse(WaterSimCRFModel CRF, double rh)
+        public double AirWaterUse(WaterSimCRFModel CRF, DCDC_Utilities.DataClassTemperature FDC)
         {           
             double result = 0; double temp = 0;
+            AirWaterMax = 0.5;
             calculateHouseholds(CRF);
             calculatePanelsTotal(CRF);
-            calculateDailyRate(rh);
+            averageRH(CRF,FDC);
+            //calculateDailyRate(RH);
             temp = DailyRateLitersAllHouseholds *NWconstants.LitersToGallons;
             result = temp / 1e6;
             return result;
         }
+        internal void averageRH(WaterSimCRFModel CRF, DCDC_Utilities.DataClassTemperature DT)
+        {
+            double temp = 0;
+            double result = 0;
+            int month = 1;
+            do
+            {
+                temp = DT.FastRH(CRF.UnitName, CRF.currentYear,month);
+                result += calculateDailyRate(temp);
+                month++;
+            } while(month < 13);
+            DailyRateLitersAllHouseholds = TotalPanels * result * 1/12;
+
+            //
+            // return result;
+        }
+        #endregion methods and functions
+        #endregion condensate water or "Air water"
+        #region Pipeline Desal
+
+        #endregion Pipeline Desal
+
         // ============================================================         
-      
+
     }
 }

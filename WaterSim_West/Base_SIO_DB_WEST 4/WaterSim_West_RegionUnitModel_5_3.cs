@@ -317,7 +317,7 @@ namespace WaterSimDCDC.Generic
         }
         ///-------------------------------------------------------------------------------------------------
         /// 09.21.21 - current constructor
-        ///       
+        /// 11.09.21      
         public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, 
             DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW,StormWater SW, 
             StreamWriter sw)
@@ -605,13 +605,20 @@ namespace WaterSimDCDC.Generic
             get { return CRFRWH; }
             set { CRFRWH = value; }
         }
-
+        //
+        public bool RainwaterHarvesting
+        {
+            get; set;
+        }
 
         //=======================================================
         // ==============================================================================
         /// <summary>
         /// A Method and property to get added water demand due to temperature increases
         /// into the demand models via the CRF model. 07.09.2018
+        /// 
+        /// NOTE: TC is contemporary data
+        /// Tav is scenario data
         /// </summary>
         /// <param name="DCT"></param>
         /// <param name="CRF"></param>
@@ -620,7 +627,7 @@ namespace WaterSimDCDC.Generic
         {
             double population = CRF.population;
             int theyear = CRF.currentYear;
-            double temp = Utilities.TemperatureFunction_AddDemand(population, theyear, DCT.FastTav(CRF.FUnitName, theyear), DCT.FastTC(CRF.FUnitName, theyear));
+            double temp = Utilities.TemperatureFunction_AddDemand(population, theyear, DCT.FastTavScen(CRF.FUnitName, theyear), DCT.FastTC(CRF.FUnitName, theyear));
             TheAddedDemand = temp;
 
             LoadSensitivityToTemperature(DCT, CRF);
@@ -638,8 +645,14 @@ namespace WaterSimDCDC.Generic
         //
         public void LoadSensitivityToTemperature(DataClassTemperature DCT, WaterSimCRFModel CRF)
         {
-            double temp = Utilities.loadSensitivity(DCT.FastTav(CRF.FUnitName, CRF.currentYear), DCT.FastTC(CRF.FUnitName, CRF.currentYear));
+            double temp = Utilities.loadSensitivity(DCT.FastTavScen(CRF.FUnitName, CRF.currentYear), DCT.FastTC(CRF.FUnitName, CRF.currentYear));
             TheAddedPowerPCT = temp ;
+
+        }
+        public void LoadSensitivityToTemperatures(DataClassTemperature DCT, WaterSimCRFModel CRF)
+        {
+            double temp = Utilities.loadSensitivity(DCT.FastTavScen(CRF.FUnitName, CRF.currentYear), DCT.FastTC(CRF.FUnitName, CRF.currentYear));
+            TheAddedPowerPCT = temp;
 
         }
         double _addedPower = 0;
@@ -1372,7 +1385,7 @@ namespace WaterSimDCDC.Generic
         /// <remarks>  This is the kernal of the model, all functions of the model are called in this mehod for each year.</remarks>
         /// <param name="year"> The year.</param>
         ///-------------------------------------------------------------------------------------------------
-
+        // Model call
         internal void Model(int year)
         {
          
@@ -1394,26 +1407,7 @@ namespace WaterSimDCDC.Generic
               // This method is to prepare vaious coefficients that change each year.  
             // In this case there are growth factors be calculated for this period
             preProcess(year);
-
-
-            // ===================================================================
-            // 08.31.21 das 2021, modified on 10.08.21, 10.11.21, 10.20.21, 
-            // Run annually
-            //double D = 0;
-            //double E = 0;
-            if(StartRainYear <= year)
-            {
-                double d = RainW.rwHarvestingYearly(UnitName, year - StartRainYear, this);
-                double e = CRFSWB.waterBudgetByClassYearly(UnitName, year- StartRainYear, this);
-                //D = (d * 1000000) / population;
-                //E = (e * 1000000) / population;
-                RainAndStormWater = d + e;
-            }      
-            
-            // writeToStream2(StreamW, D, E, UnitName);
-            // end edits 08.31.21 das
-            // ===================================================================
-
+           
             // EDIT QUAY 4/2/18
             // OK, the original method of changing resources levels is no longer going work given how the web interface is
             // working.  We can not just let the Resource  
@@ -1529,6 +1523,10 @@ namespace WaterSimDCDC.Generic
             // edits 09.20.21 das
             densityManagement(StreamW);
             // end edits das 09.20.21
+
+            // edits 11.09.21
+            RainwaterStormWater();
+            // end edits 11.09.21 das
 
             Urban(StreamW);
             //Urban();
@@ -2113,13 +2111,20 @@ namespace WaterSimDCDC.Generic
             int result = 0;
             if (AirWaterManagement)
             {
-                double rh = FDCtemperature.FastRH(FUnitName, currentYear);
-                double d = Math.Round(NWater.AirWaterUse(this, rh));
+                double d = Math.Round(NWater.AirWaterUse(this, FDCtemperature));
                 result = Convert.ToInt32(d);
                 seti_SurfaceWaterFreshNew(result);
             }
+
+
+
             writeToStream(sw, result, UnitName); 
         }
+        //void yearlyAverageRH()
+        //{
+        //    double rh = FDCtemperature.FastRH(FUnitName, currentYear);
+
+        //}
         // end edits 10.28.21, 11.02.21 das
         //
         // this is the field used for change coeeficient, and is the Max or Min values based on desired goal
@@ -2182,7 +2187,42 @@ namespace WaterSimDCDC.Generic
             return temp;
         }
         // end edits das 10.06.21
+        //
 
+        // created this method on 11.09.21 das
+        void RainwaterStormWater()
+        {
+            // ===================================================================
+            // 08.31.21 das 2021, modified on 10.08.21, 10.11.21, 10.20.21, 
+            // Run annually
+            //double D = 0;
+            //double E = 0;
+            // switch added on 11.09.21
+            // Have not yet USED this water.....
+            if (rainWaterHarvest)
+            {
+                double d = 0;
+                if (StartRainYear <= this.currentYear)
+                {
+                    int year = this.currentYear;
+                    d = RainW.rwHarvestingYearly(UnitName, year - StartRainYear, this);
+                    double e = CRFSWB.waterBudgetByClassYearly(UnitName, year - StartRainYear, this);
+                    //D = (d * 1000000) / population;
+                    //E = (e * 1000000) / population;
+                    RainAndStormWater = d + e;
+                }
+                int urban = geti_Urban();
+                int rain = Convert.ToInt32(d);
+                double newDemand = Math.Max(0, urban - rain);
+                seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
+             }
+
+            // writeToStream2(StreamW, D, E, UnitName);
+            // end edits 08.31.21 das
+            // ===================================================================
+
+        }
+        //
 
         // QUAY EDIT 9/12/18
         // Add Colordo Water
@@ -4143,7 +4183,14 @@ namespace WaterSimDCDC.Generic
             get { return _policyStartYear; }
         }
         //
-
+        // edits 11.09.21 das
+        bool b_rainwater = false;
+        public bool rainWaterHarvest
+        {
+            set { b_rainwater = value; }
+            get { return b_rainwater; }
+        }
+        // end edits 11.09.21 das
         // =========================================
         // -------------------------------------------------------------
         double modifyDemandCF()
@@ -5156,7 +5203,7 @@ namespace WaterSimDCDC.Generic
                 double newEffluent = 0;
                 double d_rwm = i_rwm;
                 //
-                available = d_gwFlow * d_gray / 100;
+                available = d_gwFlow * (d_gray * 1/100);
                 double temp = maxReclaimed; //  
                 double Temp = 0;
                 //defaultPCTReclaimed
@@ -6590,7 +6637,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <returns>an int from zero to 100   . </returns>
         //int i_surfaceWaterManagement = 1;
-        //public int geti_SurfaceWaterManagement()
+        //public int geti_()
         //{
         //    int TempInt = i_surfaceWaterManagement;
         //    return TempInt;

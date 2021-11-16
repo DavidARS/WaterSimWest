@@ -243,10 +243,10 @@
             this.panelUserControls.Controls.Add(this.panelInput);
             this.panelUserControls.Controls.Add(this.panelIndicators);
             this.panelUserControls.Controls.Add(this.SanKeyGarphControlPanel);
-            this.panelUserControls.Location = new System.Drawing.Point(470, 2);
+            this.panelUserControls.Location = new System.Drawing.Point(415, 2);
             this.panelUserControls.Margin = new System.Windows.Forms.Padding(2);
             this.panelUserControls.Name = "panelUserControls";
-            this.panelUserControls.Size = new System.Drawing.Size(698, 448);
+            this.panelUserControls.Size = new System.Drawing.Size(753, 448);
             this.panelUserControls.TabIndex = 4;
             this.panelUserControls.Resize += new System.EventHandler(this.panelUserControls_Resize);
             // 
@@ -261,7 +261,7 @@
             this.panelInput.Location = new System.Drawing.Point(10, 252);
             this.panelInput.Margin = new System.Windows.Forms.Padding(2);
             this.panelInput.Name = "panelInput";
-            this.panelInput.Size = new System.Drawing.Size(682, 187);
+            this.panelInput.Size = new System.Drawing.Size(737, 187);
             this.panelInput.TabIndex = 4;
             this.panelInput.Resize += new System.EventHandler(this.panelInput_Resize);
             // 
@@ -271,10 +271,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanelMPs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanelMPs.BackColor = System.Drawing.Color.LightGray;
-            this.flowLayoutPanelMPs.Location = new System.Drawing.Point(309, 2);
+            this.flowLayoutPanelMPs.Location = new System.Drawing.Point(354, 2);
             this.flowLayoutPanelMPs.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanelMPs.Name = "flowLayoutPanelMPs";
-            this.flowLayoutPanelMPs.Size = new System.Drawing.Size(367, 169);
+            this.flowLayoutPanelMPs.Size = new System.Drawing.Size(377, 169);
             this.flowLayoutPanelMPs.TabIndex = 1;
             this.flowLayoutPanelMPs.Resize += new System.EventHandler(this.flowLayoutPanelMPs_Resize);
             // 
@@ -286,7 +286,7 @@
             this.treeViewInput.Location = new System.Drawing.Point(2, 5);
             this.treeViewInput.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewInput.Name = "treeViewInput";
-            this.treeViewInput.Size = new System.Drawing.Size(288, 166);
+            this.treeViewInput.Size = new System.Drawing.Size(348, 166);
             this.treeViewInput.TabIndex = 0;
             this.treeViewInput.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewInput_AfterCheck);
             this.treeViewInput.Resize += new System.EventHandler(this.treeViewInput_Resize_1);
@@ -300,7 +300,7 @@
             this.panelIndicators.Location = new System.Drawing.Point(10, 41);
             this.panelIndicators.Margin = new System.Windows.Forms.Padding(2);
             this.panelIndicators.Name = "panelIndicators";
-            this.panelIndicators.Size = new System.Drawing.Size(682, 184);
+            this.panelIndicators.Size = new System.Drawing.Size(737, 184);
             this.panelIndicators.TabIndex = 3;
             // 
             // listBoxIndicators
@@ -312,7 +312,7 @@
             this.listBoxIndicators.Location = new System.Drawing.Point(8, 2);
             this.listBoxIndicators.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxIndicators.Name = "listBoxIndicators";
-            this.listBoxIndicators.Size = new System.Drawing.Size(667, 164);
+            this.listBoxIndicators.Size = new System.Drawing.Size(722, 164);
             this.listBoxIndicators.TabIndex = 0;
             // 
             // SanKeyGarphControlPanel
@@ -324,7 +324,7 @@
             this.SanKeyGarphControlPanel.Controls.Add(this.SanKeyGraphcomboBox);
             this.SanKeyGarphControlPanel.Location = new System.Drawing.Point(10, 3);
             this.SanKeyGarphControlPanel.Name = "SanKeyGarphControlPanel";
-            this.SanKeyGarphControlPanel.Size = new System.Drawing.Size(685, 39);
+            this.SanKeyGarphControlPanel.Size = new System.Drawing.Size(740, 39);
             this.SanKeyGarphControlPanel.TabIndex = 2;
             // 
             // SankeyGraphUnitNameLabel
@@ -342,7 +342,7 @@
             this.SanKeyGraphcomboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SanKeyGraphcomboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SanKeyGraphcomboBox.FormattingEnabled = true;
-            this.SanKeyGraphcomboBox.Location = new System.Drawing.Point(308, 6);
+            this.SanKeyGraphcomboBox.Location = new System.Drawing.Point(363, 6);
             this.SanKeyGraphcomboBox.Name = "SanKeyGraphcomboBox";
             this.SanKeyGraphcomboBox.Size = new System.Drawing.Size(229, 28);
             this.SanKeyGraphcomboBox.TabIndex = 0;

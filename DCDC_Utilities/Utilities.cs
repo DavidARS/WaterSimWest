@@ -65,9 +65,6 @@ namespace DCDC_Utilities
         #endregion Power Curve
 
 
-
-
-
         #region TemperatureEffects
         /// <summary>
         ///  This is a function to increase water demand based on air temperature; Although the model was generated using Average monthly data, 
@@ -84,7 +81,7 @@ namespace DCDC_Utilities
         /// <param name="Tav"></param> Average temperature (Tav + Tmin)/2
         /// <param name="Demandadd"></param> Liters per Capita Per Day to add to existing demand
         /// <returns></returns>
-        public static double TemperatureFunction_AddDemand(double population, int time, double TavHistorical, double TavScenario)
+        public static double TemperatureFunction_AddDemand(double population, int time, double TavScenario, double TavHistorical)
         {
             double result = 1;
             double T = 1;
@@ -225,7 +222,8 @@ namespace DCDC_Utilities
         int FUnitCode;
 
         int FYear;
-        double FTav;
+        int FMonth;
+        double Fscenario;
         double FContemporary;
         double FRH;
  
@@ -259,7 +257,7 @@ namespace DCDC_Utilities
         //    FContemporary = aContemporary;
         //    FYear = aYear;
         //}
-        public DataTemperature(string aUnitName, string aUnitCode, double aTav, double aContemporary, double frh, int aYear)
+        public DataTemperature(string aUnitName, string aUnitCode, double aScenario, double aContemporary, double frh, int aYear, int aMonth)
         {
             bool isErr = false;
             string errMsg = "";
@@ -276,10 +274,11 @@ namespace DCDC_Utilities
             {
                 FUnitCode = Utilities.BadIntValue;
             }
-            FTav = aTav;
+            Fscenario = aScenario;
             FContemporary = aContemporary;
             FRH = frh;
             FYear = aYear;
+            FMonth = aMonth;
         }
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the name of the unit. </summary>
@@ -319,9 +318,9 @@ namespace DCDC_Utilities
         ///
         /// <value> The ag rate. </value>
         ///-------------------------------------------------------------------------------------------------
-        public double Tav
+        public double Tscenario
         {
-            get { return FTav; }
+            get { return Fscenario; }
         }
         public double Tcontemporary
         {
@@ -335,7 +334,10 @@ namespace DCDC_Utilities
         {
             get { return FYear; }
         }
-
+        public int TheMonth
+        {
+            get { return FMonth; }
+        }
 
 
     }
@@ -360,20 +362,23 @@ namespace DCDC_Utilities
         string FNameFieldStr = FRnameFieldStr;
         string FCodeFieldStr = FRcodeFieldStr;
 
-        string FMaximumTempFieldStr = "TAV";
-        string FContemporaryTempFieldStr = "TC";
+        string FMaximumTempFieldStr = "TS"; // average temperature- Scenario data
+        string FContemporaryTempFieldStr = "TC"; // Contemporary data
         string FRelativeHumidityFieldStr = "RH";
-        string FcurrentYearFieldStr = "YEAR";
+        string FcurrentYearFieldStr = "Year";
+        string FcurrentMonthFieldStr = "Month";
 
         // Data Array Parameters
 
         Dictionary<string, int> StateCodes = new Dictionary<string, int>();
         const double InvalidRate = -1;//double.NaN;
+        const double InvalidRate_d = -1;//null;
 
         double[] FTavArray = null;
         double[] FContemporaryArray = null;
         double[] FRHArray = null;
         double[] FYearArray = null;
+        double[] FMonthArray = null;
 
         List<DataTemperature> FTemperatureDataList = new List<DataTemperature>();
         /// <summary>
@@ -401,6 +406,7 @@ namespace DCDC_Utilities
             FContemporaryArray = new double[arraysize];
             FRHArray = new double[arraysize];
             FYearArray = new double[arraysize];
+            FMonthArray = new double[arraysize];
 
             //int CodeI = 0;
             foreach (DataRow DR in TheData.Rows)
@@ -423,6 +429,7 @@ namespace DCDC_Utilities
                     string contemporarytempstr = DR[FContemporaryTempFieldStr].ToString();
                     string relativeHumidity = DR[FRelativeHumidityFieldStr].ToString();
                     string ryearsstr = DR[FcurrentYearFieldStr].ToString();
+                    string rmonthstr = DR[FcurrentMonthFieldStr].ToString();
 
                     double TempTav = Tools.ConvertToDouble(maximumtempstr, ref isErr, ref errMessage);
                     if (!isErr)
@@ -434,14 +441,18 @@ namespace DCDC_Utilities
                             if (!isErr)
                             {
 
-
                                 int TempYear = Tools.ConvertToInt32(ryearsstr, ref isErr, ref errMessage);
                                 if (!isErr)
                                 {
-                                    // OK 
-                                    DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempRH, TempYear);
-                                    FTemperatureDataList.Add(DT);
-                                    //// add to dictionary 
+
+                                    int TempMonth = Tools.ConvertToInt32(rmonthstr, ref isErr, ref errMessage);
+                                    if (!isErr)
+                                    {
+                                        // OK 
+                                        DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempRH, TempYear, TempMonth);
+                                         FTemperatureDataList.Add(DT);
+                                        //// add to dictionary 
+                                     }
                                 }
 
                             }
@@ -456,8 +467,8 @@ namespace DCDC_Utilities
 
         // ==============================================================
 
-
-        public double FastTav(string UnitName, int year)
+        // Scenario
+        public double FastTavScen(string UnitName, int year)
         {
             double temp = InvalidRate;
             DataTemperature TheData = FTemperatureDataList.Find(delegate (DataTemperature DT)
@@ -467,7 +478,7 @@ namespace DCDC_Utilities
 
             if (TheData.UnitName == UnitName)
             {
-                temp = TheData.Tav;
+                temp = TheData.Tscenario;
             }
             return temp;
         }
@@ -486,12 +497,12 @@ namespace DCDC_Utilities
             return temp;
         }
         // 11.02.21 das
-        public double FastRH(string UnitName, int year)
+        public double FastRH(string UnitName, int year, int month)
         {
             double temp = InvalidRate;
             DataTemperature TheData = FTemperatureDataList.Find(delegate (DataTemperature DT)
             {
-                return ((DT.TheYear == year) && (DT.UnitName == UnitName));
+                return ((DT.TheYear == year) && (DT.UnitName == UnitName) && (DT.TheMonth == month));
             });
 
             if (TheData.UnitName == UnitName)

@@ -158,8 +158,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="InitialUnitName">  Name of the initial unit. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public West_CRF_Unit_Network(UnitData TheUnitData, string InitialUnitName): base(TheUnitData,InitialUnitName)  
-    
+        public West_CRF_Unit_Network(UnitData TheUnitData, string InitialUnitName): base(TheUnitData,InitialUnitName) 
         {
 
             //FData = TheUnitData;

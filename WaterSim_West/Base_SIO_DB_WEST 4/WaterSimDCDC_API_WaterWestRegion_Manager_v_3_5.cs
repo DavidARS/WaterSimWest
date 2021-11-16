@@ -442,8 +442,9 @@ namespace WaterSimDCDC
         public const int epP_UtahPipeline = 300;
         public const int epP_AirWater = 301;
         public const int epP_AirWaterCompliance = 302;
-
         // end edits 10.27.21 das
+        // edits 11.09.21 das
+        public const int epP_RainWaterHarvest= 305;        // end edits 11.09.21 das
 
         // Resources
         public const int epP_SurfaceFresh = 1031;
@@ -1146,8 +1147,10 @@ namespace WaterSimDCDC
             //
             // Sampson edits 08.18.18
             // GrayWaterManagement
+            // NOTE: Sampson notes: graywater use reduces urban demand
+            // 11.09.21 edits
             WestModel.GrayWaterManagement = new providerArrayProperty(_pm, eModelParam.epP_GrayWaterManagement, WestModel.geti_GrayWaterManagement, WestModel.seti_GrayWaterManagement, eProviderAggregateMode.agSum);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_GrayWaterManagement, "Use Gray Water ", "GYWM_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.GrayWaterManagement));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_GrayWaterManagement, "Use Gray Water: % use ", "GYWM_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.GrayWaterManagement));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_GrayWaterManagement, "Controls Gray Water Management: increased Gray water.", "", "Scenario changes in Gray Water Use", "", new string[4] { "None", "Some", "More", "Most" }, new int[4] {0, 33, 66, 100}, new ModelParameterGroupClass[] { }));             
             // End Sampson edits 08.18.18
 
@@ -1201,22 +1204,26 @@ namespace WaterSimDCDC
             // 
             // Edits das 10.27.21 
             //
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UtahPipeline, "Utah Pipeline Installation", "UTPIPE_P", rangeChecktype.rctUnknown, 0, 1,geti_UtahPipelineManagement, seti_UtahPipelineManagement, RangeCheck.NoSpecialBase));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UtahPipeline, "Utah Pipeline Installation: 1=true", "UTPIPE_P", rangeChecktype.rctUnknown, 0, 1,geti_UtahPipelineManagement, seti_UtahPipelineManagement, RangeCheck.NoSpecialBase));
              ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UtahPipeline, "Creation/ use of a Utah pipeline to St. Georg: 0=no, 1=yes", "", "YES 1/No 0", "Transfers", new string[] { }, new int[] {}, new ModelParameterGroupClass[] { }));
             //
             //
             WestModel.AirWaterExtraction = new providerArrayProperty(_pm, eModelParam.epP_AirWater, WestModel.geti_AirWaterManagement, WestModel.seti_AirWaterManagement, eProviderAggregateMode.agNone);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_AirWater, "Create New Water using condensation technologies", "AIRWAT_P", rangeChecktype.rctCheckRange, 0, 1, null, WestModel.AirWaterExtraction));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_AirWater, "New 'Air' Water from condensation: 1=true", "AIRWAT_P", rangeChecktype.rctCheckRange, 0, 1, null, WestModel.AirWaterExtraction));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_AirWater, "Creation/ use of new condensate water: 0=no, 1=yes", "New Water", "Condensate", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
             // 11.02.21 das
             WestModel.AirWaterCompliance = new providerArrayProperty(_pm, eModelParam.epP_AirWaterCompliance, WestModel.geti_AirWaterInstallations, WestModel.seti_AirWaterInstallations, eProviderAggregateMode.agNone);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_AirWaterCompliance, "Compliance of installing Air Water Systems", "AWATC_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.AirWaterCompliance));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_AirWaterCompliance, "Compliance, Air Water Systems: %", "AWATC_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.AirWaterCompliance));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_AirWaterCompliance, "What percent of households install Air Water Systems:", "New Water", "Condensate", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // end edits 11.02.21 das
             //
             // end edits das 10.27.21
-
+            // edits 11.09.21 das
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_RainWaterHarvest, "Harvest Rainwater: 1=true, 0=false", "RAINW_P", rangeChecktype.rctUnknown, 0, 1, geti_RainWaterManagement, seti_RainWaterManagement, RangeCheck.NoSpecialBase));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_RainWaterHarvest, "Creation/ use of Rainwater: 0=no, 1=yes", "", "YES 1/No 0", "RainWater", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            // end edits 11.09.21 das
+            //
             // EDIT QUAY 9/10/20
             // Added External Model Parameters             
             // -------------------
@@ -1587,6 +1594,17 @@ namespace WaterSimDCDC
         {
             b_utahPipelineSwitch=Convert.ToBoolean(value);
             WestModel.ColoradoRiverModel.CORiverModel.PMead.UTwaterTransfers = b_utahPipelineSwitch;
+        }
+        // ===============================================
+        bool b_rainwaterSwitch = false;
+        public int geti_RainWaterManagement()
+        {
+            return Convert.ToInt32(b_rainwaterSwitch);
+        }
+        public void seti_RainWaterManagement(int value)
+        {
+            b_rainwaterSwitch = Convert.ToBoolean(value);
+            WestModel.rainWaterHarvesting = b_rainwaterSwitch;
         }
         // =========================================================================================
         // Extract water out of the air using SOURCE hydropanels (SOURCE-Tech-Spec-Sheet.pdf)

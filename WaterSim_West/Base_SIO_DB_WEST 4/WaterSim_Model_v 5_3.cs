@@ -350,7 +350,8 @@ namespace WaterSimDCDC.Generic
             //string UnitDataFielname = "BasinStatesSubRegionData.csv";// "USGSBasinRegionCountyWaterUse_2_28_17.csv";
             // string UnitDataFielname = "All West Data By Region Sumary v5.csv";
             //                         West Regions USGS with Colorado Ver 1.csv
-            string UnitDataFieldname = "West Regions USGS with Colorado Ver 5.csv";
+           // string UnitDataFieldname = "West Regions USGS with Colorado Ver 5.csv";
+            string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_6.csv";
 
 
             //string rates = "ElevenStateGrowthRates.csv";
@@ -362,7 +363,7 @@ namespace WaterSimDCDC.Generic
             string RateDataFilename = "WestModelGrowthRates_6.csv";
             string AcerageDataFilename = "LCLUAcres.csv";
             //string TemperatureDataFilename = "Temperature.csv";
-            string ClimateDataFilename = "Climate.csv";
+            string ClimateDataFilename = "ClimateMonthly_24.csv";
             // EDIT END 2 13 18
             // das edits 06.03.21
             // ICLUS ssp2 and ssp5 lclu data  - impervious area ..;
@@ -387,7 +388,7 @@ namespace WaterSimDCDC.Generic
                 FDataLCLUrcn = new DataClassRCN(DataDirectoryName, LCLUrcnFilename);
                 //
                 //
-                FDataTemperature = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
+                //FDataTemperature = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
                 DataClassTemperature TD = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
                 // string Filename = "CompareDemand.txt";
                 //
@@ -406,9 +407,9 @@ namespace WaterSimDCDC.Generic
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
-                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
-
-                    FUnitModels.Add(TempModel);
+                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
+                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, swriter); // 11.02.21 das
+                        FUnitModels.Add(TempModel);
                         set_DefaultDemandModel(TempModel);
                     
                         // modelCount += 1;
@@ -584,7 +585,7 @@ namespace WaterSimDCDC.Generic
             return WSMod;
 
         }
-
+        
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets an unit model. </summary>
@@ -626,6 +627,26 @@ namespace WaterSimDCDC.Generic
             else
                 return null;
         }
+        // ======================================================
+        // edits 11.09.21 das
+        internal bool RainWaterHarvesting
+        { get; set; }
+
+        public bool rainWaterHarvesting
+        {
+            set
+            {
+                bool RainWaterHarvesting = value;
+                //FPolicyStartYear = value;
+                foreach (WaterSimCRFModel WSM in FUnitModels)
+                {
+                    WSM.rainWaterHarvest = RainWaterHarvesting;
+                }
+            }
+            get { return RainWaterHarvesting; }
+        }
+        // end edits 11.09.21 das
+        // ======================================================
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Getunit model index.</summary>
         /// <remarks> Quay, 2/19/2018.</remarks>
@@ -3599,6 +3620,10 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_AirWaterInstallations(Values[i]);
             }
         }
+        //
+        // =========================================================
+
+        // =========================================================
         #endregion Updated Policies - October 2021
         //=======================================================
 
