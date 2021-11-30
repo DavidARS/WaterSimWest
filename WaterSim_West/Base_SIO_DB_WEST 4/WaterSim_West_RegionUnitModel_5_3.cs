@@ -610,6 +610,9 @@ namespace WaterSimDCDC.Generic
         {
             get; set;
         }
+        //
+        public string IndustryRegion { get; set; }
+        public double IndustryValue { get; set; }
 
         //=======================================================
         // ==============================================================================
@@ -1223,12 +1226,18 @@ namespace WaterSimDCDC.Generic
             // seti_ReclaimedWaterManagement(zero));
             double PercentReclaimed = 0;
             double TheMaxReclaimed = MaxReclaimed();
+            // This is a proportion NOT a percent FYI
+            // ASK Ray about this......
+            // 11.30.21 das
             if (TheMaxReclaimed > 0) PercentReclaimed = UnitNetwork.Effluent.Limit / MaxReclaimed();
             //
             defaultPCTReclaimed = 0;
             defaultPCTReclaimed = PercentReclaimed*100;
             seti_ReclaimedWaterManagement((int)(PercentReclaimed * 100));
            // sampson edits.. I do not know why Ray is doing this.. need to straighten this out.
+           // das still don't understand 11.29.21 Reclained include potential graywater use here...
+           /// need to ensure that we do NOT double dip if graywater and all effluent is used
+
            // seti_ReclaimedWaterManagement((int)(zero));
             // END EDIT 3/22/18
             // 
@@ -5033,7 +5042,8 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
-
+        // Is this logic still valid?
+        // 11.29.21 das
         public void seti_Effluent(int value)
         {
             SetReclaimed(value);
@@ -5111,14 +5121,24 @@ namespace WaterSimDCDC.Generic
             // MaxReclaimed() returns the Theoretical portion of effluent that potentially be used
             // FPctEffluentUsed is the amunt allowed to be used
             double MaxAvailableReclaimed = MaxReclaimed() * d_reclaimedWaterUse;
+            // 11.30.21 das
+            maxReclaimable = MaxReclaimed();
+            // end edits 11.30.21 das
             // See which is bigger, the amount now in the Effluent Resource or the theorotical amount
 
             result = Math.Max(MaxAvailableReclaimed, UnitNetwork.Effluent.Limit);
+            //
+            // edits 11.20.21 das
+            reclaimedUsed = result;
+            // end edits 11.30.21 das
             // sampson edits 09.08.18
             // Gray Water Use was invoked. Must subtract gray water from waste water to update available reclaimed
             if (grayWaterEffInvoked)
             {
-                result = UnitNetwork.Effluent.Limit;
+                // 11.30.21 das
+                result -= grayWaterUsed;
+                //result = UnitNetwork.Effluent.Limit;
+                // end edits 11.30.21 das
 
             }
             // end sampson edits 09.08.18
@@ -5134,8 +5154,16 @@ namespace WaterSimDCDC.Generic
             set { _maxReclaimable = value; }
         }
         // END EDIT 3/22/18
+        // edits 11.30.21 das
+        double _reclaimedUsed = 0;
+        double reclaimedUsed
+        {
+            get { return _reclaimedUsed; }
+            set { _reclaimedUsed = value; }
+        }
+        // end edits 11.30.21 das
 
-       // double _maxReclaimed = 0;
+        // double _maxReclaimed = 0;
         //QUAY EDIT 3/22/18
         // Modified this to set up ability to assign these factors to each region
         // Kept some structure so there will not be a need for a lot of code rewrite
@@ -5176,69 +5204,44 @@ namespace WaterSimDCDC.Generic
         {
             bool alterDemand = false;
             int i_gwm = this.geti_GrayWaterManagement();
-            int i_rwm = this.geti_ReclaimedWaterManagement();
-            int i_gwFlow = this.geti_GrayWaterFlow();
-            int i_eff = this.geti_Effluent();
-            // int i_effMax = 0;
+            
+            // This is either the ratio of the default USGS reclaimed water use to max available effluent
+            // or it is set in the UI... it is both
+            //int i_rwm = this.geti_ReclaimedWaterManagement();
+
+            // maximum potential available graywater. 11.29.21 das
+            //int i_gwFlow = this.geti_GrayWaterFlow();
+            double d_gwFlow = GrayWaterPotential();
             // =============================================
 
             int year = this.currentYear;
-            // ====
+            // ======================
+            double available = 0;
+            // ======================
 
-            // if the user has selected to not use gray water then this method is null and void
-            if (i_gwm == 0) { }
-            // if the user as NOT selected to use waste water then we can use Gray Water if, and only if, the region does not have
-            // effluent in the input file. PERHAPS this needs changing.. i.e., ignore the effluent in the USGS data file and only
-            // consider whether or not they are using the reclaimed water management option...NEED to run this by Ray.
-            // 09.06.2018 david arthur sampson. 
-            else
+            // =========================
+            //
+            double d_gray = i_gwm; // graywater management in percent
+           // double d_gwFlow = i_gwFlow;// maxGrayWater; // MGD - set by available and management;
+            //
+            // NOTE: NOT using maxGrayWater property
+            // 
+            grayWaterUsed = 0;
+            if (0 < i_gwm)
             {
                 alterDemand = true;
-                //
-                double d_gray = i_gwm;
-                double d_gwFlow = maxGrayWater; // i_gwFlow;
-                double d_eff = i_eff;
-                double available = 0;
-                double diffEffluent = 0;
-                double newEffluent = 0;
-                double d_rwm = i_rwm;
-                //
-                available = d_gwFlow * (d_gray * 1/100);
-                double temp = maxReclaimed; //  
-                double Temp = 0;
-                //defaultPCTReclaimed
-                //if (i_eff > 0) // Have effluent in their USGS starting point - 2010
-                if(defaultPCTReclaimed > 0)
-                {
-                    if (i_rwm > 0) // either default estimate or reclaimed water management has been invoked - all providers have access to reclaimed
-                    {
-                        grayWaterEffInvoked = true;
-                        diffEffluent = temp - available;
-                        Temp = Math.Min(diffEffluent, d_eff);
-                        newEffluent = Temp;
-                        seti_Effluent((int)newEffluent);
-                      }
-                    //
-                    grayWaterUsed = available;
-                    //
-                }
-                else // Have no effluent listed in the USGS data
-                {
-                    if (i_rwm > 0) // reclaimed water management has been invoked - all providers have access to reclaimed
-                    {
-                        // this could be a problem
-                        grayWaterEffInvoked = true;
-                        newEffluent = Math.Max(0,(d_rwm/100 * maxReclaimed) - available);
-                        seti_Effluent((int)newEffluent);
-                    }
-                    else // no change in effluent (reclaimed) - just demand
-                    {
-                    }
-                    //
-                    grayWaterUsed = available;
-                    //
-                }
+                available =  Math.Min( GrayWaterAvailable() * (d_gray * 1 / 100), d_gwFlow * (d_gray * 1 / 100) );
+                grayWaterEffInvoked = true;
             }
+            else
+            {
+                available = 0;
+                grayWaterEffInvoked = false;
+            }
+            // 11.30.21 das
+             grayWaterUsed = available;
+            // end edits 11.30.21 das
+           
             //
             if (alterDemand)
             {
@@ -5246,9 +5249,10 @@ namespace WaterSimDCDC.Generic
                 int urban = geti_Urban();
                 double newDemand = Math.Max(0,urban - grayWaterUsed);
                 seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
-                GrayWaterFlow(); // reset the graywater flow because demand changed
+               GrayWaterPotential(); // reset the graywater flow because demand changed
                 int unitcode = this.FUnitCode; // for a debug break point
             }
+
 
         }
         // 09.07.18 end sampson edits
@@ -5435,10 +5439,13 @@ namespace WaterSimDCDC.Generic
             maxReclaimed = temp;
             //
             // 08.28.18 das
-            double Temp = 0;
-            Temp = temp * grayWater; // GrayWaterFlow(); // need to reset temp after passing through GrayWaterFlow()
-            maxGrayWater = Temp;
+            // OK. So, after we have max reclaimed, I estimate max gray water 
+            // 11.29.21 das
+            //double Temp = 0;
+           // Temp = temp * grayWater; //GrayWaterPotential(); // need to reset temp after passing throughGrayWaterPotential()
+            //maxGrayWater = Temp;
             //temp = consumptive * ((UnitNetwork.Urban.Demand) * indoor);
+            // Note that temp is max reclaimed. Temp is max graywater
             return temp;
         }
         double maxReclaimed
@@ -5487,7 +5494,7 @@ namespace WaterSimDCDC.Generic
         public double MaxGrayWater()
         {
             double temp = 0;
-            temp = maxGrayWaterRatio * GrayWaterFlow();
+            temp = maxGrayWaterRatio *GrayWaterPotential();
 
             //temp = consumptive * ((UnitNetwork.Urban.Demand) * indoor);
             return temp;
@@ -5518,11 +5525,11 @@ namespace WaterSimDCDC.Generic
         ///  and estimate of the total amount of Gray Water Produced
         /// </summary>
         /// <returns></returns>
-        public double GrayWaterFlow()
+        public double GrayWaterPotential()
         {
             double temp = 0;
-            //bool alterDemand = false;
             temp = maxReclaimedRatio* (consumptive * ((UnitNetwork.Urban.Demand) * indoor * grayWater));
+            maxGrayWater = temp;
 
             return temp;
         }
@@ -5532,7 +5539,7 @@ namespace WaterSimDCDC.Generic
         /// <returns></returns>
         public int geti_GrayWaterFlow()
         {
-            return (int)GrayWaterFlow();
+            return (int)GrayWaterPotential();
         }
         double _maxGrayWater = 0;
         double maxGrayWater
@@ -5540,53 +5547,17 @@ namespace WaterSimDCDC.Generic
             get { return _maxGrayWater; }
             set { _maxGrayWater = value; }
         }
-
-        //public void set_GrayWaterPotential()
-        //{
-        //    //
-        //    int ModelCount = 24;
-        //    int[] RecToUrban = new int[ModelCount];
-        //    int[] multiply = new int[ModelCount];
-        //    int[] gray = new int[ModelCount];
-
-        //    RecToUrban =  this.geti_Effluent();
-        //    multiply = this.geti_GrayWaterManagement();
-        //    gray = this.geti_GrayWaterFlow();
-        //    grayWaterPotential(RecToUrban, gray, multiply);
-
-        //}
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="baseRecUrban"></param>
-        ///// <param name="GrayWater"></param>
-        ///// <param name="management"></param>
-        //public void grayWaterPotential(int[] baseRecUrban, int[] GrayWater, int[] management)
-        //{
-        //    //
-        //    int[] iGray = new int[ModelCount];
-        //    double G = 0;
-        //    for (int i = 0; i < ModelCount; i++)
-        //    {
-        //        int result = 0;
-        //        double Temp = 0;
-        //        double gray = 0;
-        //        G = (double)GrayWater[i];
-        //        if (baseRecUrban[i] <= 2)
-        //            gray = management[i] * G;
-        //        else
-        //            Temp = baseRecUrban[i];
-        //        if (gray > 0) { result = (int)gray; }
-        //        else result = (int)Temp;
-        //        iGray[i] = result;
-        //    }
-
-        //    // ModelParameterClass MP = FWSim.ParamManager.Model_Parameter(eModelParam.epP_Effluent);
-        //    // MP.ProviderProperty.setvalues(In);
-        //    this.seti_Effluent(iGray);
-        //    //  this.MYWaterSimModel.Effluent.setvalues(In);
-
-        //}
+        //
+        /// <summary>
+        ///  What is left after effluent has been used or "managed"
+        /// </summary>
+        /// <returns></returns>
+        public double GrayWaterAvailable()
+        {
+            double temp = 0;
+            temp = (maxReclaimed-reclaimedUsed) * grayWater;
+            return temp;
+        }
         // =================================================================================================
 
         // /////////////////////////////////////////////////////////////////////////////////////////////
@@ -6415,6 +6386,29 @@ namespace WaterSimDCDC.Generic
             set { _desalinization = value; }
             get { return _desalinization; }
         }
+        //
+        // =============================================================
+        // edits 11.29.21 das
+        // Recycle All wastewater
+        double _recycle = 0.0;
+        public int geti_Recycle()
+        {
+            int TempInt = Convert.ToInt32(Math.Round(_recycle * 100));
+            return TempInt;
+        }
+        public void seti_Recycle(int value)
+        {
+            _recycle = (Double)value / 100;
+        }
+        // Use all available wastewater generated - separate from graywater and Reclaimed
+        // water
+        public double RecycleAllWastewater
+        {
+            set { _recycle = value; }
+            get { return _recycle; }
+        }
+        // end edits 11.29.21 das
+        // ============================================================
 
         //
         //public double Desal

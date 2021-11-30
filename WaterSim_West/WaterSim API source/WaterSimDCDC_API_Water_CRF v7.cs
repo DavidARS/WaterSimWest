@@ -580,6 +580,19 @@ namespace WaterSimDCDC.Generic
             // can not return resources to effluent source
             return false;
         }
+        //
+        // Change the available reclained water available to a region. Currently, read in from the file. We want to be 
+        // able to ask "what if" regions begin using effluent/ reclaimed water that they are NOT NOW using.
+        // edits 11.29.21 das
+        public void AddEffluentCapabilities(double additions, double defaultAvailable)
+        {
+
+        }
+
+
+        // end edits 11.29.21 das
+
+        //
         /// Ad code here from  protected virtual void ResetLimit(double NewLimit) in ConsumerResourceData (line 1394)
         /// 
         protected override void ResetLimit(double NewLimit)
@@ -664,172 +677,7 @@ namespace WaterSimDCDC.Generic
         }
     }
         // ==================================================================================================================
-        // edits 11.16.21 das
-        // add desalination water
-        // ----------------------
-        /// <summary>
-        /// New desalination water, either piped or exchanged
-        /// </summary>
-    public class CRF_Resource_Desal : CRF_Resource_Water
-    {
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary>   Default constructor. </summary>
-            ///
-            /// <remarks>   Mcquay, 1/25/2016. </remarks>
-            ///-------------------------------------------------------------------------------------------------
-
-            public CRF_Resource_Desal()
-                : base()
-            {
-            }
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary>   Constructor. </summary>
-            ///
-            /// <remarks>   Mcquay, 1/25/2016. </remarks>
-            ///
-            /// <param name="aName">    The name. </param>
-            ///-------------------------------------------------------------------------------------------------
-
-            public CRF_Resource_Desal(string aName)
-                : base(aName)
-            {
-            }
-
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary>   Constructor. </summary>
-            ///
-            /// <remarks>   Mcquay, 1/25/2016. </remarks>
-            ///
-            /// <param name="aName">    The name. </param>
-            /// <param name="aLabel">   The label. </param>
-            /// <param name="aColor">   The color. </param>
-            ///-------------------------------------------------------------------------------------------------
-
-            public CRF_Resource_Desal(string aName, string aLabel, Color aColor)
-                : base(aName, aLabel, aColor)
-            {
-            }
-
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary>   Constructor. </summary>
-            ///
-            /// <remarks>   Mcquay, 1/25/2016. </remarks>
-            ///
-            /// <param name="aName">            The name. </param>
-            /// <param name="aLabel">           The label. </param>
-            /// <param name="aColor">           The color. </param>
-            /// <param name="AvailableSupply">  The available supply. </param>
-            ///-------------------------------------------------------------------------------------------------
-
-            public CRF_Resource_Desal(string aName, string aLabel, Color aColor, double AvailableSupply)
-                : base(aName, aLabel, aColor, AvailableSupply)
-            {
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="FluxToItem"></param>
-            /// <returns></returns>
-            public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
-            {
-                bool result = true;
-
-                return result;
-
-                // always allocate
-                // return true;
-            }
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary>   Determine if we allow flux change from. </summary>
-            /// <remarks>   Does not allow unused resources to be sent back</remarks>
-            /// <param name="FluxFromItem"> The flux from item. </param>
-            ///
-            /// <returns>   true if we allow flux change from, false if not. </returns>
-            ///-------------------------------------------------------------------------------------------------
-
-            public override bool AllowFluxChangeFrom(CRF_DataItem FluxFromItem)
-            {
-                // can not return resources to effluent source
-                return false;
-            }
-            /// Ad code here from  protected virtual void ResetLimit(double NewLimit) in ConsumerResourceData (line 1394)
-            /// 
-            protected override void ResetLimit(double NewLimit)
-            {
-                // check of NewLimit is larger or smaller
-                //if (NewLimit > FValue)
-                if (NewLimit > FValue)
-                {
-                    // OK, need to adjust each flux so original new allocated values stays the same as old
-                    // Set Allocation will adjust the Allocated value of flux based on method of allocation being used 
-                    // get the oldvalues
-                    List<double> OldValues = new List<double>();
-                    foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
-                    {
-                        OldValues.Add(Flux.Allocated());
-                    }
-                    // set the new limit
-                    FValue = NewLimit;
-
-                    // loop through the fluxes and set values
-                    int index = 0;
-                    foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
-                    {
-                        // Check if a flux transfer is allowed, base CRF Resource should say no unless their is a need
-                        // if not, then reset value to old value
-                        if (!CRF_Utility.AllowFluxChange(this, Flux.Target))
-                        {
-                            Flux.SetAllocation(OldValues[index]);
-                            index++;
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (NewLimit == FValue) { }
-                    else
-                    {
-                        // set the new limit
-                        FValue = NewLimit;
-                        List<double> OldValues = new List<double>();
-                        List<double> NewValues = new List<double>();
-                        foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
-                        {
-                            if (Flux.Source.Label == "Desalination Water")
-                            {
-                                OldValues.Add(Flux.Allocated());
-                                Flux.SetAllocation(FValue);
-                                NewValues.Add(Flux.Allocated());
-                            };
-                        }
-
-                        // loop through the fluxes and set values
-                        int index = 0;
-                        foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
-                        {
-                            // Check if a flux transfer is allowed, base CRF Resource should say no unless their is a need
-                            // if not, then reset value to old value
-                            if (!CRF_Utility.AllowFluxChange(this, Flux.Target))
-                            {
-                                Flux.SetAllocation(NewValues[index]);
-                                index++;
-                            }
-                        }
-                    }
-                    //bool stop = true;
-                }
-
-                // ok just do it if less everyone lives with consequences, if ratio not reset, they get alot more
-                FValue = NewLimit;
-
-                //
-            }
-
-    }
-    
-        // ----------------------
-        // end edits 11.16.21 das
+      
         // ==================================================================================================================
 
         //=====================================================================================

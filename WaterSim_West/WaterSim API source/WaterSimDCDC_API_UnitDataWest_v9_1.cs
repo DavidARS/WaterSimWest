@@ -128,13 +128,14 @@ namespace WaterSimDCDC.Generic
         public const string ReclaimedWaterFld = "REC";
         public const string SaltWaterFld = "SAL";
         public const string AugmentedFld = "AUG";
-        // edits 11.16.21 das
-        public const string DesalFld = "DSAL";
-        // end edits 11.16.21 das
 
         // EDIT QUAY 9/11/18 Colorado
         public const string ColoradoFld = "COL";
         // END EDIT   
+
+        // edits 11.16.21 das
+        public const string DesalinationFld = "DSAL";
+        // end edits 11.16.21 das
 
         // Consumers
         public const string UrbanDemandFld = "UTOT";
@@ -158,7 +159,7 @@ namespace WaterSimDCDC.Generic
         // QUAY EDIT 8/11/18 Colorado
         // Added Colorado ytp this list
         //public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado };
-        public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado, erDesalination };
+        public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado,erDesalination };
 
         // END EDIT
         public enum eConsumer { ecUrban, ecRural, ecAg, ecInd, ecPower };
@@ -166,7 +167,7 @@ namespace WaterSimDCDC.Generic
 
         // QUAY EDIT 8/11/18 Colorado
         // Added Colorado to this list
-        static public string[] ResourceList = new string[] { SurfaceWaterFld, SurfaceWaterLakeFld, GroundWaterFld, ReclaimedWaterFld, SaltWaterFld, AugmentedFld, ColoradoFld };
+        static public string[] ResourceList = new string[] { SurfaceWaterFld, SurfaceWaterLakeFld, GroundWaterFld, ReclaimedWaterFld, SaltWaterFld, AugmentedFld, ColoradoFld, DesalinationFld };
         // END EDIT
 
         // EDIT QUAY 3/30/18
@@ -177,7 +178,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> The resource list label.</summary>
         // QUAY EDIT 8/11/18 Colorado
         // Added Colorado to this list
-        static public string[] ResourceListLabel = new string[] { "Surface Water", "Surface Water Lake ", "Groundwater", "Reclaimed Water", "Saline Surface Water", "Augmented", "Colorado", "Desalinaton" };
+        static public string[] ResourceListLabel = new string[] { "Surface Water", "Surface Water Lake ", "Groundwater", "Reclaimed Water", "Saline Surface Water", "Augmented", "Colorado", "Desalination" };
         // END EDIT
         static public string[] ConsumerList = new string[] { UrbanDemandFld, RuralDemandFld, AgricultureDemandFld, IndustrialDemandFld, PowerDemandFld };
         static public string[] ConsumerListLabel = new string[] { "Urban Public Supply Demand", "Non-Urban Residential Demand", "Agricultural Demand", "Industrial Demand", "Power Generation Demand" };
@@ -185,7 +186,7 @@ namespace WaterSimDCDC.Generic
         static public string[] OtherList = new string[] { PopulationFld, PowerGenFld };
 
         static public string[] IDFieldList = new string[] { RegionUnitNameField, RegionUnitCodeField, StateUnitNameField, StateUnitCodeField, CountyUnitNameField, CountyUnitCodeField, LakeField, YearField };
-        // ??? why is this hardcoded?
+
         public const string USGSDataFilename = "Just11StatesLakeNoRuralPower.csv";
 
         public const string DefaultUnitName = "Florida";
@@ -583,17 +584,16 @@ namespace WaterSimDCDC.Generic
             get { return UDI.ColoradoFld; }
         }
         // EDNT EDIT
-        // ========================================
-        // edits 11.16.21 das
+
         /// <summary>
         /// 
         /// </summary>
         static public string DesalinationFieldName
         {
-            get { return UDI.DesalFld; }
+            get { return UDI.DesalinationFld; }
         }
-        // end edits 11.16.21
-        // ========================================
+
+
 
 
         ///-------------------------------------------------------------------------------------------------
@@ -743,13 +743,9 @@ namespace WaterSimDCDC.Generic
             Temp = new SDResourceConsumerLink("COL", "ITOT", "ICOL"); FluxList.Add(Temp);
             Temp = new SDResourceConsumerLink("COL", "PTOT", "PCOL"); FluxList.Add(Temp);
             // END EDIT
-
-            // ==============
             // edits 11.16.21 das
-            Temp = new SDResourceConsumerLink("DSAL", "UTOT", "UDSL"); FluxList.Add(Temp);
-            Temp = new SDResourceConsumerLink("DSAL", "ATOT", "ADSL"); FluxList.Add(Temp);
-            Temp = new SDResourceConsumerLink("DSAL", "ITOT", "IDSL"); FluxList.Add(Temp);
-            Temp = new SDResourceConsumerLink("DSAL", "PTOT", "PDSL"); FluxList.Add(Temp);
+            Temp = new SDResourceConsumerLink("DSAL", "UTOT", "USAL"); FluxList.Add(Temp);
+            Temp = new SDResourceConsumerLink("DSAL", "ATOT", "ASAL"); FluxList.Add(Temp);
 
             // end edits 11.16.21 das
             return FluxList;

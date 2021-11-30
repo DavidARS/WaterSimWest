@@ -1,6 +1,7 @@
 ﻿using System;
 
 using WaterSimDCDC;
+using System.Collections.Generic;
 using WaterSimDCDC.Generic;
 using DemandModel_Base;
 
@@ -198,11 +199,13 @@ namespace WaterSim_Base
             double temp = 0;
             SetDemandFactors();
             temp = EstimateConsumerDemand((Employees * convertEmployee), LFindInitialGPED, LIndustryConservation, LFindGPEDChangeCoef, FIndMinGPEDPercent, period);
+           
             return temp;
         }
 
-       
+      
 
+        //}
         /// <summary>
         /// 
         /// </summary>

@@ -445,7 +445,8 @@ namespace WaterSimDCDC
         // end edits 10.27.21 das
         // edits 11.09.21 das
         public const int epP_RainWaterHarvest= 305;        // end edits 11.09.21 das
-
+        public const int epP_Desalination = 306;
+        public const int epP_Recycle = 307;
         // Resources
         public const int epP_SurfaceFresh = 1031;
        // public const int epP_SurfaceLake = 1032;
@@ -1155,9 +1156,9 @@ namespace WaterSimDCDC
             // End Sampson edits 08.18.18
 
             // Augmented
-            WestModel.Augmented = new providerArrayProperty(_pm, eModelParam.epP_Augmented, WestModel.geti_Desalinization, WestModel.seti_Desalinization, eProviderAggregateMode.agSum);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Augmented, "Augmented Desal", "DESAL_P", rangeChecktype.rctCheckRange, 0, 200, null, WestModel.Augmented));
-            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Augmented, "Adds a percent of desalinaiton: increased surface saline withdrawals.", "", "Scenario changes in saline surface water withdrawals", "", new string[4] { "None", "Low", "Med", "High" }, new int[4] { 0, 100, 150, 200 }, new ModelParameterGroupClass[] { }));
+            WestModel.Augmented = new providerArrayProperty(_pm, eModelParam.epP_Augmented, WestModel.geti_Augmented, WestModel.seti_Augmented, eProviderAggregateMode.agSum);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Augmented, "Augmented Water", "AUG_P", rangeChecktype.rctCheckRange, 0, 200, null, WestModel.Augmented));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Augmented, "Adds a percent of ???: increased ?? saline withdrawals.", "", "Scenario changes in saline surface water withdrawals", "", new string[4] { "None", "Low", "Med", "High" }, new int[4] { 0, 100, 150, 200 }, new ModelParameterGroupClass[] { }));
 
             // PopGrowthRate
             WestModel.PopGrowthRate = new providerArrayProperty(_pm, eModelParam.epP_PopGrowthRates, WestModel.geti_PopGrowthRate, WestModel.seti_PopGrowthRate, eProviderAggregateMode.agSum);
@@ -1224,6 +1225,20 @@ namespace WaterSimDCDC
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_RainWaterHarvest, "Creation/ use of Rainwater: 0=no, 1=yes", "", "YES 1/No 0", "RainWater", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // end edits 11.09.21 das
             //
+            // edits 11.22.21 das
+            // Desalination
+            WestModel.Desalination = new providerArrayProperty(_pm, eModelParam.epP_Desalination, WestModel.geti_Desalinization, WestModel.seti_Desalinization, eProviderAggregateMode.agSum);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Desalination, "Desal Water", "DESAL_P", rangeChecktype.rctCheckRange, 0, 200, null, WestModel.Desalination));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Desalination, "Adds desalinaiton: To be defined", "", "Scenario changes ", "", new string[4] { "None", "Low", "Med", "High" }, new int[4] { 0, 100, 150, 200 }, new ModelParameterGroupClass[] { }));
+            // end edits 11.22.21 das
+            //WestModel.Recycle = new providerArrayProperty(_pm, eModelParam.epP_Recycle, WestModel.geti_RecycleWasteWater, WestModel.seti_RecycleWasteWater, eProviderAggregateMode.agSum);
+            //_pm.AddParameter(new ModelParameterClass(eModelParam.epP_Recycle, "Recycle-all effluent", "RECYCL_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.Recycle));
+            //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Recycle, "Adds recycled water: To be defined", "", "Scenario changes ", "", new string[4] { "None", "Low", "Med", "High" }, new int[5] { 0, 25, 50, 75, 100 }, new ModelParameterGroupClass[] { }));
+
+            // edits 11.29.21 das
+
+            // end edits 11.29.21 das
+
             // EDIT QUAY 9/10/20
             // Added External Model Parameters             
             // -------------------

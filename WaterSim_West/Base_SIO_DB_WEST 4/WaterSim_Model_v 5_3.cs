@@ -353,7 +353,6 @@ namespace WaterSimDCDC.Generic
            // string UnitDataFieldname = "West Regions USGS with Colorado Ver 5.csv";
             string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_6.csv";
 
-
             //string rates = "ElevenStateGrowthRates.csv";
             //string RateDataFilename = "ElevenStateGrowthRates3.csv";
             //string RateDataFilename = "West Model Growth Rate 2.csv";
@@ -699,8 +698,7 @@ namespace WaterSimDCDC.Generic
         }
         //
         // 09.18.20 das
- 
-
+  
 
 
         ///-------------------------------------------------------------------------------------------------
@@ -2873,6 +2871,48 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Augmented  </summary>
         ///<returns> the Augmented </returns>
 
+        public int[] geti_Augmented()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_Desalinization();
+            }
+            return result;
+        }
+
+
+        ///------------------------------------------------------
+        /// <summary> Sets a Augmented  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_Augmented(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_Desalinization(Values[i]);
+            }
+        }
+        #endregion Augmented
+        //=======================================================
+        //  Desal
+        //=======================================================
+        #region Desalination
+        ///------------------------------------------------------
+        /// <summary> The Augmented provider property  </summary>
+        ///------------------------------------------------------
+        public providerArrayProperty Desalination;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the Augmented  </summary>
+        ///<returns> the Augmented </returns>
+
         public int[] geti_Desalinization()
         {
             int ArraySize = FUnitModels.Count;
@@ -2901,7 +2941,56 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_Desalinization(Values[i]);
             }
         }
-        #endregion Augmented
+        #endregion Desalination
+
+
+        //=======================================================
+        #region Recycle
+        ///------------------------------------------------------
+        /// <summary> The Augmented provider property  </summary>
+        ///------------------------------------------------------
+        //public providerArrayProperty Recycle;
+
+        /////------------------------------------------------------
+        ///// <summary> Gets the Augmented  </summary>
+        /////<returns> the Augmented </returns>
+
+        //public int[] geti_RecycleWasteWater()
+        //{
+        //    int ArraySize = FUnitModels.Count;
+        //    int[] result = new int[ArraySize];
+        //    for (int i = 0; i < ArraySize; i++)
+        //    {
+        //        result[i] = FUnitModels[i].geti_Recycle();
+        //    }
+        //    return result;
+        //}
+
+
+        /////------------------------------------------------------
+        ///// <summary> Sets a Augmented  </summary>
+        ///// <param name="Values">   The values. </param>
+
+        //public void seti_RecycleWasteWater(int[] Values)
+        //{
+        //    int ArraySize = FUnitModels.Count;
+        //    if (ArraySize > Values.Length)
+        //    {
+        //        ArraySize = Values.Length;
+        //    }
+        //    for (int i = 0; i < ArraySize; i++)
+        //    {
+        //        FUnitModels[i].seti_Recycle(Values[i]);
+        //    }
+        //}
+        #endregion Recycle
+
+
+
+
+
+
+
         //=======================================================
         //  PopGrowthRate
         //=======================================================

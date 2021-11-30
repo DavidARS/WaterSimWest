@@ -29,8 +29,8 @@ namespace WaterSim_Base
         public const double B = -0.4306;
         public const double C = -0.0548;
         //
-        public const double MandD_slope = 67.25; 
-        public const double MandD_power=0.6541;
+        public const double MandD_slope = 67.25;
+        public const double MandD_power = 0.6541;
         //
         public const double UHunitsAcre = 10;
         public const double ULunitsAcre = 5.8;
@@ -40,7 +40,7 @@ namespace WaterSim_Base
 
         //
     }
-   
+
     // ===================================================================================================================
     #region Rural Demand Class- LCLU Urban
     /// <summary>
@@ -61,6 +61,7 @@ namespace WaterSim_Base
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
         const double convertDemand = 1000000;
+        const int initialYear = 2015;
         //
         int FUnitCode = 0;
         /// <summary>
@@ -141,10 +142,10 @@ namespace WaterSim_Base
 
             double period = (currentYear - CRF.startYear) + 1;
             double outValue;
-           // string region = CRF.UnitName;
+            // string region = CRF.UnitName;
             //
             //double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
-             if (FDLCLU != null)
+            if (FDLCLU != null)
             {
                 NewDemand = demand;
             }
@@ -240,10 +241,10 @@ namespace WaterSim_Base
             get { return _urbanConservation; }
             set { _urbanConservation = value; }
         }
-       // ******************************************
+        // ******************************************
 
-       // ===========================================
-       // Change Coefficient
+        // ===========================================
+        // Change Coefficient
         double _urbanLCLUChangeCoef = 1.0;
         double LurbanLCLUChangeCoef
         {
@@ -252,7 +253,7 @@ namespace WaterSim_Base
         }
         // *******************************************
         // Minimum Values
-                double _minUrban = 1.0;
+        double _minUrban = 1.0;
         double LminUrban
         {
             get { return _minUrban; }
@@ -306,7 +307,7 @@ namespace WaterSim_Base
         /// </summary>
         /// <param name="year"></param>
         public override void switchUrbanLCLU(int year)
-        { 
+        {
 
 
         }
@@ -321,7 +322,7 @@ namespace WaterSim_Base
         }
         void SetInitialRates()
         {
-           // LBaseRate = FRDC.FastUrbanRateLCLU(CRF.FUnitName);
+            // LBaseRate = FRDC.FastUrbanRateLCLU(CRF.FUnitName);
         }
         // =============================================================================================================
         //
@@ -355,14 +356,14 @@ namespace WaterSim_Base
                 Lacres = FDClclu.FastUrbanAcres(CRF.UnitName, currentYear);
                 LBaseRate = FRDC.FastUrbanRateLCLU(CRF.FUnitName);
             }
-         }
+        }
         /// <summary>
         /// ICLUS version 2 with five urban classes- This is invoked with the default urban
         /// setting is equal to a value of 3
         /// </summary>
         /// <param name="region"></param>
         /// <param name="currentYear"></param>
-        public void switchLCLU( string region, int currentYear)
+        public void switchLCLU(string region, int currentYear)
         {
             double period = (currentYear - CRF.startYear);// + 1;
             assignLCLU(region, currentYear);
@@ -397,10 +398,10 @@ namespace WaterSim_Base
             rExUL = ExUH / totalAcres(region, year);
         }
         //
-        internal double Update(double A, double B, double E)
+        internal double Update(double A, double B, double E, double F)
         {
             double temp = 0;
-            temp = (A - B) * E;
+            temp = (A - B) * (E / F);
             return temp;
         }
         //
@@ -445,51 +446,60 @@ namespace WaterSim_Base
             if (densityUH != 1)
             {
                 double newUH = UH * densityUH;
+                double aSum = rExUL + rSUB + rExUH + rExUL;
                 UH = newUH;
-                UL = Update(TAcres, newUH,  rUL);
-                SUB = Update(TAcres, newUH, rSUB);
-                ExUH = Update(TAcres, newUH, rExUH);
-                ExUL = Update(TAcres, newUH, rExUL);
+                UL = Update(TAcres, newUH, rUL, aSum);
+                SUB = Update(TAcres, newUH, rSUB, aSum);
+                ExUH = Update(TAcres, newUH, rExUH, aSum);
+                ExUL = Update(TAcres, newUH, rExUL, aSum);
                 LurbanLCLUChangeCoef = CRF.FUrbanHighDensityChangeCoef;
             }
             if (densityUL != 1)
             {
                 double newUL = UL * densityUL;
+                double aSum = rUH + rSUB + rExUH + rExUL;
+
                 UL = newUL;
-                UH = Update(TAcres, newUL, rUH);
-                SUB = Update(TAcres, newUL, rSUB);
-                ExUH = Update(TAcres, newUL, rExUH);
-                ExUL = Update(TAcres, newUL, rExUL);
+                UH = Update(TAcres, newUL, rUH, aSum);
+                SUB = Update(TAcres, newUL, rSUB, aSum);
+                ExUH = Update(TAcres, newUL, rExUH, aSum);
+                ExUL = Update(TAcres, newUL, rExUL, aSum);
                 LurbanLCLUChangeCoef = CRF.FUrbanLowDensityChangeCoef;
             }
             if (densitySUB != 1)
             {
                 double newSUB = SUB * densitySUB;
+                double aSum = rUH + rUL + rExUH + rExUL;
+
                 SUB = newSUB;
-                UH = Update(TAcres, newSUB, rUH);
-                UL = Update(TAcres, newSUB, rUL);
-                ExUH = Update(TAcres, newSUB, rExUH);
-                ExUL = Update(TAcres, newSUB, rExUL);
+                UH = Update(TAcres, newSUB, rUH, aSum);
+                UL = Update(TAcres, newSUB, rUL, aSum);
+                ExUH = Update(TAcres, newSUB, rExUH, aSum);
+                ExUL = Update(TAcres, newSUB, rExUL, aSum);
                 LurbanLCLUChangeCoef = CRF.FSuburbanDensityChangeCoef;
             }
             if (densityExUH != 1) // ok
             {
                 double newExUH = ExUH * densityExUH;
+                double aSum = rUH + rUL + rSUB + rExUL;
+
                 ExUH = newExUH;
-                UH = Update(TAcres, newExUH, rUH);
-                UL = Update(TAcres, newExUH, rUL);
-                SUB = Update(TAcres, newExUH, rSUB);
-                ExUL = Update(TAcres, newExUH, rExUL);
+                UH = Update(TAcres, newExUH, rUH, aSum);
+                UL = Update(TAcres, newExUH, rUL, aSum);
+                SUB = Update(TAcres, newExUH, rSUB, aSum);
+                ExUL = Update(TAcres, newExUH, rExUL, aSum);
                 LurbanLCLUChangeCoef = CRF.FExurbanHighDensityChangeCoef;
             }
             if (densityExUL != 1) // okay
             {
                 double newExUL = ExUL * densityExUL;
+                double aSum = rUH + rUL + rSUB + rExUH;
+
                 ExUL = newExUL;
-                UH = Update(TAcres, newExUL, rUH);
-                UL = Update(TAcres, newExUL, rUL);
-                SUB = Update(TAcres, newExUL, rSUB);
-                ExUH = Update(TAcres, newExUL, rExUH);
+                UH = Update(TAcres, newExUL, rUH, aSum);
+                UL = Update(TAcres, newExUL, rUL, aSum);
+                SUB = Update(TAcres, newExUL, rSUB, aSum);
+                ExUH = Update(TAcres, newExUL, rExUH, aSum);
                 LurbanLCLUChangeCoef = CRF.FExurbanLowDensityChangeCoef;
             }
             Lacres = UH + UL + SUB + ExUH + ExUL;
@@ -535,9 +545,9 @@ namespace WaterSim_Base
         {
             double temp = 0;
             double result = 0;
-           // const double A = 74875.1; const double B = -0.4306; const double C = -0.0548;
+            // const double A = 74875.1; const double B = -0.4306; const double C = -0.0548;
             temp = DUA(LCLUclass);
-            if(0 < temp)result = LCLUconstants.A  * Math.Pow(temp, LCLUconstants.B) * Math.Exp(LCLUconstants.C / temp);
+            if (0 < temp) result = LCLUconstants.A * Math.Pow(temp, LCLUconstants.B) * Math.Exp(LCLUconstants.C / temp);
             return result;
         }
         /// <summary>
@@ -549,7 +559,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             double result = 0;
-            temp= PPH(LCLUclass);
+            temp = PPH(LCLUclass);
             //result = 67.25 * Math.Pow(temp,0.6541);
             result = LCLUconstants.MandD_slope * Math.Pow(temp, LCLUconstants.MandD_power);
             return result;
@@ -634,7 +644,7 @@ namespace WaterSim_Base
         // Version 2 ICLUS
         public DataClassLcluArea FDLCLU;
 
-         //
+        //
         double Fdemand;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
@@ -701,7 +711,7 @@ namespace WaterSim_Base
             //
             double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LagConservation, LagLCLUChangeCoef, LminAg, period);
             temp = NewDemand;
-            demandAg = temp ; 
+            demandAg = temp;
         }
         // =================================================================================================================
 
@@ -762,7 +772,7 @@ namespace WaterSim_Base
             get { return _demandAg; }
             set { _demandAg = value; }
         }
-       // ******************************************
+        // ******************************************
 
 
 
@@ -807,11 +817,12 @@ namespace WaterSim_Base
         /// 
         /// </summary>
         /// <param name="currentYear"></param>
-        public override void preProcessDemand(int currentYear) {
+        public override void preProcessDemand(int currentYear)
+        {
 
             Lacres = FDClclu.FastAgAcres(CRF.UnitName, currentYear);
             // edits 10.20.21 das
-            if(FDLCLU != null)
+            if (FDLCLU != null)
             {
                 Lacres = FDLCLU.FastAgArea_UN(CRF.UnitName, currentYear);
             }
@@ -837,6 +848,33 @@ namespace WaterSim_Base
     #endregion Rural Demand Class- LCLU Ag
     // ==============================================================================================================================================
 
+    //public struct IndustryStruct
+    //{
+    //    int Fyear;
+    //    string Fregion;
+    //    double Fvalue;
+
+    //    internal IndustryStruct(int A, string B,double C)
+    //    {
+    //        Fyear = A;
+    //        Fregion = B;
+    //        Fvalue = C;
+    //    }
+    //    public int YEAR
+    //    {
+    //        get { return Fyear; }
+    //        set { Fyear = value; }
+    //    }
+    //    internal string Region
+    //    {
+    //        get { return Fregion; } set { Fregion = value; }
+
+    //    }
+    //    internal double Value
+    //    { get { return Fvalue; } set{Fvalue = value; }
+    //}
+
+
     // ==============================================================================================================================================
     #region Rural Demand Class- LCLU Industry
     /// <summary>
@@ -850,9 +888,12 @@ namespace WaterSim_Base
         public DataClassLCLU FDClclu;
         //
         double Fdemand;
+        // List<Industry> industryList = new List<Industry>();
+        internal const double irate = 0.03;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
         const double convertDemand = 1000000;
+        const int initialYear = 2015;
         //
         int FUnitCode = 0;
         /// <summary>
@@ -863,7 +904,7 @@ namespace WaterSim_Base
 
         #region Constructors
         // ========================================================================================
-  
+
         /// <summary>
         /// 
         /// </summary>
@@ -879,6 +920,7 @@ namespace WaterSim_Base
             isInstantiated = true;
             // assigns itself to the owner
             crf.INDUSTRY = this;
+
         }
         #endregion Constructors
         // =================================================================================================================
@@ -894,7 +936,34 @@ namespace WaterSim_Base
             //
             double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LindustrialConservation, LindustryLCLUChangeCoef, LminIndustry, period);
             temp = NewDemand;
-            demandIndustry = temp;
+            demandIndustry = count(currentYear, temp);
+        }
+        /// <summary>
+        /// Keep Industrial demand from exceeding an annual growth
+        /// rate of "irate"
+        /// 11.22.21 das
+        /// </summary>
+        /// <param name="Y"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        internal double count(int Y, double values)
+        {
+            double result = 0;
+            result = values;
+          
+             if (2015 < Y)
+            {
+                if (CRF.IndustryRegion == CRF.UnitName)
+                {
+                    if (values > CRF.IndustryValue * (1+ irate))
+                    {
+                        result = CRF.IndustryValue * (1 + irate);
+                    }
+                }
+            }
+            CRF.IndustryRegion = CRF.UnitName;
+            CRF.IndustryValue = values;
+            return result;
         }
         // =================================================================================================================
 
@@ -999,7 +1068,7 @@ namespace WaterSim_Base
             LminIndustry = CRF.PminIndustryLCLU;
             LBaseRate = 0;
             LBaseRate = FRDC.FastIndRateLCLU(CRF.UnitName);
-         }
+        }
         // ====================
         // UrbanDemand Pre Process
         /// <summary>
@@ -1013,7 +1082,7 @@ namespace WaterSim_Base
     }
     #endregion Rural Demand Class- LCLU Industry
     // ==============================================================================================================================================
-    
+
 
     // ==============================================================================================================================================
     #region Rate Data LCLU
@@ -1042,7 +1111,7 @@ namespace WaterSim_Base
         /// <param name="anAcerageAg"></param>
         /// <param name="anAcerageInd"></param>
         /// <param name="aYear"></param>
-        public DataLCLU(string aUnitName, string aUnitCode, double anAcerageAg, double anAcerageUrban,  double anAcerageInd, int aYear)
+        public DataLCLU(string aUnitName, string aUnitCode, double anAcerageAg, double anAcerageUrban, double anAcerageInd, int aYear)
         {
             bool isErr = false;
             string errMsg = "";
@@ -1148,8 +1217,8 @@ namespace WaterSim_Base
         string FCodeFieldStr = FRcodeFieldStr;
 
         string FAcerageUrbanFieldStr = "URBACRES";
-        string FAcerageAgFieldStr    = "AGACRES";
-        string FAcerageIndFieldStr   = "INDACRES";
+        string FAcerageAgFieldStr = "AGACRES";
+        string FAcerageIndFieldStr = "INDACRES";
         string FcurrentYearFieldStr = "YEAR";
 
         // Data Array Parameters
@@ -1188,7 +1257,7 @@ namespace WaterSim_Base
             FAcresAgArray = new double[arraysize];
             FAcresIndArray = new double[arraysize];
             FYearArray = new double[arraysize];
-            
+
             //int CodeI = 0;
             foreach (DataRow DR in TheData.Rows)
             {
@@ -1225,10 +1294,10 @@ namespace WaterSim_Base
                                 {
                                     // OK 
                                     //string aUnitName, string aUnitCode, double anAcerageUrban, double anAcerageAg, double anAcerageInd, int aYear
-                                    DataLCLU AD = new DataLCLU(namestr, codestr, TempAg, TempUrban, TempInd, TempYear );
+                                    DataLCLU AD = new DataLCLU(namestr, codestr, TempAg, TempUrban, TempInd, TempYear);
                                     FRuralDataList.Add(AD);
                                     //// add to dictionary 
-                                   }
+                                }
                             }
 
                         }
@@ -1264,9 +1333,11 @@ namespace WaterSim_Base
         public double FastUrbanAcres(string UnitName, int year)
         {
             double temp = InvalidRate;
-            DataLCLU TheData = FRuralDataList.Find(delegate (DataLCLU AD) {
-                return ((AD.TheYear == year) && (AD.UnitName == UnitName)); });
-          
+            DataLCLU TheData = FRuralDataList.Find(delegate (DataLCLU AD)
+            {
+                return ((AD.TheYear == year) && (AD.UnitName == UnitName));
+            });
+
             if (TheData.UnitName == UnitName)
             {
                 temp = TheData.AcerageUrban;
@@ -1276,7 +1347,8 @@ namespace WaterSim_Base
         public double FastAgAcres(string UnitName, int year)
         {
             double temp = InvalidRate;
-            DataLCLU TheData = FRuralDataList.Find(delegate (DataLCLU AD) {
+            DataLCLU TheData = FRuralDataList.Find(delegate (DataLCLU AD)
+            {
                 return ((AD.TheYear == year) && (AD.UnitName == UnitName));
             });
             if (TheData.UnitName == UnitName)
@@ -1303,4 +1375,33 @@ namespace WaterSim_Base
 
         // =============================================================================================================
     }   // End of Class DataClassLCLU
+    public struct IndustryStruct
+    {
+        int Fyear;
+        string Fregion;
+        double Fvalue;
+
+        internal IndustryStruct(int A, string B, double C)
+        {
+            Fyear = A;
+            Fregion = B;
+            Fvalue = C;
+        }
+        public int YEAR
+        {
+            get { return Fyear; }
+            set { Fyear = value; }
+        }
+        internal string Region
+        {
+            get { return Fregion; }
+            set { Fregion = value; }
+
+        }
+        internal double Value
+        {
+            get { return Fvalue; }
+            set { Fvalue = value; }
+        }
+    }
 }

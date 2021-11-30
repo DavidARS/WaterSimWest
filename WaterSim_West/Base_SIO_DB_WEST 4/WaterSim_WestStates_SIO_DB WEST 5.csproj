@@ -81,12 +81,8 @@
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_SIO_v_9_3.cs">
       <Link>WaterSimDCDC_API_SIO_v_9_3.cs</Link>
     </Compile>
-    <Compile Include="..\WaterSim API source\WaterSimDCDC_API_UnitDataWest_v9.cs">
-      <Link>WaterSimDCDC_API_UnitDataWest_v9.cs</Link>
-    </Compile>
-    <Compile Include="..\WaterSim API source\WaterSimDCDC_API_WaterWest.cs">
-      <Link>WaterSimDCDC_API_WaterWest.cs</Link>
-    </Compile>
+    <Compile Include="..\WaterSim API source\WaterSimDCDC_API_UnitDataWest_v9_1.cs" />
+    <Compile Include="..\WaterSim API source\WaterSimDCDC_API_WaterWest_Ver_1.cs" />
     <Compile Include="..\WaterSim API source\WaterSimDCDC_API_Water_CRF v7.cs">
       <Link>WaterSimDCDC_API_Water_CRF v7.cs</Link>
     </Compile>
