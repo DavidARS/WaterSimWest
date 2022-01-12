@@ -95,7 +95,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   true if it succeeds, false if it fails. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             bool allowChange = false;
             if (FluxToItem is CRF_Consumer)
@@ -167,7 +167,7 @@ namespace WaterSimDCDC.Generic
         {
         }
 
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             return true;
         }
@@ -234,7 +234,7 @@ namespace WaterSimDCDC.Generic
         {
         }
 
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             return true;
         }
@@ -306,7 +306,7 @@ namespace WaterSimDCDC.Generic
         {
         }
 
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             bool result = true;
             if (FluxToItem is CRF_Consumer_Agriculture)
@@ -392,7 +392,7 @@ namespace WaterSimDCDC.Generic
         {
         }
 
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             bool result = true;
             if (FluxToItem is CRF_Consumer_Agriculture)
@@ -474,7 +474,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="FluxToItem"></param>
         /// <returns></returns>
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             return true;
         }
@@ -558,7 +558,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="FluxToItem"></param>
         /// <returns></returns>
-        public override bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             bool result = true;
 
@@ -732,7 +732,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   true if it succeeds, false if it fails. </returns>
         ///-------------------------------------------------------------------------------------------------
         
-        public virtual bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public virtual bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             //bool result = false;
             bool result = true;
@@ -865,7 +865,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   true if it succeeds, false if it fails. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public virtual bool AllowFluxChangTo(CRF_DataItem FluxToItem)
+        public virtual bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
         {
             bool result = true;
             //bool result = false;
@@ -1544,6 +1544,7 @@ namespace WaterSimDCDC.Generic
         protected virtual void AssignFluxes(string StateName)
         {
             string errMsg = "";
+            // RQ 1/12/22  WHAT THE Why Do this twide ConstructFluxlist has already benne created.
             List<SDResourceConsumerLink> TheFluxes = FData.ConstructFluxList();
 
             foreach (CRF_Resource Res in FResources)

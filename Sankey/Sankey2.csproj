@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsumerResourceData V 5_8X.cs" />
+    <Compile Include="ConsumerResourceData V 6_0X.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SankeyGraph4.cs">
       <SubType>UserControl</SubType>

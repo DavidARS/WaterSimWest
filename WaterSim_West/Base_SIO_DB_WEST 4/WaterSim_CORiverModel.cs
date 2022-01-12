@@ -42,11 +42,11 @@ namespace WaterSimDCDC.Generic
         public WaterSim_CORiverModel(string DataDirectoryName, string TempDirectoryName, string UnitDataFilename, bool UTtransfers)
         {
             // 10.27.21 das
-            string COdata = "DataCOriver";
+            //string COdata = "DataCOriver";
             try
             {
                 //FCORiverModel = new COriverModel(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName);
-                FCORiverModel = new COriverModel(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName, UTwaterTransfers);
+                FCORiverModel = new COriverModel(DataDirectoryName, TempDirectoryName, UTwaterTransfers);
 
                 FCOA = new COriverAccounting(DataDirectoryName, UnitDataFilename, FCORiverModel);
                 FCOModels = new COBasinModelManager();
@@ -72,7 +72,7 @@ namespace WaterSimDCDC.Generic
             string COdata = "DataCOriver";
             try
             {
-                FCORiverModel = new COriverModel(DataDirectoryName + "\\" + COdata + "\\", TempDirectoryName);
+                FCORiverModel = new COriverModel(DataDirectoryName + COdata, TempDirectoryName);
                 FCOA = new COriverAccounting(DataDirectoryName, UnitDataFilename, FCORiverModel);
                 FCOModels = new COBasinModelManager();
                 ResetModel();

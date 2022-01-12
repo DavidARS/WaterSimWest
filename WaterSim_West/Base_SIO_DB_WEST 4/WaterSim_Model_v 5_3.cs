@@ -351,7 +351,8 @@ namespace WaterSimDCDC.Generic
             // string UnitDataFielname = "All West Data By Region Sumary v5.csv";
             //                         West Regions USGS with Colorado Ver 1.csv
            // string UnitDataFieldname = "West Regions USGS with Colorado Ver 5.csv";
-            string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_6.csv";
+            //string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_6.csv";
+            string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_7.csv";
 
             //string rates = "ElevenStateGrowthRates.csv";
             //string RateDataFilename = "ElevenStateGrowthRates3.csv";
@@ -374,31 +375,36 @@ namespace WaterSimDCDC.Generic
             string RainFallFilename = "WSWestRainFall.csv";
             // end edits 08.10.21 das
             string outputs = "\\Outputs\\";
-            string addInputs = "\\Inputs\\";
+            string addInputsDir = "\\Inputs\\";
+            string addCOdataDir = "\\DataCOriver\\";
             try
             {
                 StreamWriter(TempDirectoryName + outputs);
                 //FUnitData = new UnitData(DataDirectoryName +  "//"  + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
-                FUnitData = new UnitData(DataDirectoryName + addInputs + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
-                FRateData = new RateDataClass(DataDirectoryName, RateDataFilename);
-                FDataLCLU = new DataClassLCLU(DataDirectoryName, AcerageDataFilename);
+                FUnitData = new UnitData(DataDirectoryName + addInputsDir + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
+                FRateData = new RateDataClass(DataDirectoryName + addInputsDir, RateDataFilename);
+                FDataLCLU = new DataClassLCLU(DataDirectoryName + addInputsDir, AcerageDataFilename);
                 // Impervious area
-                FDataLCLUarea = new DataClassLcluArea(DataDirectoryName, LCLUclassesFilename);
-                FDataLCLUrcn = new DataClassRCN(DataDirectoryName, LCLUrcnFilename);
+                FDataLCLUarea = new DataClassLcluArea(DataDirectoryName + addInputsDir, LCLUclassesFilename);
+                FDataLCLUrcn = new DataClassRCN(DataDirectoryName + addInputsDir, LCLUrcnFilename);
                 //
                 //
                 //FDataTemperature = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
-                DataClassTemperature TD = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
+                DataClassTemperature TD = new DataClassTemperature(DataDirectoryName + addInputsDir, ClimateDataFilename);
                 // string Filename = "CompareDemand.txt";
                 //
                 // swriter = new StreamWriter(Filename); 
                 // 08.31.21 das
-                DataClassRainFall RF = new DataClassRainFall(DataDirectoryName, RainFallFilename);
+                DataClassRainFall RF = new DataClassRainFall(DataDirectoryName + addInputsDir, RainFallFilename);
                 RainWaterHarvesting RW = new RainWaterHarvesting(RF, FDataLCLUarea, FUnitData);
                 StormWater SW = new StormWater(FUnitData, RF, RW, FDataLCLUarea, FDataLCLUrcn);
                 // end edits 08.31.21 das
                 // edits 11.02.21 das
-                NewWater NW = new NewWater(FUnitData);
+                //NewWater NW = new NewWater(FUnitData);
+                int cloudy = 2;
+                NewWater NW = new NewWater(FUnitData, cloudy);
+
+
                 // end edits 11.02.21 das
                 foreach (string Name in FUnitData.UnitNames)
                     {
@@ -420,7 +426,7 @@ namespace WaterSimDCDC.Generic
                 FSurfaceModel = new SurfaceModel(FUnitData);
                 AddExternalModel(FSurfaceModel);
                 // Adding Colorado River Model
-                FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName, TempDirectoryName, UnitDataFieldname);             
+                FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName + addInputsDir, TempDirectoryName, UnitDataFieldname);             
                 //FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName, TempDirectoryName, UnitDataFieldname, UTwaterTransfers);
                 AddExternalModel(FColoradoModel);
 

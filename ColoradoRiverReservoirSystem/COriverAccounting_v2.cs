@@ -212,7 +212,7 @@ namespace CORiverModel
             {
                 string errMessage = "";
                 bool isErr = false;
-                FDataDirectory = DataDirectory + "\\Inputs\\";
+                FDataDirectory = DataDirectory ;
                 FFilename = Filename;
                 UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "")
                 {

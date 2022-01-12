@@ -104,8 +104,8 @@ namespace WaterSimDCDC
         eNewMexicoNotInBasin, // 22
         eNewMexicoGila, // 25
         eUtahSaltLake, // 11
+        eUtahInBasin, // 12
         eUtahNotInBasin, // 13 
-    	eUtahInBasin, // 12
         eWyomingSouthwest, //14
         eWyomingInBasin, // 15 
         eWyomingNotInBasin, // 16

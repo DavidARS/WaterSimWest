@@ -35,12 +35,14 @@ namespace WaterSim_Base
             internal const double BC = 0.2015; // 0.1003 0.3028
             internal const double CC = 0.2447; // 0.1203 0.3691
             // ==================================================
-            internal const double PuertoPenascoPipelineToPHX = 0;
+            //internal const double PuertoPenascoPipelineToPHX = 0;
 
         }
         #region Condensate water
         //
         UnitData FUnitData;
+        //
+        int Solar = 1;
         #region constructors
         // DCDC_Utilities.DataClassTemperature FDCclimate;
         /// <summary>
@@ -52,11 +54,24 @@ namespace WaterSim_Base
             FUnitData = UnitData;
             initialize();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitData"></param>
+        /// <param name="cloudyness"></param>
+        public NewWater(UnitData UnitData, int cloudyness)
+        {
+            FUnitData = UnitData;
+            initialize(cloudyness);
+        }
 
         //
         void initialize()
         {
-
+        }
+        void initialize(int solar)
+        {
+            Solar = solar;
         }
         #endregion constructors
         #region getsAndsets
@@ -97,11 +112,18 @@ namespace WaterSim_Base
         internal double calculateDailyRate(double rh)
         {
             double dailyRate = 0;
-            int solar = 3;
-            dailyRate = DailyWaterRatePerPanel(rh, solar);
+             dailyRate = DailyWaterRatePerPanel(rh, Solar);
             //DailyRateLitersAllHouseholds += TotalPanels * dailyRate;
             return dailyRate;
-        }    
+        }
+        //
+        internal double calculateDailyRates(double rh, double sun)
+        {
+            double dailyRate = 0;
+            dailyRate = DailyWaterRatesPerPanel(rh, sun);
+            //DailyRateLitersAllHouseholds += TotalPanels * dailyRate;
+            return dailyRate;
+        }
         // ==============================================
         internal double DailyWaterRatePerPanel(double rh, int sun)
         {
@@ -126,7 +148,32 @@ namespace WaterSim_Base
             }
             return result;
         }
+        // ===========================================================
+        internal double DailyWaterRatesPerPanel(double rh, double sun)
+        {
+            // in this method, reading in the average sunny days by month
 
+            // y = A *exp(-exp(b-c*x));
+            double dX = rh * 0.1; // Relative humidity in the equaton is proportion (% * 0.1)
+            double result = 0;
+            result = NWconstants.ratePerPanel;
+            if (0 < rh)
+            {
+                switch (Convert.ToInt32(Math.Round(sun)))
+                {
+                    case 1:
+                        result = NWconstants.AS * Math.Exp(-Math.Exp(NWconstants.BS - NWconstants.CS * dX)); // Sunny day
+                        break;
+                    case 2:
+                        result = NWconstants.APC * Math.Exp(-Math.Exp(NWconstants.BPC - NWconstants.CPC * dX)); // Partly cloudy day
+                        break;
+                    case 3:
+                        result = NWconstants.AC * Math.Exp(-Math.Exp(NWconstants.BC - NWconstants.CC * dX)); // Cloudy day
+                        break;
+                }
+            }
+            return result;
+        }
         // ===========================================================    
         internal bool AirWaterInstallations(WaterSimCRFModel CRF)
         {
@@ -150,7 +197,8 @@ namespace WaterSim_Base
             calculateHouseholds(CRF);
             calculatePanelsTotal(CRF);
             averageRH(CRF,FDC);
-            //calculateDailyRate(RH);
+            //averageRHandSD(CRF, FDC);
+            //
             temp = DailyRateLitersAllHouseholds *NWconstants.LitersToGallons;
             result = temp / 1e6;
             return result;
@@ -167,6 +215,24 @@ namespace WaterSim_Base
                 month++;
             } while(month < 13);
             DailyRateLitersAllHouseholds = TotalPanels * result * 1/12;
+
+            //
+            // return result;
+        }
+        internal void averageRHandSD(WaterSimCRFModel CRF, DCDC_Utilities.DataClassTemperature DT)
+        {
+            double temp = 0;
+            double Temp = 0;
+            double result = 0;
+            int month = 1;
+            do
+            {
+                temp = DT.FastRH(CRF.UnitName, CRF.currentYear, month);
+                Temp = DT.FastSOlAR(CRF.UnitName, CRF.currentYear, month);
+                result += calculateDailyRates(temp,Temp);
+                month++;
+            } while (month < 13);
+            DailyRateLitersAllHouseholds = TotalPanels * result * 1 / 12;
 
             //
             // return result;

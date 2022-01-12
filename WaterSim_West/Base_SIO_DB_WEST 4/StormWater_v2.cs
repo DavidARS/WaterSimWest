@@ -888,7 +888,7 @@ namespace WaterSim_Base
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory + "\\Inputs\\";
+            FDataDirectory = DataDirectory ;
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;
@@ -1100,7 +1100,7 @@ namespace WaterSim_Base
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory + "\\Inputs\\";
+            FDataDirectory = DataDirectory ;
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;

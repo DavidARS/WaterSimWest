@@ -226,6 +226,7 @@ namespace DCDC_Utilities
         double Fscenario;
         double FContemporary;
         double FRH;
+        //double FSD;
  
 
         /// <summary>
@@ -279,6 +280,30 @@ namespace DCDC_Utilities
             FRH = frh;
             FYear = aYear;
             FMonth = aMonth;
+        }
+        public DataTemperature(string aUnitName, string aUnitCode, double aScenario, double aContemporary, double frh, double fsd, int aYear, int aMonth)
+        {
+            bool isErr = false;
+            string errMsg = "";
+
+            FUnitName = aUnitName;
+            FUnitCodeStr = aUnitCode;
+
+            int temp = Tools.ConvertToInt32(FUnitCodeStr, ref isErr, ref errMsg);
+            if (!isErr)
+            {
+                FUnitCode = temp;
+            }
+            else
+            {
+                FUnitCode = Utilities.BadIntValue;
+            }
+            Fscenario = aScenario;
+            FContemporary = aContemporary;
+            FRH = frh;
+            FYear = aYear;
+            FMonth = aMonth;
+           // FSD = fsd;
         }
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the name of the unit. </summary>
@@ -338,7 +363,10 @@ namespace DCDC_Utilities
         {
             get { return FMonth; }
         }
-
+        //public double SunnyDays
+        //{
+        //    get { return FSD; }
+        //}
 
     }
 
@@ -367,6 +395,7 @@ namespace DCDC_Utilities
         string FRelativeHumidityFieldStr = "RH";
         string FcurrentYearFieldStr = "Year";
         string FcurrentMonthFieldStr = "Month";
+        // string FsunnyDaysFieldStr = "SD";
 
         // Data Array Parameters
 
@@ -379,6 +408,7 @@ namespace DCDC_Utilities
         double[] FRHArray = null;
         double[] FYearArray = null;
         double[] FMonthArray = null;
+        // double[] FSunnyDaysArray = null;
 
         List<DataTemperature> FTemperatureDataList = new List<DataTemperature>();
         /// <summary>
@@ -390,7 +420,7 @@ namespace DCDC_Utilities
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory + "\\Inputs\\";
+            FDataDirectory = DataDirectory ;
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;
@@ -407,6 +437,7 @@ namespace DCDC_Utilities
             FRHArray = new double[arraysize];
             FYearArray = new double[arraysize];
             FMonthArray = new double[arraysize];
+            // FSunnyDaysArray = new double[arraysize];
 
             //int CodeI = 0;
             foreach (DataRow DR in TheData.Rows)
@@ -430,6 +461,7 @@ namespace DCDC_Utilities
                     string relativeHumidity = DR[FRelativeHumidityFieldStr].ToString();
                     string ryearsstr = DR[FcurrentYearFieldStr].ToString();
                     string rmonthstr = DR[FcurrentMonthFieldStr].ToString();
+                    //string rsunnystr = DR[FsunnyDaysFieldStr].ToString();
 
                     double TempTav = Tools.ConvertToDouble(maximumtempstr, ref isErr, ref errMessage);
                     if (!isErr)
@@ -448,10 +480,15 @@ namespace DCDC_Utilities
                                     int TempMonth = Tools.ConvertToInt32(rmonthstr, ref isErr, ref errMessage);
                                     if (!isErr)
                                     {
-                                        // OK 
-                                        DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempRH, TempYear, TempMonth);
-                                         FTemperatureDataList.Add(DT);
+                                       // int TempSunny = Tools.ConvertToInt32(rsunnystr, ref isErr, ref errMessage);
+                                       // if (!isErr)
+                                       // {
+                                            // OK 
+                                            DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempRH, TempYear, TempMonth);
+                                        //DataTemperature DT = new DataTemperature(namestr, codestr, TempTav, TempTC, TempRH, TempSunny, TempYear, TempMonth );
+                                        FTemperatureDataList.Add(DT);
                                         //// add to dictionary 
+                                        //}
                                      }
                                 }
 
@@ -512,6 +549,23 @@ namespace DCDC_Utilities
             return temp;
         }
         // end edits 11.02.21 das
+        // edits 01.07.22 das
+        public double FastSOlAR(string UnitName, int year, int month)
+        {
+            double temp = InvalidRate;
+            DataTemperature TheData = FTemperatureDataList.Find(delegate (DataTemperature DT)
+            {
+                return ((DT.TheYear == year) && (DT.UnitName == UnitName) && (DT.TheMonth == month));
+            });
+
+            if (TheData.UnitName == UnitName)
+            {
+                temp = TheData.RelativeHumidity;
+                //temp = TheData.SunnyDays;
+            }
+            return temp;
+        }
+        // end edits 01.07.22 das
         // =============================================================================================================
     }   // End of Class DataClass
 

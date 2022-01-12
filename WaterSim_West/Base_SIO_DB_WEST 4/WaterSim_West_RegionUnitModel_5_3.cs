@@ -483,6 +483,7 @@ namespace WaterSimDCDC.Generic
         }
         /// <summary>
         /// Temorary method to write to file
+        /// NOTE: This code ONLY works if the data file is sorted on by the RC field
         /// </summary>
         /// <param name="year"></param>
         public void CloseStreamW(int year, StreamWriter sw)
@@ -5227,6 +5228,7 @@ namespace WaterSimDCDC.Generic
             // NOTE: NOT using maxGrayWater property
             // 
             grayWaterUsed = 0;
+            grayWaterEffInvoked = false;
             if (0 < i_gwm)
             {
                 alterDemand = true;
@@ -5236,8 +5238,7 @@ namespace WaterSimDCDC.Generic
             else
             {
                 available = 0;
-                grayWaterEffInvoked = false;
-            }
+             }
             // 11.30.21 das
              grayWaterUsed = available;
             // end edits 11.30.21 das
@@ -5245,7 +5246,7 @@ namespace WaterSimDCDC.Generic
             //
             if (alterDemand)
             {
-                double temp = 0;
+                //double temp = 0;
                 int urban = geti_Urban();
                 double newDemand = Math.Max(0,urban - grayWaterUsed);
                 seti_Urban((int)newDemand); // set the reduced water demand by the urban sector

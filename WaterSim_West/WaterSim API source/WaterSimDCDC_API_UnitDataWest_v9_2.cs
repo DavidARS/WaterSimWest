@@ -133,15 +133,24 @@ namespace WaterSimDCDC.Generic
         public const string ColoradoFld = "COL";
         // END EDIT   
 
-        // edits 11.16.21 das
+        //edits 11.16.21 das
         public const string DesalinationFld = "DSAL";
-        // end edits 11.16.21 das
+        //  edits 01.12.22 das
+        public const string UrbanDesalinationFld = "UDSAL";
+        public const string AgDesalinationFld = "ADSAL";
+        public const string IndDesalinationFld = "IDSAL";
+        public const string PowerDesalinationFld = "PDSAL";
+        //  end edits 01.12.22 das
+        //end edits 11.16.21 das
 
         // edits 01.10.22 das
         // 
         public const string PipelineMethod = "PIPEMTHD"; // 1=direct use, 2=exchange, 3=pipeline
         public const string PipelineDistance = "PIPEDIST"; // pipeline distance in miles
         // end edits 01.22.22 das
+
+        // end edits 01.22.22 das
+
 
         // Consumers
         public const string UrbanDemandFld = "UTOT";
@@ -165,7 +174,7 @@ namespace WaterSimDCDC.Generic
         // QUAY EDIT 8/11/18 Colorado
         // Added Colorado ytp this list
         //public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado };
-        public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado,erDesalination };
+        public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado, erDesalination };
 
         // END EDIT
         public enum eConsumer { ecUrban, ecRural, ecAg, ecInd, ecPower };
@@ -247,7 +256,7 @@ namespace WaterSimDCDC.Generic
         // das 08.25.21
         protected List<string> FUnitCodes = new List<string>();
         // end edits
-        Color[] ResColors = new Color[] { Color.Aqua, Color.Blue, Color.Beige, Color.LightSeaGreen };
+        Color[] ResColors = new Color[] { Color.Aqua, Color.Blue, Color.Beige, Color.LightSeaGreen, Color.Crimson, Color.DarkGreen, Color.DarkGray, Color.LightCoral };
         Color[] ConsColors = new Color[] { Color.LightGray, Color.LightCoral, Color.DarkGreen, Color.SandyBrown, Color.LightSkyBlue };
 
         ///-------------------------------------------------------------------------------------------------
@@ -750,10 +759,14 @@ namespace WaterSimDCDC.Generic
             Temp = new SDResourceConsumerLink("COL", "PTOT", "PCOL"); FluxList.Add(Temp);
             // END EDIT
             // edits 11.16.21 das
+            //Temp = new SDResourceConsumerLink("DSAL", "UTOT", "USAL"); FluxList.Add(Temp);
             Temp = new SDResourceConsumerLink("DSAL", "UTOT", "UDSAL"); FluxList.Add(Temp);
+            ////   edits 01.11.22 das
+            ///     edits 01.12.22 das
             Temp = new SDResourceConsumerLink("DSAL", "ATOT", "ADSAL"); FluxList.Add(Temp);
-            //   edits 01.11.22 das
-            Temp = new SDResourceConsumerLink("DSAL", "ITOT", "IDSAL"); FluxList.Add(Temp);
+            Temp = new SDResourceConsumerLink("DSAL", "IPTOT", "IDSAL"); FluxList.Add(Temp);
+            //      end edits 01.12.22 das
+            Temp = new SDResourceConsumerLink("DSAL", "PTOT", "PDSAL"); FluxList.Add(Temp);
             //   end edits 01.11.22 das
             // end edits 11.16.21 das
             return FluxList;
@@ -969,6 +982,10 @@ namespace WaterSimDCDC.Generic
                     {
                         CRF_Resource TempRes = new CRF_Resource(UDI.ResourceList[i], UDI.ResourceListLabel[i], ResColors[i], Value);
                         ResList.Add(TempRes);
+                    }
+                    else
+                    {
+                        int Test = 1;
                     }
                 }
                 // Build Consumer List
@@ -1366,7 +1383,7 @@ namespace WaterSimDCDC.Generic
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory + "\\Inputs\\";
+            FDataDirectory = DataDirectory ;
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;
