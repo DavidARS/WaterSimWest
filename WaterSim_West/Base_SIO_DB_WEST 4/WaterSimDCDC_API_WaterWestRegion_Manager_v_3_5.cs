@@ -1225,16 +1225,20 @@ namespace WaterSimDCDC
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_RainWaterHarvest, "Creation/ use of Rainwater: 0=no, 1=yes", "", "YES 1/No 0", "RainWater", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // end edits 11.09.21 das
             //
+            // MAY NEED A water harvesting compliance parameter...
+
+
+
+
             // edits 11.22.21 das
             // Desalination
+            //      edits 01.13.22 das
             WestModel.Desalination = new providerArrayProperty(_pm, eModelParam.epP_Desalination, WestModel.geti_Desalinization, WestModel.seti_Desalinization, eProviderAggregateMode.agSum);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Desalination, "Desal Water", "DESAL_P", rangeChecktype.rctCheckRange, 0, 200, null, WestModel.Desalination));
-            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Desalination, "Adds desalinaiton: To be defined", "", "Scenario changes ", "", new string[4] { "None", "Low", "Med", "High" }, new int[4] { 0, 100, 150, 200 }, new ModelParameterGroupClass[] { }));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Desalination, "Desal Water Policy", "DESAL_P", rangeChecktype.rctCheckRange, 0, 3, null, WestModel.Desalination));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Desalination, "Desalination policy: 0=none, 1=direct use, 2=exchange,3=piped", "", "Scenario changes ", "", new string[4] { "None", "Direct", "Exchange", "Piped" }, new int[4] { 0, 1, 2, 3 }, new ModelParameterGroupClass[] { }));
+            //      end edits 01.13.22 das
             // end edits 11.22.21 das
-            //WestModel.Recycle = new providerArrayProperty(_pm, eModelParam.epP_Recycle, WestModel.geti_RecycleWasteWater, WestModel.seti_RecycleWasteWater, eProviderAggregateMode.agSum);
-            //_pm.AddParameter(new ModelParameterClass(eModelParam.epP_Recycle, "Recycle-all effluent", "RECYCL_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.Recycle));
-            //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Recycle, "Adds recycled water: To be defined", "", "Scenario changes ", "", new string[4] { "None", "Low", "Med", "High" }, new int[5] { 0, 25, 50, 75, 100 }, new ModelParameterGroupClass[] { }));
-
+ 
             // edits 11.29.21 das
 
             // end edits 11.29.21 das
@@ -1634,12 +1638,24 @@ namespace WaterSimDCDC
             //WestModel.ColoradoRiverModel.CORiverModel.PMead.UTwaterTransfers = b_utahPipelineSwitch;
         }
 
-
-
-
-
         // end edits 10.27.21, 10.28.21 das
         // ===============================================
+
+        // ===============================================
+        // edits 01.13.22 das
+        int b_dealSwitch = 0;
+        public int geti_DesalinationManagement()
+        {
+            return Convert.ToInt32(b_dealSwitch);
+        }
+        public void seti_DesalinationManagement(int value)
+        {
+            b_dealSwitch = value;
+            WestModel.desalPoliciesForAgent = b_dealSwitch;
+        }
+        // end edits 01.13.22 das
+        // ===============================================
+
         #endregion Updated Policies October 2021
 
 

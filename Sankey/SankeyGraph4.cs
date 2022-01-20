@@ -245,7 +245,7 @@ namespace ConsumerResourceModelFramework
                         double theLimit = CRFResource.Limit;
                         double theNet = CRFResource.Net;
                         double Size = theLimit;  // use the limit as the initial size of the box
-                        // if net is negative, the leave more room for next box
+                        // if net is negative, then leave more room for next box
                         if (theNet < 0)
                         {
                             Size += theNet * -1;

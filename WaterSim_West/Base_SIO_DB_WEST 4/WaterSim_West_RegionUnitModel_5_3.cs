@@ -132,6 +132,7 @@ namespace WaterSimDCDC.Generic
         //
         NewWater NWater;
         //
+        ColoradoDesalExchangeClass CODE;
         // 08.31.21 das
         RainWaterHarvesting CRFRWH;
         readonly StormWater CRFSWB;
@@ -162,7 +163,7 @@ namespace WaterSimDCDC.Generic
         // or 1.5472 cubic feet per second, or 3.0689 acre-feet per day. 
         // A flow of one million gallons per day for one year equals 1,120 acre-feet (365 million gallons).
 
-        ///  Constructor for CRF Models, two constructir, one uses default rate file and one uses specified files while one uses an existing set of data structure and a unit name
+        //  Constructor for CRF Models, two constructir, one uses default rate file and one uses specified files while one uses an existing set of data structure and a unit name
         #region Constructors
 
         /*
@@ -452,6 +453,55 @@ namespace WaterSimDCDC.Generic
 
 
         }
+        
+        /// <summary>
+        ///  As of 01.19.22 this  is the constructor that I am using
+        /// </summary>
+        /// <param name="TheUnitData"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="DataLCLU"></param>
+        /// <param name="Tav"></param>
+        /// <param name="TheUnitName"></param>
+        /// <param name="RW"> rainwater harvesting object</param>
+        /// <param name="SW"> storm water object</param>
+        /// <param name="New"> New water based on removing water from the Air - object</param>
+        /// <param name="cod"> colorado river water exchange with desalination water - data object</param>
+        /// <param name="sw"></param>
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU,
+            DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW, StormWater SW, NewWater New,
+            ColoradoDesalExchangeClass cod, StreamWriter sw)
+        {
+            FUnitName = TheUnitName;
+            string errMsg = "";
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            FDClclu = DataLCLU;
+            FDCtemperature = Tav;
+            CRFRWH = RW;
+            CRFSWB = SW;
+            NWater = New;
+            CODE = cod;
+            //      
+            StreamW = sw;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
+
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            Initialize_Variables();
+        }
 
         /// 
         /// 
@@ -611,6 +661,12 @@ namespace WaterSimDCDC.Generic
         {
             get; set;
         }
+        //
+        public ColoradoDesalExchangeClass COandDesalExchange
+        {
+            get { return CODE; }
+        }
+
         //
         public string IndustryRegion { get; set; }
         public double IndustryValue { get; set; }
@@ -1013,7 +1069,7 @@ namespace WaterSimDCDC.Generic
             // END EDIT
             // ================================================
 
-            Desalinization = 1;
+            DesalinationPolicy = 0;
 
             // EDiT 3/5/18 QUAY
             // THis was all moved to an annual basis/ bacuase Conservation values could be change inbeteen years
@@ -1243,7 +1299,7 @@ namespace WaterSimDCDC.Generic
             // END EDIT 3/22/18
             // 
             seti_LakeWaterManagement(Hundred);
-            seti_Desalinization(Hundred);
+            seti_DesalinationPolicy(0);
             //
             // NOTE QUAY 3/9/18
             // I left this in here, but I do not think it is being used now
@@ -1464,10 +1520,10 @@ namespace WaterSimDCDC.Generic
         /////-------
         
         //-----------------------------------------------------------------------------------------
-        /// <summary>
-        /// Modify the density classes of the ICLUS data
-        /// 09.20.21 das
-        /// </summary>
+        // <summary>
+        // Modify the density classes of the ICLUS data
+        // 09.20.21 das
+        // </summary>
         //internal void annual_UrbanDensity()
         //{
         //    densityManagement();
@@ -1744,7 +1800,7 @@ namespace WaterSimDCDC.Generic
 
 
             // EDIT QUAY 3/31/18
-            // We should develop a more reobust way to do this for multiple policies each with different triggers and actions
+            // We should develop a more robust way to do this for multiple policies each with different triggers and actions
             // For now I commented this out, along with other policy code.
             //// 
             //// 12.19.16 added
@@ -1754,10 +1810,61 @@ namespace WaterSimDCDC.Generic
 
             // QUAY EDIT 4/2/18
 
-        
+            // ===============================================================================
+            // perhaps here. Work out water exchange program- Desalination for CO river water
+            // 01.19.22 das
+
+            int a = 1;
+             //if (0 < geti_CODesalExchange())
+                if (0 < a)
+                {
+                // source region
+                string temp = COandDesalExchange.FastSource(FUnitName);
+                string target = COandDesalExchange.FastTarget(FUnitName);
+
+                if (temp != "" || target !="")
+                {
+                    AssociateExchangePartner(temp,target);
+                }
+            }
+            //
+            // ===============================================================================
          }
         //
+        internal void AssociateExchangePartner(string source, string target)
+        {
+            // target pair is "pair" int (region code)
+            if (source != "")
+            {
+                double c = UnitNetwork.Colorado.Limit;
+                double d = UnitNetwork.Desalination.Limit;
+                // for source only... need same for target
+                if (0 < c)
+                {
+                    if (0 < d)
+                    {
+                        if (d < c)
+                        {
+                            double newW = c - d;
+                            double Dout = 0;
+                            UnitNetwork.Desalination.ResetLimits(Dout);
+                            UnitNetwork.Colorado.ResetLimits(newW);
+                        }
+                        else
+                        {
+                            double newW = d - c;
+                            double Dout = 0;
+                            UnitNetwork.Desalination.ResetLimits(newW);
+                            UnitNetwork.Colorado.ResetLimits(Dout);
+                        }
+                    }
+                }
+            }
+            if(target != "")
+            {
 
+            }
+        }
         // =====================================================================================================================
         // =====================================================================
         // Properties to pass variables to other Classes for Demand Estimation
@@ -1975,7 +2082,7 @@ namespace WaterSimDCDC.Generic
                 //seti_Effluent(zero);
                 // END EDIT 3/22/18
                 seti_LakeWaterManagement(one);
-                seti_Desalinization(one);
+                seti_DesalinationPolicy(zero);
             }
         }
 
@@ -2308,7 +2415,7 @@ namespace WaterSimDCDC.Generic
             double temp = 0;
             int result = 0;
             //temp = geti_SurfaceWaterSaline() * _desalinization;
-            temp = geti_SurfaceWaterSaline() * Desalinization;
+            temp = geti_SurfaceWaterSaline() ;
             result = Convert.ToInt32(temp);
             result = (int)temp;
             seti_SurfaceWaterSaline(result);
@@ -2603,16 +2710,16 @@ namespace WaterSimDCDC.Generic
             return Coef;
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Exponential decay coef.</summary>
-        ///
-        /// <remarks> Quay, 4/16/2018.</remarks>
-        ///
-        /// <param name="TargetValue">  Target value.</param>
-        /// <param name="StartValue">   The start value.</param>
-        /// <param name="Limit">        The limit in terms of percent change, if Target >1 this is the
-        ///                             upper limit, if Target is less than 1 this is lower limit>.</param>
-        /// <param name="StartPeriod">  The start period.</param>
+        //-------------------------------------------------------------------------------------------------
+        // <summary> Exponential decay coef.</summary>
+        //
+        // <remarks> Quay, 4/16/2018.</remarks>
+        //
+        // <param name="TargetValue">  Target value.</param>
+        // <param name="StartValue">   The start value.</param>
+        // <param name="Limit">        The limit in terms of percent change, if Target >1 this is the
+        //                             upper limit, if Target is less than 1 this is lower limit>.</param>
+        // <param name="StartPeriod">  The start period.</param>
         /// <param name="TargetPeriod"> Target period.</param>
         ///
         /// <returns> A double.</returns>
@@ -4202,6 +4309,17 @@ namespace WaterSimDCDC.Generic
         }
         // end edits 11.09.21 das
         // =========================================
+        // edits 01.13.22 das
+        // not sure if I should comment this out
+        // or use it!!!!
+        int b_desalPolicyForAgent = 0;
+        public int desalinationPolicy
+        {
+            set { b_desalPolicyForAgent = value; }
+            get { return b_desalPolicyForAgent; }
+        }
+        // end edits 01.13.22 das
+        // =========================================
         // -------------------------------------------------------------
         double modifyDemandCF()
         {
@@ -4839,8 +4957,7 @@ namespace WaterSimDCDC.Generic
         // Add for Colorado
         //--------------------------------------------------------------------------
         // Colorado
-        // 
-
+        // das example 01.14.22 
         public int geti_SurfaceColorado()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Colorado.Limit));
@@ -4862,6 +4979,32 @@ namespace WaterSimDCDC.Generic
             int TempInt = Convert.ToInt32(Math.Abs(Math.Round(UnitNetwork.Colorado.Net)) + 0);
             return TempInt;
         }
+        // ====================================================================================
+        // edits 01.14.22 das
+        public int Geti_DesalPolicy()
+        {
+            int  TempString = UnitNetwork.Desalination.UnitModelDesal;
+            return TempString;
+        }
+        public void seti_DesalPolicy(int value)
+        {
+           UnitNetwork.Desalination.UnitModelDesal  = value;
+            //if(0 < value) {CRF_Utility.ManagementStyle MS = CRF_Utility.ManagementStyle.msSeekNew; }
+        }
+        // end edits 01.14.22 das
+        // ====================================================================================
+        // edits 01.19.22 das
+        public int geti_CODesalExchange()
+        {
+            int TempString = UnitNetwork.Desalination.UnitModelExchange;
+            return TempString;
+        }
+        public void seti_CODesalExchange(int value)
+        {
+            UnitNetwork.Desalination.UnitModelExchange = value;
+         }
+        // end edits 01.19.22 das
+        // ====================================================================================
 
 
         // EDN EDIT
@@ -6372,22 +6515,26 @@ namespace WaterSimDCDC.Generic
         }
         //
         // Desalinaiton
-        double _desalinization = 1.0;
-        public int geti_Desalinization()
+        // 01.13.22 das
+        // =========================================================
+        // inputs from the user interface via the WaterSim Manager
+        int _desalinization = 0;
+        public int geti_DesalinationPolicy()
         {
-            int TempInt = Convert.ToInt32(Math.Round(_desalinization * 100));
+            int TempInt =_desalinization ;
             return TempInt;
         }
-        public void seti_Desalinization(int value)
+        public void seti_DesalinationPolicy(int value)
         {
-            _desalinization = (Double)value / 100;
+            _desalinization = value;
+            
         }
-        public double Desalinization
+        public int DesalinationPolicy
         {
             set { _desalinization = value; }
             get { return _desalinization; }
         }
-        //
+        // end edits 01.13.22 das
         // =============================================================
         // edits 11.29.21 das
         // Recycle All wastewater

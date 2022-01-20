@@ -1121,7 +1121,7 @@ namespace WaterSimDCDC.Generic
         Color SurfaceLakeColor = Color.Aqua;
         Color SurfaceSalineColor = Color.SeaGreen;
         Color GroundwaterColor = Color.Blue;
-        Color AugmentedColor = Color.GreenYellow;
+        Color AugmentedColor = Color.Coral;
 
         // Consumers
         CRF_Consumer_Urban FUrban;
@@ -1280,10 +1280,7 @@ namespace WaterSimDCDC.Generic
 
 
         }
-        //public int UrbanGPCD
-        //{
-        //    get { return urbanGPCD; }
-        //}
+       
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Initial power generated. </summary>
@@ -1437,13 +1434,20 @@ namespace WaterSimDCDC.Generic
             }
             FResources.Add(FSurfaceSaline);
             // DAS 02.04.16
-            //er = UDI.eResource.erAugmented;
-            //FldName = FData.ResourceField(er);
-            //value = FData.GetValue(aUnitName, FldName);
-            //FAugmented = new CRF_Resource_Augmented(FldName, FData.ResourceLabel(er), AugmentedColor, value);
-            //FResources.Add(FAugmented);
-
-
+            // edits 01.13.22 das
+            er = UDI.eResource.erAugmented;
+            FldName = FData.ResourceField(er);
+            FData.GetValue(aUnitName, FldName, out value, out errMsg);
+            FAugmented = new CRF_Resource_Augmented(FldName, FData.ResourceLabel(er), AugmentedColor, value);
+            FResources.Add(FAugmented);
+            // end edits 01.13.22 das
+            if (errMsg != "")
+            {
+                // See above
+                FAugmented.AddError(errMsg);
+            }
+            FResources.Add(FAugmented);
+            // end edits 01.13.22 das
 
         }
 

@@ -1464,12 +1464,39 @@ namespace ConsumerResourceModelFramework
             FValue = NewLimit;
         }
         // =======================================================================================================
-        // edits 01.07.22 das
-        //public double UsePipeline
-        //{
-        //    get { return FToFluxs.TotalDesalPiped; } //FFluxList.TotalAllocated; }
-        //}
-        // end edits 01.07.22 das
+        public virtual void ResetLimits(double NewLimit)
+        {
+            // check of NewLimit is larger or smaller
+            if (NewLimit > FValue)
+            {
+                // OK, need to adjust each flux so original new allocated values stays the same as old
+                // Set Allocation will adjust the Allocated value of flux based on method of allocation being used 
+                // get the oldvalues
+                List<double> OldValues = new List<double>();
+                foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
+                {
+                    OldValues.Add(Flux.Allocated());
+                }
+                // set the new limit
+                FValue = NewLimit;
+
+                // loop through the fluxes and set values
+                int index = 0;
+                foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
+                {
+                    // Check if a flux transfer is allowed, base CRF Resource should say no unless their is a need
+                    // if not, then reset value to old value
+                    if (!CRF_Utility.AllowFluxChange(this, Flux.Target))
+                    {
+                        Flux.SetAllocation(OldValues[index]);
+                        index++;
+                    }
+                }
+
+            }
+            // ok just do it if less everyone lives with consequences, if ratio not reset, they get alot more
+            FValue = NewLimit;
+        }
 
         // =======================================================================================================
         ///-------------------------------------------------------------------------------------------------
@@ -1742,18 +1769,37 @@ namespace ConsumerResourceModelFramework
 
 
         }
-            // ==================================================================================================
+        // ==================================================================================================
+        // 01.14.22 das
+        //int FModel = 0;
+        public int UnitModelDesal
+        {
+            get; set;
+            // set { FModel = value; }
+           // get => FModel; set => FModel = value;
+        }
+        // end edits 01.14.22 das
+
+        // 01.19.22 das
+        //int FExchangeDsalForCO = 0;
+        public int UnitModelExchange
+        {
+            get; set;
+            // set { FModel = value; }
+            // get => FModel; set => FModel = value;
+        }
+        // end edits 01.19.22 das
     }
 
-        //===========================================================================
+    //===========================================================================
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   List of crf resources. </summary>
-        ///
-        /// <remarks>   Mcquay, 1/25/2016. </remarks>
-        ///-------------------------------------------------------------------------------------------------
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   List of crf resources. </summary>
+    ///
+    /// <remarks>   Mcquay, 1/25/2016. </remarks>
+    ///-------------------------------------------------------------------------------------------------
 
-        public class CRF_ResourceList : CRF_DataItemList
+    public class CRF_ResourceList : CRF_DataItemList
     {
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Default constructor. </summary>

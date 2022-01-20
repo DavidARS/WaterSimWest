@@ -136,6 +136,9 @@ namespace WaterSimDCDC.Generic
         //edits 11.16.21 das
         public const string DesalinationFld = "DSAL";
         //  edits 01.12.22 das
+        //edits 01.14.21 das
+        public const string EnvironmentFld = "ENV";
+        //  edits 01.14.22 das
         public const string UrbanDesalinationFld = "UDSAL";
         public const string AgDesalinationFld = "ADSAL";
         public const string IndDesalinationFld = "IDSAL";
@@ -172,8 +175,10 @@ namespace WaterSimDCDC.Generic
 
 
         // QUAY EDIT 8/11/18 Colorado
-        // Added Colorado ytp this list
+        // Added Colorado to this list
         //public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado };
+        // 01.12.22 das
+        // added desalination to this list
         public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado, erDesalination };
 
         // END EDIT
@@ -256,7 +261,7 @@ namespace WaterSimDCDC.Generic
         // das 08.25.21
         protected List<string> FUnitCodes = new List<string>();
         // end edits
-        Color[] ResColors = new Color[] { Color.Aqua, Color.Blue, Color.Beige, Color.LightSeaGreen, Color.Crimson, Color.DarkGreen, Color.DarkGray, Color.LightCoral };
+        Color[] ResColors = new Color[] { Color.Aqua, Color.Blue, Color.Cyan, Color.LightSeaGreen, Color.Crimson, Color.DarkGreen, Color.Cornsilk, Color.LightCoral };
         Color[] ConsColors = new Color[] { Color.LightGray, Color.LightCoral, Color.DarkGreen, Color.SandyBrown, Color.LightSkyBlue };
 
         ///-------------------------------------------------------------------------------------------------
@@ -607,9 +612,15 @@ namespace WaterSimDCDC.Generic
         {
             get { return UDI.DesalinationFld; }
         }
-
-
-
+        // edits 01.13.22 das
+        /// <summary>
+        /// 
+        /// </summary>
+        static public string AugmentedFieldName
+        {
+            get { return UDI.AugmentedFld; }
+        }
+        // end edits 01.12.22 das
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the urban water fieldname. </summary>
@@ -764,7 +775,7 @@ namespace WaterSimDCDC.Generic
             ////   edits 01.11.22 das
             ///     edits 01.12.22 das
             Temp = new SDResourceConsumerLink("DSAL", "ATOT", "ADSAL"); FluxList.Add(Temp);
-            Temp = new SDResourceConsumerLink("DSAL", "IPTOT", "IDSAL"); FluxList.Add(Temp);
+            Temp = new SDResourceConsumerLink("DSAL", "ITOT", "IDSAL"); FluxList.Add(Temp);
             //      end edits 01.12.22 das
             Temp = new SDResourceConsumerLink("DSAL", "PTOT", "PDSAL"); FluxList.Add(Temp);
             //   end edits 01.11.22 das
@@ -1130,7 +1141,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="fExUH"></param>
         /// <param name="fExUL"></param>
         public RateData(string aUnitName, string aUnitCode, double anAgRate, double anIndRate, double aPopRate,
-            double anAgNet, double anAgRateLCLU, double anUrbanRateLCLU, double anIndRateLCLU, double fUHigh, 
+            double anAgNet, double anAgRateLCLU, double anUrbanRateLCLU, double anIndRateLCLU, double fUHigh,
             double fULow, double fSub, double fExUH, double fExUL) : this()
         {
             bool isErr = false;
@@ -1344,7 +1355,7 @@ namespace WaterSimDCDC.Generic
         // Million gallons per day per acre
         // SSp2 scenario acerage from ICLUS 2
         //----------------------------------------
- string FUubanRateLCLUFieldStr = "RURBRATE";
+        string FUubanRateLCLUFieldStr = "RURBRATE";
         string FINDRateLCLUFieldStr = "RINDRATE";
         string FAGRateLCLUFieldStr = "RAGRATE";
         // ========================================
@@ -1383,7 +1394,7 @@ namespace WaterSimDCDC.Generic
         {
             string errMessage = "";
             bool isErr = false;
-            FDataDirectory = DataDirectory ;
+            FDataDirectory = DataDirectory;
             FFilename = Filename;
             UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
             DbCon.UseFieldHeaders = true;
@@ -2028,11 +2039,125 @@ namespace WaterSimDCDC.Generic
 
 
     }
+    // =========================================================================================================
+    // edits 01.19.22 das
+    // Colorado - desalination exchange data from file
+    /// <summary>
+    /// 
+    /// </summary>
+    public struct ColoradoDesalExchangeStruct
+    {
+       
+        string Source;
+        string Partner;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="partner"></param>
+        public ColoradoDesalExchangeStruct(string source, string partner)
+        {          
+            Source = source;
+            Partner = partner;
+        }
+        public string FindSource
+        {
+            get { return Source; }
+        }
+        public string FindPartner
+        {
+            get { return Partner; }
+        }
+       
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ColoradoDesalExchangeClass
+    {
+        // DataTable Parameters
+        DataTable TheData = null;
+        string FDataDirectory = "";
+        string FFilename = "";
+        // EDIT end 2 13 18
+
+        const string FPartnerFieldStr = "Partner";
+        const string FSourceFieldStr = "Source";
+       // Dictionary<string, int> StateCodes = new Dictionary<string, int>();
+        const double InvalidRate = -1;//double.NaN;
+        const int InvalidTarget = -1;//double.NaN;
+
+         List<ColoradoDesalExchangeStruct> FExchangeDataList = new List<ColoradoDesalExchangeStruct>();
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DataDirectory"></param>
+        /// <param name="Filename"></param>
+        public ColoradoDesalExchangeClass(string DataDirectory, string Filename)
+        {
+            string errMessage = "";
+            bool isErr = false;
+            FDataDirectory = DataDirectory;
+            FFilename = Filename;
+            UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
+            DbCon.UseFieldHeaders = true;
+            DbCon.Open();
+            TheData = Tools.LoadTable(DbCon, FFilename, ref isErr, ref errMessage);
+            if (isErr)
+            {
+                throw new Exception("Error loading Water Exchange File and Data. " + errMessage);
+            }
+            // build data arrays
+            int arraysize = TheData.Rows.Count;
+            foreach (DataRow DR in TheData.Rows)
+            {
+                if (!isErr)
+                {
+                    string part = DR[FPartnerFieldStr].ToString();
+                    string source = DR[FSourceFieldStr].ToString();
+                    //
+                            ColoradoDesalExchangeStruct RD = new ColoradoDesalExchangeStruct(source, part);
+                            FExchangeDataList.Add(RD);                  
+                }
+            }
+
+        }
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Source"></param>
+        /// <returns></returns>
+        public string FastSource(string Source)
+        {
+            string temp = "";
+            ColoradoDesalExchangeStruct TheData = FExchangeDataList.Find(delegate (ColoradoDesalExchangeStruct RD) { return RD.FindSource == Source; });
+            if (TheData.FindSource == Source)
+            {
+                temp = TheData.FindSource;
+            }
+            return temp;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <returns></returns>
+        public string FastTarget(string source)
+        {
+            string temp = "";
+            ColoradoDesalExchangeStruct TheData = FExchangeDataList.Find(delegate (ColoradoDesalExchangeStruct RD)
+            { return RD.FindSource == source; });
+            if(TheData.FindSource == source)
+            {
+                temp = TheData.FindPartner;
+            }
+            return temp;
+        }
+
+    }
 }
-
-
-
-
 /*
  * 
     temp = new CombItem("USUR" , "Urban (Public Supply) Surface", new string[] {"PSSF"});  CombList.Add(temp); 

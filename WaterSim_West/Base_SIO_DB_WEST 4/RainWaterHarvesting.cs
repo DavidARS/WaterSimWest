@@ -690,7 +690,8 @@ namespace WaterSim_Base
                 QuarterAcreroofYearly(year,name,CRF) + ThirdAcreroofYearly(year,name,CRF) +
                 HalfAcreroofYearly(year,name,CRF) + AcreroofYearly(year,name,CRF);
             I += 1;
-            if (23 < I) I = 0;
+          
+            if (23 < I) I = 0; // don't like this hard coded....
         }
         /// <summary>
         /// 
@@ -760,6 +761,8 @@ namespace WaterSim_Base
             // area in acres * rainfall conversion
             //temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
             // TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
+
+            // add a compliance parameter? This code assumes that all residents capture and use rainwater
             temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
              TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvertLiters(T); // MGD;
             RWcaptureYear_MGD[i, j] = temp / Utilities.daysInAYear(cYear);

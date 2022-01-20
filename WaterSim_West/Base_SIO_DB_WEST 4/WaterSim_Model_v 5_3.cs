@@ -307,6 +307,11 @@ namespace WaterSimDCDC.Generic
         readonly DataClassLcluArea FDataLCLUarea;
         readonly DataClassRCN FDataLCLUrcn;
         // end edits das o6.03.21
+
+        // edits 01.19.22 das
+        readonly ColoradoDesalExchangeClass FCODExchange;
+        // end edits 01.19.22 das
+
         //Resource Model list
         ResourceModelList FResourceModels =  new ResourceModelList();
 
@@ -374,9 +379,14 @@ namespace WaterSimDCDC.Generic
             // edits 08.10.21 das
             string RainFallFilename = "WSWestRainFall.csv";
             // end edits 08.10.21 das
+            // edits 01.19.22 das
+            string COexchangeFilename = "CO_desalExchangeCommand.csv";
+            // end edits 01.19.22 das
             string outputs = "\\Outputs\\";
             string addInputsDir = "\\Inputs\\";
             string addCOdataDir = "\\DataCOriver\\";
+            //
+
             try
             {
                 StreamWriter(TempDirectoryName + outputs);
@@ -403,9 +413,11 @@ namespace WaterSimDCDC.Generic
                 //NewWater NW = new NewWater(FUnitData);
                 int cloudy = 2;
                 NewWater NW = new NewWater(FUnitData, cloudy);
+                //  edits 01.19.22
+                ColoradoDesalExchangeClass COD = new ColoradoDesalExchangeClass(DataDirectoryName + addInputsDir, COexchangeFilename);
+                //  end edits 01.19.22 das
 
-
-                // end edits 11.02.21 das
+                //end edits 11.02.21 das
                 foreach (string Name in FUnitData.UnitNames)
                     {
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
@@ -413,7 +425,7 @@ namespace WaterSimDCDC.Generic
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
-                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, swriter); // 11.02.21 das
+                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, swriter); // 11.02.21 das
                         FUnitModels.Add(TempModel);
                         set_DefaultDemandModel(TempModel);
                     
@@ -652,6 +664,33 @@ namespace WaterSimDCDC.Generic
         }
         // end edits 11.09.21 das
         // ======================================================
+
+
+        // ======================================================
+        // edits 01.13.22 das
+        internal int DesalPoliciesForAgent
+        { get; set; }
+
+        public int desalPoliciesForAgent
+        {
+            set
+            {
+                int DesalPoliciesForAgent = value;
+                //FPolicyStartYear = value;
+                foreach (WaterSimCRFModel WSM in FUnitModels)
+                {
+                    WSM.desalinationPolicy = DesalPoliciesForAgent;
+                }
+            }
+            get { return DesalPoliciesForAgent; }
+        }
+        // end edits 11.09.21 das
+        // ======================================================
+
+
+
+
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Getunit model index.</summary>
         /// <remarks> Quay, 2/19/2018.</remarks>
@@ -2883,7 +2922,7 @@ namespace WaterSimDCDC.Generic
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Desalinization();
+               // result[i] = FUnitModels[i].;
             }
             return result;
         }
@@ -2902,7 +2941,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Desalinization(Values[i]);
+                //FUnitModels[i].(Values[i]);
             }
         }
         #endregion Augmented
@@ -2925,7 +2964,7 @@ namespace WaterSimDCDC.Generic
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Desalinization();
+                result[i] = FUnitModels[i].Geti_DesalPolicy();
             }
             return result;
         }
@@ -2934,7 +2973,7 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Sets a Augmented  </summary>
         /// <param name="Values">   The values. </param>
-
+        // 01.13.22 used (set) in the manager das
         public void seti_Desalinization(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
@@ -2944,7 +2983,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Desalinization(Values[i]);
+                FUnitModels[i].seti_DesalPolicy(Values[i]);
             }
         }
         #endregion Desalination
