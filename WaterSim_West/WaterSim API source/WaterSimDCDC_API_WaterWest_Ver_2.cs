@@ -796,7 +796,7 @@ namespace WaterSimDCDC.Generic
 
 
             // edits 01.10.22
-            FData.GetValue(aUnitName,UDI.PipelineMethod, out PipeLineMethod,out errMsg);
+            FData.GetValue(aUnitName,UDI.PipelineMethodFld, out PipeLineMethod,out errMsg);
             //      edits 01.13.22 das
             //      end edits 01.13.22 das
             //FDesal = new CRF_Resource_Desalination(FldName, FData.ResourceLabel(er), DesalinationResourceColor, value, PipeLineMethod);
@@ -810,7 +810,8 @@ namespace WaterSimDCDC.Generic
             //
             //      edits 01.18.22 das
             //      static... need a dynamic function for this
-            FColorado.Value = FDesal.NewCOwater;
+            //      EDITS 01.24.22 What is this??????????
+            //FColorado.Value = FDesal.NewCOwater;
             //      end edits 01.18.22 das
             // end edits 01.10.22 das
             if (errMsg != "")

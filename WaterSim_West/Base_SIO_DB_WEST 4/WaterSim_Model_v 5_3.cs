@@ -2983,7 +2983,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DesalPolicy(Values[i]);
+                FUnitModels[i].Seti_DesalPolicy(Values[i]);
             }
         }
         #endregion Desalination

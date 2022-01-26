@@ -100,7 +100,7 @@ namespace WaterSimDCDC.Generic
         UnitData FUnitData = null;
         //
         // ====================================
-     
+ 
 
         // ====================================
         //
@@ -138,6 +138,8 @@ namespace WaterSimDCDC.Generic
         readonly StormWater CRFSWB;
         const int StartRainYear = 2020;
         // end edits 08.31.21
+        //readonly string ExchangePartner = "California Southwest";
+
         /// <summary>
         /// 
         ///
@@ -1452,6 +1454,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="year"> The year.</param>
         ///-------------------------------------------------------------------------------------------------
         // Model call
+        // model call
         internal void Model(int year)
         {
          
@@ -1799,72 +1802,240 @@ namespace WaterSimDCDC.Generic
             // END EDIT
 
 
-            // EDIT QUAY 3/31/18
-            // We should develop a more robust way to do this for multiple policies each with different triggers and actions
-            // For now I commented this out, along with other policy code.
-            //// 
-            //// 12.19.16 added
-            //if (yr == policyStartYear)
-            //    invokePolicies = true;
-            // END EDIT
-
-            // QUAY EDIT 4/2/18
-
             // ===============================================================================
             // perhaps here. Work out water exchange program- Desalination for CO river water
             // 01.19.22 das
-
-            int a = 1;
-             //if (0 < geti_CODesalExchange())
-                if (0 < a)
+            // edits 01.25.22 das
+            //
+            // DesalDirectPolcy is an override from the UI
+            //
+            if (DesalDirectPolicy || FUnitName.Equals(CODE.FastSource(FUnitName)))
+            {
+                // Direct use of Desal from a local source
+                if (Geti_DesalPolicy() == 1 || retrieve(FUnitName) == 1)
                 {
+                    DirectUse(FUnitName);
+                }
+            }
+            // 01.25.22 Assuming for exchanges, desal is traded with ONLY California Southwest
+            // As per Ray's suggestion
+            //
+            //if (Geti_DesalPolicy() == 2)
+            if (DesalExchangePolicy || FUnitName.Equals("California Southwest"))
+            {
                 // source region
-                string temp = COandDesalExchange.FastSource(FUnitName);
-                string target = COandDesalExchange.FastTarget(FUnitName);
-
-                if (temp != "" || target !="")
+                if (sourceExchange())
                 {
-                    AssociateExchangePartner(temp,target);
+                    SourcePartner(FUnitName);
+                }
+                // where the exchange is from
+                if (targetExchange())
+                {
+                    ExchangePartner(FUnitName);
                 }
             }
             //
+            if (DesalPipedPolicy || FUnitName.Equals(COandDesalExchange.FastTarget(FUnitName)) || retrieve(FUnitName) == 3)
+            {
+                if (Geti_DesalPolicy() == 3 || retrieve(FUnitName) == 3)
+                {
+                    PipedUse(FUnitName);
+                }
+                // where the exchange is from
+                if (targetExchange())
+                {
+                    ExchangePartner(FUnitName);
+                }
+            }
             // ===============================================================================
-         }
-        //
-        internal void AssociateExchangePartner(string source, string target)
+        }
+        // Amount for transfer set by the desalination capacity for now
+        // edits 01.25.22 das
+        #region desal Properties
+        internal double _desalAmount = 0;
+        internal double DesalExchangeAmount
         {
+            set { _desalAmount = value; }
+            get { return _desalAmount; }
+        }
+        //
+        internal bool _desalPolicy = false;
+        internal bool DesalExchangePolicy
+        {
+            set { _desalPolicy = value; }
+            get { return _desalPolicy; }
+        }
+        // direct use of desal
+        internal bool _desalDPolicy = false;
+        internal bool DesalDirectPolicy
+        {
+            set { _desalDPolicy = value; }
+            get { return _desalDPolicy; }
+        }
+        // piped desal, sea of cortez to AZ
+        internal bool _desalPPolicy = false;
+        internal bool DesalPipedPolicy
+        {
+            set { _desalPPolicy = value; }
+            get { return _desalPPolicy; }
+        }
+        #endregion desal policies
+        // ------------------------------------------------------------------
+        #region Desalination Exchange code
+        bool sourceExchange()
+        {
+            bool result = false;
+            string temp = COandDesalExchange.FastSource(FUnitName);
+            if (temp !="") { result = true; }
+            return result;
+        }
+        //
+        bool targetExchange()
+        {
+            bool result = false;
+            string temp = COandDesalExchange.FastTarget(FUnitName);
+            if (temp != "") { result = true; }
+            return result;
+        }
+        //
+        internal void SourcePartner(string source)
+        {
+            bool limited = true;
+            double CSWdesalMax = 0;
+            string target = "";
+            if (limited)
+            {
+                CSWdesalMax = 50;// California Southwest ocean desalination plant at 50 MGD
+            }
+            else
+            {
+                CSWdesalMax = 500;
+            }
             // target pair is "pair" int (region code)
             if (source != "")
             {
-                double c = UnitNetwork.Colorado.Limit;
+                UDI.eResource er;
+                string FldName;
+                int value;
+                string errMsg = "";
+                er = UDI.eResource.erColorado;
+                FldName = FUnitData.ResourceField(er);
+
+                FUnitData.GetValue(source, FldName, out value, out errMsg);
+                double c = value;
                 double d = UnitNetwork.Desalination.Limit;
-                // for source only... need same for target
+                // for source only... 
                 if (0 < c)
                 {
-                    if (0 < d)
+                    double cNet = UnitNetwork.Colorado.Net;
+                    if (cNet < 0)
                     {
-                        if (d < c)
-                        {
-                            double newW = c - d;
-                            double Dout = 0;
-                            UnitNetwork.Desalination.ResetLimits(Dout);
-                            UnitNetwork.Colorado.ResetLimits(newW);
-                        }
-                        else
-                        {
-                            double newW = d - c;
-                            double Dout = 0;
-                            UnitNetwork.Desalination.ResetLimits(newW);
-                            UnitNetwork.Colorado.ResetLimits(Dout);
-                        }
+                        UnitNetwork.Colorado.ResetLimits(c + CSWdesalMax);
+                        // testing 
+                        double test = UnitNetwork.Colorado.Limit;
+                        // end testing
+                        target = COandDesalExchange.FastTarget(source);
                     }
                 }
-            }
-            if(target != "")
-            {
+             }
+         }
+        /// <summary>
+        /// The region that is actively giving up CO RIver water in exchange
+        /// </summary>
+        /// <param name="target"></param>
+        internal void ExchangePartner(string target)
+        {
+            // This fixed amount needs to be established - for now, a desalination plant average
+            // ======================
+            double CSWdesalMax = 50;
+            DesalExchangeAmount = 50; // MGD
+            UDI.eResource er;
+            string FldName;
+            int value;
+            string errMsg = "";
+            er = UDI.eResource.erColorado;
+            FldName = FUnitData.ResourceField(er);
 
+            FUnitData.GetValue(target, FldName, out value, out errMsg);
+            double c = value;
+            double est = Math.Max(0, c - CSWdesalMax);
+            UnitNetwork.Colorado.ResetLimits(est);
+            //
+            er = UDI.eResource.erDesalination;
+            FldName = FUnitData.ResourceField(er);
+
+            FUnitData.GetValue(target, FldName, out value, out errMsg);
+            double d = value;
+            UnitNetwork.Desalination.ResetLimits(d + CSWdesalMax);
+            // 
+            // testing
+            double test = UnitNetwork.Colorado.Limit;
+            double testD = UnitNetwork.Desalination.Limit;
+           // end testing
+        }
+        #endregion Desalination Exchange code
+        // ==================================================================
+        // Direct Use
+        #region Desalination Direct Use code
+          internal void DirectUse(string source)
+        {
+            double CSWdesalMax = 0;
+            CSWdesalMax = 50;// ocean desalination plant at 50 MGD
+              // 
+            if (source != "")
+            {
+                UDI.eResource er;
+                string FldName;
+                int value;
+                string errMsg = "";
+                er = UDI.eResource.erDesalination;
+                FldName = FUnitData.ResourceField(er);
+
+                FUnitData.GetValue(source, FldName, out value, out errMsg);
+                double d = value;
+                UnitNetwork.Desalination.ResetLimits(d  + CSWdesalMax);           
             }
         }
+        internal double retrieve(string source)
+        {
+            double result = 0;
+            UDI.eDesalData ed;
+            string FldName;
+            int value;
+            string errMsg = "";
+            ed = UDI.eDesalData.erPipeLineMethod;
+            FldName = FUnitData.DesalinationField(ed);
+
+            FUnitData.GetValue(source, FldName, out value, out errMsg);
+            result = value;
+            return result;
+        }
+        #endregion Direct Use of Desalination code
+        // ==================================================================
+        // Piped Use
+        #region Desalination Piped Use code
+        internal void PipedUse(string source)
+        {
+            double CSWdesalMax = 0;
+            CSWdesalMax = 50;// ocean desalination plant at 50 MGD
+                             // 
+            if (source != "")
+            {
+                UDI.eResource er;
+                string FldName;
+                int value;
+                string errMsg = "";
+                er = UDI.eResource.erDesalination;
+                FldName = FUnitData.ResourceField(er);
+
+                FUnitData.GetValue(source, FldName, out value, out errMsg);
+                double d = value;
+                UnitNetwork.Desalination.ResetLimits(d + CSWdesalMax);
+            }
+
+
+        }
+        #endregion Desalination Piped Used Code
         // =====================================================================================================================
         // =====================================================================
         // Properties to pass variables to other Classes for Demand Estimation
@@ -4981,28 +5152,33 @@ namespace WaterSimDCDC.Generic
         }
         // ====================================================================================
         // edits 01.14.22 das
+        int FdesalPolicy = 0;
         public int Geti_DesalPolicy()
         {
-            int  TempString = UnitNetwork.Desalination.UnitModelDesal;
-            return TempString;
+            // int  TempString = UnitNetwork.Desalination.UnitModelDesal;    
+            if (FdesalPolicy == 1) { DesalDirectPolicy = true; }
+            if (FdesalPolicy == 2) { DesalExchangePolicy = true; }
+            if (FdesalPolicy == 3) { DesalPipedPolicy = true; }
+            return FdesalPolicy;
         }
-        public void seti_DesalPolicy(int value)
+        public void Seti_DesalPolicy(int value)
         {
-           UnitNetwork.Desalination.UnitModelDesal  = value;
+            // UnitNetwork.Desalination.UnitModelDesal  = value;
+            FdesalPolicy = value;
             //if(0 < value) {CRF_Utility.ManagementStyle MS = CRF_Utility.ManagementStyle.msSeekNew; }
         }
         // end edits 01.14.22 das
         // ====================================================================================
         // edits 01.19.22 das
-        public int geti_CODesalExchange()
-        {
-            int TempString = UnitNetwork.Desalination.UnitModelExchange;
-            return TempString;
-        }
-        public void seti_CODesalExchange(int value)
-        {
-            UnitNetwork.Desalination.UnitModelExchange = value;
-         }
+        //public int geti_CODesalExchange()
+        //{
+        //    int TempString = UnitNetwork.Desalination.UnitModelExchange;
+        //    return TempString;
+        //}
+        //public void seti_CODesalExchange(int value)
+        //{
+        //    UnitNetwork.Desalination.UnitModelExchange = value;
+        // }
         // end edits 01.19.22 das
         // ====================================================================================
 

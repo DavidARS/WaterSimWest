@@ -148,8 +148,8 @@ namespace WaterSimDCDC.Generic
 
         // edits 01.10.22 das
         // 
-        public const string PipelineMethod = "PIPEMTHD"; // 1=direct use, 2=exchange, 3=pipeline
-        public const string PipelineDistance = "PIPEDIST"; // pipeline distance in miles
+        public const string PipelineMethodFld = "PIPEMTHD"; // 1=direct use, 2=exchange, 3=pipeline
+        public const string PipelineDistanceFld = "PIPEDIST"; // pipeline distance in miles
         // end edits 01.22.22 das
 
         // end edits 01.22.22 das
@@ -189,6 +189,10 @@ namespace WaterSimDCDC.Generic
         // Added Colorado to this list
         static public string[] ResourceList = new string[] { SurfaceWaterFld, SurfaceWaterLakeFld, GroundWaterFld, ReclaimedWaterFld, SaltWaterFld, AugmentedFld, ColoradoFld, DesalinationFld };
         // END EDIT
+
+
+        public enum eDesalData { erPipeLineMethod, erPipeLineDistance }
+        static public string[] DesalList = new string[] {PipelineMethodFld, PipelineDistanceFld };
 
         // EDIT QUAY 3/30/18
         // Changed these labels for Web App Sankey chart, hmmm, not really good
@@ -460,6 +464,11 @@ namespace WaterSimDCDC.Generic
             return SumTable;
 
         }
+        public string DesalinationField(UDI.eDesalData value)
+        {
+            return UDI.DesalList[(int)value];
+        }
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Other field. </summary>
         ///
@@ -2148,8 +2157,8 @@ namespace WaterSimDCDC.Generic
         {
             string temp = "";
             ColoradoDesalExchangeStruct TheData = FExchangeDataList.Find(delegate (ColoradoDesalExchangeStruct RD)
-            { return RD.FindSource == source; });
-            if(TheData.FindSource == source)
+            { return RD.FindPartner == source; });
+            if(TheData.FindPartner == source)
             {
                 temp = TheData.FindPartner;
             }
