@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -222,7 +222,7 @@
             this.Parameters.Location = new System.Drawing.Point(12, 66);
             this.Parameters.Name = "Parameters";
             this.Parameters.SelectedIndex = 0;
-            this.Parameters.Size = new System.Drawing.Size(1183, 479);
+            this.Parameters.Size = new System.Drawing.Size(1183, 582);
             this.Parameters.TabIndex = 3;
             // 
             // tabPage1
@@ -232,7 +232,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1175, 446);
+            this.tabPage1.Size = new System.Drawing.Size(1175, 549);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "SanKey Graph";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -243,10 +243,10 @@
             this.panelUserControls.Controls.Add(this.panelInput);
             this.panelUserControls.Controls.Add(this.panelIndicators);
             this.panelUserControls.Controls.Add(this.SanKeyGarphControlPanel);
-            this.panelUserControls.Location = new System.Drawing.Point(415, 2);
+            this.panelUserControls.Location = new System.Drawing.Point(450, 2);
             this.panelUserControls.Margin = new System.Windows.Forms.Padding(2);
             this.panelUserControls.Name = "panelUserControls";
-            this.panelUserControls.Size = new System.Drawing.Size(753, 448);
+            this.panelUserControls.Size = new System.Drawing.Size(718, 551);
             this.panelUserControls.TabIndex = 4;
             this.panelUserControls.Resize += new System.EventHandler(this.panelUserControls_Resize);
             // 
@@ -258,10 +258,10 @@
             this.panelInput.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panelInput.Controls.Add(this.flowLayoutPanelMPs);
             this.panelInput.Controls.Add(this.treeViewInput);
-            this.panelInput.Location = new System.Drawing.Point(10, 252);
+            this.panelInput.Location = new System.Drawing.Point(10, 204);
             this.panelInput.Margin = new System.Windows.Forms.Padding(2);
             this.panelInput.Name = "panelInput";
-            this.panelInput.Size = new System.Drawing.Size(737, 187);
+            this.panelInput.Size = new System.Drawing.Size(702, 338);
             this.panelInput.TabIndex = 4;
             this.panelInput.Resize += new System.EventHandler(this.panelInput_Resize);
             // 
@@ -271,10 +271,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanelMPs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanelMPs.BackColor = System.Drawing.Color.LightGray;
-            this.flowLayoutPanelMPs.Location = new System.Drawing.Point(354, 2);
+            this.flowLayoutPanelMPs.Location = new System.Drawing.Point(319, 5);
             this.flowLayoutPanelMPs.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanelMPs.Name = "flowLayoutPanelMPs";
-            this.flowLayoutPanelMPs.Size = new System.Drawing.Size(377, 169);
+            this.flowLayoutPanelMPs.Size = new System.Drawing.Size(377, 331);
             this.flowLayoutPanelMPs.TabIndex = 1;
             this.flowLayoutPanelMPs.Resize += new System.EventHandler(this.flowLayoutPanelMPs_Resize);
             // 
@@ -286,7 +286,7 @@
             this.treeViewInput.Location = new System.Drawing.Point(2, 5);
             this.treeViewInput.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewInput.Name = "treeViewInput";
-            this.treeViewInput.Size = new System.Drawing.Size(348, 166);
+            this.treeViewInput.Size = new System.Drawing.Size(313, 331);
             this.treeViewInput.TabIndex = 0;
             this.treeViewInput.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewInput_AfterCheck);
             this.treeViewInput.Resize += new System.EventHandler(this.treeViewInput_Resize_1);
@@ -300,7 +300,7 @@
             this.panelIndicators.Location = new System.Drawing.Point(10, 41);
             this.panelIndicators.Margin = new System.Windows.Forms.Padding(2);
             this.panelIndicators.Name = "panelIndicators";
-            this.panelIndicators.Size = new System.Drawing.Size(737, 184);
+            this.panelIndicators.Size = new System.Drawing.Size(702, 159);
             this.panelIndicators.TabIndex = 3;
             // 
             // listBoxIndicators
@@ -312,7 +312,7 @@
             this.listBoxIndicators.Location = new System.Drawing.Point(8, 2);
             this.listBoxIndicators.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxIndicators.Name = "listBoxIndicators";
-            this.listBoxIndicators.Size = new System.Drawing.Size(722, 164);
+            this.listBoxIndicators.Size = new System.Drawing.Size(687, 144);
             this.listBoxIndicators.TabIndex = 0;
             // 
             // SanKeyGarphControlPanel
@@ -324,7 +324,7 @@
             this.SanKeyGarphControlPanel.Controls.Add(this.SanKeyGraphcomboBox);
             this.SanKeyGarphControlPanel.Location = new System.Drawing.Point(10, 3);
             this.SanKeyGarphControlPanel.Name = "SanKeyGarphControlPanel";
-            this.SanKeyGarphControlPanel.Size = new System.Drawing.Size(740, 39);
+            this.SanKeyGarphControlPanel.Size = new System.Drawing.Size(705, 39);
             this.SanKeyGarphControlPanel.TabIndex = 2;
             // 
             // SankeyGraphUnitNameLabel
@@ -342,7 +342,7 @@
             this.SanKeyGraphcomboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SanKeyGraphcomboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SanKeyGraphcomboBox.FormattingEnabled = true;
-            this.SanKeyGraphcomboBox.Location = new System.Drawing.Point(363, 6);
+            this.SanKeyGraphcomboBox.Location = new System.Drawing.Point(328, 6);
             this.SanKeyGraphcomboBox.Name = "SanKeyGraphcomboBox";
             this.SanKeyGraphcomboBox.Size = new System.Drawing.Size(229, 28);
             this.SanKeyGraphcomboBox.TabIndex = 0;
@@ -356,7 +356,7 @@
             this.SankeyGraphPanel.Controls.Add(this.sankeyGraphUnit);
             this.SankeyGraphPanel.Location = new System.Drawing.Point(6, 6);
             this.SankeyGraphPanel.Name = "SankeyGraphPanel";
-            this.SankeyGraphPanel.Size = new System.Drawing.Size(404, 420);
+            this.SankeyGraphPanel.Size = new System.Drawing.Size(439, 538);
             this.SankeyGraphPanel.TabIndex = 0;
             this.SankeyGraphPanel.Resize += new System.EventHandler(this.SankeyGraphPanel_Resize);
             // 
@@ -372,7 +372,7 @@
             this.sankeyGraphUnit.Network = null;
             this.sankeyGraphUnit.NetworkBackground = System.Drawing.Color.DarkGray;
             this.sankeyGraphUnit.PositiveColor = System.Drawing.Color.ForestGreen;
-            this.sankeyGraphUnit.Size = new System.Drawing.Size(388, 414);
+            this.sankeyGraphUnit.Size = new System.Drawing.Size(429, 532);
             this.sankeyGraphUnit.TabIndex = 0;
             this.sankeyGraphUnit.Resize += new System.EventHandler(this.sankeyGraphUnit_Resize);
             // 
@@ -384,7 +384,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1175, 446);
+            this.tabPage2.Size = new System.Drawing.Size(1175, 490);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Parameters by Provider";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -415,17 +415,17 @@
             this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(5, 38);
             this.chart1.Margin = new System.Windows.Forms.Padding(2);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(692, 387);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
@@ -437,7 +437,7 @@
             this.ActionPage.Location = new System.Drawing.Point(4, 29);
             this.ActionPage.Margin = new System.Windows.Forms.Padding(2);
             this.ActionPage.Name = "ActionPage";
-            this.ActionPage.Size = new System.Drawing.Size(1175, 446);
+            this.ActionPage.Size = new System.Drawing.Size(1175, 490);
             this.ActionPage.TabIndex = 2;
             this.ActionPage.Text = "Actions";
             this.ActionPage.UseVisualStyleBackColor = true;
@@ -490,7 +490,7 @@
             this.tabPageAssessment.Location = new System.Drawing.Point(4, 29);
             this.tabPageAssessment.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageAssessment.Name = "tabPageAssessment";
-            this.tabPageAssessment.Size = new System.Drawing.Size(1175, 446);
+            this.tabPageAssessment.Size = new System.Drawing.Size(1175, 490);
             this.tabPageAssessment.TabIndex = 3;
             this.tabPageAssessment.Text = "Assessment";
             this.tabPageAssessment.UseVisualStyleBackColor = true;
@@ -711,7 +711,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 29);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1175, 446);
+            this.tabPage3.Size = new System.Drawing.Size(1175, 490);
             this.tabPage3.TabIndex = 4;
             this.tabPage3.Text = "Parameter Tree Example";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -736,7 +736,7 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 551);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 654);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1195, 22);
             this.statusStrip1.TabIndex = 4;
@@ -801,7 +801,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1195, 573);
+            this.ClientSize = new System.Drawing.Size(1195, 676);
             this.Controls.Add(this.toolStripTasks);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.Parameters);

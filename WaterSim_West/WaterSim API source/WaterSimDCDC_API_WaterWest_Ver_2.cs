@@ -408,6 +408,8 @@ namespace WaterSimDCDC.Generic
                         }
 
                         // loop through the fluxes and set values
+                        // Occasionally receive runtime errors in this method
+                        // 01.26.22 das
                         int index = 0;
                         foreach (CRF_Flux Flux in ToFluxs) //FFluxList)
                         {
@@ -583,104 +585,104 @@ namespace WaterSimDCDC.Generic
     }
     // =================================================================================================
     // edit 01.14.22 das
-    class CRF_Resource_Environment : CRF_Resource 
-    {
-        //
-        int FCode = 0;
+    //class CRF_Resource_Environment : CRF_Resource
+    //{
+    //    //
+    //    int FCode = 0;
 
-        public CRF_Resource_Environment()
-            : base()
-        {
-        }
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Constructor. </summary>
-        ///
-        /// <param name="aName">    The name. </param>
-        ///-------------------------------------------------------------------------------------------------
+    //    public CRF_Resource_Environment()
+    //        : base()
+    //    {
+    //    }
+    //    ///-------------------------------------------------------------------------------------------------
+    //    /// <summary>   Constructor. </summary>
+    //    ///
+    //    /// <param name="aName">    The name. </param>
+    //    ///-------------------------------------------------------------------------------------------------
 
-        public CRF_Resource_Environment(string aName)
-            : base(aName)
-        {
-        }
+    //    public CRF_Resource_Environment(string aName)
+    //        : base(aName)
+    //    {
+    //    }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Constructor. </summary>
-        ///
-        /// <param name="aName">    The name. </param>
-        /// <param name="aLabel">   The label. </param>
-        /// <param name="aColor">   The color. </param>
-        ///-------------------------------------------------------------------------------------------------
+    //    ///-------------------------------------------------------------------------------------------------
+    //    /// <summary>   Constructor. </summary>
+    //    ///
+    //    /// <param name="aName">    The name. </param>
+    //    /// <param name="aLabel">   The label. </param>
+    //    /// <param name="aColor">   The color. </param>
+    //    ///-------------------------------------------------------------------------------------------------
 
-        public CRF_Resource_Environment(string aName, string aLabel, Color aColor)
-            : base(aName, aLabel, aColor)
-        {
-        }
+    //    public CRF_Resource_Environment(string aName, string aLabel, Color aColor)
+    //        : base(aName, aLabel, aColor)
+    //    {
+    //    }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Constructor. </summary>
-        ///
-        /// <param name="aName">            The name. </param>
-        /// <param name="aLabel">           The label. </param>
-        /// <param name="aColor">           The color. </param>
-        /// <param name="AvailableSupply">  The available supply. </param>
-        ///-------------------------------------------------------------------------------------------------
+    //    ///-------------------------------------------------------------------------------------------------
+    //    /// <summary>   Constructor. </summary>
+    //    ///
+    //    /// <param name="aName">            The name. </param>
+    //    /// <param name="aLabel">           The label. </param>
+    //    /// <param name="aColor">           The color. </param>
+    //    /// <param name="AvailableSupply">  The available supply. </param>
+    //    ///-------------------------------------------------------------------------------------------------
 
-        public CRF_Resource_Environment(string aName, string aLabel, Color aColor, double AvailableSupply)
-            : base(aName, aLabel, aColor, AvailableSupply)
-        {
-        }
+    //    public CRF_Resource_Environment(string aName, string aLabel, Color aColor, double AvailableSupply)
+    //        : base(aName, aLabel, aColor, AvailableSupply)
+    //    {
+    //    }
 
-        public CRF_Resource_Environment(string aName, string aLabel, Color aColor, double AvailableSupply, int Code)
-                   : base(aName, aLabel, aColor, AvailableSupply)
-        {
-            FCode = Code;
+    //    public CRF_Resource_Environment(string aName, string aLabel, Color aColor, double AvailableSupply, int Code)
+    //               : base(aName, aLabel, aColor, AvailableSupply)
+    //    {
+    //        FCode = Code;
 
-            Initializer();
-        }
-        //
-        internal void Initializer()
-        {
-            FMStyle = CRF_Utility.ManagementStyle.msSeekNew;
-        }
+    //        Initializer();
+    //    }
+    //    //
+    //    internal void Initializer()
+    //    {
+    //        FMStyle = CRF_Utility.ManagementStyle.msSeekNew;
+    //    }
 
-        public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
-        {
-            return true;
-        }
-        internal int Code
-        {
-            get { return FCode; }
-            set { FCode = value; }
-        }
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Determine if we allow flux change from. </summary>
-        /// <remarks>   Does not allow unused resources to be sent back</remarks>
-        /// <param name="FluxFromItem"> The flux from item. </param>
-        ///
-        /// <returns>   true if we allow flux change from, false if not. </returns>
-        ///-------------------------------------------------------------------------------------------------
+    //    public override bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
+    //    {
+    //        return true;
+    //    }
+    //    internal int Code
+    //    {
+    //        get { return FCode; }
+    //        set { FCode = value; }
+    //    }
+    //    ///-------------------------------------------------------------------------------------------------
+    //    /// <summary>   Determine if we allow flux change from. </summary>
+    //    /// <remarks>   Does not allow unused resources to be sent back</remarks>
+    //    /// <param name="FluxFromItem"> The flux from item. </param>
+    //    ///
+    //    /// <returns>   true if we allow flux change from, false if not. </returns>
+    //    ///-------------------------------------------------------------------------------------------------
 
-        public override bool AllowFluxChangeFrom(CRF_DataItem FluxFromItem)
-        {
-            return true;//false;
-        }
-
-
+    //    public override bool AllowFluxChangeFrom(CRF_DataItem FluxFromItem)
+    //    {
+    //        return true;//false;
+    //    }
 
 
-    }
-        // end edits 01.14.22 das
-        // =================================================================================================
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   A west crf unit network. </summary>
-        ///
-        /// <remarks>   9/11/2018. 
-        ///             This is a revised CRF_UNIT_Network for the West model
-        ///             that includes Colroado as a Resource
-        ///             </remarks>
-        ///-------------------------------------------------------------------------------------------------
 
-        public class West_CRF_Unit_Network : CRF_Unit_Network
+
+    //}
+    // end edits 01.14.22 das
+    // =================================================================================================
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A west crf unit network. </summary>
+    ///
+    /// <remarks>   9/11/2018. 
+    ///             This is a revised CRF_UNIT_Network for the West model
+    ///             that includes Colroado as a Resource
+    ///             </remarks>
+    ///-------------------------------------------------------------------------------------------------
+
+    public class West_CRF_Unit_Network : CRF_Unit_Network
     {
         // the Colorado Resource
         CRF_Resource_ColoradoSurface FColorado;
@@ -692,8 +694,8 @@ namespace WaterSimDCDC.Generic
         Color DesalinationResourceColor = Color.Gold;
         //
         //  edits 01.14.22 das
-        CRF_Resource_Environment FEnvironment;
-        Color EnvironmentResourceColor = Color.DarkBlue;
+        //CRF_Resource_Environment FEnvironment;
+        //Color EnvironmentResourceColor = Color.DarkBlue;
         //  end edits 01.14.22 das
         //end edits das
         /// <summary>
@@ -825,33 +827,7 @@ namespace WaterSimDCDC.Generic
             // =====================================================================
             // end edits 11.16.21 das
 
-            // edits 01.14.21 das
-            // ===========================================================================================================================
-            //
-            //er = UDI.eResource.erDesalination;
-            //FldName = FData.ResourceField(er);
-
-            //FData.GetValue(aUnitName, FldName, out value, out errMsg);
-            ////FDesal = new CRF_Resource_Desalination(FldName, FData.ResourceLabel(er), DesalinationResourceColor, value);
-
-            //// edits 01.10.22
-            //FData.GetValue(aUnitName, UDI.PipelineMethod, out Code, out errMsg);
-            ////      edits 01.13.22 das
-            ////      end edits 01.13.22 das
-            //FEnvironment = new CRF_Resource_Environment(FldName, FData.ResourceLabel(er), DesalinationResourceColor, value);
-            ////
-            //// end edits 01.10.22 das
-            //if (errMsg != "")
-            //{
-            //    // ok so what is happening here.  If there was not an error retrieving this data, "value" is a good value and errMsg = "",
-            //    // However, if there was an error, "value" = UDI.BadValue and errMsg has the error message.
-            //    // So in this case we add the errmsg to the log for this data_item.
-            //    FEnvironment.AddError(errMsg);
-            //}
-            //FResources.Add(FEnvironment);
-            //
-            // ===========================================================================================================================
-            // end edits 01.14.21 das
+         
         }
         /// <summary>
         /// 

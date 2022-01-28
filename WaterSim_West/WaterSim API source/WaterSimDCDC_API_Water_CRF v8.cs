@@ -931,6 +931,124 @@ namespace WaterSimDCDC.Generic
     }
 
     //=====================================================================================
+    //=====================================================================================
+    class CRF_Consumer_Environment : CRF_Consumer
+    {
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <param name="aName">    The name. </param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public CRF_Consumer_Environment(string aName)
+            : base(aName)
+        {
+            FMStyle = CRF_Utility.ManagementStyle.msProtect;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <param name="aName">    The name. </param>
+        /// <param name="aLabel">   The label. </param>
+        /// <param name="aColor">   The color. </param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public CRF_Consumer_Environment(string aName, string aLabel, Color aColor)
+            : base(aName, aLabel, aColor)
+        {
+            FMStyle = CRF_Utility.ManagementStyle.msProtect;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <param name="aName">    The name. </param>
+        /// <param name="aLabel">   The label. </param>
+        /// <param name="aColor">   The color. </param>
+        /// <param name="Demand">   The Demand of this resource. </param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public CRF_Consumer_Environment(string aName, string aLabel, Color aColor, double Demand)
+            : base(aName, aLabel, aColor, Demand)
+        {
+            FMStyle = CRF_Utility.ManagementStyle.msProtect;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Change flux. </summary>
+        /// <remarks>   This is enforce the DataItems rule about changing fluxes.  A class could deny altering a flux TO a certiain class of dataitem</remarks>
+        /// <param name="FluxItem"> The flux item. </param>
+        ///
+        /// <returns>   true if it succeeds, false if it fails. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public virtual bool AllowFluxChangeTo(CRF_DataItem FluxToItem)
+        {
+            bool result = true;
+            //bool result = false;
+            //// I am a farmer, unless I am in a cooperative mood, I dod not care about groundwater
+            //switch (FMStyle)
+            //    {
+            //        // Sure if I have extra,
+            //        case CRF_Utility.ManagementStyle.msCooperate:
+            //            // negative for consumer means more than I can use
+            //          if (FluxToItem is CRF_Resource_Groundwater)
+            //          {
+            //              // negative for consumer means more than I can use
+            //              if (Net < 0)
+            //              {
+            //                  result = true;
+            //              }
+            //           }
+            //          break;
+            //        // No keeping what I have
+            //        case CRF_Utility.ManagementStyle.msProtect:
+            //        case CRF_Utility.ManagementStyle.msExpand:
+            //            result = false;
+            //            break;
+            //    }
+
+
+            return result;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Determine if we allow flux change from. </summary>
+        /// <remarks>   This is enforce the DataItems rule about changing fluxes.  A class could deny altering a flux FROM a certiain class of dataitem</remarks>
+        /// <param name="FluxFromItem"> The flux from item. </param>
+        ///
+        /// <returns>   true if we allow flux change from, false if not. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public virtual bool AllowFluxChangeFrom(CRF_DataItem FluxFromItem)
+        {
+            bool result = false;
+            switch (FMStyle)
+            {
+                // only if I need it
+                case CRF_Utility.ManagementStyle.msCooperate:
+                case CRF_Utility.ManagementStyle.msProtect:
+                    // negative cosumer means I have excess
+                    // not if already have more tha I can use
+                    if (Net > 0)
+                    {
+                        result = true;
+                    }
+                    break;
+                // all I can get
+                case CRF_Utility.ManagementStyle.msExpand:
+                    result = true;
+                    break;
+
+                    // otherwise no thankyou
+
+            }
+            return result;
+        }
+    }
+
+    //=====================================================================================
 
     ///-------------------------------------------------------------------------------------------------
     /// <summary>  A crf consumer industrial. </summary>
@@ -1130,7 +1248,7 @@ namespace WaterSimDCDC.Generic
         CRF_Consumer_Power FPower;
         CRF_Consumer_Agriculture FRural;
         //
-        CRF_Consumer_Environment Fenv;
+        CRF_Consumer_Environment FEnv;
         //
         Color UrbanColor = Color.CadetBlue;
         Color AgColor = Color.DarkGreen;
@@ -1493,12 +1611,18 @@ namespace WaterSimDCDC.Generic
             }
             FConsumers.Add(FAg);
 
-            //ec = UDI.eConsumer.ecRural;
-            //FldName = FData.ConsumerField(ec);
-            //value = FData.GetValue(aUnitName, FldName);
-            //FRural = new CRF_Consumer_Agriculture(FldName, FData.ConsumerLabel(ec), RuralColor, value);
-            //// END QUAY EDIT
-            //FConsumers.Add(FRural);
+            // edits 01.28.22 das
+            ec = UDI.eConsumer.ecEnv;
+            FldName = FData.ConsumerField(ec);
+            FData.GetValue(aUnitName, FldName, out value, out errMsg);
+            FEnv = new CRF_Consumer_Environment(FldName, FData.ConsumerLabel(ec), RuralColor, value);
+            if (errMsg != "")
+            {
+                // See above
+                FEnv.AddError(errMsg);
+            }
+            FConsumers.Add(FEnv);
+            // end edits 01.28.22 das
 
             ec = UDI.eConsumer.ecInd;
             FldName = FData.ConsumerField(ec);

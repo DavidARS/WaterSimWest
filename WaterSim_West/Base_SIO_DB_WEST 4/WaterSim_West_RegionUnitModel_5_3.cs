@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1559,7 +1560,14 @@ namespace WaterSimDCDC.Generic
             //internal void annual_delta()
             internal void annual_Resources()
             {
-              // EDIT QUAY
+            //edits 11.09.21
+            //  edits 01.28.22 das Moved here from Consumers
+            // reduce urban demand by rainwater amount
+            RainwaterStormWater();
+            //  end edits 01.28.22 das
+            //end edits 11.09.21 das
+
+            // EDIT QUAY
             // Added Colorado
             surfaceColorado();
             // END EDIT
@@ -1593,11 +1601,7 @@ namespace WaterSimDCDC.Generic
             densityManagement(StreamW);
             // end edits das 09.20.21
 
-            // edits 11.09.21
-            RainwaterStormWater();
-            // end edits 11.09.21 das
-
-            Urban(StreamW);
+              Urban(StreamW);
             //Urban();
  
             calculateGrayWater();
@@ -1806,22 +1810,26 @@ namespace WaterSimDCDC.Generic
             // perhaps here. Work out water exchange program- Desalination for CO river water
             // 01.19.22 das
             // edits 01.25.22 das
+            // 
+            // Desalination
             //
             // DesalDirectPolcy is an override from the UI
+            // NOTE: the Desal Policies are set in "Geti_DesalPolicy()." (CODE.FastSource(FUnitName) 
+            //       is the CSV data file of partners-exchange for CO/desal water (CO_desalExchangeCommand.csv),
+            //       and retrieve(FUnitName) == 1) reads the value of the PIPEMTHD in the USDA flux file
             //
-            if (DesalDirectPolicy || FUnitName.Equals(CODE.FastSource(FUnitName)))
+            RedundantPolicyCheck(FUnitName);
+            //
+            if (DesalDirectPolicy || retrieve(FUnitName) == 1)
             {
                 // Direct use of Desal from a local source
-                if (Geti_DesalPolicy() == 1 || retrieve(FUnitName) == 1)
-                {
-                    DirectUse(FUnitName);
-                }
+                DirectUse(FUnitName);
             }
             // 01.25.22 Assuming for exchanges, desal is traded with ONLY California Southwest
             // As per Ray's suggestion
             //
             //if (Geti_DesalPolicy() == 2)
-            if (DesalExchangePolicy || FUnitName.Equals("California Southwest"))
+            if (DesalExchangePolicy || retrieve(FUnitName) == 2 || FUnitName.Equals("California Southwest"))
             {
                 // source region
                 if (sourceExchange())
@@ -1835,20 +1843,53 @@ namespace WaterSimDCDC.Generic
                 }
             }
             //
-            if (DesalPipedPolicy || FUnitName.Equals(COandDesalExchange.FastTarget(FUnitName)) || retrieve(FUnitName) == 3)
+            if (DesalPipedPolicy || retrieve(FUnitName) == 3)
             {
-                if (Geti_DesalPolicy() == 3 || retrieve(FUnitName) == 3)
-                {
-                    PipedUse(FUnitName);
-                }
-                // where the exchange is from
-                if (targetExchange())
-                {
-                    ExchangePartner(FUnitName);
-                }
+                     PipedUse(FUnitName);
+                 // where the exchange is from
+                //if (targetExchange())
+                //{
+                //    ExchangePartner(FUnitName);
+                //}
             }
             // ===============================================================================
         }
+        // edits 01.28.22 das
+        // check to see if user inputs for a desal policy match those in the
+        // USGS data file for desal PIPEMTHD. IF NOT, change the value
+        // to the User Input value
+        internal void RedundantPolicyCheck(string regionName)
+        {
+            // check to see if a user is attempting to invoke multiple desalination
+            // policies when in reality only one should be implemented. Or, conflicts
+            // between inputs from the UI and inputs from the csv spreadsheet
+            // ===========================
+            if (0 < Geti_DesalPolicy())
+            {
+
+                UDI.eDesalData ed;
+                string FldName;
+                int value;
+                string errMsg = "";
+                ed = UDI.eDesalData.erPipeLineMethod;
+                FldName = FUnitData.DesalinationField(ed);
+
+                FUnitData.GetValue(regionName, FldName, out value, out errMsg);
+                int d = value;
+ 
+                if (Geti_DesalPolicy() != retrieve(regionName))
+                {
+                    int actual = Geti_DesalPolicy();
+                    int checkValue = Convert.ToInt32(retrieve(regionName));
+                    FUnitData.SetValue(regionName, FldName, actual, checkValue, out value, out errMsg);
+                    string message = "User input does not match csv inputs";
+                    string title = "Delsaination policy Miss Match";
+                    MessageBox.Show(message, title);
+                }
+            }
+    
+        }
+        // end edits 01.28.22
         // Amount for transfer set by the desalination capacity for now
         // edits 01.25.22 das
         #region desal Properties
@@ -1928,14 +1969,14 @@ namespace WaterSimDCDC.Generic
                 if (0 < c)
                 {
                     double cNet = UnitNetwork.Colorado.Net;
-                    if (cNet < 0)
-                    {
+                    //if (cNet < 0)
+                    //{
                         UnitNetwork.Colorado.ResetLimits(c + CSWdesalMax);
                         // testing 
                         double test = UnitNetwork.Colorado.Limit;
                         // end testing
                         target = COandDesalExchange.FastTarget(source);
-                    }
+                    //}
                 }
              }
          }
@@ -1993,7 +2034,17 @@ namespace WaterSimDCDC.Generic
 
                 FUnitData.GetValue(source, FldName, out value, out errMsg);
                 double d = value;
-                UnitNetwork.Desalination.ResetLimits(d  + CSWdesalMax);           
+                // need to deside if, there are no data in the USDA data table for direct use desal designated,
+                // do we add from default here, or add this default to whatever is in the file? QUESTION FOR RAY
+                // 01.26.22 das
+                if(0 < d)
+                {
+
+                }
+                else
+                {
+                    UnitNetwork.Desalination.ResetLimits(d + CSWdesalMax);
+                }
             }
         }
         internal double retrieve(string source)
@@ -2030,7 +2081,15 @@ namespace WaterSimDCDC.Generic
 
                 FUnitData.GetValue(source, FldName, out value, out errMsg);
                 double d = value;
-                UnitNetwork.Desalination.ResetLimits(d + CSWdesalMax);
+
+                if (0 < d)
+                {
+
+                }
+                else
+                {
+                    UnitNetwork.Desalination.ResetLimits(d + CSWdesalMax);
+                }
             }
 
 
@@ -2041,6 +2100,9 @@ namespace WaterSimDCDC.Generic
         // Properties to pass variables to other Classes for Demand Estimation
         //
         //
+        /// <summary>
+        /// 
+        /// </summary>
         public double RainAndStormWater
         {
             get; set;
@@ -2394,6 +2456,7 @@ namespace WaterSimDCDC.Generic
         // END EDIT QUAY 9 8 20
         //
         // 10.28.21, 11.02.21 das
+        //  edits 01.28.22 das
         void surfaceNew(StreamWriter sw)
         {
             int result = 0;
@@ -2401,7 +2464,12 @@ namespace WaterSimDCDC.Generic
             {
                 double d = Math.Round(NWater.AirWaterUse(this, FDCtemperature));
                 result = Convert.ToInt32(d);
-                seti_SurfaceWaterFreshNew(result);
+                //seti_SurfaceWaterFreshNew(result);
+
+                int urban = geti_Urban();
+                double newDemand = Math.Max(0, urban - d);
+                seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
+
             }
 
 
@@ -2418,6 +2486,32 @@ namespace WaterSimDCDC.Generic
         // this is the field used for change coeeficient, and is the Max or Min values based on desired goal
         double FUDChangeLimit = 1;
         // edit das 09.20.21
+
+        //Urban high intensity: 10 DUA < UH
+            //Small multi-Family SMF		16.0  35.0%
+            //Three story walkup WMF		24.3  45.3%
+            //Mid-range multi-family MMF	71.8  12.4%
+            //High density multi-family HMF 115.2  7.3%
+        //Urban low intensity: 1.6 < UL < 10 DUA
+            //Large single family LSF		2.8   20.7%
+            //Traditional single family 	5.1   70.8%
+            //Small single Family SSF		8.6    8.5%
+        //Suburban: 0.4 < S < 1.6 DUA
+        //Exurban high intensity: 0.1 < EH< 0.4 DUA
+        //Exurban low intensity: 0.02 < EL< 0.1 DUA
+
+        // From Figure 2, Sampson, Quay, and Horrie
+        // unit  area    proportion
+        // LSF	99240	0.176561952 (proportion)
+        // TSF	337899	0.601169963
+        // SSF	40431	0.07193245
+        // SMF	29564	0.052598524
+        // WMF	38264	0.068077051
+        // MMF	10489	0.01866141
+        // HMF	6182	0.01099865
+        //
+        // Gonna have to add to this method
+        // 01.28.22 das
         void densityManagement(StreamWriter sw)
         {
             double result = 0;

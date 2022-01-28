@@ -357,7 +357,8 @@ namespace WaterSimDCDC.Generic
             //                         West Regions USGS with Colorado Ver 1.csv
            // string UnitDataFieldname = "West Regions USGS with Colorado Ver 5.csv";
             //string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_6.csv";
-            string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_7.csv";
+           //string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_7.csv";
+            string UnitDataFieldname = "WestRegionsUSGSwithColoradoVer_8.csv";
 
             //string rates = "ElevenStateGrowthRates.csv";
             //string RateDataFilename = "ElevenStateGrowthRates3.csv";

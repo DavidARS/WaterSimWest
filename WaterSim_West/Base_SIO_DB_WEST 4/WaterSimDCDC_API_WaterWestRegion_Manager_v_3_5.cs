@@ -1179,6 +1179,9 @@ namespace WaterSimDCDC
             //
             // add controls on urban density- ICLUS urban classes
             // 09.20.21 das
+            //
+            // refer to ~line 2490 in West_RegionUnitModels for details on each density class
+            //
             WestModel.UrbanHighDensity = new providerArrayProperty(_pm, eModelParam.epP_UrbanHighDensityManagement, WestModel.geti_UrbanHighDensityManagement, WestModel.seti_UrbanHighDensityManagement, eProviderAggregateMode.agNone);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanHighDensityManagement, "Adjust Urban High Intensity Density", "UHD_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.UrbanHighDensity));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanHighDensityManagement, "Adjust one of the five ICLUS urban density classes", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
@@ -1233,8 +1236,9 @@ namespace WaterSimDCDC
             // edits 11.22.21 das
             // Desalination
             //      edits 01.13.22 das
+            //          edits 1.26.22 das
             WestModel.Desalination = new providerArrayProperty(_pm, eModelParam.epP_Desalination, WestModel.geti_Desalinization, WestModel.seti_Desalinization, eProviderAggregateMode.agSum);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Desalination, "Desal Water Policy: 0=none, 1=direct use, 2=exchange,3=piped", "DESAL_P", rangeChecktype.rctCheckRange, 0, 3, null, WestModel.Desalination));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Desalination, "Desalination: 0=none, 1=direct use, 2=exchange, 3=piped", "DESAL_P", rangeChecktype.rctCheckRange, 0, 3, null, WestModel.Desalination));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Desalination, "Desalination policy: 0=none, 1=direct use, 2=exchange,3=piped", "", "Scenario changes ", "", new string[4] { "None", "Direct", "Exchange", "Piped" }, new int[4] { 0, 1, 2, 3 }, new ModelParameterGroupClass[] { }));
             //      end edits 01.13.22 das
             // end edits 11.22.21 das

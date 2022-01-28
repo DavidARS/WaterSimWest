@@ -137,7 +137,7 @@ namespace WaterSimDCDC.Generic
         public const string DesalinationFld = "DSAL";
         //  edits 01.12.22 das
         //edits 01.14.21 das
-        public const string EnvironmentFld = "ENV";
+       // public const string EnvironmentFld = "ENV";
         //  edits 01.14.22 das
         public const string UrbanDesalinationFld = "UDSAL";
         public const string AgDesalinationFld = "ADSAL";
@@ -162,6 +162,11 @@ namespace WaterSimDCDC.Generic
         public const string IndustrialDemandFld = "ITOT";
         public const string PowerDemandFld = "PTOT";
 
+        // edits 01.28.22 das
+        public const string EnvironmentDemandFld = "ETOT";
+        // end edits 01.28.22 das
+
+
         // Other
         public const string PowerGenFld = "PGEN";
         public const string PopulationFld = "POP";
@@ -182,7 +187,10 @@ namespace WaterSimDCDC.Generic
         public enum eResource { erSurfaceFresh, erSurfaceLake, erGroundwater, erReclained, erSurfaceSaline, erAugmented, erColorado, erDesalination };
 
         // END EDIT
-        public enum eConsumer { ecUrban, ecRural, ecAg, ecInd, ecPower };
+        // edits 01.28.22 das
+        //public enum eConsumer { ecUrban, ecRural, ecAg, ecInd, ecPower };
+        public enum eConsumer { ecUrban, ecRural, ecAg, ecInd, ecPower, ecEnv };
+        // end edits 01.28.22 das
         public enum eOther { eoPopulation, eoPowerGen };
 
         // QUAY EDIT 8/11/18 Colorado
@@ -204,8 +212,16 @@ namespace WaterSimDCDC.Generic
         // Added Colorado to this list
         static public string[] ResourceListLabel = new string[] { "Surface Water", "Surface Water Lake ", "Groundwater", "Reclaimed Water", "Saline Surface Water", "Augmented", "Colorado", "Desalination" };
         // END EDIT
-        static public string[] ConsumerList = new string[] { UrbanDemandFld, RuralDemandFld, AgricultureDemandFld, IndustrialDemandFld, PowerDemandFld };
-        static public string[] ConsumerListLabel = new string[] { "Urban Public Supply Demand", "Non-Urban Residential Demand", "Agricultural Demand", "Industrial Demand", "Power Generation Demand" };
+
+        // edits 01.28.22 das
+        //static public string[] ConsumerList = new string[] { UrbanDemandFld, RuralDemandFld, AgricultureDemandFld, IndustrialDemandFld, PowerDemandFld };
+        //static public string[] ConsumerListLabel = new string[] { "Urban Public Supply Demand", "Non-Urban Residential Demand", "Agricultural Demand", "Industrial Demand", "Power Generation Demand" };
+
+        static public string[] ConsumerList = new string[] { UrbanDemandFld, RuralDemandFld, AgricultureDemandFld, IndustrialDemandFld, PowerDemandFld, EnvironmentDemandFld };
+        static public string[] ConsumerListLabel = new string[] { "Urban Public Supply Demand", "Non-Urban Residential Demand", "Agricultural Demand", "Industrial Demand", "Power Generation Demand", "Environmental Demand" };
+
+        // end edits 01.28.22 das
+        //
         static public string[] OtherListLabel = new string[] { "Population", "Power Generation" };
         static public string[] OtherList = new string[] { PopulationFld, PowerGenFld };
 
@@ -789,9 +805,17 @@ namespace WaterSimDCDC.Generic
             Temp = new SDResourceConsumerLink("DSAL", "PTOT", "PDSAL"); FluxList.Add(Temp);
             //   end edits 01.11.22 das
             // end edits 11.16.21 das
+            // edits 01.28.22 das
+            Temp = new SDResourceConsumerLink("SUR", "ETOT", "ESUR"); FluxList.Add(Temp);
+            Temp = new SDResourceConsumerLink("REC", "ETOT", "EREC"); FluxList.Add(Temp);
+            // end edits 01.28.22 das
+
+
             return FluxList;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public List<SDResourceConsumerLink> Fluxes
         {
             get { return FFluxes; }

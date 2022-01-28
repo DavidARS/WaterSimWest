@@ -1520,9 +1520,32 @@ namespace WaterSim_Base
                 case "EigthAcre":
                     temp = 10;
                     break;
+                case "SMF":
+                    temp = 16.0;
+                    break;
+                case "WMF":
+                    temp = 24.3;
+                    break;
+                case "MMF":
+                    temp = 71.8;
+                    break;
+                case "HMF":
+                    temp = 115.2;
+                    break;
+
                 case "QuarterAcre":
                     temp = 5.8;
                     break;
+                case "LSF":
+                    temp = 2.8;
+                    break;
+                case "TSF":
+                    temp = 5.1;
+                    break;
+                case "SSF":
+                    temp = 8.6;
+                    break;
+
                 case "ThirdAcre":
                     temp = 1;
                     break;
@@ -1545,9 +1568,35 @@ namespace WaterSim_Base
                 case "EigthAcre":
                     temp = 2.4;
                     break;
+                case "SMF":
+                    temp = 2.4;
+                    break;
+                case "WMF":
+                    temp = 2.3;
+                    break;
+                case "MMF":
+                    temp = 2.1;
+                    break;
+                case "HMF":
+                    temp = 2.0;
+                    break;
+
+
                 case "QuarterAcre":
                     temp = 2.45;
                     break;
+
+                case "LSF":
+                    temp = 2.5;
+                    break;
+                case "TSF":
+                    temp = 2.5;
+                    break;
+                case "SSF":
+                    temp = 2.4;
+                    break;
+
+
                 case "ThirdAcre":
                     temp = 2.5;
                     break;
