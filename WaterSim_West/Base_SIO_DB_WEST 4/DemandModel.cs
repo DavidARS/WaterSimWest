@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using WaterSimDCDC.Generic;
 using WaterSimDCDC;
 using WaterSim_Base;
@@ -14,7 +15,8 @@ namespace DemandModel_Base
     public abstract class DemandModel : IDisposable
     {
 
-        CRF_Unit_Network UnitNetwork; 
+        CRF_Unit_Network UnitNetwork;
+        public StreamWriter swriter;
 
         int Fyear;
         double FChangeCoeff;
@@ -108,6 +110,7 @@ namespace DemandModel_Base
         /// <returns></returns>
         public abstract double GetDemand(int year);
         //
+        public abstract double GetDemand(int year, StreamWriter SW);
         /// <summary>
         /// 
         /// </summary>

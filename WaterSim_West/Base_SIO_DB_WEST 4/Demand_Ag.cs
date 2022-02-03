@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.IO;
 using WaterSimDCDC;
 using WaterSimDCDC.Generic;
 using DemandModel_Base;
@@ -14,6 +14,8 @@ namespace WaterSim_Base
     {
         // objects
         WaterSimCRFModel CRF;
+        //
+        StreamWriter sw;
         //
         double Fdemand;
        // holder for ag production
@@ -132,6 +134,13 @@ namespace WaterSim_Base
 
         // Functions & Methods
         // =================================================================================================
+        public override double GetDemand(int currentYear, StreamWriter sw)
+        {
+            double temp = 0;
+            Demand(currentYear);
+            temp = demand;
+            return temp;
+        }
         /// <summary>
         /// 
         /// </summary>

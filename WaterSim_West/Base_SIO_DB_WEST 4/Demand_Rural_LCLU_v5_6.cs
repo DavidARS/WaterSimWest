@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -60,19 +61,21 @@ namespace WaterSim_Base
         // objects
         WaterSimCRFModel CRF;
         //
+        StreamWriter SW;
+        //
         public RateDataClass FRDC;
         public DataClassLCLU FDClclu;
         //
         // Version 2 ICLUS
         public DataClassLcluArea FDLCLU;
         //
-        double Fdemand;
+        //double Fdemand;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
         const double convertDemand = 1000000;
         const int initialYear = 2015;
         //
-        int FUnitCode = 0;
+       // int FUnitCode = 0;
         /// <summary>
         /// 
         /// </summary>
@@ -120,7 +123,7 @@ namespace WaterSim_Base
             SetBaseValues();
             isInstantiated = true;
             // assigns itself to the owner
-            crf.URBAN = this;
+           // crf.URBAN = this;
             CRF.URBAN = this; // does this make a difference?
         }
         /// <summary>
@@ -140,7 +143,7 @@ namespace WaterSim_Base
             SetBaseValues();
             isInstantiated = true;
             // assigns itself to the owner
-            crf.URBAN = this;
+            //crf.URBAN = this;
             CRF.URBAN = this; // does this make a difference?
             AddDensityClassesToList();
         }
@@ -160,13 +163,35 @@ namespace WaterSim_Base
             FDensityClassList.Add("ExUH");
             FDensityClassList.Add("ExUL");
         }
-
-
-
+ 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
+        internal void Demand(int currentYear, StreamWriter sw)
+        {
+            double temp = 0;
+            double NewDemand = 0;
+            //
+            preProcessDemand(currentYear, sw);
+
+            double period = (currentYear - CRF.startYear) + 1;
+            double outValue;
+            // string region = CRF.UnitName;
+            //
+            //double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
+            if (FDLCLU != null)
+            {
+                NewDemand = demand;
+            }
+            else
+            {
+                NewDemand = EstimateConsumerDemands(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, period, out outValue);
+            }
+            //
+            temp = NewDemand;
+            demandUrban = temp;
+        }
         internal void Demand(int currentYear)
         {
             double temp = 0;
@@ -191,6 +216,7 @@ namespace WaterSim_Base
             temp = NewDemand;
             demandUrban = temp;
         }
+
         // ================================================================================================================================================
 
         // Properties
@@ -412,7 +438,19 @@ namespace WaterSim_Base
             temp = demandUrban;
             return temp;
         }
-
+        /// <summary>
+        ///  Temporary method for data error checking
+        /// </summary>
+        /// <param name="currentYear"></param>
+        /// <param name="sw"></param>
+        /// <returns></returns>
+        public override double GetDemand(int currentYear, StreamWriter sw)
+        {
+            double temp = 0;
+            Demand(currentYear, sw);
+            temp = demandUrban;
+            return temp;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -457,8 +495,6 @@ namespace WaterSim_Base
         /// </summary>
         public override void preProcessDemand()
         { }
-        // ====================
-        // UrbanDemand Pre Process
         /// <summary>
         /// 
         /// </summary>
@@ -481,6 +517,51 @@ namespace WaterSim_Base
                 Lacres = FDClclu.FastUrbanAcres(CRF.UnitName, currentYear);
                 LBaseRate = FRDC.FastUrbanRateLCLU(CRF.FUnitName);
             }
+
+        }
+        // ====================
+        //public override void preProcessDemand(int currentYear, StreamWriter sw)
+        //{ }
+
+        // UrbanDemand Pre Process
+        //public override void preProcessDemand(int currentYear)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentYear"></param>
+        public void preProcessDemand(int currentYear, StreamWriter sw)
+        {
+            // Old data - Ag, Urban, Industry
+            string region = CRF.UnitName;
+            LurbanConservation = CRF.UrbanConservation;
+            // Updated LCLU now with Denver Water Data analyses
+            if (FDLCLU != null)
+            {
+                DUAdemand = true;
+                switchLCLU(region, currentYear, sw);
+            }
+            else
+            {
+                DUAdemand = false;
+                LurbanLCLUChangeCoef = CRF.PUrbanLCLUChangeCoef;
+                Lacres = FDClclu.FastUrbanAcres(CRF.UnitName, currentYear);
+                LBaseRate = FRDC.FastUrbanRateLCLU(CRF.FUnitName);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="region"></param>
+        /// <param name="currentYear"></param>
+        /// <param name="sw"></param>
+        public void switchLCLU(string region, int currentYear, StreamWriter sw)
+        {
+            double period = (currentYear - CRF.startYear) + 1;
+            //
+            AssignLCLU(region, currentYear);
+            ProcessRequest(region, currentYear,sw);
+            convertAcresToUnits();
+            calculateDemand(region, currentYear, LurbanConservation, period);
         }
         /// <summary>
         /// ICLUS version 2 with five urban classes- This is invoked with the default urban
@@ -490,32 +571,15 @@ namespace WaterSim_Base
         /// <param name="currentYear"></param>
         public void switchLCLU(string region, int currentYear)
         {
-            double period = (currentYear - CRF.startYear);// + 1;
+            double period = (currentYear - CRF.startYear) + 1;
+            //
             AssignLCLU(region, currentYear);
-            InitialAcres(currentYear);
-            relativeAcres(region, currentYear);
-            RelativeSum();
             ProcessRequest(region, currentYear);
             convertAcresToUnits();
             calculateDemand(region, currentYear, LurbanConservation, period);
         }
         // ---------------------------------------------------
-        internal void InitialAcres(int year)
-        {
-            if (year == CRF.startYear)
-            {
-                init_LSF = UL_LSF;
-                init_TSF = UL_TSF;
-                init_SSF = UL_SSF;
-                init_SMF = UH_SMF;
-                init_WMF = UH_WMF;
-                init_MMF = UH_MMF;
-                init_HMF = UH_HMF;
-                init_SUB = SUB;
-                init_ExH = ExUH;
-                init_ExL = ExUL;
-            }
-        }
+       
         // ---------------------------------------------------
         /// <summary>
         ///   On 01.28.22 I have modified the code to reflect the Denver Water Data density classes
@@ -534,6 +598,17 @@ namespace WaterSim_Base
             ExUL = FDLCLU.FastArea_UN(region, "Acre", currentYear);
         }
         //
+        void dataCheck(string region, int currentYear,StreamWriter sw)
+        {
+            double Tacres = totalAcres(region, currentYear);
+            double Aacres = UL_LSF + UL_TSF + UL_SSF + UH_SMF + UH_WMF + UH_MMF + UH_HMF + SUB + ExUH + ExUL;
+            //double Init = init_LSF + init_TSF + init_SSF + init_SMF + init_WMF + init_MMF + init_HMF + init_SUB + init_ExH + init_ExL;
+            //sw.WriteLine(region + "," + currentYear + "," + Tacres + "," + Aacres + "," + Init);
+            sw.WriteLine(region + "," + currentYear + "," + UL_LSF + "," + UL_TSF + "," + UL_SSF + "," + UH_SMF + ","
+                + UH_WMF + "," + UH_MMF + "," + UH_HMF + "," + SUB + "," + ExUH + "," + ExUL + "," + Tacres + "," + Aacres);
+           // sw.WriteLine(region + "," + currentYear + "," + rUL_LSF + "," + rUL_TSF + "," + rUL_SSF + "," + rUH_SMF + ","
+           //+ rUH_WMF + "," + rUH_MMF + "," + rUH_HMF + "," + rSUB + "," + rExUH + "," + rExUL + "," + Tacres + "," + Aacres);
+        }
         // =============================================================
         // edits 01.28.22 das
         internal void HighIntensityPercentages(double gross)
@@ -551,34 +626,11 @@ namespace WaterSim_Base
         }
         // end edits 01.28.22 das
         // =============================================================
-
         internal double totalAcres(string region, int year)
         {
             return FDLCLU.FastTotalUrbanArea_UN(region, year);
         }
-        internal void relativeAcres(string region, int year)
-        {
-            double tAcres= totalAcres(region, year);
-            rUH = UH / totalAcres(region, year);
-                rUH_SMF = UH_SMF / tAcres;
-                rUH_WMF = UH_WMF / tAcres;
-                rUH_MMF = UH_MMF / tAcres;
-                rUH_HMF = UH_HMF / tAcres;
-            rUL = UL / totalAcres(region, year);
-                rUL_LSF = UL_LSF / tAcres;
-                rUL_TSF = UL_TSF / tAcres;
-                rUL_SSF = UL_SSF / tAcres;
-            rSUB = SUB / totalAcres(region, year);
-            rExUH = ExUH / totalAcres(region, year);
-            rExUL = ExUL / totalAcres(region, year);
-        }
-        //
-        internal double Update(double A, double B, double E, double F)
-        {
-            double temp = 0;
-            temp = (A - B) * (E / F);
-            return temp;
-        }
+      
         //
         //Urban high intensity: 10 DUA < UH  (assume 10)
         //Urban low intensity: 1.6 < UL< 10 DUA (assume 5.8)
@@ -603,6 +655,23 @@ namespace WaterSim_Base
             ExUHunits = LCLUconstants.ExUHunitsAcre * ExUH;
             ExULunits = LCLUconstants.ExULunitsAcre * ExUL;
         }
+        internal void convertAcresToUnits(StreamWriter sw)
+        {
+            UHunits = LCLUconstants.UHunitsAcre * UH;
+            UH_SMFunits = LCLUconstants.UHunitsSMFacre * UH_SMF;
+            UH_WMFunits = LCLUconstants.UHunitsWMFacre * UH_WMF;
+            UH_MMFunits = LCLUconstants.UHunitsMMFacre * UH_MMF;
+            UH_HMFunits = LCLUconstants.UHunitsHMFacre * UH_HMF;
+            //
+            ULunits = LCLUconstants.ULunitsAcre * UL;
+            UL_LSFunits = LCLUconstants.ULunitsLSFacre * UL_LSF;
+            UL_TSFunits = LCLUconstants.ULunitsTSFacre * UL_TSF;
+            UL_SSFunits = LCLUconstants.ULunitsSSFacre * UL_SSF;
+            //
+            Subunits = LCLUconstants.SUBunitsAcre * SUB;
+            ExUHunits = LCLUconstants.ExUHunitsAcre * ExUH;
+            ExULunits = LCLUconstants.ExULunitsAcre * ExUL;
+        }
 
 
         // ========================================================================
@@ -612,235 +681,198 @@ namespace WaterSim_Base
         // 01.28.22 das
         List<string> FDensityClassList = new List<string>();
         // ==============================================
-        //internal void modifyArea(string region, int year)
-        //{
-        //    double TAcres = totalAcres(region, year);
-        //    // ------------------------------------------------------------------------
-        //    //double densityUH= Convert.ToDouble(CRF.geti_UrbanHighDensity()) / 100;
-        //    double densityUH = CRF.UrbanHighDensityChange;
-        //    //double densityUL = Convert.ToDouble(CRF.geti_UrbanLowDensity()) / 100;
-
-
-
-        //    double densityUL = CRF.UrbanLowDensityChange;
-        //    // ------------------------------------------------------------------------
-
-        //    // double densitySUB = Convert.ToDouble(CRF.geti_SuburbanDensity()) / 100;
-        //    double densitySUB = CRF.SuburbanDensityChange;
-        //    //double densityExUH = Convert.ToDouble(CRF.geti_ExurbanHighDensity()) / 100;
-        //    double densityExUH = CRF.ExurbanHighDensityChange;
-        //    double densityExUL = CRF.ExurbanLowDensityChange;
-        //    //
-        //    if (year == 2020)
-        //    {
-        //        bool stop = true;
-        //    }
-        //     //
-        //    if (densityUH != 1)
-        //    {
-        //        double newUH = UH * densityUH;
-        //        double aSum = rUL + rSUB + rExUH + rExUL;
-        //        UH = newUH;
-        //        UL = Update(TAcres, newUH, rUL, aSum);
-        //        SUB = Update(TAcres, newUH, rSUB, aSum);
-        //        ExUH = Update(TAcres, newUH, rExUH, aSum);
-        //        ExUL = Update(TAcres, newUH, rExUL, aSum);
-        //        LurbanLCLUChangeCoef = CRF.FUrbanHighDensityChangeCoef;
-        //    }
-        //    if (densityUL != 1)
-        //    {
-        //        double newUL = UL * densityUL;
-        //        double aSum = rUH + rSUB + rExUH + rExUL;
-
-        //        UL = newUL;
-        //        UH = Update(TAcres, newUL, rUH, aSum);
-        //        SUB = Update(TAcres, newUL, rSUB, aSum);
-        //        ExUH = Update(TAcres, newUL, rExUH, aSum);
-        //        ExUL = Update(TAcres, newUL, rExUL, aSum);
-        //        LurbanLCLUChangeCoef = CRF.FUrbanLowDensityChangeCoef;
-        //    }
-        //    if (densitySUB != 1)
-        //    {
-        //        double newSUB = SUB * densitySUB;
-        //        double aSum = rUH + rUL + rExUH + rExUL;
-
-        //        SUB = newSUB;
-        //        UH = Update(TAcres, newSUB, rUH, aSum);
-        //        UL = Update(TAcres, newSUB, rUL, aSum);
-        //        ExUH = Update(TAcres, newSUB, rExUH, aSum);
-        //        ExUL = Update(TAcres, newSUB, rExUL, aSum);
-        //        LurbanLCLUChangeCoef = CRF.FSuburbanDensityChangeCoef;
-        //    }
-        //    if (densityExUH != 1) // ok
-        //    {
-        //        double newExUH = ExUH * densityExUH;
-        //        double aSum = rUH + rUL + rSUB + rExUL;
-
-        //        ExUH = newExUH;
-        //        UH = Update(TAcres, newExUH, rUH, aSum);
-        //        UL = Update(TAcres, newExUH, rUL, aSum);
-        //        SUB = Update(TAcres, newExUH, rSUB, aSum);
-        //        ExUL = Update(TAcres, newExUH, rExUL, aSum);
-        //        LurbanLCLUChangeCoef = CRF.FExurbanHighDensityChangeCoef;
-        //    }
-        //    if (densityExUL != 1) // okay
-        //    {
-        //        double newExUL = ExUL * densityExUL;
-        //        double aSum = rUH + rUL + rSUB + rExUH;
-
-        //        ExUL = newExUL;
-        //        UH = Update(TAcres, newExUL, rUH, aSum);
-        //        UL = Update(TAcres, newExUL, rUL, aSum);
-        //        SUB = Update(TAcres, newExUL, rSUB, aSum);
-        //        ExUH = Update(TAcres, newExUL, rExUH, aSum);
-        //        LurbanLCLUChangeCoef = CRF.FExurbanLowDensityChangeCoef;
-        //    }
-        //    Lacres = UH + UL + SUB + ExUH + ExUL;
-        //}
-        // =====================================================
-        //
-        // =======================================================================
         internal void ProcessRequest(string region, int year)
         {
-            double TAcres = totalAcres(region, year);
-
-            foreach (string DClass in FDensityClassList)
-            {
-                double density = 0;               
-                if (DClass == "UL_LSF") {
-                    density = UL_LSF = init_LSF* CRF.UrbanLowDensityChangeLSF;
-                 }
-                if (DClass == "UL_TSF")
-                {
-                    density = UL_TSF = init_TSF * CRF.UrbanLowDensityChangeTSF;
-                 }
-                if (DClass == "UL_SSF")
-                {
-                    density = UL_SSF = init_SSF * CRF.UrbanLowDensityChangeSSF;
-                }
-                //
-                if (DClass == "UH_SMF")
-                {
-                    density = UH_SMF = init_SMF * CRF.UrbanHighDensityChangeSMF;
-                }
-                if (DClass == "UH_WMF")
-                {
-                    density = UH_WMF = init_WMF * CRF.UrbanHighDensityChangeWMF;
-                }
-                if (DClass == "UH_MMF")
-                {
-                    density = UH_MMF = init_MMF * CRF.UrbanHighDensityChangeMMF;
-                }
-                if (DClass == "UH_HMF")
-                {
-                    density = UH_HMF = init_HMF * CRF.UrbanHighDensityChangeHMF;
-                }
-                if (CRF.UrbanLowDensityChangeLSF == 1) { UL_LSF = Updates(TAcres, density, rUL_LSF, rSum_LSF); }
-                if (CRF.UrbanLowDensityChangeTSF == 1) { UL_TSF = Updates(TAcres, density, rUL_TSF, rSum_TSF); }
-                if (CRF.UrbanLowDensityChangeSSF == 1) { UL_SSF = Updates(TAcres, density, rUL_SSF, rSum_SSF); }
-                if (CRF.UrbanHighDensityChangeSMF == 1) { UH_SMF = Updates(TAcres, density, rUH_SMF, rSum_SMF); }
-                if (CRF.UrbanHighDensityChangeWMF == 1) { UH_WMF = Updates(TAcres, density, rUH_WMF, rSum_WMF); }
-                if (CRF.UrbanHighDensityChangeMMF == 1) { UH_MMF = Updates(TAcres, density, rUH_MMF, rSum_MMF); }
-                if (CRF.UrbanHighDensityChangeHMF == 1) { UH_HMF = Updates(TAcres, density, rUH_HMF, rSum_HMF); }
-                //
-                if (CRF.SuburbanDensityChange == 1)    { SUB  = Update(TAcres, density, rSUB, rSum_SUB); }
-                if (CRF.ExurbanHighDensityChange == 1) { ExUH = Update(TAcres, density, rExUH, rSum_ExH); }
-                if (CRF.ExurbanLowDensityChange == 1)  { ExUL = Update(TAcres, density, rExUL, rSum_ExL); }
-            }
-            Lacres = UL_LSF+UL_TSF+UL_SSF+UH_SMF+UH_WMF+UH_MMF+UH_HMF;
+            throw new NotImplementedException();
         }
-        internal double Updates(double A, double B, double E, double F)
+            //
+            // =======================================================================
+        internal void ProcessRequest(string region, int year, StreamWriter sw)
+        {
+            double TAcres = totalAcres(region, year);
+ 
+            if (CRF.UrbanDensityChangeCheck == 0)
+            {
+                // No changes to the density parameters, so skip this method to speed
+                // up runtime.
+            }
+            else
+            {
+                double sum = Math.Round((UL_LSF + UL_TSF + UL_SSF + UH_SMF + UH_WMF + UH_MMF + UH_HMF + SUB + ExUH + ExUL));
+                REL(sum);
+                double density = 0;
+                double difference = 0;
+                //
+                foreach (string DClass in FDensityClassList)
+                {
+                    bool[] follow = { false, false, false, false, false, false, false, false, false, false };
+                    Ratecheck(follow);
+
+                    if (DClass == "UL_LSF")
+                    {
+                        if (follow[0])
+                        {
+                            double a = UL_LSF;
+                            density = UL_LSF = UL_LSF * CRF.UrbanLowDensityChangeLSF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "UL_TSF")
+                    {
+                        if (follow[1])
+                        {
+                            double a = UL_TSF;
+                            density = UL_TSF = UL_TSF * CRF.UrbanLowDensityChangeTSF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "UL_SSF")
+                    {
+                        if (follow[2])
+                        {
+                            double a = UL_SSF;
+                            density = UL_SSF = UL_SSF * CRF.UrbanLowDensityChangeSSF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    //
+                    if (DClass == "UH_SMF")
+                    {
+                        if (follow[3])
+                        {
+                            double a = UH_SMF;
+                            density = UH_SMF = UH_SMF * CRF.UrbanHighDensityChangeSMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "UH_WMF")
+                    { 
+                        if (follow[4])
+                        {
+                            double a = UH_WMF;
+                            density = UH_WMF = UH_WMF * CRF.UrbanHighDensityChangeWMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "UH_MMF")
+                    {
+                        if (follow[5])
+                        {
+                            double a = UH_MMF;
+                            density = UH_MMF = UH_MMF * CRF.UrbanHighDensityChangeMMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "UH_HMF")
+                    {
+                        if (follow[6])
+                        {
+                            double a = UH_HMF;
+                            density = UH_HMF = UH_HMF * CRF.UrbanHighDensityChangeHMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    //
+                    if (DClass == "SUB")
+                    {
+                        if (follow[7])
+                        {
+                            double a = SUB;
+                            density = SUB = SUB * CRF.UrbanHighDensityChangeWMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "ExUH")
+                    {
+                        if (follow[8])
+                        {
+                            double a = ExUH;
+                            density = ExUH = ExUH * CRF.UrbanHighDensityChangeMMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                    if (DClass == "ExUL")
+                    {
+                        if (follow[9])
+                        {
+                            double a = ExUL;
+                            density = ExUL = ExUL * CRF.UrbanHighDensityChangeHMF;
+                            difference = Math.Abs(a - density);
+                        }
+                    }
+                difference = Math.Round(difference,2);
+                AcreExchange(follow, TAcres, difference);
+                }
+            }
+            if (region == "Arizona Central South")
+            {
+                dataCheck(region, year, sw);
+            }
+        }
+        void Ratecheck(bool[] follow)
+        {       
+            if (CRF.UrbanLowDensityChangeLSF != 1) { follow[0] = true; }
+            if (CRF.UrbanLowDensityChangeTSF != 1) { follow[1] = true; }
+            if (CRF.UrbanLowDensityChangeSSF != 1) { follow[2] = true; }
+            if (CRF.UrbanHighDensityChangeSMF != 1) { follow[3] = true; }
+            if (CRF.UrbanHighDensityChangeWMF != 1) { follow[4] = true; }
+            if (CRF.UrbanHighDensityChangeMMF != 1) { follow[5] = true; }
+            if (CRF.UrbanHighDensityChangeHMF != 1) { follow[6] = true; }
+            //
+            if (CRF.SuburbanDensityChange != 1) { follow[7] = true; }
+            if (CRF.ExurbanHighDensityChange != 1) { follow[8] = true; }
+            if (CRF.ExurbanLowDensityChange != 1) { follow[9] = true; }
+        }
+        void AcreExchange(bool[] follow, double TAcres, double diff)
+        {
+            ProcessUpdates(follow, TAcres, diff);
+        }
+
+        void ProcessUpdates(bool[] follow, double TAcres, double diff)
+        {
+            if (!follow[0]) { UL_LSF = update(TAcres, rUL_LSF, diff); }
+            if (!follow[1]) { UL_TSF = update(TAcres, rUL_TSF, diff); }
+            if (!follow[2]) { UL_SSF = update(TAcres, rUL_SSF, diff); }
+            if (!follow[3]) { UH_SMF = update(TAcres, rUH_SMF, diff); }
+            if (!follow[4]) { UH_WMF = update(TAcres, rUH_WMF, diff); }
+            if (!follow[5]) { UH_MMF = update(TAcres, rUH_MMF, diff); }
+            if (!follow[6]) { UH_HMF = update(TAcres, rUH_HMF, diff); }
+            if (!follow[7]) { SUB    = update(TAcres, rSUB, diff); }
+            if (!follow[8]) { ExUH   = update(TAcres, rExUH, diff); }
+            if (!follow[9]) { ExUL   = update(TAcres, rExUL, diff); }
+        }
+        internal double update(double A, double B, double C)
         {
             double temp = 0;
-            temp = (A - B) * (E / F);
+            temp = Math.Round(A * B + C * B, 2);
             return temp;
         }
-        // ============================================================
-        // sum the relative area so that all can be proportionally
-        // changed based on the target(s) changes in density
-        internal void RelativeSum()
+
+        // =================================================================================
+
+        #region relative acres estimates
+        void REL(double sum)
         {
-            rSum_LSF = rUL_TSF + rUL_SSF 
-                     + rUH_SMF + rUH_WMF + rUH_MMF + rUH_HMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_TSF = rUL_LSF + rUL_SSF 
-                     + rUH_SMF + rUH_WMF + rUH_MMF + rUH_HMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_SSF = rUL_LSF + rUL_TSF 
-                     + rUH_SMF + rUH_WMF + rUH_MMF + rUH_HMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_SMF = rUL_LSF + rUL_TSF + rUL_SSF 
-                     + rUH_WMF + rUH_MMF + rUH_HMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_WMF = rUL_LSF + rUL_TSF + rUL_SSF 
-                     + rUH_SMF + rUH_MMF+ rUH_HMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_MMF = rUL_LSF + rUL_TSF + rUL_SSF 
-                     + rUH_SMF + rUH_WMF + rUH_HMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_HMF = rUL_LSF + rUL_TSF + rUL_SSF 
-                     + rUH_SMF + rUH_WMF + rUH_MMF 
-                     + rSUB + rExUH + rExUL;
-            rSum_SUB = rUL_LSF + rUL_TSF + rUL_SSF
-                     + rUH_SMF + rUH_WMF + rUH_MMF + rUH_HMF
-                     + rExUH + rExUL;
-            rSum_ExH = rUL_LSF + rUL_TSF + rUL_SSF
-                     + rUH_SMF + rUH_WMF + rUH_MMF + rUH_HMF
-                     + rSUB + rExUL;
-            rSum_ExL = rUL_LSF + rUL_TSF + rUL_SSF
-                     + rUH_SMF + rUH_WMF + rUH_MMF + rUH_HMF
-                     + rSUB + rExUH;
+            rUL_LSF = UL_LSF / sum;
+            rUL_TSF = UL_TSF / sum; rUL_SSF = UL_SSF / sum; rUH_SMF = UH_SMF / sum;
+            rUH_WMF = UH_WMF / sum; rUH_MMF = UH_MMF / sum; rUH_HMF = UH_HMF / sum;
+            rSUB = SUB / sum; rExUH = ExUH / sum; rExUL = ExUL / sum;
         }
+    
+        #endregion relative acres
+        // =================================================================================
+           
         // ============================================================
         // the properties to hold relative area for each density class
-        double rSum_LSF
-        { get; set; }
-        double rSum_TSF
-        { get; set; }
-        double rSum_SSF
-        { get; set; }
-        double rSum_SMF
-        { get; set; }
-        double rSum_WMF
-        { get; set; }
-        double rSum_MMF
-        { get; set; }
-        double rSum_HMF
-        { get; set; }
-        double rSum_SUB
-        { get; set; }
-        double rSum_ExH
-        { get; set; }
-        double rSum_ExL
-        { get; set; }
+        #region more properties-relative Acres & initial acres per class     
         // ==========================================================
         // Initial estimats of acres in each density class
-        double init_LSF
+        double density
         { get; set; }
-        double init_TSF
+        double difference
         { get; set; }
-        double init_SSF
-        { get; set; }
-
-        double init_SMF
-        { get; set; }
-        double init_WMF
-        { get; set;}
-        double init_MMF
-        { get; set; }
-        double init_HMF
-        { get; set; }
-
-        double init_SUB
-        { get; set; }
-        double init_ExH
-        { get; set; }
-        double init_ExL
-        { get; set; }
-
+        #endregion properties - relative acres and initial acres
         // ==========================================================
-
-
 
         // =======================================================================
         // Add the DUA estimates for each density class
@@ -916,7 +948,124 @@ namespace WaterSim_Base
         {
             get; set;
         }
-        // =====================================================
+        // =============================================================================================
+        internal void calculateDemand(string region, int year, double AdjustEfficiency, double period, StreamWriter SW)
+        {
+            double result = 0;
+            double resultLSF = 0; double resultTSF = 0; double resultSSF = 0; double resultSMF = 0; double resultWMF = 0;
+            double resultMMF = 0; double resultHMF = 0; double resultSUB = 0; double resultExH = 0; double resultExL = 0;
+            double ModifyRate = 1;
+            try
+            {
+                // Get the modify factor to apply for this period using the coefficient AdjustDamper
+                //double ModifyRate = ChangeIncrement(1, period, AdjustDamper, MinValue); // NOT MinValue ... its the Limit in his code
+                double startValue = 1;
+                if (DUAdemand)
+                {
+                    // Calculate water demand from the Denver Water data outdoor water use per DUA (equation that I created) plus 
+                    // the Meyer and DeOreo equation for indoor water use from the 2016 WRF_ResidentialEndUse2016.pdf document.
+                    // Figure 8.7using the 2016 data
+                    // units: units * gallons per unit = gallons
+                    // ========================================================
+                    //result = UHunits * DemandFromDUA("EigthAcre") * ModifyRate;
+                    //
+                    result = UH_SMFunits * DemandFromDUA("SMF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_SMFChangeCoef, AdjustEfficiency);
+                    resultSMF = result;
+                    result += UH_WMFunits * DemandFromDUA("WMF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_WMFChangeCoef, AdjustEfficiency);
+                    resultWMF = result;
+
+                    result += UH_MMFunits * DemandFromDUA("MMF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_MMFChangeCoef, AdjustEfficiency);
+                    resultMMF = result;
+
+                    result += UH_HMFunits * DemandFromDUA("HMF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_HMFChangeCoef, AdjustEfficiency);
+                    resultHMF = result;
+
+                    //
+                    //result += ULunits * DemandFromDUA("QuarterAcre") * ModifyRate;
+                    result += UL_LSFunits * DemandFromDUA("LSF") * 
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_LSFChangeCoef, AdjustEfficiency);
+                    resultLSF = result;
+
+                    result += UL_TSFunits * DemandFromDUA("TSF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_TSFChangeCoef, AdjustEfficiency);
+                    resultTSF = result;
+
+                    result += UL_SSFunits * DemandFromDUA("SSF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_SSFChangeCoef, AdjustEfficiency);
+                    resultSSF = result;
+
+                    //
+                    result += Subunits * DemandFromDUA("ThirdAcre") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FSuburbanDensityChangeCoef, AdjustEfficiency);
+                    resultSUB = result;
+
+                    result += ExUHunits * DemandFromDUA("HalfAcre") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FExurbanHighDensityChangeCoef, AdjustEfficiency);
+                    resultExH = result;
+
+                    result += ExULunits * DemandFromDUA("Acre") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FExurbanLowDensityChangeCoef, AdjustEfficiency);
+                    resultExL = result;
+                }
+                else
+                {
+                    double AdjustDamper = CRF.FUrbanLowDensityChangeCoef; // Not sure what this should be NOW??? 02.02.22 das
+                    ModifyRate = utilities.AnnualExponentialChange(startValue, period, AdjustDamper, AdjustEfficiency);
+
+                    // Use the rates that are read in from the CSV file for each LCLU class
+                    // File is WestModelGrowthRates_5.csv
+                    // NOTE: these data need updating.......
+                    result = UH * FRDC.FastUrbanHighRate(region) * ModifyRate;
+                    //
+                    result += UL * FRDC.FastUrbanLowRate(region) * ModifyRate;
+                    //
+                    result += SUB * FRDC.FastSuburbanRate(region) * ModifyRate;
+                    result += ExUH * FRDC.FastExurbanHighRate(region) * ModifyRate;
+                    result += ExUL * FRDC.FastExurbanLowRate(region) * ModifyRate;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ouch Only thing going here is the Change Increment Function
+            }
+            //demand = result; // set the property labeled "demand"
+            double days = utilities.daysInAYear(year);
+            demand = (result * utilities.convertGallonsMG) / days;  // set the property labeled "demand"
+            DemandCheck(region, year, demand, SW);
+        }
+        // Testing
+        void DemandCheck(string region, int currentYear, double demand, StreamWriter sw)
+        {
+            sw.WriteLine(region + "," + currentYear + "," + resultLSF + "," + resultTSF + "," + resultSSF + "," + resultSMF + ","
+               + resultWMF + "," + resultMMF + "," + resultHMF + "," + resultSUB + "," + resultExH + "," + resultExL + "," + demand);
+        }
+        double resultLSF
+        { get; set; }
+        double resultTSF
+        { get; set; }
+        double resultSSF
+        { get; set; }
+        double resultSMF
+        { get; set; }
+        double resultWMF
+        { get; set; }
+        double resultMMF
+        { get; set; }
+        double resultHMF
+        { get; set; }
+        double resultSUB
+        { get; set; }
+        double resultExH
+        { get; set; }
+        double resultExL
+        { get; set; }
+    
+        // ============================================================================================================
+        // 
         internal void calculateDemand(string region, int year, double AdjustEfficiency, double period)
         {
             double result = 0;
@@ -926,8 +1075,6 @@ namespace WaterSim_Base
                 // Get the modify factor to apply for this period using the coefficient AdjustDamper
                 //double ModifyRate = ChangeIncrement(1, period, AdjustDamper, MinValue); // NOT MinValue ... its the Limit in his code
                 double startValue = 1;
-                double AdjustDamper = CRF.FUrbanLowDensityChangeCoef;
-                ModifyRate = utilities.AnnualExponentialChange(startValue, period, AdjustDamper, AdjustEfficiency);
                 if (DUAdemand)
                 {
                     // Calculate water demand from the Denver Water data outdoor water use per DUA (equation that I created) plus 
@@ -940,23 +1087,23 @@ namespace WaterSim_Base
                     result = UH_SMFunits * DemandFromDUA("SMF") *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_SMFChangeCoef, AdjustEfficiency);
 
-                    result = UH_WMFunits * DemandFromDUA("WMF") *
+                    result += UH_WMFunits * DemandFromDUA("WMF") *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_WMFChangeCoef, AdjustEfficiency);
 
-                    result = UH_MMFunits * DemandFromDUA("MMF") *
+                    result += UH_MMFunits * DemandFromDUA("MMF") *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_MMFChangeCoef, AdjustEfficiency);
 
-                    result = UH_HMFunits * DemandFromDUA("HMF") *
+                    result += UH_HMFunits * DemandFromDUA("HMF") *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_HMFChangeCoef, AdjustEfficiency);
 
                     //
                     //result += ULunits * DemandFromDUA("QuarterAcre") * ModifyRate;
-                    result += UL_LSFunits * DemandFromDUA("LSF") * 
-                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_LSFChangeCoef, AdjustEfficiency); 
-                        result += UL_TSFunits * DemandFromDUA("TSF") *
-                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_TSFChangeCoef, AdjustEfficiency);
-                        result += UL_SSFunits * DemandFromDUA("SSF") *
-                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_SSFChangeCoef, AdjustEfficiency);
+                    result += UL_LSFunits * DemandFromDUA("LSF") *
+                            utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_LSFChangeCoef, AdjustEfficiency);
+                    result += UL_TSFunits * DemandFromDUA("TSF") *
+                        utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_TSFChangeCoef, AdjustEfficiency);
+                    result += UL_SSFunits * DemandFromDUA("SSF") *
+                        utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_SSFChangeCoef, AdjustEfficiency);
 
                     //
                     result += Subunits * DemandFromDUA("ThirdAcre") *
@@ -968,6 +1115,9 @@ namespace WaterSim_Base
                 }
                 else
                 {
+                    double AdjustDamper = CRF.FUrbanLowDensityChangeCoef; // Not sure what this should be NOW??? 02.02.22 das
+                    ModifyRate = utilities.AnnualExponentialChange(startValue, period, AdjustDamper, AdjustEfficiency);
+
                     // Use the rates that are read in from the CSV file for each LCLU class
                     // File is WestModelGrowthRates_5.csv
                     // NOTE: these data need updating.......
@@ -989,9 +1139,9 @@ namespace WaterSim_Base
             double days = utilities.daysInAYear(year);
             demand = (result * utilities.convertGallonsMG) / days;  // set the property labeled "demand"
         }
-       }
-  
+       // ==============================================================================================================================================
 
+    }
     #endregion Rural Demand Class- LCLU Urban
     // ==============================================================================================================================================
 
@@ -1007,6 +1157,10 @@ namespace WaterSim_Base
         public RateDataClass FRDC;
         public DataClassLCLU FDClclu;
         //
+        //
+        StreamWriter SW;
+        //
+
         // Version 2 ICLUS
         public DataClassLcluArea FDLCLU;
 
@@ -1158,9 +1312,16 @@ namespace WaterSim_Base
             return temp;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        public override double GetDemand(int currentYear, StreamWriter sw)
+        {
+            double temp = 0;
+            Demand(currentYear);
+
+            temp = Math.Round(demandAg);
+            return temp;
+        }      /// <summary>
+               /// 
+               /// </summary>
         public override void Initialize_Variables()
         {
             throw new NotImplementedException();
@@ -1178,6 +1339,7 @@ namespace WaterSim_Base
         public override void switchUrbanLCLU(int year) { }
         // ========================================================================================
         //
+        //public override void preProcessDemand(int currentYear)
         // Process
         /// <summary>
         /// 
@@ -1253,6 +1415,10 @@ namespace WaterSim_Base
         public RateDataClass FRDC;
         public DataClassLCLU FDClclu;
         //
+        //
+        StreamWriter SW;
+        //
+
         double Fdemand;
         // List<Industry> industryList = new List<Industry>();
         internal const double irate = 0.03;
@@ -1397,6 +1563,13 @@ namespace WaterSim_Base
         /// <param name="currentYear"></param>
         /// <returns></returns>
         public override double GetDemand(int currentYear)
+        {
+            double temp = 0;
+            Demand(currentYear);
+            temp = demandIndustry;
+            return temp;
+        }
+        public override double GetDemand(int currentYear, StreamWriter sw)
         {
             double temp = 0;
             Demand(currentYear);

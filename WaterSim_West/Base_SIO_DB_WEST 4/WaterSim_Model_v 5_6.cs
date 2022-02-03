@@ -3514,6 +3514,8 @@ namespace WaterSimDCDC.Generic
         #endregion Model To Use
 
         // ------------------------------------------------------
+        // =======================================================================
+        // Original code
         //=======================================================
         //  Urban Density Management of ICLUS urban classes
         // 09.20.21 das
@@ -3552,12 +3554,160 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_UrbanHighDensity(Values[i]);
             }
         }
-        //
+        // =======================================================================
         // findMe
+        // =======================================================================
+        // NEW code as of February 2022 das
+        // ===========================================
+        /// <summary>
+        ///  Using Denver Water Small multi-family data
+        ///  to drive this density class
+        /// </summary>
+        public providerArrayProperty UrbanHighDensitySMF;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_UrbanHighDensityManagementSMF()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_UrbanHighDensitySMF();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_UrbanHighDensityManagementSMF(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_UrbanHighDensitySMF(Values[i]);
+            }
+        }
+        // =======================================================================
+        /// <summary>
+        /// using Denver water Three story walk-up density class
+        /// to drive this DUA density class
+        /// </summary>
+        public providerArrayProperty UrbanHighDensityWMF;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_UrbanHighDensityManagementWMF()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_UrbanHighDensityWMF();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_UrbanHighDensityManagementWMF(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_UrbanHighDensityWMF(Values[i]);
+            }
+        }
+        // =======================================================================
+        /// <summary>
+        ///  Using Denver Water Medium Multi-family density DUA data to drive this
+        ///  density class
+        /// </summary>
+        public providerArrayProperty UrbanHighDensityMMF;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_UrbanHighDensityManagementMMF()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_UrbanHighDensityMMF();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_UrbanHighDensityManagementMMF(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_UrbanHighDensityMMF(Values[i]);
+            }
+        }
+        // =======================================================================
+        /// <summary>
+        ///  Using Denver Water High density multi-family data class
+        ///  to drive this DUA class
+        /// </summary>
+        public providerArrayProperty UrbanHighDensityHMF;
+
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] geti_UrbanHighDensityManagementHMF()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].geti_UrbanHighDensityHMF();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void seti_UrbanHighDensityManagementHMF(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].seti_UrbanHighDensityHMF(Values[i]);
+            }
+        }
+        // =======================================================================
 
 
         // =============================================================
-        // Original code 
+        // Original & NEW code 
+        #region low density access to CRF model
         ///------------------------------------------------------      
         ///<summary> Urban High intensity management control</summary>
         public providerArrayProperty UrbanLowDensity;
@@ -3596,7 +3746,7 @@ namespace WaterSimDCDC.Generic
         //
         // New code in January/ February 2022 das
         // Denver Water vernacular for density classifications
-        // =============================================================
+        // =======================================================================
         ///------------------------------------------------------      
         ///<summary> Urban High intensity management control</summary>
         public providerArrayProperty UrbanLowDensityLSF;
@@ -3703,12 +3853,10 @@ namespace WaterSimDCDC.Generic
             }
         }
         // ------------------------------------------------------
-        // =======================================================
-
-
-
-
-
+        // =======================================================================
+        #endregion low (housing) density access to CRF model
+        // =============================================================
+        #region suburban, Exurban housing density access to CRF model
         ///------------------------------------------------------      
         ///<summary> Urban High intensity management control</summary>
         public providerArrayProperty SuburbanDensity;
@@ -3808,8 +3956,9 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_ExurbanLowDensity(Values[i]);
             }
         }
+        #endregion suburan, exhurban density
         #endregion Urban Density Management
-        //=======================================================
+        //==============================================================
         #region Updated Policies- October 2021
 
         ///------------------------------------------------------      
@@ -3884,9 +4033,6 @@ namespace WaterSimDCDC.Generic
         // =========================================================
         #endregion Updated Policies - October 2021
         //=======================================================
-
-
-
 
         //  ClimateDrought
         //=======================================================

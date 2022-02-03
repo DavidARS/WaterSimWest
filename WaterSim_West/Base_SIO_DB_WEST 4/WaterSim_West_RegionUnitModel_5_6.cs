@@ -1611,7 +1611,7 @@ namespace WaterSimDCDC.Generic
             densityManagement(StreamW);
             // end edits das 09.20.21
 
-              Urban(StreamW);
+            Urban(StreamW);
             //Urban();
  
             calculateGrayWater();
@@ -1711,10 +1711,18 @@ namespace WaterSimDCDC.Generic
             double startYears = 1;
             FUrbanHighDensityChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagement, initialValue, startYears, YearsToTarget);
             // end das edits 09.21.21
+            FUrbanHD_SMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementSMF, initialValue, startYears, YearsToTarget);
+            FUrbanHD_WMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementWMF, initialValue, startYears, YearsToTarget);
+            FUrbanHD_MMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementMMF, initialValue, startYears, YearsToTarget);
+            FUrbanHD_HMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementHMF, initialValue, startYears, YearsToTarget);
 
             // edits das 10.06.21
             FUrbanLowDensityChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagement, initialValue, startYears, YearsToTarget);
             //
+            FUrbanLD_LSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementLSF, initialValue, startYears, YearsToTarget);
+            FUrbanLD_TSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementTSF, initialValue, startYears, YearsToTarget);
+            FUrbanLD_SSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementSSF, initialValue, startYears, YearsToTarget);
+
             //
             // ------------------------------------------------------------------------------------------------------------------------------------
             FSuburbanDensityChangeCoef = utilities.ExponentialCoefficient(SuburbanDensityManagement, initialValue, startYears, YearsToTarget);
@@ -2487,7 +2495,7 @@ namespace WaterSimDCDC.Generic
 
 
 
-            writeToStream(sw, result, UnitName); 
+            //writeToStream(sw, result, UnitName); 
         }
         //void yearlyAverageRH()
         //{
@@ -2501,14 +2509,14 @@ namespace WaterSimDCDC.Generic
         // edit das 09.20.21
 
         //Urban high intensity: 10 DUA < UH
-            //Small multi-Family SMF		16.0  35.0%
-            //Three story walkup WMF		24.3  45.3%
-            //Mid-range multi-family MMF	71.8  12.4%
-            //High density multi-family HMF 115.2  7.3%
+        //Small multi-Family SMF		16.0  35.0%
+        //Three story walkup WMF		24.3  45.3%
+        //Mid-range multi-family MMF	71.8  12.4%
+        //High density multi-family HMF 115.2  7.3%
         //Urban low intensity: 1.6 < UL < 10 DUA
-            //Large single family LSF		2.8   20.7%
-            //Traditional single family 	5.1   70.8%
-            //Small single Family SSF		8.6    8.5%
+        //Large single family LSF		2.8   20.7%
+        //Traditional single family 	5.1   70.8%
+        //Small single Family SSF		8.6    8.5%
         //Suburban: 0.4 < S < 1.6 DUA
         //Exurban high intensity: 0.1 < EH< 0.4 DUA
         //Exurban low intensity: 0.02 < EL< 0.1 DUA
@@ -2525,30 +2533,88 @@ namespace WaterSimDCDC.Generic
         //
         // Gonna have to add to this method
         // 01.28.22 das
+        #region Density Management change coefficients
         void densityManagement(StreamWriter sw)
         {
             double result = 0;
             //int UDPeriod = (currentYear  - startYear) +1;
-            int UDPeriod = (currentYear - startYear);// + 1;
+            int UDPeriod = (currentYear - startYear) + 1;
             //
+            if(currentYear == 2016)
+            {
+                bool stop = true;
+            }
             // findMe
             // edit das 09.20.21, 10.06.21
             // This is the change in urban density.  Each policy should have its own set of factors
             // this one is for the urban density management control
-            //        
+            // =====================================================================================        
             if (UrbanHighDensityManagement != 1)
             {
                 result = generic(UrbanHighDensityManagement, FUrbanHighDensityChangeCoef, UDPeriod);
                 UrbanHighDensityChange = result;
                 //seti_UrbanHighDensity(result);
             }
+            // ==================================
+            if (UrbanHighDensityManagementSMF != 1)
+            {
+                result = generic(UrbanHighDensityManagementSMF, FUrbanHD_SMFChangeCoef, UDPeriod);
+                UrbanHighDensityChangeSMF = result;
+                //seti_UrbanHighDensity(result);
+            }
+            //
+            if (UrbanHighDensityManagementWMF != 1)
+            {
+                result = generic(UrbanHighDensityManagementWMF, FUrbanHD_WMFChangeCoef, UDPeriod);
+                UrbanHighDensityChangeWMF = result;
+                //seti_UrbanHighDensity(result);
+            }
+            //
+            if (UrbanHighDensityManagementMMF != 1)
+            {
+                result = generic(UrbanHighDensityManagementMMF, FUrbanHD_MMFChangeCoef, UDPeriod);
+                UrbanHighDensityChangeMMF = result;
+                //seti_UrbanHighDensity(result);
+            }
+            //
+            if (UrbanHighDensityManagementHMF != 1)
+            {
+                result = generic(UrbanHighDensityManagementHMF, FUrbanHD_HMFChangeCoef, UDPeriod);
+                UrbanHighDensityChangeHMF = result;
+                //seti_UrbanHighDensity(result);
+            }
+            //
+            // ==================================
+            // =====================================================================================
             if (UrbanLowDensityManagement != 1)
             {
                 result = generic(UrbanLowDensityManagement, FUrbanLowDensityChangeCoef, UDPeriod);
                 UrbanLowDensityChange = result;
                 //seti_UrbanLowDensity(result);
             }
+            //==================================
+            // NEW code 02.01.22 das
+            if (UrbanLowDensityManagementLSF != 1)
+            {
+                result = generic(UrbanLowDensityManagementLSF, FUrbanLD_LSFChangeCoef, UDPeriod);
+                UrbanLowDensityChangeLSF = result;
+                //seti_UrbanLowDensity(result);
+            }
+            if (UrbanLowDensityManagementTSF != 1)
+            {
+                result = generic(UrbanLowDensityManagementTSF, FUrbanLD_TSFChangeCoef, UDPeriod);
+                UrbanLowDensityChangeTSF = result;
+                //seti_UrbanLowDensity(result);
+            }
+            if (UrbanLowDensityManagementSSF != 1)
+            {
+                result = generic(UrbanLowDensityManagementSSF, FUrbanLD_SSFChangeCoef, UDPeriod);
+                UrbanLowDensityChangeSSF = result;
+                //seti_UrbanLowDensity(result);
+            }
 
+            // end edits NEW CODE 02.01.22 das
+            // ===================================
 
 
             // ====================================================================================
@@ -2571,24 +2637,41 @@ namespace WaterSimDCDC.Generic
                 ExurbanLowDensityChange = result;
                 //seti_ExurbanLowDensity(result);
             }
+            //
+            // edits 02.02.22 das this variable checkes to see if ANY of the density classes were
+            // modified from the UI. If not, then the LCLU Demand file bypasses code to speed up
+            // the runtime.
+            UrbanDensityChangeCheck = result;
+
             // =====================================================================================
             //writeToStream(sw, result); 
             //
         }
         // end edits 09.20.21
         // edits das 10.06.21
+        // This has to be changed. It DOES NOT work well...
+        // 02.03.22 das
         double generic(double DensityChangeValue,double Coef, int period)
         {
             double temp = 0;
             double startValue = 1;
+            double mod = 1;
             double annualFactor = AnnualExponentialChange(startValue, period, Coef, DensityChangeValue);
-            temp = annualFactor;// * 100;
+            if(DensityChangeValue < startValue)
+            {
+                mod = 0.999;
+            }
+            else
+            {
+                mod = 1.001;
+            }
+            temp = annualFactor * mod;// * 100;
             //result = Convert.ToInt32(temp);
             return temp;
         }
         // end edits das 10.06.21
         //
-
+        #endregion Density Management Change coefficients
         // created this method on 11.09.21 das
         void RainwaterStormWater()
         {
@@ -3344,7 +3427,7 @@ namespace WaterSimDCDC.Generic
             // Estimate demand
             // Is this the NEW structure?
             // 07.10.18 das
-            double Demand = this.URBAN.GetDemand(currentYear);
+            double Demand = this.URBAN.GetDemand(currentYear, sw);
             // 
             //// Sampson  Edits - 05.18.18
 
@@ -6509,9 +6592,12 @@ namespace WaterSimDCDC.Generic
         // =======================================================================
         //
         // User Policies - 
-        #region housing density management code
+        #region housing density management code       
         // =======================================================================
         //
+        // OLD code as of 02.01.22 das
+        //
+        #region old code - urban high density (intensitu) ICLUS data
         // High Intensity Urban Density Class ICLUS version 2
         //
         ///--------------------------------------------------------------
@@ -6557,12 +6643,180 @@ namespace WaterSimDCDC.Generic
             get { return d_uhdchange; }
             set { d_uhdchange = value; }
         }
+        #endregion old code ICLUS high intensity urban
         // ===============================================
+        // NEW code as of 02.01.22 das
+        // Four high density urban housing classes based on
+        // Denver water data; three low density
+        // ==================================================================================
+        #region high (housing) density classes - gets and sets
+        //
+        // =======================================================================
+        double d_urbanHighDensityManagementSMF = 1.00;
+        /// <summary>
+        /// Small multi-family density class
+        /// </summary>
+        /// <returns></returns>
+        public int geti_UrbanHighDensitySMF()
+        {
+            int TempInt = Convert.ToInt32(d_urbanHighDensityManagementSMF * 100);
+            return TempInt;
+        }
+        /// <summary>
+        /// Small multi-family density class - based on Denver Water data
+        /// 02.01.22 das
+        /// </summary>
+        /// <param name="value"></param>
+        public void seti_UrbanHighDensitySMF(int value)
+        {
+            d_urbanHighDensityManagementSMF = Convert.ToDouble(value) / 100;
+        }
+        // =========================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityManagementSMF
+        {
+            get { return d_urbanHighDensityManagementSMF; }
+        }
+        double d_uhdchangeSMF = 1.0;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityChangeSMF
+        {
+            get { return d_uhdchangeSMF; }
+            set { d_uhdchangeSMF = value; }
+        }
+        //
+        public double UrbanDensityChangeCheck
+        {
+            get; set; 
+        }
+        // =======================================================================
+
+        // =======================================================================
+        double d_urbanHighDensityManagementWMF = 1.00;
+        /// <summary>
+        /// Small multi-family density class
+        /// </summary>
+        /// <returns></returns>
+        public int geti_UrbanHighDensityWMF()
+        {
+            int TempInt = Convert.ToInt32(d_urbanHighDensityManagementWMF * 100);
+            return TempInt;
+        }
+        /// <summary>
+        /// Small multi-family density class - based on Denver Water data
+        /// 02.01.22 das
+        /// </summary>
+        /// <param name="value"></param>
+        public void seti_UrbanHighDensityWMF(int value)
+        {
+            d_urbanHighDensityManagementWMF = Convert.ToDouble(value) / 100;
+        }
+        // =========================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityManagementWMF
+        {
+            get { return d_urbanHighDensityManagementWMF; }
+        }
+        double d_uhdchangeWMF = 1.0;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityChangeWMF
+        {
+            get { return d_uhdchangeWMF; }
+            set { d_uhdchangeWMF = value; }
+        }
+        // =======================================================================
 
 
+        // =======================================================================
+        double d_urbanHighDensityManagementMMF = 1.00;
+        /// <summary>
+        /// Small multi-family density class
+        /// </summary>
+        /// <returns></returns>
+        public int geti_UrbanHighDensityMMF()
+        {
+            int TempInt = Convert.ToInt32(d_urbanHighDensityManagementMMF * 100);
+            return TempInt;
+        }
+        /// <summary>
+        /// Small multi-family density class - based on Denver Water data
+        /// 02.01.22 das
+        /// </summary>
+        /// <param name="value"></param>
+        public void seti_UrbanHighDensityMMF(int value)
+        {
+            d_urbanHighDensityManagementMMF = Convert.ToDouble(value) / 100;
+        }
+        // =========================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityManagementMMF
+        {
+            get { return d_urbanHighDensityManagementMMF; }
+        }
+        double d_uhdchangeMMF = 1.0;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityChangeMMF
+        {
+            get { return d_uhdchangeMMF; }
+            set { d_uhdchangeMMF = value; }
+        }
+        // =======================================================================
 
 
+        // =======================================================================
+        double d_urbanHighDensityManagementHMF = 1.00;
+        /// <summary>
+        /// Small multi-family density class
+        /// </summary>
+        /// <returns></returns>
+        public int geti_UrbanHighDensityHMF()
+        {
+            int TempInt = Convert.ToInt32(d_urbanHighDensityManagementHMF * 100);
+            return TempInt;
+        }
+        /// <summary>
+        /// Small multi-family density class - based on Denver Water data
+        /// 02.01.22 das
+        /// </summary>
+        /// <param name="value"></param>
+        public void seti_UrbanHighDensityHMF(int value)
+        {
+            d_urbanHighDensityManagementHMF = Convert.ToDouble(value) / 100;
+        }
+        // =========================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityManagementHMF
+        {
+            get { return d_urbanHighDensityManagementMMF; }
+        }
+        double d_uhdchangeHMF = 1.0;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double UrbanHighDensityChangeHMF
+        {
+            get { return d_uhdchangeHMF; }
+            set { d_uhdchangeHMF = value; }
+        }
+        // =======================================================================
 
+
+        #endregion high (housing) density classes
+        // ==============================================================================
         #region low (housing) density gets and sets
         // -----------------------------------------------
         // Original code (prior to 2022 das)
@@ -6727,8 +6981,9 @@ namespace WaterSimDCDC.Generic
         }
         // ==============================================================================
         #endregion urban low (housing) density code
-
-        // ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        // ==============================================================================
+        #region suburban and exurban density classes ICLUS data
+        // ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
         // ------------------------------------------------------------------
         // Suburban Density Class
         //
@@ -6853,6 +7108,7 @@ namespace WaterSimDCDC.Generic
             get { return d_eldchange; }
             set { d_ehdchange = value; }
         }
+        #endregion ICLUS suburban and exurban density classes
         #endregion Housing density code 
         // ------------------------------------------------------------------
         // Added policies - October 2021
@@ -8705,12 +8961,12 @@ namespace WaterSimDCDC.Generic
             if (TargetValue < StartValue)
             {
                 // Declining, Target can not be =< Limit, if it is adjust to be slightly above limit
-                if (TargetValue <= Limit) TargetValue = Limit * 1.01;
+                if (TargetValue <= Limit) TargetValue = Limit * 1.001;
             }
             else
             {
                 // Increasing Declining, Target can not be >= Limit, if it is adjust to be slightly below limit
-                if (TargetValue >= Limit) TargetValue = Limit * 0.99;
+                if (TargetValue >= Limit) TargetValue = Limit * 0.999;
             }
             if (((TargetValue > StartValue) && (Limit >= TargetValue)) || ((TargetValue < StartValue) && (TargetValue >= Limit)))
             {
@@ -8720,8 +8976,9 @@ namespace WaterSimDCDC.Generic
                 //double Periods = TargetPeriod - StartPeriod;
                 //double LN = Math.Log(Ratio);
                 //double Value = LN / Periods;
-
+                double mod = 1.0;
                 result = Math.Log((Limit - StartValue) / (Limit - TargetValue)) / (TargetPeriod - StartPeriod);
+                result *= mod;
 
             }
             return result;

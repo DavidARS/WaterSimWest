@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -17,6 +18,8 @@ namespace WaterSim_Base
     {
         // objects
         WaterSimCRFModel CRF;
+        //
+        StreamWriter sw;
         //
         double Fdemand;
         // constants
@@ -120,6 +123,13 @@ namespace WaterSim_Base
 
         // Functions & Methods
         // =================================================================================================
+        public override double GetDemand(int currentYear, StreamWriter sw)
+        {
+            double temp = 0;
+            Demand(currentYear);
+            temp = demand;
+            return temp;
+        }
         /// <summary>
         /// 
         /// </summary>

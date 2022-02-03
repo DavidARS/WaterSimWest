@@ -88,19 +88,19 @@
     <Compile Include="Demand_Ag.cs" />
     <Compile Include="Demand_Industry.cs" />
     <Compile Include="Demand_Power.cs" />
-    <Compile Include="Demand_Rural_LCLU_v2.cs" />
+    <Compile Include="Demand_Rural_LCLU_v5_6.cs" />
     <Compile Include="Demand_Urban.cs" />
     <Compile Include="NewWater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainWaterHarvesting.cs" />
     <Compile Include="RiverModels_V1.cs" />
     <Compile Include="StormWater_v2.cs" />
-    <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_3_5.cs" />
+    <Compile Include="WaterSimDCDC_API_WaterWestRegion_Manager_v_5_6.cs" />
     <Compile Include="WaterSimDCDC_API_WestTools.cs" />
     <Compile Include="WaterSiMDCDC_API_West_Indicators_v2_3.cs" />
     <Compile Include="WaterSim_CORiverModel.cs" />
-    <Compile Include="WaterSim_Model_v 5_3.cs" />
-    <Compile Include="WaterSim_West_RegionUnitModel_5_3.cs" />
+    <Compile Include="WaterSim_Model_v 5_6.cs" />
+    <Compile Include="WaterSim_West_RegionUnitModel_5_6.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DenverDemandModel\TestDDM\DenverDemandModel_v1\DenverDemandModel_v1.csproj">
