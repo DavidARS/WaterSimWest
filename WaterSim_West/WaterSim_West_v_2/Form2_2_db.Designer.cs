@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -384,7 +384,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1175, 490);
+            this.tabPage2.Size = new System.Drawing.Size(1175, 549);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Parameters by Provider";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -415,17 +415,17 @@
             this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(5, 38);
             this.chart1.Margin = new System.Windows.Forms.Padding(2);
             this.chart1.Name = "chart1";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chart1.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(692, 387);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
@@ -437,7 +437,7 @@
             this.ActionPage.Location = new System.Drawing.Point(4, 29);
             this.ActionPage.Margin = new System.Windows.Forms.Padding(2);
             this.ActionPage.Name = "ActionPage";
-            this.ActionPage.Size = new System.Drawing.Size(1175, 490);
+            this.ActionPage.Size = new System.Drawing.Size(1175, 549);
             this.ActionPage.TabIndex = 2;
             this.ActionPage.Text = "Actions";
             this.ActionPage.UseVisualStyleBackColor = true;
@@ -490,7 +490,7 @@
             this.tabPageAssessment.Location = new System.Drawing.Point(4, 29);
             this.tabPageAssessment.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageAssessment.Name = "tabPageAssessment";
-            this.tabPageAssessment.Size = new System.Drawing.Size(1175, 490);
+            this.tabPageAssessment.Size = new System.Drawing.Size(1175, 549);
             this.tabPageAssessment.TabIndex = 3;
             this.tabPageAssessment.Text = "Assessment";
             this.tabPageAssessment.UseVisualStyleBackColor = true;
@@ -711,7 +711,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 29);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1175, 490);
+            this.tabPage3.Size = new System.Drawing.Size(1175, 549);
             this.tabPage3.TabIndex = 4;
             this.tabPage3.Text = "Parameter Tree Example";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -727,7 +727,7 @@
             this.parameterTreeView1.Name = "parameterTreeView1";
             this.parameterTreeView1.ParameterManager = null;
             this.parameterTreeView1.ShowFieldNames = WaterSimDCDC.WestVisual.eShowFieldName.sfHide;
-            this.parameterTreeView1.Size = new System.Drawing.Size(314, 451);
+            this.parameterTreeView1.Size = new System.Drawing.Size(346, 544);
             this.parameterTreeView1.TabIndex = 2;
             this.parameterTreeView1.UseCheckBoxes = true;
             // 

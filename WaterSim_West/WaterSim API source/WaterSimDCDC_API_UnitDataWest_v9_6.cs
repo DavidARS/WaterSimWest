@@ -2273,13 +2273,17 @@ namespace WaterSimDCDC.Generic
         double _LSF;
         double _TSF;
         double _SSF;
-        double _SUB;
-        double _ExH;
-        double _ExL;
-
+        //
+        double _SMFDUA;
+        double _WMFDUA;
+        double _MMFDUA;
+        double _HMFDUA;
+        double _LSFDUA;
+        double _TSFDUA;
+        double _SSFDUA;
 
         /// <summary>
-        ///  Struct to read in the regional urban density classes based on the Denver Water Work
+        /// 
         /// </summary>
         /// <param name="aUnitName"></param>
         /// <param name="aUnitCode"></param>
@@ -2290,15 +2294,21 @@ namespace WaterSimDCDC.Generic
         /// <param name="LSF"></param>
         /// <param name="TSF"></param>
         /// <param name="SSF"></param>
-        /// <param name="SUB"></param>
-        /// <param name="ExH"></param>
-        /// <param name="ExL"></param>
-        public UrbanDensityClassStruct(string aUnitName, string aUnitCode, double SMF, double WMF, double MMF
-            , double HMF, double LSF, double TSF, double SSF, double SUB, double ExH, double ExL)
+        /// <param name="SMFDUA"></param>
+        /// <param name="WMFDUA"></param>
+        /// <param name="MMFDUA"></param>
+        /// <param name="HMFDUA"></param>
+        /// <param name="LSFDUA"></param>
+        /// <param name="TSFDUA"></param>
+        /// <param name="SSFDUA"></param>
+        public UrbanDensityClassStruct(string aUnitName, string aUnitCode, double SMF, double WMF, double MMF,
+            double HMF, double LSF, double TSF, double SSF,
+            double SMFDUA, double WMFDUA, double MMFDUA,
+            double HMFDUA, double LSFDUA, double TSFDUA, double SSFDUA
+            )
         {
             bool isErr = false;
             string errMsg = "";
-
 
             FUnitName = aUnitName;
             FUnitName = aUnitName;
@@ -2321,15 +2331,26 @@ namespace WaterSimDCDC.Generic
             _LSF = LSF;
             _TSF = TSF;
             _SSF = SSF;
-            _SUB = SUB;
-            _ExH = ExH;
-            _ExL = ExL;
-
+            //
+            _SMFDUA = SMFDUA;
+            _WMFDUA = WMFDUA;
+            _MMFDUA = MMFDUA;
+            _HMFDUA = HMFDUA;
+            _LSFDUA = LSFDUA;
+            _TSFDUA = TSFDUA;
+            _SSFDUA = SSFDUA;
+            //
         }
+        /// <summary>
+        /// Region name
+        /// </summary>
         public string UnitName
         {
             get { return FUnitName; }
         }
+        /// <summary>
+        ///  Region code
+        /// </summary>
         public int UnitCode
         {
             get { return FUnitCode; }
@@ -2356,13 +2377,27 @@ namespace WaterSimDCDC.Generic
         { get { return _TSF; } set { _TSF = value; } }
         public double UL_SSF
         { get { return _SSF; } set { _SSF = value; } }
-        public double SUB
-        { get { return _SUB; } set { _SUB = value; } }
-        public double ExH
-        { get { return _ExH; } set { _ExH = value; } }
-        public double ExL
-        { get { return _ExL; } set { _ExL = value; } }
+        //
+        public double UH_SMFDUA
+        { get { return _SMFDUA; } set { _SMFDUA = value; } }
+        public double UH_WMFDUA
+        { get { return _WMFDUA; } set { _WMFDUA = value; } }
+        public double UH_MMFDUA
+        { get { return _MMFDUA; } set { _MMFDUA = value; } }
+        public double UH_HMFDUA
+        { get { return _HMFDUA; } set { _HMFDUA = value; } }
+        public double UL_LSFDUA
+        { get { return _LSFDUA; } set { _LSFDUA = value; } }
+        public double UL_TSFDUA
+        { get { return _TSFDUA; } set { _TSFDUA = value; } }
+        public double UL_SSFDUA
+        { get { return _SSFDUA; } set { _SSFDUA = value; } }
     }
+    /// <summary>
+    /// Class to read in the density proportions by region to use
+    /// for the urban land cover land use data for housing density
+    /// 02.08.22 das
+    /// </summary>
     public class UrbanDensityDataClass
     {
         // DataTable Parameters
@@ -2387,9 +2422,19 @@ namespace WaterSimDCDC.Generic
         string FLSFFieldStr = "LSF";
         string FTSFFieldStr = "TSF";
         string FSSFFieldStr = "SSF";
-        string FSUBFieldStr = "SUB";
-        string FExUHFieldStr = "ExUH";
-        string FExULFeldStr = "ExUL";
+        //
+        string FSMFduaFieldStr = "SMFDUA";
+        string FWMFduaFieldStr = "WMFDUA";
+        string FMMFduaFieldStr = "MMFDUA";
+        string FHMFduaFieldStr = "HMFDUA";
+        //
+        string FLSFduaFieldStr = "LSFDUA";
+        string FTSFduaFieldStr = "TSFDUA";
+        string FSSFduaFieldStr = "SSFDUA";
+
+        //string FSUBFieldStr = "SUB";
+        //string FExUHFieldStr = "ExUH";
+        //string FExULFeldStr = "ExUL";
         //
         // ========================================
 
@@ -2402,15 +2447,27 @@ namespace WaterSimDCDC.Generic
         double[] FWMFArray = null;
         double[] FMMFArray = null;
         double[] FHMFArray = null;
-        // ===========================
+        // =================
         // 06.29.18 LCLU arrays
         double[] FLSFArray = null;
         double[] FTSFArray = null;
         double[] FSSFArray = null;
         // ===========================
-        double[] FSubArray = null;
-        double[] FExUHighArray = null;
-        double[] FExULowArray = null;
+        double[] FSMFduaArray = null;
+        double[] FWMFduaArray = null;
+        double[] FMMFduaArray = null;
+        double[] FHMFduaArray = null;
+        // ===================
+        // 06.29.18 LCLU arrays
+        double[] FLSFduaArray = null;
+        double[] FTSFduaArray = null;
+        double[] FSSFduaArray = null;
+
+
+        // ====================================
+        //double[] FSubArray = null;
+        //double[] FExUHighArray = null;
+        //double[] FExULowArray = null;
         // ====================================
 
         List<UrbanDensityClassStruct> FDensityDataList = new List<UrbanDensityClassStruct>();
@@ -2431,25 +2488,37 @@ namespace WaterSimDCDC.Generic
             TheData = Tools.LoadTable(DbCon, FFilename, ref isErr, ref errMessage);
             if (isErr)
             {
-                throw new Exception("Error loading Urban Density Data. " + errMessage);
+                throw new Exception("Error loading Urban Density and Dwelling Units per acre Data. " + errMessage);
             }
             // build data arrays
+            // ============================================
             int arraysize = TheData.Rows.Count;
             FSMFArray = new double[arraysize];
             FWMFArray = new double[arraysize];
             FMMFArray = new double[arraysize];
-            FMMFArray = new double[arraysize];
-            // ===================================
+            FHMFArray = new double[arraysize];
+            // ====================
             // 06.29.18
             FLSFArray = new double[arraysize];
             FTSFArray = new double[arraysize];
             FSSFArray = new double[arraysize];
             // ============================================
-            FSubArray = new double[arraysize];
-            FExUHighArray = new double[arraysize];
-            FExULowArray = new double[arraysize];
+            FSMFduaArray = new double[arraysize];
+            FWMFduaArray = new double[arraysize];
+            FMMFduaArray = new double[arraysize];
+            FHMFduaArray = new double[arraysize];
+            // ====================
+            // 06.29.18
+            FLSFduaArray = new double[arraysize];
+            FTSFduaArray = new double[arraysize];
+            FSSFduaArray = new double[arraysize];
+
             // ===========================================
-            int CodeI = 0;
+            //FSubArray = new double[arraysize];
+            //FExUHighArray = new double[arraysize];
+            //FExULowArray = new double[arraysize];
+            // ===========================================
+            //int CodeI = 0;
             foreach (DataRow DR in TheData.Rows)
             {
                 // Get name and code
@@ -2474,14 +2543,28 @@ namespace WaterSimDCDC.Generic
                     string mmfstr = DR[FMMFFieldStr].ToString();
                     string hmfstr = DR[FHMFFieldStr].ToString();
                     //
-                    // =======================================================
+                    // =============================
                     // 02.02.22
                     string lsfstr = DR[FLSFFieldStr].ToString();
                     string tsfstr = DR[FTSFFieldStr].ToString();
                     string ssfstr = DR[FSSFFieldStr].ToString();
-                    string substr = DR[FSUBFieldStr].ToString();
-                    string exhstr = DR[FExUHFieldStr].ToString();
-                    string exlstr = DR[FExULFeldStr].ToString();
+                    // =========================================
+                    string smfDUAstr = DR[FSMFduaFieldStr].ToString();
+                    string wmfDUAstr = DR[FWMFduaFieldStr].ToString();
+                    string mmfDUAstr = DR[FMMFduaFieldStr].ToString();
+                    string hmfDUAstr = DR[FHMFduaFieldStr].ToString();
+                    //
+                    // =============================
+                    // 02.02.22
+                    string lsfDUAstr = DR[FLSFduaFieldStr].ToString();
+                    string tsfDUAstr = DR[FTSFduaFieldStr].ToString();
+                    string ssfDUAstr = DR[FSSFduaFieldStr].ToString();
+                    // ===============================================
+
+                    // =========================================
+                    //string substr = DR[FSUBFieldStr].ToString();
+                    //string exhstr = DR[FExUHFieldStr].ToString();
+                    //string exlstr = DR[FExULFeldStr].ToString();
                     //
                     double Tempsmf = Tools.ConvertToDouble(smfstr, ref isErr, ref errMessage);
                     if (!isErr)
@@ -2504,18 +2587,35 @@ namespace WaterSimDCDC.Generic
                                             double Tempssf = Tools.ConvertToDouble(ssfstr, ref isErr, ref errMessage);
                                             if (!isErr)
                                             {
-                                                double Tempsub = Tools.ConvertToDouble(substr, ref isErr, ref errMessage);
+                                                double TempDUAsmf = Tools.ConvertToDouble(smfDUAstr, ref isErr, ref errMessage);
                                                 if (!isErr)
                                                 {
-                                                    double TempExH = Tools.ConvertToDouble(exhstr, ref isErr, ref errMessage);
+                                                    double TempDUAwmf = Tools.ConvertToDouble(wmfDUAstr, ref isErr, ref errMessage);
                                                     if (!isErr)
                                                     {
-                                                        double TempExL = Tools.ConvertToDouble(exlstr, ref isErr, ref errMessage);
+                                                        double TempDUAmmf = Tools.ConvertToDouble(mmfDUAstr, ref isErr, ref errMessage);
                                                         if (!isErr)
                                                         {
-                                                            UrbanDensityClassStruct DCS = new UrbanDensityClassStruct(namestr, codestr, Tempsmf, Tempwmf,
-                                                            Tempmmf, Temphmf, Templsf, Temptsf, Tempssf, Tempsub, TempExH, TempExL);
-                                                            FDensityDataList.Add(DCS);
+                                                            double TempDUAhmf = Tools.ConvertToDouble(hmfDUAstr, ref isErr, ref errMessage);
+                                                            if (!isErr)
+                                                            {
+                                                                double TempDUAlsf = Tools.ConvertToDouble(lsfDUAstr, ref isErr, ref errMessage);
+                                                                if (!isErr)
+                                                                {
+                                                                    double TempDUAtsf = Tools.ConvertToDouble(tsfDUAstr, ref isErr, ref errMessage);
+                                                                    if (!isErr)
+                                                                    {
+                                                                        double TempDUAssf = Tools.ConvertToDouble(ssfDUAstr, ref isErr, ref errMessage);
+                                                                        if (!isErr)
+                                                                        {
+                                                                            UrbanDensityClassStruct DCS = new UrbanDensityClassStruct(namestr, codestr, Tempsmf, Tempwmf,
+                                                                               Tempmmf, Temphmf, Templsf, Temptsf, Tempssf, TempDUAsmf, TempDUAwmf, TempDUAmmf, TempDUAhmf,
+                                                                               TempDUAlsf, TempDUAtsf, TempDUAssf);
+                                                                            FDensityDataList.Add(DCS);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -2531,15 +2631,15 @@ namespace WaterSimDCDC.Generic
  
         }
         /// <summary>
-        /// Smal multi-famil proporion by region
+        /// 
         /// </summary>
-        /// <param name="Code"></param>
+        /// <param name="region"></param>
         /// <returns></returns>
-        public double FastSMFproportion(int Code)
+        public double FastSMFproportion(string region)
         {
             double temp = InvalidRate;
-            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
-            if (TheData.UnitCode == Code)
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
             {
                 temp = TheData.UH_SMF;
             }
@@ -2550,11 +2650,11 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="Code"></param>
         /// <returns></returns>
-        public double FastWMFproportion(int Code)
+        public double FastWMFproportion(string region)
         {
             double temp = InvalidRate;
-            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
-            if (TheData.UnitCode == Code)
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
             {
                 temp = TheData.UH_WMF;
             }
@@ -2565,11 +2665,11 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="Code"></param>
         /// <returns></returns>
-        public double FastMMFproportion(int Code)
+        public double FastMMFproportion(string region)
         {
             double temp = InvalidRate;
-            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
-            if (TheData.UnitCode == Code)
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
             {
                 temp = TheData.UH_MMF;
             }
@@ -2580,16 +2680,180 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="Code"></param>
         /// <returns></returns>
-        public double FastHMFproportion(int Code)
+        public double FastHMFproportion(string region)
         {
             double temp = InvalidRate;
-            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
-            if (TheData.UnitCode == Code)
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
             {
                 temp = TheData.UH_HMF;
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <returns></returns>
+        public double FastLSFproportion(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_LSF;
+            }
+            return temp;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <returns></returns>
+        public double FastTSFproportion(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_TSF;
+            }
+            return temp;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <returns></returns>
+        public double FastSSFproportion(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSF;
+            }
+            return temp;
+        }
+        // ===========================================================
+        // Dwelling Units per acre
+        // ====================================
+        public double FastSMFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+
+        public double FastWMFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+
+        public double FastMMFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+        public double FastHMFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+        // ------------------------------------
+        public double FastLSFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+        public double FastTSFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+        public double FastSSFDUA(string region)
+        {
+            double temp = InvalidRate;
+            UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitName == region; });
+            if (TheData.UnitName == region)
+            {
+                temp = TheData.UL_SSFDUA;
+            }
+            return temp;
+        }
+
+        // ===========================================================
+
+        //public double FastSUBproportion(int Code)
+        //{
+        //    double temp = InvalidRate;
+        //    UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
+        //    if (TheData.UnitCode == Code)
+        //    {
+        //        temp = TheData.SUB;
+        //    }
+        //    return temp;
+        //}
+
+        //public double FastExHproportion(int Code)
+        //{
+        //    double temp = InvalidRate;
+        //    UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
+        //    if (TheData.UnitCode == Code)
+        //    {
+        //        temp = TheData.ExH;
+        //    }
+        //    return temp;
+        //}
+
+        //public double FastExLproportion(int Code)
+        //{
+        //    double temp = InvalidRate;
+        //    UrbanDensityClassStruct TheData = FDensityDataList.Find(delegate (UrbanDensityClassStruct DD) { return DD.UnitCode == Code; });
+        //    if (TheData.UnitCode == Code)
+        //    {
+        //        temp = TheData.ExL;
+        //    }
+        //    return temp;
+        //}
+
+
 
     }
 }

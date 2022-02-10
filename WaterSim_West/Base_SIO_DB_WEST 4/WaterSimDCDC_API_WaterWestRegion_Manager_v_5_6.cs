@@ -69,10 +69,18 @@ namespace WaterSimDCDC
     //                          WestModel.ColoradoRiverModel.ColoradoRiverModel.seti_COempiricalStopYear(StartYear))
     //
     // ver 8       10.12.21 Sampson
+    //             02.10.22 Sampson
+    //                      A) Added urban water demand (indoor and out) based on Denver Water Data equation for outdoor water
+    //                          use as a f(DUA) and indoor from Mayer and DeOreo.
+    //                      A1) Added controls on density to modify density of the classes
+    //                      B) Added Atmospheric Water (reduces urban demand)
+    //                      C) Added Rainwater harvesting (reduces urban demand)
+    //                      D) Added Stormwater runoff (a property that states the volume in gallons per acre per day)
     //=============================================================================================================================================================================================
     // Enums 
     //==========================================================
     //
+    #region enums and static info
     ///-------------------------------------------------------------------------------------------------
     /// <summary>   Values that represent providers. </summary>
     ///
@@ -304,7 +312,8 @@ namespace WaterSimDCDC
 
     }
 
-
+    #endregion Enums
+    // =========================================================
     #region  public static partial class eModelParam
     /////-------------------------------------------------------------------------------------------------
     /// <summary>   A model parameter. </summary>
@@ -467,6 +476,10 @@ namespace WaterSimDCDC
         public const int epP_RainWaterHarvest= 305;        // end edits 11.09.21 das
         public const int epP_Desalination = 306;
         public const int epP_Recycle = 307;
+        //
+        public const int epP_NewWaterSavings = 308;
+        public const int epP_StormwaterRunoff = 309;
+        //
         // Resources
         public const int epP_SurfaceFresh = 1031;
        // public const int epP_SurfaceLake = 1032;
@@ -611,10 +624,10 @@ namespace WaterSimDCDC
         //
     }
     #endregion  public static partial class eModelParam
-    //********************************************************************************
+    //**********************************************************
     //
     //
-    // *******************************************************************************
+    // *********************************************************
 
     ///-------------------------------------------------------------------------------------------------
     /// <summary>   Manager for water simulations. </summary>
@@ -622,7 +635,7 @@ namespace WaterSimDCDC
     /// <seealso cref="WaterSimDCDC.WaterSimManagerClass"/>
     ///-------------------------------------------------------------------------------------------------
     //
-
+    #region constructor for the WaterSim Manager
     //
     public partial class WaterSimManager :  WaterSimManagerClass
     {
@@ -671,16 +684,22 @@ namespace WaterSimDCDC
                 
             }
         }
-
+        #endregion region
+        //======================================================
         ProviderIntArray Out = new ProviderIntArray(0);
         ProviderIntArray In = new ProviderIntArray(0);
 
+        // ============================================================================================
+        // Temporary testing - default demand models
+        #region temporary demand model testing - set as default
+        //
         internal int[] MyValue = new int[ProviderClass.NumberOfProviders];
         //
         // Original LCLU data, model is set to = an index of 2
+        // edits 02.09.22 das - override method
         internal int defaultUrban = 3;
-        internal int defaultAg = 2;
-        internal int defaultIndustry = 2;
+        internal int defaultAg = 1;
+        internal int defaultIndustry = 1;
         /// <summary>
         /// 
         /// </summary>
@@ -704,7 +723,8 @@ namespace WaterSimDCDC
             MyWSIM.WaterSimWestModel.DemandModelInd_Index.setvalues(Out);
 
         }
-
+        #endregion
+        // =============================================================================================
         // EDIT QUAY 2 13 18
         // REMOVED ALL REFERENCES TO THE SINGLE RUN WATERSIM CRF
 
@@ -714,7 +734,7 @@ namespace WaterSimDCDC
         //}
 
         // EDIT END 2 13 18
-
+        #region properties (including runYear)
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Simulation cleanup. </summary>
         ///
@@ -900,7 +920,7 @@ namespace WaterSimDCDC
             throw new NotImplementedException();
         }
         // =========================================
-
+        #endregion
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Initializes the model parameters.</summary>
         ///-------------------------------------------------------------------------------------------------
@@ -944,7 +964,7 @@ namespace WaterSimDCDC
             // WEST MODEL PARAMETERS
             // ===========================================================================================================================
 
-            
+            #region population and GPCD
             // Population
             WestModel.Population = new providerArrayProperty(_pm, eModelParam.epP_Population, WestModel.geti_Pop, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Population, "Population Served", "POP_P", WestModel.Population));
@@ -964,7 +984,9 @@ namespace WaterSimDCDC
             WestModel.GPCD_other = new providerArrayProperty(_pm, eModelParam.epP_GPCD_other, WestModel.geti_gpcdOther, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_GPCD_other, "Other GPCD: Power and Industry", "OGPCD_P", WestModel.GPCD_other));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_GPCD_other, "The GPCD (Gallons per Capita per Day) for delivered water for Industrial Uses and Power Combined.", "GPCD", "Gallons per Capita per Day (GPCD)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-
+            #endregion
+            // ======================================================
+            #region water resources (surface, groundwater, efflusnt, etc.)
             // SurfaceFresh
             WestModel.SurfaceFresh = new providerArrayProperty(_pm, eModelParam.epP_SurfaceFresh, WestModel.geti_SurfaceWaterFresh, WestModel.seti_SurfaceWaterFresh, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_SurfaceFresh, "Surface Water (Fresh)", "SUR_P", WestModel.SurfaceFresh));
@@ -1037,7 +1059,9 @@ namespace WaterSimDCDC
             // TotalSupplies
             WestModel.TotalSupplies = new providerArrayProperty(_pm, eModelParam.epP_TotalSupplies, WestModel.geti_TotalSupplies, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_TotalSupplies, "Total Supplies", "TS_P", WestModel.TotalSupplies));
-
+            #endregion
+            // ======================================================
+            #region water demand
             // Urban
             WestModel.Urban = new providerArrayProperty(_pm, eModelParam.epP_Urban, WestModel.geti_Urban, WestModel.seti_Urban, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_Urban, "Cities and Towns Demand", "UD_P", WestModel.Urban));
@@ -1114,19 +1138,15 @@ namespace WaterSimDCDC
             WestModel.TotalDemandNet = new providerArrayProperty(ParamManager, eModelParam.epP_TotalDemandNet, WestModel.geti_TotalDemandNet, eProviderAggregateMode.agSum);
             ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_TotalDemandNet, "Total Demand (Net)", eModelFields.epP_TotalDemandNet, WestModel.TotalDemandNet));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_TotalDemandNet, "Total NetWater Demand for all consumers, essentially Water Sources - Demand", "MGD", "Total Net Water DEmand (MGD)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-
-
+            #endregion
             //=======================================================
             // Model Controls
-            // UrbanWaterConservation
-            //         public ModelParameterClass(int aModelParam, string aLabel, string aFieldname, rangeChecktype aRangeCheckType, int aLowRange, int aHighRange, DcheckProvider specialProviderRangeCheck, providerArrayProperty Providerproperty)
-            //  rangeChecktype.rctCheckRange, 50, 100,
-
+ 
             // use these for standards, change here instead of multiple places
             int[] StandardResourceAdjustments = new int[5] { 60,  80, 100, 120, 140};
             int[] StandardConsumerAdjustments = new int[5] { 100, 85,  70,  55,  40 };
-
-
+            // ======================================================
+            #region conservation and management
             WestModel.UrbanWaterConservation = new providerArrayProperty(_pm, eModelParam.epP_UrbanWaterConservation, WestModel.geti_UrbanConservation, WestModel.seti_UrbanConservation, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanWaterConservation, "Cities and Towns Water Use", "UCON_P", rangeChecktype.rctCheckRange, 20, 100,null, WestModel.UrbanWaterConservation));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanWaterConservation, "Reduces annual water use by improving efficiency of cities and towns water use.", "", "Reduce Cities and Towns Water Use", "Cities and Towns", new string[5] { "No Change", "Slight", "Moderate", "Severe", "Extreme" }, StandardConsumerAdjustments, new ModelParameterGroupClass[] { }));
@@ -1191,12 +1211,10 @@ namespace WaterSimDCDC
             WestModel.PopGrowthRateModifyer = new providerArrayProperty(_pm, eModelParam.epP_PopGrowthRateModifyer, WestModel.geti_PopGrowthRateMod, WestModel.seti_PopGrowthRateMod, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_PopGrowthRateModifyer, "Projected Population Growth", "POPGRM_P", rangeChecktype.rctCheckRange, 0, 150, RangeCheck.NoSpecialProvider,WestModel.PopGrowthRateModifyer));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_PopGrowthRateModifyer, "Increase or decrease the Projected Population Growth Rate.", "%", "Change Projected Population Growth", "", new string[5] { "Lowest", "Low","Lower", "Planned", "Higher" }, new int[5] { 40, 60, 80, 100, 120 }, new ModelParameterGroupClass[] { }));
-
-            // ClimateDrought
-            WestModel.ClimateDrought = new providerArrayProperty(_pm, eModelParam.epP_ClimateDrought, WestModel.geti_DroughtImpacts, WestModel.seti_DroughtImpacts, eProviderAggregateMode.agSum);
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ClimateDrought, "Drought Impacts on Rivers/Lakes ", "CLIM_P", WestModel.ClimateDrought));
-            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ClimateDrought, "Alteration in Fresh Water Withdrawals as a result of drought on supplies.", "Scenario-driven", "Drought Reductions in Surface Water", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-            //
+            #endregion
+            // ======================================================
+                     // =================================================================================
+            #region urban density management
             // add controls on urban density- ICLUS urban classes
             // 09.20.21 das
             //
@@ -1253,8 +1271,6 @@ namespace WaterSimDCDC
             WestModel.UrbanHighDensityHMF = new providerArrayProperty(_pm, eModelParam.epP_UrbanHighDensityHMFManagement, WestModel.geti_UrbanHighDensityManagementHMF, WestModel.seti_UrbanHighDensityManagementHMF, eProviderAggregateMode.agNone);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanHighDensityHMFManagement, "Modify Density: large multi-family", "UHMF_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.UrbanHighDensityHMF));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanHighDensityHMFManagement, "Adjust ICLUS high density using Denver Water HMF", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-
-
             // findMe
             //
             //
@@ -1275,7 +1291,9 @@ namespace WaterSimDCDC
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ExurbanLowDensityManagement, "Adjust Density: exurban 20 acre households", "ExUH_P", rangeChecktype.rctCheckRange, 20, 200, null, WestModel.ExurbanLowDensity));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ExurbanLowDensityManagement, "Adjust one of the five ICLUS urban density classes- Exurban Low Intensity", "Scenario-driven", "Density Management- ICLUS classes", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // end edits das 10.07.21
-            // ========================================================================================
+            #endregion
+            // =================================================================================
+            #region New water (Atmospheric and rainwater harvesting, and desalination)
             // 
             // Edits das 10.27.21 
             //
@@ -1300,8 +1318,16 @@ namespace WaterSimDCDC
             // end edits 11.09.21 das
             //
             // MAY NEED A water harvesting compliance parameter...
+            // output variable for Atmospheric water - Rainwater harvesting to bring to the UI
+            // edits 02.10.22 das
+            WestModel.NewWaterSavingsOnDemand = new providerArrayProperty(_pm, eModelParam.epP_NewWaterSavings, WestModel.geti_NewWaterSavingsOnDemand, eProviderAggregateMode.agSum);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_NewWaterSavings, "Water Savings-Rainwater&Atmos Water (MGD)", "WATSAV_P", WestModel.NewWaterSavingsOnDemand));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_NewWaterSavings, "Annual water savings MGD", "Savings", "New Water Savings (MGD)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
+            // end edits 02.10.22 das
 
-
+            WestModel.StormwaterPotential = new providerArrayProperty(_pm, eModelParam.epP_StormwaterRunoff, WestModel.geti_StormwaterPotential, eProviderAggregateMode.agSum);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_StormwaterRunoff, "Stormwater Potential (gal acre-1 d-1)", "STORM_P", WestModel.StormwaterPotential));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_StormwaterRunoff, "Daily stormwater runoff", "Stormwater", "Stormwater (G acre-1 d-1)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
 
             // edits 11.22.21 das
@@ -1313,11 +1339,13 @@ namespace WaterSimDCDC
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Desalination, "Desalination policy: 0=none, 1=direct use, 2=exchange,3=piped", "", "Scenario changes ", "", new string[4] { "None", "Direct", "Exchange", "Piped" }, new int[4] { 0, 1, 2, 3 }, new ModelParameterGroupClass[] { }));
             //      end edits 01.13.22 das
             // end edits 11.22.21 das
- 
+
             // edits 11.29.21 das
 
             // end edits 11.29.21 das
-
+            #endregion
+            // =================================================================================
+            #region Misc Quay variables
             // EDIT QUAY 9/10/20
             // Added External Model Parameters             
             // -------------------
@@ -1349,13 +1377,17 @@ namespace WaterSimDCDC
             // 09.15.20 das
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.ep_ColoradoRiverTraceStartYear, "The start year of a 30-year trace of flows on the Colorado River", "yr", "Year", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             // end 09.15.20 das
-
-            // END EDIT 
-
+            #endregion
+            // =================================================================================
+            #region Drought and Climate
 
             //  -----------------
             //  Drought Factors
             //  -----------------
+            // ClimateDrought
+            WestModel.ClimateDrought = new providerArrayProperty(_pm, eModelParam.epP_ClimateDrought, WestModel.geti_DroughtImpacts, WestModel.seti_DroughtImpacts, eProviderAggregateMode.agSum);
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epP_ClimateDrought, "Drought Impacts on Rivers/Lakes ", "CLIM_P", WestModel.ClimateDrought));
+            ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ClimateDrought, "Alteration in Fresh Water Withdrawals as a result of drought on supplies.", "Scenario-driven", "Drought Reductions in Surface Water", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
             // DroughtControl
             WestModel.DroughtControl = new providerArrayProperty(_pm, eModelParam.epP_DroughtControl, WestModel.geti_DroughtControl, WestModel.seti_DroughtControl, eProviderAggregateMode.agSum);
@@ -1376,6 +1408,7 @@ namespace WaterSimDCDC
 
             WestModel.DroughtDepth = new providerArrayProperty(_pm, eModelParam.epP_DroughtDepth, WestModel.geti_DroughtDepth, WestModel.seti_DroughtDepth, eProviderAggregateMode.agNone);
            
+            
 // QUAY EDIT 9/13/18
             //_pm.AddParameter(new ModelParameterClass(eModelParam.epP_DroughtDepth, "Drought Severity", "DDPTH_P", rangeChecktype.rctCheckRange, 0, 100, null, WestModel.DroughtDepth));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_DroughtDepth, "The severity of drought, as a percentage of base surface water flow to be realized at the mid point of the drought", "%", "Percent", "Drought Severity", new string[5] { "Extreme", "Severe", "Moderate", "Slight", "Minimal" }, new int[5] { 10, 30, 50, 70, 90 }, new ModelParameterGroupClass[] { }));
@@ -1404,8 +1437,10 @@ namespace WaterSimDCDC
             // this parameter is a little funky, creating a base parameter that you set actually set values in a provider parameer, one value all models.  But the year returned is the average of the models years
             _pm.AddParameter(new ModelParameterClass(eModelParam.ep_ClimateChangeTargetYear, "Climate Change Target Year", "CCY", rangeChecktype.rctCheckRange, 2015, 2100, WestModel.geti_ClimateChangeTargetYearBase, WestModel.seti_ClimateChangeTargetYearBase, RangeCheck.NoSpecialBase));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.ep_ClimateChangeTargetYear, "Average Year in which terageted climate change reduction in Surface flows is realized, returns a Missing Value", "Yr", "Year", "", new string[] {}, new int[] {}, new ModelParameterGroupClass[] { }));
-// END EDIT 
-
+            // END EDIT 
+            #endregion
+            // =================================================================================
+            #region Ag and misc Quay variables
             //--------------------------
             // AgricultureProduction
             WestModel.AgricultureProduction = new providerArrayProperty(_pm, eModelParam.epP_AgricultureProduction, WestModel.geti_AgricutureProduction, eProviderAggregateMode.agSum);
@@ -1438,8 +1473,9 @@ namespace WaterSimDCDC
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_DoReviseResource, "DoReviseResources", "REVR_P", rangeChecktype.rctCheckRange, 0, 1, null, WestModel.DoReviseResources));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_DoReviseResource, "A flag used to indicate if resources web controls will be revised at the end of a simulation to a value the reflects capped demand limits.  Will not work of DoCapLimits is not active, 1=Active and 0=Inactive", "FLAG", "DoReviseResources", "", new string[2] { "Turn Off", "Turn On" }, new int[2] { 0, 1 }, new ModelParameterGroupClass[] { }));
 
-            //==========================================
-            // FLUXES
+            #endregion
+            // =================================================================================
+            #region fluxes
             // =======================================
             // _SUR_UD
             WestModel._SUR_UD = new providerArrayProperty(_pm, eModelParam.epP_SUR_UD, WestModel.geti_SUR_UD, WestModel.seti_SUR_UD, eProviderAggregateMode.agSum);
@@ -1541,6 +1577,7 @@ namespace WaterSimDCDC
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_SAL_PD, "SAL to PTOT Allocation", "SAL_PD_P", WestModel._SAL_PD));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_SAL_PD, "SAL Water Supply allocated to PTOT water consumption", "MGD", "Million Gallons Per Day", "SAL to PTOT", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
+            #endregion
             // Demand Model Parameters
             // Last Write: 06.01.18, 02.16.21
             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1551,6 +1588,7 @@ namespace WaterSimDCDC
             // Industrial: 1= jobs/ employment, 2 = land-cover land-use
             //
             // Efficiency indicators
+            #region Demand model index - sets the water demand model to use
             // Urban:
             // Ag: Annual Farm Net Income, by county- USDA Agricultural Census Data and USGS County water data
             //     growth increases net income over time (based on a historical rate of change) Rate.csv file for the data
@@ -1566,7 +1604,9 @@ namespace WaterSimDCDC
             WestModel.DemandModelInd_Index = new providerArrayProperty(_pm, eModelParam.epP_DM_MODELtoUSE_Ind_P, WestModel.geti_DemandModelIndIndex, WestModel.seti_DemandModelIndIndex, eProviderAggregateMode.agNone);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_DM_MODELtoUSE_Ind_P, "Ind Demand Model to Use", "DEMMODELI_P", rangeChecktype.rctCheckRange, 0, 5, RangeCheck.NoSpecialProvider, WestModel.DemandModelInd_Index));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_DM_MODELtoUSE_Ind_P, "The Water Demand Model to Use", "NA", "No Units", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-
+            #endregion
+            // ================================================================================
+            #region Colorado Fluxes
             // Input Parameter 
             // EDIT QUAY 9/12/18 Very Very Late at night
             // Added 
@@ -1589,8 +1629,8 @@ namespace WaterSimDCDC
             WestModel._COL_PD = new providerArrayProperty(_pm, eModelParam.epP_COL_PD, WestModel.geti_COL_PD, WestModel.seti_COL_PD, eProviderAggregateMode.agSum);
             _pm.AddParameter(new ModelParameterClass(eModelParam.epP_COL_PD, "COL to PTOT Allocation", "COL_PD_P", WestModel._COL_PD));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_COL_PD, "Colorado  Water Supply allocated to PTOT water consumption", "MGD", "Million Gallons Per Day", "COL to PTOT", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
-
-
+            #endregion
+            // ================================================================================
             // END EDIT 9/12/18 even later
             //
             // moved below on 09.15.20 das- needed to coordinate the CO river model with the USGS data
@@ -1734,7 +1774,7 @@ namespace WaterSimDCDC
         #endregion Updated Policies October 2021
 
 
-
+        #region some default settings
         const int maxEmpiricalYear = 2018;
         void DefaultSettings()
         {
@@ -1793,11 +1833,8 @@ namespace WaterSimDCDC
 
         // =====================================================================================================================
         //
-       
+        #endregion 
         // ============================================
-
-      
-
         #region WaterSmithParamters
         // ---------------------------------------------------------------------------
         // ==============================================================================================================
@@ -1821,7 +1858,7 @@ namespace WaterSimDCDC
         //    return success;
         //}
         //
-         
+
         // EDIT QUAY 3/30/18 
         //  This code indexes the old single WaterSim America Model
         //  Not being used, commneted it out to disconnect

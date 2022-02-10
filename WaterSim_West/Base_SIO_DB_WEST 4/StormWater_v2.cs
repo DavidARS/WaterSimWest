@@ -1559,6 +1559,13 @@ namespace WaterSim_Base
             DUA = temp;
             return DUA;
         }
+        //
+     
+        /// <summary>
+        ///  people per household
+        /// </summary>
+        /// <param name="lcluClass"></param>
+        /// <returns></returns>
         public double FastPPH_(string lcluClass)
         {
             double temp = 0;

@@ -62,7 +62,10 @@ namespace WaterSim_West_v_1
             string TheDefaultDatabase = Path.GetDirectoryName(Application.ExecutablePath);
             //MyWSIM = new WaterSimManager_DB(ServerType, ".", ".", TheDefaultDatabase, "", "", "","");
             MyWSIM = new WaterSimManager_DB(ServerType, TheDefaultDatabase, TheDefaultDatabase, TheDefaultDatabase, "", "", "", "");
-            MyWSIM.tempLCLU(MyWSIM);
+            //
+            // Temporary method for testing
+            // 02.08.22 das
+            //MyWSIM.tempLCLU(MyWSIM);
             //     
             //MyWSIM = new WaterSimManager_SIO(".", ".");
 

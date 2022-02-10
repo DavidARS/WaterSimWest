@@ -314,7 +314,11 @@ namespace WaterSimDCDC.Generic
 
         //Resource Model list
         ResourceModelList FResourceModels =  new ResourceModelList();
-
+        //
+        /// <summary>
+        /// 
+        /// </summary>
+        readonly UrbanDensityDataClass UDproportions;
         // EDIT QUAY 9/10/20
         // Copied DAS code in then modified it in external models below, These models are now in WaterWim_CORiverModel class
         /// <summary>
@@ -383,9 +387,15 @@ namespace WaterSimDCDC.Generic
             // edits 01.19.22 das
             string COexchangeFilename = "CO_desalExchangeCommand.csv";
             // end edits 01.19.22 das
+            //
+            // edits 02.08.22 das
+            //string UrbanDensityPropFilename = "UrbanDensityProportion.csv";
+            string UrbanDensityPropFilename = "UrbanDensityDUAandProportion.csv";
+            // end edits 02.08.22 das
+
             string outputs = "\\Outputs\\";
             string addInputsDir = "\\Inputs\\";
-            string addCOdataDir = "\\DataCOriver\\";
+           /// string addCOdataDir = "\\DataCOriver\\";
             //
 
             try
@@ -418,6 +428,10 @@ namespace WaterSimDCDC.Generic
                 ColoradoDesalExchangeClass COD = new ColoradoDesalExchangeClass(DataDirectoryName + addInputsDir, COexchangeFilename);
                 //  end edits 01.19.22 das
 
+                // edits 02.08.22 das
+                UDproportions = new UrbanDensityDataClass(DataDirectoryName + addInputsDir, UrbanDensityPropFilename);
+                // end edits 02.08.22 das
+
                 //end edits 11.02.21 das
                 foreach (string Name in FUnitData.UnitNames)
                     {
@@ -426,7 +440,9 @@ namespace WaterSimDCDC.Generic
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
                         //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
-                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, swriter); // 11.02.21 das
+                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, swriter); // 11.02.21 das
+                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, UDproportions, swriter); // 02.08.22 das
+
                         FUnitModels.Add(TempModel);
                         set_DefaultDemandModel(TempModel);
                     
@@ -649,7 +665,9 @@ namespace WaterSimDCDC.Generic
         // edits 11.09.21 das
         internal bool RainWaterHarvesting
         { get; set; }
-
+        /// <summary>
+        /// Switch to invoke rainwater harvesting
+        /// </summary>
         public bool rainWaterHarvesting
         {
             set
@@ -3353,9 +3371,11 @@ namespace WaterSimDCDC.Generic
                     break;
                 case 3:
                     // ICLUS version II data - urban classes
-                    DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea);
+                    //DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea);
+                    //TempModel.URBAN = tempUrban_3;
+                    // 02.09.22 das
+                    DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea, UDproportions);
                     TempModel.URBAN = tempUrban_3;
-
                     break;
 
                 default:
@@ -3481,7 +3501,7 @@ namespace WaterSimDCDC.Generic
         }
         //
         /// <summary>
-        /// 
+        ///  NOTE: default settings are found in Manager line 688 (tempLCLU)
         /// </summary>
         /// <param name="TempModel"></param>
         /// <param name="model"></param>
@@ -4029,6 +4049,46 @@ namespace WaterSimDCDC.Generic
         }
         //
         // =========================================================
+        // edits 02.10.22 das
+        /// <summary>
+        /// 
+        /// </summary>
+        public providerArrayProperty NewWaterSavingsOnDemand;
+        /// <summary>
+        ///  Urban water demand savings from atmos and rainwater
+        /// </summary>
+        /// <returns></returns>
+        public int[] geti_NewWaterSavingsOnDemand()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].NewWaterSavings;
+            }
+            return result;
+        }
+        public providerArrayProperty StormwaterPotential;
+        /// <summary>
+        ///  Urban water demand savings from atmos and rainwater
+        /// </summary>
+        /// <returns></returns>
+        public int[] geti_StormwaterPotential()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].Stormwater;
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+
+
 
         // =========================================================
         #endregion Updated Policies - October 2021

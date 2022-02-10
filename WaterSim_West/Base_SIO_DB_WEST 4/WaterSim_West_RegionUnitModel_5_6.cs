@@ -79,7 +79,7 @@ namespace WaterSimDCDC.Generic
     /// <summary>   Water simulation crf model. </summary>
     public class WaterSimCRFModel
     {
- 
+
         /// <summary> The unit network.</summary>
         // QUAY EDIT
         // Changed to West_CRF_UnitNetwork to add COlorado
@@ -87,7 +87,7 @@ namespace WaterSimDCDC.Generic
         //CRF_Unit_Network UnitNetwork;
         // END EDIT
 
-        
+
         /// <summary> The frdc.</summary>
         /// <remarks>  This is the rate class used to retrieve data from the growth data file</remarks>
         //  RateDataClass FRDC;
@@ -100,8 +100,9 @@ namespace WaterSimDCDC.Generic
         /// <remarks>  This is the unit Data class used to retrieve USGS combined and summary data by region </remarks>
         UnitData FUnitData = null;
         //
+        public UrbanDensityDataClass FUDProportions;
         // ====================================
- 
+
 
         // ====================================
         //
@@ -152,7 +153,7 @@ namespace WaterSimDCDC.Generic
         string FComment = "";
 
 
-         /// <summary> The run call back.</summary>
+        /// <summary> The run call back.</summary>
         /// <remarks> This is the internal field for the Run Call back event handler, is called in run year if not null</remarks>
         /// <seealso cref="OnRunHandler"/>
         /// 
@@ -187,7 +188,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="TempDirectoryName">    Pathname of the temporary directory. </param>
         ///-------------------------------------------------------------------------------------------------
         */
- 
+        #region Old constructor
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Constructor. </summary>
         ///
@@ -231,6 +232,10 @@ namespace WaterSimDCDC.Generic
 
         }
         ///-------------------------------------------------------------------------------------------------
+        #endregion temporary (old)
+        // =========================================================================================================
+        #region temporary Constructor
+
         /// <summary>
         /// 
         /// </summary>
@@ -275,7 +280,11 @@ namespace WaterSimDCDC.Generic
         }
         ///-------------------------------------------------------------------------------------------------
         ///
-        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, DataClassTemperature Tav ,string TheUnitName)
+        #endregion temporary (old)
+        // =========================================================================================================
+        #region temporary Constructor
+
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, DataClassTemperature Tav, string TheUnitName)
         {
             FUnitName = TheUnitName;
             string errMsg = "";
@@ -304,26 +313,30 @@ namespace WaterSimDCDC.Generic
             // This should include intitial values retreived from the database
             // As opposed to resetVariables() that set defaults for each simulation
             Initialize_Variables();
-            
+
             //initialize_FirstRun();
-              //  isInitialized = true;
-          //  UD = new UrbanDemand_GPCD(this);
-          ////  UDA = new UrbanDemand_GPCDa(this);
-          //  UDR = new RuralDemand_LCLU_urban(this, TheRateData, DataLCLU);
-          //  ADR = new RuralDemand_LCLU_ag(this, TheRateData, DataLCLU);
-          //  ADI = new AgriculturalDemand_income(this);
-          //  PD = new PowerDemand_wp(this);
-          //  IDR = new RuralDemand_LCLU_industry(this, TheRateData, DataLCLU);
-          //  ID = new IndustryDemand_employee(this);
+            //  isInitialized = true;
+            //  UD = new UrbanDemand_GPCD(this);
+            ////  UDA = new UrbanDemand_GPCDa(this);
+            //  UDR = new RuralDemand_LCLU_urban(this, TheRateData, DataLCLU);
+            //  ADR = new RuralDemand_LCLU_ag(this, TheRateData, DataLCLU);
+            //  ADI = new AgriculturalDemand_income(this);
+            //  PD = new PowerDemand_wp(this);
+            //  IDR = new RuralDemand_LCLU_industry(this, TheRateData, DataLCLU);
+            //  ID = new IndustryDemand_employee(this);
             //
 
 
         }
+        #endregion temporary (old)
+        // =========================================================================================================
+        #region temporary Constructor
+
         ///-------------------------------------------------------------------------------------------------
         /// 09.21.21 - current constructor
         /// 11.09.21      
-        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU, 
-            DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW,StormWater SW, 
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU,
+            DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW, StormWater SW,
             StreamWriter sw)
         {
             FUnitName = TheUnitName;
@@ -335,7 +348,7 @@ namespace WaterSimDCDC.Generic
             CRFRWH = RW;
             CRFSWB = SW;
             //      
-            StreamW = sw; 
+            StreamW = sw;
             //
             if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out errMsg))
             {
@@ -355,7 +368,9 @@ namespace WaterSimDCDC.Generic
 
             Initialize_Variables();
         }
-        //
+        #endregion temporary (old)
+        // =========================================================================================================
+        #region temporary Constructor
         /// <summary>
         /// 
         /// </summary>
@@ -402,6 +417,9 @@ namespace WaterSimDCDC.Generic
 
             Initialize_Variables();
         }
+        #endregion temporary (old)
+        // =========================================================================================================
+        #region temporary Constructor
         /// <summary>
         ///  Temp constructure for this DAMN code
         /// </summary>
@@ -456,7 +474,11 @@ namespace WaterSimDCDC.Generic
 
 
         }
-        
+        #endregion temporary constructor
+        // =========================================================================================================
+        #region Newer
+        // 01.04.22 das
+
         /// <summary>
         ///  As of 01.19.22 this  is the constructor that I am using
         /// </summary>
@@ -505,9 +527,67 @@ namespace WaterSimDCDC.Generic
 
             Initialize_Variables();
         }
+        #endregion newer constructor
+        // =========================================================================================================
+        #region current constructor
+        // 02.08.22 das
+        /// <summary>
+        ///  This constructor holds the urban density classification proportins for the land-cover
+        ///  land-use data distribution of urban classs into finer resolutions based on the Denver
+        ///  Water data scheme, with possible inputs for each region if the data are available
+        /// </summary>
+        /// <param name="TheUnitData"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="DataLCLU"></param>
+        /// <param name="Tav"></param>
+        /// <param name="TheUnitName"></param>
+        /// <param name="RW"></param>
+        /// <param name="SW"></param>
+        /// <param name="New"></param>
+        /// <param name="cod"></param>
+        /// <param name="UD"></param>
+        /// <param name="sw"></param>
+        public WaterSimCRFModel(UnitData TheUnitData, RateDataClass TheRateData, DataClassLCLU DataLCLU,
+          DataClassTemperature Tav, string TheUnitName, RainWaterHarvesting RW, StormWater SW, NewWater New,
+          ColoradoDesalExchangeClass cod, UrbanDensityDataClass UD, StreamWriter sw)
+        {
+            FUnitName = TheUnitName;
+            string errMsg = "";
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            FDClclu = DataLCLU;
+            FDCtemperature = Tav;
+            CRFRWH = RW;
+            CRFSWB = SW;
+            NWater = New;
+            CODE = cod;
+            FUDProportions = UD;
+            //      
+            StreamW = sw;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
 
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            Initialize_Variables();
+        }
         /// 
-        /// 
+        #endregion current construct
+        // ========================================================================================================= 
+        #endregion constructors
+        #region properties
         /// 
         /// <summary>   Dispose of this object, cleaning up any resources it uses. </summary>
         /// <remarks> Modified 2/18/18 Quay </remarks>
@@ -534,6 +614,7 @@ namespace WaterSimDCDC.Generic
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        #region temporary streamwriter code
         /// <summary>
         /// Temorary method to write to file
         /// NOTE: This code ONLY works if the data file is sorted on by the RC field
@@ -563,11 +644,11 @@ namespace WaterSimDCDC.Generic
         {
             if (FUnitName != "Wyoming Not In Basin")
             {
-                sw.WriteLine(currentYear + "," + y + "," + z+ "," + region);
+                sw.WriteLine(currentYear + "," + y + "," + z + "," + region);
 
             }
         }
-
+        #endregion temporary streamwriter
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Gets the crf network for this model. </summary>
         ///
@@ -649,22 +730,34 @@ namespace WaterSimDCDC.Generic
         }
         // ======================================================
         // 08.23.21
+        /// <summary>
+        /// Stormwater object
+        /// </summary>
         public StormWater StormW
         {
             get { return STORM; }
             set { STORM = value; }
         }
+        /// <summary>
+        /// Rainwater object
+        /// </summary>
         public RainWaterHarvesting RainW
         {
             get { return CRFRWH; }
             set { CRFRWH = value; }
         }
         //
+        /// <summary>
+        /// Rainwater harvesting switch
+        /// </summary>
         public bool RainwaterHarvesting
         {
             get; set;
         }
         //
+        /// <summary>
+        ///  CO desal exchange data
+        /// </summary>
         public ColoradoDesalExchangeClass COandDesalExchange
         {
             get { return CODE; }
@@ -694,7 +787,7 @@ namespace WaterSimDCDC.Generic
             TheAddedDemand = temp;
 
             LoadSensitivityToTemperature(DCT, CRF);
-            
+
 
         }
         double _addedDemand = 0;
@@ -709,7 +802,7 @@ namespace WaterSimDCDC.Generic
         public void LoadSensitivityToTemperature(DataClassTemperature DCT, WaterSimCRFModel CRF)
         {
             double temp = Utilities.loadSensitivity(DCT.FastTavScen(CRF.FUnitName, CRF.currentYear), DCT.FastTC(CRF.FUnitName, CRF.currentYear));
-            TheAddedPowerPCT = temp ;
+            TheAddedPowerPCT = temp;
 
         }
         public void LoadSensitivityToTemperatures(DataClassTemperature DCT, WaterSimCRFModel CRF)
@@ -726,15 +819,46 @@ namespace WaterSimDCDC.Generic
 
         }
         //
+        double _rainAndNewWater = 0;
+        /// <summary>
+        /// Urban water demand reduction due to the combined
+        /// include of rainwater harvesting and atmospheric
+        /// water use
+        /// </summary>
+        public double DemandReductionRainAndAtmos
+        {
+            set { _rainAndNewWater = value; }
+            get { return _rainAndNewWater; }
+        }
+        //
+        double _stormwaterPotential = 0;
+        /// <summary>
+        /// The total amount of runoff from stormwater
+        /// </summary>
+        public double StormwaterPotential
+        {
+            set { _stormwaterPotential = value; }
+            get { return _stormwaterPotential; }
+        }
+        double _stormwaterPerAcre = 0;
+        /// <summary>
+        ///  Area basis of stormwater runoff
+        /// </summary>
+        public double StormwaterPerAcre
+        {
+            set { _stormwaterPerAcre = value; }
+            get { return _stormwaterPerAcre; }
+        }
+
         // ============================================================================
         //
         #endregion
 
-        // ====================================================================================
+        // =================================
         // Model Control
         // These routines control the model
-        // ====================================================================================
-        #region Model_Control
+        // =============================================================================================
+        #region Model_Control- includes model kernal calls (main calls)
 
         //-------------------------------------------------
         // MODEL CONSTANTS
@@ -1302,13 +1426,13 @@ namespace WaterSimDCDC.Generic
             if (TheMaxReclaimed > 0) PercentReclaimed = UnitNetwork.Effluent.Limit / MaxReclaimed();
             //
             defaultPCTReclaimed = 0;
-            defaultPCTReclaimed = PercentReclaimed*100;
+            defaultPCTReclaimed = PercentReclaimed * 100;
             seti_ReclaimedWaterManagement((int)(PercentReclaimed * 100));
-           // sampson edits.. I do not know why Ray is doing this.. need to straighten this out.
-           // das still don't understand 11.29.21 Reclained include potential graywater use here...
-           /// need to ensure that we do NOT double dip if graywater and all effluent is used
+            // sampson edits.. I do not know why Ray is doing this.. need to straighten this out.
+            // das still don't understand 11.29.21 Reclained include potential graywater use here...
+            /// need to ensure that we do NOT double dip if graywater and all effluent is used
 
-           // seti_ReclaimedWaterManagement((int)(zero));
+            // seti_ReclaimedWaterManagement((int)(zero));
             // END EDIT 3/22/18
             // 
             seti_LakeWaterManagement(Hundred);
@@ -1396,7 +1520,7 @@ namespace WaterSimDCDC.Generic
             {
                 FRunCallBack(year);
             }
-            
+
             return 0;
         }
 
@@ -1468,7 +1592,7 @@ namespace WaterSimDCDC.Generic
         // model call
         internal void Model(int year)
         {
-         
+
             // QUAY EDIT 3/18/18
             // This is not doing anything or used by any method, several methods and properties also commented out
             //seti_YearIndex(year - baseyear);
@@ -1484,10 +1608,10 @@ namespace WaterSimDCDC.Generic
             // So commented this out
             //initializeRun();
             // END EDIT
-              // This method is to prepare vaious coefficients that change each year.  
+            // This method is to prepare vaious coefficients that change each year.  
             // In this case there are growth factors be calculated for this period
             preProcess(year);
-           
+
             // EDIT QUAY 4/2/18
             // OK, the original method of changing resources levels is no longer going work given how the web interface is
             // working.  We can not just let the Resource  
@@ -1532,7 +1656,7 @@ namespace WaterSimDCDC.Generic
         /////-------------------------------------------------------------------------------------------------
         ///// <summary> Initializes the Model run for a year.</summary>
         /////-------
-        
+
         //-----------------------------------------------------------------------------------------
         // <summary>
         // Modify the density classes of the ICLUS data
@@ -1542,34 +1666,34 @@ namespace WaterSimDCDC.Generic
         //{
         //    densityManagement();
         //}
-            //void initializeRun()
-            //{
-            //    //QUAY EDIT 3/30/18
-            //    // DISCONNECTING Population Proportion Code, demand_total is not part of  that but it is not referenced for a get by any code, old or new
-            //    //populationRatio = 0;
-            //    //demand_total = 0;
-            //    //initProportions();
-            //    // End Edit
-            //}
-            // EDN EDIT 3/30/18
+        //void initializeRun()
+        //{
+        //    //QUAY EDIT 3/30/18
+        //    // DISCONNECTING Population Proportion Code, demand_total is not part of  that but it is not referenced for a get by any code, old or new
+        //    //populationRatio = 0;
+        //    //demand_total = 0;
+        //    //initProportions();
+        //    // End Edit
+        //}
+        // EDN EDIT 3/30/18
 
-            // EDIT QUAY 3/31/18
-            // I renamed this in order to have the name convey waht is happening in this methpod
-            ///-------------------------------------------------------------------------------------------------
-            /// <summary> Annual Resource Management</summary>
-            /// <remarks>  This calls the resource routines to manage water supply
-            ///            if a water supply is added , a call to its manager must be placed here
-            ///            </remarks>
-            /// <seealso cref="surfaceFresh()"/>
-            /// <seealso cref="surfaceSaline()"/>
-            /// <seealso cref="surfaceLake()"/>
-            /// <seealso cref="groundwater()"/>
-            /// <seealso cref="effluent()"/>
-            ///-------------------------------------------------------------------------------------------------
+        // EDIT QUAY 3/31/18
+        // I renamed this in order to have the name convey waht is happening in this methpod
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> Annual Resource Management</summary>
+        /// <remarks>  This calls the resource routines to manage water supply
+        ///            if a water supply is added , a call to its manager must be placed here
+        ///            </remarks>
+        /// <seealso cref="surfaceFresh()"/>
+        /// <seealso cref="surfaceSaline()"/>
+        /// <seealso cref="surfaceLake()"/>
+        /// <seealso cref="groundwater()"/>
+        /// <seealso cref="effluent()"/>
+        ///-------------------------------------------------------------------------------------------------
 
-            //internal void annual_delta()
-            internal void annual_Resources()
-            {
+        //internal void annual_delta()
+        internal void annual_Resources()
+        {
             //edits 11.09.21
             //  edits 01.28.22 das Moved here from Consumers
             // reduce urban demand by rainwater amount
@@ -1613,7 +1737,7 @@ namespace WaterSimDCDC.Generic
 
             Urban(StreamW);
             //Urban();
- 
+
             calculateGrayWater();
             //
             Agriculture();
@@ -1629,7 +1753,7 @@ namespace WaterSimDCDC.Generic
         /// <summary>
         /// 
         /// </summary>
-         ///-------------------------------------------------------------------------------------------------
+        ///-------------------------------------------------------------------------------------------------
         /// <summary> Pre process tasks.</summary>
         /// <remarks>  Sets up fields that may change each year that are need for the consumer and resource management and
         ///            other model functions</remarks>
@@ -1704,7 +1828,7 @@ namespace WaterSimDCDC.Generic
             // FUCK
             // Here is a start on this issue of how policies need to be implemented
             //  findMe
-           
+
             //
             YearsToTarget = (EndYear - startYear);
             double initialValue = 1;
@@ -1777,7 +1901,7 @@ namespace WaterSimDCDC.Generic
             // v lllllllllllllllllllllldddddddddddddddddddddddddddddddddddd
             // v 
             // 
-            if (TheSurfaceGoal <1)
+            if (TheSurfaceGoal < 1)
             {
                 FSurfaceChangeLimit = MinSurfaceChange;
             }
@@ -1815,7 +1939,7 @@ namespace WaterSimDCDC.Generic
 
             if (FCCChangeTarget < 1)
             {
-               FCCChangeLimit =  MinCCChange;
+                FCCChangeLimit = MinCCChange;
             }
             else
             {
@@ -1866,8 +1990,8 @@ namespace WaterSimDCDC.Generic
             //
             if (DesalPipedPolicy || retrieve(FUnitName) == 3)
             {
-                     PipedUse(FUnitName);
-                 // where the exchange is from
+                PipedUse(FUnitName);
+                // where the exchange is from
                 //if (targetExchange())
                 //{
                 //    ExchangePartner(FUnitName);
@@ -1897,7 +2021,7 @@ namespace WaterSimDCDC.Generic
 
                 FUnitData.GetValue(regionName, FldName, out value, out errMsg);
                 int d = value;
- 
+
                 if (Geti_DesalPolicy() != retrieve(regionName))
                 {
                     int actual = Geti_DesalPolicy();
@@ -1908,7 +2032,7 @@ namespace WaterSimDCDC.Generic
                     MessageBox.Show(message, title);
                 }
             }
-    
+
         }
         // end edits 01.28.22
         // Amount for transfer set by the desalination capacity for now
@@ -1948,7 +2072,7 @@ namespace WaterSimDCDC.Generic
         {
             bool result = false;
             string temp = COandDesalExchange.FastSource(FUnitName);
-            if (temp !="") { result = true; }
+            if (temp != "") { result = true; }
             return result;
         }
         //
@@ -1992,15 +2116,15 @@ namespace WaterSimDCDC.Generic
                     double cNet = UnitNetwork.Colorado.Net;
                     //if (cNet < 0)
                     //{
-                        UnitNetwork.Colorado.ResetLimits(c + CSWdesalMax);
-                        // testing 
-                        double test = UnitNetwork.Colorado.Limit;
-                        // end testing
-                        target = COandDesalExchange.FastTarget(source);
+                    UnitNetwork.Colorado.ResetLimits(c + CSWdesalMax);
+                    // testing 
+                    double test = UnitNetwork.Colorado.Limit;
+                    // end testing
+                    target = COandDesalExchange.FastTarget(source);
                     //}
                 }
-             }
-         }
+            }
+        }
         /// <summary>
         /// The region that is actively giving up CO RIver water in exchange
         /// </summary>
@@ -2033,17 +2157,17 @@ namespace WaterSimDCDC.Generic
             // testing
             double test = UnitNetwork.Colorado.Limit;
             double testD = UnitNetwork.Desalination.Limit;
-           // end testing
+            // end testing
         }
         #endregion Desalination Exchange code
         // ==================================================================
         // Direct Use
         #region Desalination Direct Use code
-          internal void DirectUse(string source)
+        internal void DirectUse(string source)
         {
             double CSWdesalMax = 0;
             CSWdesalMax = 50;// ocean desalination plant at 50 MGD
-              // 
+                             // 
             if (source != "")
             {
                 UDI.eResource er;
@@ -2058,7 +2182,7 @@ namespace WaterSimDCDC.Generic
                 // need to deside if, there are no data in the USDA data table for direct use desal designated,
                 // do we add from default here, or add this default to whatever is in the file? QUESTION FOR RAY
                 // 01.26.22 das
-                if(0 < d)
+                if (0 < d)
                 {
 
                 }
@@ -2124,7 +2248,7 @@ namespace WaterSimDCDC.Generic
         /// <summary>
         /// 
         /// </summary>
-        public double RainAndStormWater
+        public double StormWaterRunoff
         {
             get; set;
         }
@@ -2343,14 +2467,12 @@ namespace WaterSimDCDC.Generic
         #endregion
 
         #endregion Model_Control
-
-        //
         // =============================================================================================
         //
         // ---------------------------------------------------------------------------------------------
         // Resources - State definitions and management actions on resources
-        // ==================================================================
-        #region Resources
+        // =============================================================================================
+        #region Model run Resources inc rainwater, stormwater, new water and density management
 
         // EDIT QUAY 4/2/18
         // A New System for managing Surface Water and Groundwater was developed.  It is based on the same approach 
@@ -2402,7 +2524,7 @@ namespace WaterSimDCDC.Generic
         public int UseExternalSurfaceModel
         {
             get { return FUseExternalSurface; }
-            set { FUseExternalSurface = value;  }
+            set { FUseExternalSurface = value; }
         }
 
 
@@ -2472,7 +2594,7 @@ namespace WaterSimDCDC.Generic
                 result = Convert.ToInt32(NewSurfaceLimit);
                 seti_SurfaceWaterFresh(result);
                 //if (startDroughtYear <= currentYear) seti_DroughtControl(one);
-            } 
+            }
         }
         // END EDIT QUAY 9 8 20
         //
@@ -2486,7 +2608,7 @@ namespace WaterSimDCDC.Generic
                 double d = Math.Round(NWater.AirWaterUse(this, FDCtemperature));
                 result = Convert.ToInt32(d);
                 //seti_SurfaceWaterFreshNew(result);
-
+                DemandReductionRainAndAtmos += d;
                 int urban = geti_Urban();
                 double newDemand = Math.Max(0, urban - d);
                 seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
@@ -2538,9 +2660,9 @@ namespace WaterSimDCDC.Generic
         {
             double result = 0;
             //int UDPeriod = (currentYear  - startYear) +1;
-            int UDPeriod = (currentYear - startYear) + 1;
+            int UDPeriod = (currentYear - startYear);
             //
-            if(currentYear == 2016)
+            if (currentYear == 2016)
             {
                 bool stop = true;
             }
@@ -2651,13 +2773,13 @@ namespace WaterSimDCDC.Generic
         // edits das 10.06.21
         // This has to be changed. It DOES NOT work well...
         // 02.03.22 das
-        double generic(double DensityChangeValue,double Coef, int period)
+        double generic(double DensityChangeValue, double Coef, int period)
         {
             double temp = 0;
             double startValue = 1;
             double mod = 1;
             double annualFactor = AnnualExponentialChange(startValue, period, Coef, DensityChangeValue);
-            if(DensityChangeValue < startValue)
+            if (DensityChangeValue < startValue)
             {
                 mod = 0.999;
             }
@@ -2692,13 +2814,18 @@ namespace WaterSimDCDC.Generic
                     double e = CRFSWB.waterBudgetByClassYearly(UnitName, year - StartRainYear, this);
                     //D = (d * 1000000) / population;
                     //E = (e * 1000000) / population;
-                    RainAndStormWater = d + e;
+                    double IndAcres = FDClclu.FastIndAcres(UnitName, year);
+                    double UrbAcres = FDClclu.FastUrbanAcres(UnitName, year);
+                    e *= 1000000; // * 365;
+                    StormWaterRunoffPerArea = Math.Round(e / (IndAcres + UrbAcres));  // gallons per acre-1 per day-1
                 }
+                // fuc
                 int urban = geti_Urban();
                 int rain = Convert.ToInt32(d);
+                DemandReductionRainAndAtmos = rain;
                 double newDemand = Math.Max(0, urban - rain);
                 seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
-             }
+            }
 
             // writeToStream2(StreamW, D, E, UnitName);
             // end edits 08.31.21 das
@@ -2781,7 +2908,7 @@ namespace WaterSimDCDC.Generic
             double temp = 0;
             int result = 0;
             //temp = geti_SurfaceWaterSaline() * _desalinization;
-            temp = geti_SurfaceWaterSaline() ;
+            temp = geti_SurfaceWaterSaline();
             result = Convert.ToInt32(temp);
             result = (int)temp;
             seti_SurfaceWaterSaline(result);
@@ -2871,8 +2998,6 @@ namespace WaterSimDCDC.Generic
         // ---------------------------------------------------------------------------------------------
         // Consumers - State definitions and Management Actions on the consumers
         // =====================================================================
-        //
-
         #region Water Demand
 
 
@@ -3348,7 +3473,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="period"></param>
         /// <param name="ModifyRate"></param>
         /// <returns></returns>
-      
+
 
         #endregion Generic_Demand_Model
 
@@ -3401,9 +3526,9 @@ namespace WaterSimDCDC.Generic
         {
             double period = (currentYear - startYear) + 1;
             //
-           
+
             // Estimate demand
-            
+
             // Is this the NEW structure?
             // 07.10.18 das
             double Demand = this.URBAN.GetDemand(currentYear);
@@ -3412,9 +3537,9 @@ namespace WaterSimDCDC.Generic
             //// Sampson  Edits - 05.18.18
 
             // ok this is now in gallons, convert it to MGD
-           // double NewDemandMGD = NewDemand / convertDemand;
+            // double NewDemandMGD = NewDemand / convertDemand;
             //double NewDemandMGD = Demand / convertDemand;
-            double NewDemandMGD = Demand ;
+            double NewDemandMGD = Demand;
             // Set value for parameter
             seti_Urban((int)NewDemandMGD);
         }
@@ -3438,7 +3563,7 @@ namespace WaterSimDCDC.Generic
             // Set value for parameter
             seti_Urban((int)NewDemandMGD);
             //writeToStream(sw, Demand);
-        
+
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -4389,7 +4514,7 @@ namespace WaterSimDCDC.Generic
             //double temp= ID.GetDemand(currentYear);
 
 
-            
+
             //double myTemp = IDR.GetDemand(currentYear);
             //this.INDUSTRY.GetDemand(currentYear);
             temp = this.INDUSTRY.GetDemand(currentYear);
@@ -4431,7 +4556,7 @@ namespace WaterSimDCDC.Generic
             double period = (year - startyear) + 1;
             double temp = EstimateConsumerDemand((Employees * convertEmployee), FIndInitialGPED, IndustryConservation, FindGPEDChangeCoef, FIndMinGPEDPercent, period);
 
-             // this is gallons convert to MGD
+            // this is gallons convert to MGD
             result = temp / convertDemand;
             return result;
         }
@@ -4863,7 +4988,6 @@ namespace WaterSimDCDC.Generic
             }
         }
         #endregion
-
         // -------------------------------------------------
         // Population
         // -------------------------------------------------
@@ -5127,7 +5251,7 @@ namespace WaterSimDCDC.Generic
         // const int RawGPCDDataInc = 5; //Years
         // const int NumberGPCDYears = ((EndYear - StartYear) / 5) + 1;
 
-        
+
         // int[][] GPCDYearData = new int[WaterSimManager.FNumberOfStates][];
         // 
         //internal int Get_GPCDYear(int year)
@@ -5154,7 +5278,7 @@ namespace WaterSimDCDC.Generic
         //    return Convert.ToInt32(TempGPCD * d_urbanConservation);
         //}
         // END EDIT
-         
+
         const int RawPopDataInc = 5;
         // 02.09.16
         internal int geti_gpcdTotal()
@@ -5202,7 +5326,7 @@ namespace WaterSimDCDC.Generic
 
         // Resources
         // -------------------------------------------------
-        #region Resources
+        #region Resources - gets and sets
         //----------------------------------------------
         //  SUrface Water Fresh 
         //-----------------------------------------------
@@ -5273,7 +5397,7 @@ namespace WaterSimDCDC.Generic
 
         // EDIT QUAY 9/8/20 
         // Added External Model Control
-         
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Geti surface fresh use external.</summary>
         /// <returns> An int.</returns>
@@ -5719,7 +5843,7 @@ namespace WaterSimDCDC.Generic
         {
             bool alterDemand = false;
             int i_gwm = this.geti_GrayWaterManagement();
-            
+
             // This is either the ratio of the default USGS reclaimed water use to max available effluent
             // or it is set in the UI... it is both
             //int i_rwm = this.geti_ReclaimedWaterManagement();
@@ -5737,34 +5861,34 @@ namespace WaterSimDCDC.Generic
             // =========================
             //
             double d_gray = i_gwm; // graywater management in percent
-           // double d_gwFlow = i_gwFlow;// maxGrayWater; // MGD - set by available and management;
-            //
-            // NOTE: NOT using maxGrayWater property
-            // 
+                                   // double d_gwFlow = i_gwFlow;// maxGrayWater; // MGD - set by available and management;
+                                   //
+                                   // NOTE: NOT using maxGrayWater property
+                                   // 
             grayWaterUsed = 0;
             grayWaterEffInvoked = false;
             if (0 < i_gwm)
             {
                 alterDemand = true;
-                available =  Math.Min( GrayWaterAvailable() * (d_gray * 1 / 100), d_gwFlow * (d_gray * 1 / 100) );
+                available = Math.Min(GrayWaterAvailable() * (d_gray * 1 / 100), d_gwFlow * (d_gray * 1 / 100));
                 grayWaterEffInvoked = true;
             }
             else
             {
                 available = 0;
-             }
+            }
             // 11.30.21 das
-             grayWaterUsed = available;
+            grayWaterUsed = available;
             // end edits 11.30.21 das
-           
+
             //
             if (alterDemand)
             {
                 //double temp = 0;
                 int urban = geti_Urban();
-                double newDemand = Math.Max(0,urban - grayWaterUsed);
+                double newDemand = Math.Max(0, urban - grayWaterUsed);
                 seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
-               GrayWaterPotential(); // reset the graywater flow because demand changed
+                GrayWaterPotential(); // reset the graywater flow because demand changed
                 int unitcode = this.FUnitCode; // for a debug break point
             }
 
@@ -5957,7 +6081,7 @@ namespace WaterSimDCDC.Generic
             // OK. So, after we have max reclaimed, I estimate max gray water 
             // 11.29.21 das
             //double Temp = 0;
-           // Temp = temp * grayWater; //GrayWaterPotential(); // need to reset temp after passing throughGrayWaterPotential()
+            // Temp = temp * grayWater; //GrayWaterPotential(); // need to reset temp after passing throughGrayWaterPotential()
             //maxGrayWater = Temp;
             //temp = consumptive * ((UnitNetwork.Urban.Demand) * indoor);
             // Note that temp is max reclaimed. Temp is max graywater
@@ -5999,7 +6123,7 @@ namespace WaterSimDCDC.Generic
         // =================================================================================================
         //
 
-   
+
 
 
         // Sampson edits 08.14.18 for Gray Water - for use as an indicator (Framework #6, Specified #2)
@@ -6009,7 +6133,7 @@ namespace WaterSimDCDC.Generic
         public double MaxGrayWater()
         {
             double temp = 0;
-            temp = maxGrayWaterRatio *GrayWaterPotential();
+            temp = maxGrayWaterRatio * GrayWaterPotential();
 
             //temp = consumptive * ((UnitNetwork.Urban.Demand) * indoor);
             return temp;
@@ -6043,7 +6167,7 @@ namespace WaterSimDCDC.Generic
         public double GrayWaterPotential()
         {
             double temp = 0;
-            temp = maxReclaimedRatio* (consumptive * ((UnitNetwork.Urban.Demand) * indoor * grayWater));
+            temp = maxReclaimedRatio * (consumptive * ((UnitNetwork.Urban.Demand) * indoor * grayWater));
             maxGrayWater = temp;
 
             return temp;
@@ -6070,7 +6194,7 @@ namespace WaterSimDCDC.Generic
         public double GrayWaterAvailable()
         {
             double temp = 0;
-            temp = (maxReclaimed-reclaimedUsed) * grayWater;
+            temp = (maxReclaimed - reclaimedUsed) * grayWater;
             return temp;
         }
         // =================================================================================================
@@ -6143,7 +6267,7 @@ namespace WaterSimDCDC.Generic
 
         public double TotalDemand
         {
-           get { return getd_TotalDemand(); }
+            get { return getd_TotalDemand(); }
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -6154,7 +6278,7 @@ namespace WaterSimDCDC.Generic
 
         public double TotalNet
         {
-            get { return getd_TotalNet();  }
+            get { return getd_TotalNet(); }
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -6165,7 +6289,7 @@ namespace WaterSimDCDC.Generic
 
         public int geti_TotalDemandNet()
         {
-            return (int)getd_TotalNet(); 
+            return (int)getd_TotalNet();
         }
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Geti total demand.</summary>
@@ -6215,7 +6339,7 @@ namespace WaterSimDCDC.Generic
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Urban.Demand));
             // int TempInt = Convert.ToInt32(Math.Round(WSA.Urban.Demand));
-             return TempInt;
+            return TempInt;
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -6613,10 +6737,10 @@ namespace WaterSimDCDC.Generic
         /// <returns></returns>
         public int geti_UrbanHighDensity()
         {
-            int TempInt = Convert.ToInt32(d_urbanHighDensityManagement*100);
+            int TempInt = Convert.ToInt32(d_urbanHighDensityManagement * 100);
             return TempInt;
         }
-         ///------------------------------------------------------------------
+        ///------------------------------------------------------------------
         /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
         ///  No longer used - I suspect... a
         ///  02.01.22 das .. needs clearing
@@ -6624,7 +6748,7 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------------------
         public void seti_UrbanHighDensity(int value)
         {
-             d_urbanHighDensityManagement = Convert.ToDouble(value) / 100;
+            d_urbanHighDensityManagement = Convert.ToDouble(value) / 100;
         }
         // ================================================
         /// <summary>
@@ -6632,7 +6756,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         public double UrbanHighDensityManagement
         {
-             get { return d_urbanHighDensityManagement; }
+            get { return d_urbanHighDensityManagement; }
         }
         double d_uhdchange = 1.0;
         /// <summary>
@@ -6691,7 +6815,7 @@ namespace WaterSimDCDC.Generic
         //
         public double UrbanDensityChangeCheck
         {
-            get; set; 
+            get; set;
         }
         // =======================================================================
 
@@ -7063,7 +7187,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         public double ExurbanHighDensityChange
         {
-            get { return d_ehdchange; } set { d_ehdchange = value; } 
+            get { return d_ehdchange; } set { d_ehdchange = value; }
         }
         // ------------------------------------------------------------------
 
@@ -7140,12 +7264,12 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         public bool AirWaterManagement
         {
-            set { b_airWaterManagement = value; } get{ return b_airWaterManagement; }
-            
+            set { b_airWaterManagement = value; } get { return b_airWaterManagement; }
+
         }
         //
-       // =========================================================
-           int i_airWaterInstallations = 0;
+        // =========================================================
+        int i_airWaterInstallations = 0;
         double d_airWaterInstallations = 0;
         /// <summary>
         /// 
@@ -7163,8 +7287,8 @@ namespace WaterSimDCDC.Generic
         /// <returns></returns>
         public int geti_AirWaterInstallations()
         {
-            int TempInt =i_airWaterInstallations;
-           // AirWaterInstallations;
+            int TempInt = i_airWaterInstallations;
+            // AirWaterInstallations;
 
             return TempInt;
         }
@@ -7178,10 +7302,38 @@ namespace WaterSimDCDC.Generic
             i_airWaterInstallations = value;
             AirWaterInstallations = value;
         }
+        // ==================================================================
+        // New water savings on urban water demand
+        // ========================================
+        // 02.10.22
         /// <summary>
         /// 
         /// </summary>
-   
+        public int NewWaterSavings
+        {
+            // set { UnitNetwork.Population.CurrentState = value; }
+            get { return Convert.ToInt32(DemandReductionRainAndAtmos); }
+        }
+        // end edits 10.27.21 das  
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Stormwater
+        {
+            // set { UnitNetwork.Population.CurrentState = value; }
+            get { return Convert.ToInt32(StormWaterRunoffPerArea); }
+        }
+        double _storm = 0;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double StormWaterRunoffPerArea
+        {
+             get { return _storm; }
+             set { _storm = value; }
+        }
+        // =======================================================================
+
         // =======================================================================
         // Urban Water Conservation
         //--------------------------------
@@ -7927,180 +8079,7 @@ namespace WaterSimDCDC.Generic
 
 
         #endregion
-        //
-        // ==============================================================================
-        //#region DenverWaterDemandModel
-        //// 
-        //#region Inputs
-        //    // =======================================================================
-        //    // Dwelling Units Per Acre
-        //    //--------------------------------
-        //    double d_dwellingUnitsAcre = 0;
-        //    /// <summary>
-        //    /// 
-        //    /// </summary>
-        //    /// <returns></returns>
-        //    public void Seti_DwellingUnitsAcre_DM(int value)
-        //    {
-        //        d_dwellingUnitsAcre = ((Double)value / 100);     
-        //    }
-        //    /// <summary>
-        //    /// 
-        //    /// </summary>
-        //    /// <returns></returns>
-        //    public int Geti_DwellingUnitsAcre_DM()
-        //    {
-        //        int temp = Convert.ToInt32(d_dwellingUnitsAcre);
-        //        return temp;
-        //    }
-        //    /// <summary>
-        //    /// 
-        //    /// </summary>
-        //    public double DwellingUnitsAcre_dm
-        //    {
-        //        get { return d_dwellingUnitsAcre; }
-        //        set { d_dwellingUnitsAcre = value; }
-        //    }
-        //    //
-        //#endregion Inputs
-        //// =======================================================================
-        //// Outputs David
-        //#region Outputs
-        //// =======================================================================
-        //// Total Water Demand
-        ////--------------------------------
-        //double d_totalWaterDemand = 0;
-
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        /// <returns></returns>
-        //        public int Geti_TotalWaterDemand_DM()
-        //        {
-        //            int temp = Convert.ToInt32(d_totalWaterDemand);
-        //            return temp;
-        //        }
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        public double TotalWaterDemand_dm
-        //        {
-        //            get { return d_totalWaterDemand; }
-        //        }
-        //        //
-        //        // =======================================================================
-        //        // Indoor Water Demand
-        //        //--------------------------------
-        //        double d_indoorWaterDemand = 0;
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        /// <returns></returns>
-        //        public int Geti_IndoorWaterDemand_DM()
-        //        {
-        //            int temp = Convert.ToInt32(d_indoorWaterDemand);
-        //            return temp;
-        //        }
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        public double IndoorWaterDemand_dm
-        //        {
-        //            get { return d_indoorWaterDemand; }
-        //        }
-        //        // =======================================================================
-
-        //        // =======================================================================
-        //        // Outdoor Water Demand
-        //        //--------------------------------
-        //        double d_outdoorWaterDemand = 0;
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        /// <returns></returns>
-        //        public int Geti_OutdoorWaterDemand_DM()
-        //        {
-        //            int temp = Convert.ToInt32(d_outdoorWaterDemand);
-        //            return temp;
-        //        }
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        public double OutdoorWaterDemand_dm
-        //        {
-        //            get { return d_outdoorWaterDemand; }
-        //        }
-        //        // =======================================================================
-
-        //        // =======================================================================
-        //        // Total Process Water Demand
-        //        //--------------------------------
-        //        double d_totalProcessWaterDemand = 0;
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        /// <returns></returns>
-        //        public int Geti_TotalProcessWaterDemand_DM()
-        //        {
-        //            int temp = Convert.ToInt32(d_totalProcessWaterDemand);
-        //            return temp;
-        //        }
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        public double TotalProcessWaterDemand_dm
-        //        {
-        //            get { return d_totalProcessWaterDemand; }
-        //        }
-        //        // =======================================================================
-
-        //        // =======================================================================
-        //        // Total Number of Agents
-        //        //--------------------------------
-        //        double d_totalAgents = 0;
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        /// <returns></returns>
-        //        public int Geti_TotalAgents_DM()
-        //        {
-        //            int temp = Convert.ToInt32(d_totalAgents);
-        //            return temp;
-        //        }
-        //        /// <summary>
-        //        /// 
-        //        /// </summary>
-        //        public double TotalAgents_dm
-        //        {
-        //            get { return d_totalAgents; }
-        //        }
-        //    // =======================================================================
-
-        //    // =======================================================================
-        //    // Total Number of Agents
-        //    //--------------------------------
-        //    double d_gallonsUnitYear = 0;
-        //    /// <summary>
-        //    /// 
-        //    /// </summary>
-        //    /// <returns></returns>
-        //    public int Geti_GallonUnitYear_DM()
-        //    {
-        //        int temp = Convert.ToInt32(d_totalAgents);
-        //        return temp;
-        //    }
-        //    /// <summary>
-        //    /// 
-        //    /// </summary>
-        //    public double GallonsUnitYear_dm
-        //    {
-        //        get { return d_gallonsUnitYear; }
-        //    }
-        //    // =======================================================================
-
-        //    #endregion Outputs
-
-        //#endregion DenverWaterDemandModel
+        // -------------------------------------------------
         // FLUXES
         #region fluxes
         ///-------------------------------------------------------------------------------------------------
@@ -8878,13 +8857,25 @@ namespace WaterSimDCDC.Generic
         }
         #endregion NEW equations
         //
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="StartValue"></param>
+        /// <param name="period"></param>
+        /// <param name="ExponentialCoef"></param>
+        /// <param name="Limit">This is also the target value ???? by the end of the simulation (i.e., 0.8 or 80% of initial)_ das 02.07.22</param>
+        /// 
+        /// <returns></returns>
         public static double AnnualExponentialChange(double StartValue, double period, double ExponentialCoef, double Limit)
         {
             double result = 1;
-            result = Limit + ((StartValue - Limit) * Math.Exp((-1 * ExponentialCoef) * period));        
+            result = Limit + ( (StartValue - Limit) * Math.Exp((-1 * ExponentialCoef) * period));        
             return result;
         }
+        //
+        // =====================================================================================
+       
+
         #region Generic Functions
         /// <summary>
         ///  A function to determine the number of days in a year
