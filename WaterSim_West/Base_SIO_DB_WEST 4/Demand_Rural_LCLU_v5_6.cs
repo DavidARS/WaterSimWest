@@ -105,10 +105,19 @@ namespace WaterSim_Base
         //
         StreamWriter SW;
         //
+        /// <summary>
+        /// 
+        /// </summary>
         public RateDataClass FRDC;
+        /// <summary>
+        ///  land-cover land-use original three-variable data
+        /// </summary>
         public DataClassLCLU FDClclu;
         //
         // Version 2 ICLUS
+        /// <summary>
+        ///  Updated LCLU for manymore classes
+        /// </summary>
         public DataClassLcluArea FDLCLU;
         //
         UrbanDensityDataClass FUDDataClass;
@@ -573,12 +582,11 @@ namespace WaterSim_Base
         //public override void preProcessDemand(int currentYear, StreamWriter sw)
         //{ }
 
-        // UrbanDemand Pre Process
-        //public override void preProcessDemand(int currentYear)
         /// <summary>
         /// 
         /// </summary>
         /// <param name="currentYear"></param>
+        /// <param name="sw"></param>
         public void preProcessDemand(int currentYear, StreamWriter sw)
         {
             // Old data - Ag, Urban, Industry
@@ -613,22 +621,7 @@ namespace WaterSim_Base
             convertAcresToUnits();
             calculateDemand(region, currentYear, LurbanConservation, period, sw);
         }
-        /// <summary>
-        /// ICLUS version 2 with five urban classes- This is invoked with the default urban
-        /// setting is equal to a value of 3
-        /// </summary>
-        /// <param name="region"></param>
-        /// <param name="currentYear"></param>
-        //public void switchLCLU(string region, int currentYear)
-        //{
-        //    double period = (currentYear - CRF.startYear) + 1;
-        //    //
-        //    AssignLCLU(region, currentYear);
-        //    ProcessRequest(region, currentYear);
-        //    convertAcresToUnits();
-        //    calculateDemand(region, currentYear, LurbanConservation, period);
-        //}
-        // ---------------------------------------------------
+      
 
         // ---------------------------------------------------
         /// <summary>
@@ -1032,9 +1025,10 @@ namespace WaterSim_Base
             return result;
         }
         /// <summary>
-        ///  Gallons per unit per year
+        /// 
         /// </summary>
         /// <param name="LCLUclass"></param>
+        /// <param name="region"></param>
         /// <returns></returns>
         public double DemandFromDUA(string LCLUclass, string region)
         {
@@ -1155,6 +1149,7 @@ namespace WaterSim_Base
             }
             catch (Exception ex)
             {
+                throw new Exception("what modify rate in rural demand LCLU",ex);
                 // Ouch Only thing going here is the Change Increment Function
             }
             //demand = result; // set the property labeled "demand"
@@ -1440,7 +1435,12 @@ namespace WaterSim_Base
             temp = Math.Round(demandAg);
             return temp;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentYear"></param>
+        /// <param name="sw"></param>
+        /// <returns></returns>
         public override double GetDemand(int currentYear, StreamWriter sw)
         {
             double temp = 0;
@@ -1455,10 +1455,16 @@ namespace WaterSim_Base
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public override void SetDemandFactors()
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public override void SetBaseValues()
         {
             int year = 2010;
@@ -1500,7 +1506,6 @@ namespace WaterSim_Base
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="yr"></param>
         public override void preProcessDemand()
         {
             throw new NotImplementedException();
@@ -1545,7 +1550,13 @@ namespace WaterSim_Base
     {
         // objects
         WaterSimCRFModel CRF;
+        /// <summary>
+        /// 
+        /// </summary>
         public RateDataClass FRDC;
+        /// <summary>
+        /// 
+        /// </summary>
         public DataClassLCLU FDClclu;
         //
         //
@@ -1702,6 +1713,12 @@ namespace WaterSim_Base
             temp = demandIndustry;
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentYear"></param>
+        /// <param name="sw"></param>
+        /// <returns></returns>
         public override double GetDemand(int currentYear, StreamWriter sw)
         {
             double temp = 0;
@@ -1717,21 +1734,34 @@ namespace WaterSim_Base
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public override void SetDemandFactors()
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public override void SetBaseValues()
         {
             int year = 2010;
             LBaseRate = FRDC.FastIndRateLCLU(CRF.UnitName);
             Lacres = FDClclu.FastIndAcres(CRF.UnitName, year);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
         public override void switchUrbanLCLU(int year) { }
         // ========================================================================================
         //
         // Process
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentYear"></param>
         public override void preProcessDemand(int currentYear)
         {
             Lacres = FDClclu.FastIndAcres(CRF.UnitName, currentYear);
@@ -1746,7 +1776,6 @@ namespace WaterSim_Base
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="yr"></param>
         public override void preProcessDemand()
         {
             throw new NotImplementedException();
@@ -1848,14 +1877,23 @@ namespace WaterSim_Base
         {
             get { return FAcerageUrban; }
         }
+        /// <summary>
+        ///  Ag acres
+        /// </summary>
         public double AcerageAg
         {
             get { return FAcerageAg; }
         }
+        /// <summary>
+        ///  Industrial acerage
+        /// </summary>
         public double AcerageInd
         {
             get { return FAcerageInd; }
         }
+        /// <summary>
+        ///  The year of the data
+        /// </summary>
         public int TheYear
         {
             get { return FYear; }
@@ -1995,13 +2033,13 @@ namespace WaterSim_Base
         }
 
         // ==============================================================
-        //   
-        //public double[] AGRate()
-        //{
-        //    return GetDataArray(FAGRateFieldStr);
-        //}
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public double FastUrbanAcres(string UnitName, int year)
         {
             double temp = InvalidRate;
@@ -2016,6 +2054,12 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public double FastAgAcres(string UnitName, int year)
         {
             double temp = InvalidRate;
@@ -2029,6 +2073,12 @@ namespace WaterSim_Base
             }
             return temp;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UnitName"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public double FastIndAcres(string UnitName, int year)
         {
             double temp = InvalidRate;

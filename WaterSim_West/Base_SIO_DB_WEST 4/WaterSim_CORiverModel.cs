@@ -85,6 +85,9 @@ namespace WaterSimDCDC.Generic
             }
             // end 09.14.20 das
         }
+        /// <summary>
+        ///  The object for the CO River model
+        /// </summary>
         public COriverModel COriverModel
         {
             get
@@ -102,11 +105,16 @@ namespace WaterSimDCDC.Generic
         {
             get { return FCORiverModel; }
         }
+        /// <summary>
+        ///  Abbreviation for the CO River model object
+        /// </summary>
         public COriverModel CRM
         {
             get { return FCORiverModel; }
         }
-        //
+        /// <summary>
+        ///  Utah water transfers from Lake Powell
+        /// </summary>
         public bool UTwaterTransfers
         {
             get; set;

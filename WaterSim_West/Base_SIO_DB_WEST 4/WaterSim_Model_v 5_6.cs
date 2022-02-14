@@ -1,4 +1,4 @@
-﻿///-------------------------------------------------------------------------------------------------
+﻿//-------------------------------------------------------------------------------------------------
 // 
 //
 // summary:	Implements the water simulation model v 2 0 class
@@ -27,7 +27,7 @@
 //              are in this model list.
 // 
 //        
-///-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
 using System;
 using System.IO;
@@ -183,14 +183,9 @@ namespace WaterSimDCDC.Generic
     //==========================================================================================================================
     //  MODEL ERROR LIST 
     //==========================================================================================================================
-
-    ///-------------------------------------------------------------------------------------------------
-    /// <summary>   List of model errors. </summary>
-    /// <remarks> Used to keep track of model errors </remarks>
-    ///
-    /// <seealso cref="System.Collections.Generic.List" />  <seealso cref="WaterSimDCDC.Generic.ModelError"/>
-    ///-------------------------------------------------------------------------------------------------
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class ModelErrorList : List<ModelError>
     {
         /// <summary> The call back.</summary>
@@ -284,9 +279,7 @@ namespace WaterSimDCDC.Generic
         int FPolicyStartYear = 0;
         /// <summary> The Trace Start Year </summary>
         readonly int FCOriverTraceStartYr = 1920;
-        /// <summary> The start drough year.</summary>
-        // CLEAN UP int FStartDroughYear = 0;
-
+     
 
         /// <summary> Information describing the rate.</summary>
         readonly RateDataClass FRateData;
@@ -321,9 +314,9 @@ namespace WaterSimDCDC.Generic
         readonly UrbanDensityDataClass UDproportions;
         // EDIT QUAY 9/10/20
         // Copied DAS code in then modified it in external models below, These models are now in WaterWim_CORiverModel class
-        /// <summary>
-        /// This is the central class for the Colorado River System
-        /// </summary>
+        // <summary>
+        // This is the central class for the Colorado River System
+        // </summary>
 
         //public  COriverModel COS;
         //public  COriverAccounting COA;
@@ -335,6 +328,9 @@ namespace WaterSimDCDC.Generic
         /// <summary> The surface model.</summary>
         readonly SurfaceModel FSurfaceModel;
         readonly WaterSim_CORiverModel FColoradoModel;
+        /// <summary>
+        ///  Temporary stream writer
+        /// </summary>
         public StreamWriter swriter;
         DateTime now = DateTime.Now;
 
@@ -395,7 +391,6 @@ namespace WaterSimDCDC.Generic
 
             string outputs = "\\Outputs\\";
             string addInputsDir = "\\Inputs\\";
-           /// string addCOdataDir = "\\DataCOriver\\";
             //
 
             try
@@ -468,8 +463,7 @@ namespace WaterSimDCDC.Generic
             {
                 throw ex;
             }
-            /// <param name="TempDirectoryName"></param>
-  
+ 
         }
         //
         //public bool UTwaterTransfers
@@ -488,16 +482,7 @@ namespace WaterSimDCDC.Generic
                 + "_" + ".csv");
             swriter = File.AppendText(filename);
         }
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Constructor.</summary>
-        ///
-        /// <remarks> Mcquay, 2/6/2017.</remarks>
-        ///
-        /// <param name="TheUnitData"> Information describing the unit.</param>
-        /// <param name="TheRateData"> Information describing the rate.</param>
-        /// <param name="TheUnitName"> Name of the unit.</param>
-        ///-------------------------------------------------------------------------------------------------
-
+  
         //public WaterSimModel(UnitData TheUnitData, RateDataClass TheRateData, string TheUnitName)
         //{
         //    FUnitData = TheUnitData;
@@ -689,7 +674,9 @@ namespace WaterSimDCDC.Generic
         // edits 01.13.22 das
         internal int DesalPoliciesForAgent
         { get; set; }
-
+        /// <summary>
+        /// At the moment, not used
+        /// </summary>
         public int desalPoliciesForAgent
         {
             set
@@ -940,12 +927,7 @@ namespace WaterSimDCDC.Generic
             }
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the state. </summary>
-        ///
-        /// <value> The state. </value>
-        ///-------------------------------------------------------------------------------------------------
-
+ 
         //public string[] State
         //{
         //    get 
@@ -1172,6 +1154,7 @@ namespace WaterSimDCDC.Generic
             }
             catch (Exception ex)
             {
+                throw new Exception("Not used", ex);
                 // Do nothing for now
             }
             return result;
@@ -1227,17 +1210,14 @@ namespace WaterSimDCDC.Generic
             return result;
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Sets unit value. </summary>
-        /// <param name="Name">         The name. </param>
-        /// <param name="PropArray">    [in,out] Array of Unit Values. </param>
-        /// <param name="Value">        The value. </param>
-        /// <remarks> This places the Value into the proper location in the UnitValueArry based on the UniTName passed
+        /// <summary>
+        ///  This places the Value into the proper location in the UnitValueArry based on the UniTName passed
         ///           This is not particulalry fast, so using it to set more than one UnitModel will not be
-        ///             Efficient</remarks>
-        /// <returns>   true if it succeeds, false if it fails. </returns>
-        ///-------------------------------------------------------------------------------------------------
-
+        ///             Efficient</summary>
+        /// <param name="Name"></param>
+        /// <param name="UnitValueArray"></param>
+        /// <param name="Value"></param>
+        /// <returns> true if it succeeds, false if it fails</returns>
         public bool SetUnitValue(string Name, ref int[] UnitValueArray, int Value)
         {
             bool result = false;
@@ -1378,7 +1358,13 @@ namespace WaterSimDCDC.Generic
         //  Population
         //=======================================================
         // 08.03.17 das
+        /// <summary>
+        ///  modify population
+        /// </summary>
         public double _popGrowthRateModifier = 1.0;
+        /// <summary>
+        ///  same
+        /// </summary>
         public double PopulationGrowthRateModifier
         {
             get { return _popGrowthRateModifier; }
@@ -1489,9 +1475,14 @@ namespace WaterSimDCDC.Generic
         // Use External Surface Model
         //======================================================
         #region UseSurfaceExternal
-
+        /// <summary>
+        /// 
+        /// </summary>
         public providerArrayProperty UseSurfaceExternal;
-
+        /// <summary>
+        ///  Rays code
+        /// </summary>
+        /// <returns></returns>
         public int[] geti_UseSurfaceExternal()
         {
             int ArraySize = FUnitModels.Count;
@@ -2437,7 +2428,9 @@ namespace WaterSimDCDC.Generic
 
         // Total Water Demand Net
         #region TotalWaterDemandNet
-
+        /// <summary>
+        ///  Net water balance of total water demand
+        /// </summary>
         public providerArrayProperty TotalDemandNet;
 
         ///-------------------------------------------------------------------------------------------------
@@ -2858,10 +2851,6 @@ namespace WaterSimDCDC.Generic
                 FUnitModels[i].seti_GrayWaterManagement(Values[i]);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         //public int[] geti_GrayWaterFlow()
         //{
 
@@ -3010,9 +2999,6 @@ namespace WaterSimDCDC.Generic
 
         //=======================================================
         #region Recycle
-        ///------------------------------------------------------
-        /// <summary> The Augmented provider property  </summary>
-        ///------------------------------------------------------
         //public providerArrayProperty Recycle;
 
         /////------------------------------------------------------
@@ -3099,7 +3085,9 @@ namespace WaterSimDCDC.Generic
         #endregion PopGrowthRate
 
         #region PopGrowthRate Modifyer
-
+        /// <summary>
+        /// 
+        /// </summary>
         public providerArrayProperty PopGrowthRateModifyer;
 
         ///------------------------------------------------------
@@ -4015,7 +4003,9 @@ namespace WaterSimDCDC.Generic
             }
         }
 
-        //
+        /// <summary>
+        ///  THe perentage of users that install Atmospheric water systems
+        /// </summary>
         public providerArrayProperty AirWaterCompliance;
 
         ///------------------------------------------------------
@@ -4068,6 +4058,9 @@ namespace WaterSimDCDC.Generic
             }
             return result;
         }
+        /// <summary>
+        ///  THe potential amount of stormwater runoff, measured in gallons per acre per day
+        /// </summary>
         public providerArrayProperty StormwaterPotential;
         /// <summary>
         ///  Urban water demand savings from atmos and rainwater
@@ -4083,12 +4076,7 @@ namespace WaterSimDCDC.Generic
             }
             return result;
         }
-        ///------------------------------------------------------
-        /// <summary> Sets a ClimateDrought  </summary>
-        /// <param name="Values">   The values. </param>
-
-
-
+  
 
         // =========================================================
         #endregion Updated Policies - October 2021
@@ -4477,7 +4465,9 @@ namespace WaterSimDCDC.Generic
             }
             return result;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public providerArrayProperty AgricultureGPDD;
 
         #endregion AgricultureProduction
@@ -4486,9 +4476,14 @@ namespace WaterSimDCDC.Generic
         //  Initial Agricultural  GPDD
         //=======================================================
         #region AgricultureInitialGPDD
-
+        /// <summary>
+        /// 
+        /// </summary>
         public providerArrayProperty initialAgricultureGPDD;
-
+        /// <summary>
+        ///  is this gallons per dollar per day? Ray?
+        /// </summary>
+        /// <returns></returns>
         public int[] geti_initialAgricultureGPDD()
         {
             int ArraySize = FUnitModels.Count;
@@ -5227,7 +5222,10 @@ namespace WaterSimDCDC.Generic
         #endregion _REC_PD
         //=======================================================
         #region total REC Demand from fluxes
-
+        /// <summary>
+        ///  Reclaimed water demand
+        /// </summary>
+        /// <returns></returns>
         public int[] geti_REC_D()
         {
             int ArraySize = FUnitModels.Count;
