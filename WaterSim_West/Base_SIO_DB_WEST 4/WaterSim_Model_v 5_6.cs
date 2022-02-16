@@ -302,9 +302,12 @@ namespace WaterSimDCDC.Generic
         // end edits das o6.03.21
 
         // edits 01.19.22 das
-        readonly ColoradoDesalExchangeClass FCODExchange;
+        //readonly ColoradoDesalExchangeClass FCODExchange;
         // end edits 01.19.22 das
-
+        // ==========================================================
+        readonly RainWaterHarvesting RW;
+        readonly StormWater SW;
+        // ==========================================================
         //Resource Model list
         ResourceModelList FResourceModels =  new ResourceModelList();
         //
@@ -349,7 +352,7 @@ namespace WaterSimDCDC.Generic
 
         public WaterSimModel(string DataDirectoryName, string TempDirectoryName)
         {
-            //           string UnitDataFielname = "Just11StatesLakeNoRuralPower.csv";// "Just5StatesLakeNoRural.csv"; //"Just5StatesLake.csv";// "JustSmithStates.csv";// "All_50_states.csv";
+            // string UnitDataFielname = "Just11StatesLakeNoRuralPower.csv";// "Just5StatesLakeNoRural.csv"; //"Just5StatesLake.csv";// "JustSmithStates.csv";// "All_50_states.csv";
             // EDIT QUAY 2 13 18
             // CHANGED TO REGION DATA FILE
             //string UnitDataFielname = "BasinStatesSubRegionData.csv";// "USGSBasinRegionCountyWaterUse_2_28_17.csv";
@@ -369,16 +372,16 @@ namespace WaterSimDCDC.Generic
             string RateDataFilename = "WestModelGrowthRates_6.csv";
             string AcerageDataFilename = "LCLUAcres.csv";
             //string TemperatureDataFilename = "Temperature.csv";
-            string ClimateDataFilename = "ClimateMonthly_24.csv";
+           // string ClimateDataFilename = "ClimateMonthly_24.csv";
             // EDIT END 2 13 18
             // das edits 06.03.21
             // ICLUS ssp2 and ssp5 lclu data  - impervious area ..;
             string LCLUclassesFilename = "Oct21_Acres_ssp2.csv";
             //
-            string LCLUrcnFilename = "RCNbyLCLU.csv";
+            //string LCLUrcnFilename = "RCNbyLCLU.csv";
             // end edits das 06.03.21
             // edits 08.10.21 das
-            string RainFallFilename = "WSWestRainFall.csv";
+            //string RainFallFilename = "WSWestRainFall.csv";
             // end edits 08.10.21 das
             // edits 01.19.22 das
             string COexchangeFilename = "CO_desalExchangeCommand.csv";
@@ -392,58 +395,42 @@ namespace WaterSimDCDC.Generic
             string outputs = "\\Outputs\\";
             string addInputsDir = "\\Inputs\\";
             //
-
             try
             {
                 StreamWriter(TempDirectoryName + outputs);
-                //FUnitData = new UnitData(DataDirectoryName +  "//"  + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
+                //
                 FUnitData = new UnitData(DataDirectoryName + addInputsDir + UnitDataFieldname, UDI.UnitCodeField, UDI.UnitNameField);
                 FRateData = new RateDataClass(DataDirectoryName + addInputsDir, RateDataFilename);
+
+                // standard LCLU area data - threre classes (urban demand index = 2
                 FDataLCLU = new DataClassLCLU(DataDirectoryName + addInputsDir, AcerageDataFilename);
-                // Impervious area
+                //
+                // ======================================================================================================
+                // ICLUS III
+                // urban demand index equals 3
                 FDataLCLUarea = new DataClassLcluArea(DataDirectoryName + addInputsDir, LCLUclassesFilename);
-                FDataLCLUrcn = new DataClassRCN(DataDirectoryName + addInputsDir, LCLUrcnFilename);
-                //
-                //
-                //FDataTemperature = new DataClassTemperature(DataDirectoryName, ClimateDataFilename);
-                DataClassTemperature TD = new DataClassTemperature(DataDirectoryName + addInputsDir, ClimateDataFilename);
-                // string Filename = "CompareDemand.txt";
-                //
-                // swriter = new StreamWriter(Filename); 
-                // 08.31.21 das
-                DataClassRainFall RF = new DataClassRainFall(DataDirectoryName + addInputsDir, RainFallFilename);
-                RainWaterHarvesting RW = new RainWaterHarvesting(RF, FDataLCLUarea, FUnitData);
-                StormWater SW = new StormWater(FUnitData, RF, RW, FDataLCLUarea, FDataLCLUrcn);
-                // end edits 08.31.21 das
-                // edits 11.02.21 das
-                //NewWater NW = new NewWater(FUnitData);
-                int cloudy = 2;
-                NewWater NW = new NewWater(FUnitData, cloudy);
+                // edits 02.08.22 das
+                UDproportions = new UrbanDensityDataClass(DataDirectoryName + addInputsDir, UrbanDensityPropFilename);
+                // end edits 02.08.22 das
+                // ======================================================================================================
                 //  edits 01.19.22
                 ColoradoDesalExchangeClass COD = new ColoradoDesalExchangeClass(DataDirectoryName + addInputsDir, COexchangeFilename);
                 //  end edits 01.19.22 das
 
-                // edits 02.08.22 das
-                UDproportions = new UrbanDensityDataClass(DataDirectoryName + addInputsDir, UrbanDensityPropFilename);
-                // end edits 02.08.22 das
-
-                //end edits 11.02.21 das
                 foreach (string Name in FUnitData.UnitNames)
-                    {
-                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
-                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
-                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
-                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
-                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
-                        //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, swriter); // 11.02.21 das
-                        WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, UDproportions, swriter); // 02.08.22 das
+                {
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, Name);
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, Name);
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name);
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name,RW,SW,swriter); // 08.31.21 das
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, swriter); // 11.02.21 das
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, UDproportions, swriter); // 02.08.22 das
+                    WaterSimCRFModel TempModel = new WaterSimCRFModel(DataDirectoryName,FUnitData, FRateData, Name, COD, UDproportions, swriter); // 02.08.22 das
+                    FUnitModels.Add(TempModel);
+                    set_DefaultDemandModel(TempModel);
+                }
 
-                        FUnitModels.Add(TempModel);
-                        set_DefaultDemandModel(TempModel);
-                    
-                        // modelCount += 1;
-                    }
-                
                 // EDIT QUAY 9/8/20
                 // Adding Surface Water Model
                 //
@@ -454,11 +441,7 @@ namespace WaterSimDCDC.Generic
                 //FColoradoModel = new WaterSim_CORiverModel(DataDirectoryName, TempDirectoryName, UnitDataFieldname, UTwaterTransfers);
                 AddExternalModel(FColoradoModel);
 
-                 // sampson edits 09.04.18
-                //set_GrayWaterPotential();
-                // end sampson edits 09.04.18
-
-              }
+            }
             catch (Exception ex)
             {
                 throw ex;
@@ -648,24 +631,48 @@ namespace WaterSimDCDC.Generic
         }
         // ======================================================
         // edits 11.09.21 das
-        internal bool RainWaterHarvesting
-        { get; set; }
-        /// <summary>
-        /// Switch to invoke rainwater harvesting
-        /// </summary>
-        public bool rainWaterHarvesting
-        {
-            set
-            {
-                bool RainWaterHarvesting = value;
-                //FPolicyStartYear = value;
-                foreach (WaterSimCRFModel WSM in FUnitModels)
-                {
-                    WSM.rainWaterHarvest = RainWaterHarvesting;
-                }
-            }
-            get { return RainWaterHarvesting; }
-        }
+        //
+        //internal bool RainWaterOverride
+        //{ get; set; }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //public bool rainWaterOverride
+        //{
+        //    set
+        //    {
+        //        bool RainWaterOverride = value;
+        //        //FPolicyStartYear = value;
+        //        foreach (WaterSimCRFModel WSM in FUnitModels)
+        //        {
+        //            WSM.RainWaterOverride = RainWaterOverride;
+        //        }
+        //    }
+        //    get { return RainWaterOverride; }
+        //}
+        // -------------------------------------------
+        //internal bool RainWaterHarvesting
+        //{ get; set; }
+        ///// <summary>
+        ///// Switch to invoke rainwater harvesting
+        ///// </summary>
+        //public bool rainWaterHarvesting
+        //{
+        //    set
+        //    {
+        //        bool RainWaterHarvesting = value;
+        //        //FPolicyStartYear = value;
+        //        foreach (WaterSimCRFModel WSM in FUnitModels)
+        //        {
+        //            WSM.RainWaterHarvest = RainWaterHarvesting;
+        //            if (RainWaterHarvesting)
+        //            {
+        //                rainWaterOverride = RainWaterHarvesting;
+        //            }
+        //        }
+        //    }
+        //    get { return RainWaterHarvesting; }
+        //}
         // end edits 11.09.21 das
         // ======================================================
 
@@ -973,14 +980,14 @@ namespace WaterSimDCDC.Generic
                 if (RM is SurfaceModel)
                 {
                     int[] AllocatedSurfaceWater = (RM as SurfaceModel).Allocate(yearindex).AvailableWater;
-                    seti_SurfaceWaterFresh(AllocatedSurfaceWater);
+                    Seti_SurfaceWaterFresh(AllocatedSurfaceWater);
                 }
 
                 // Colorado River Model
                 if (RM is WaterSim_CORiverModel)
                 {
                     int[] AllocatedColorado = (RM as WaterSim_CORiverModel).Allocate(yearindex).AvailableWater;
-                    seti_SurfaceColorado(AllocatedColorado);
+                    Seti_SurfaceColorado(AllocatedColorado);
                 }
             }
             // END MODIFIED Quay 9/8/2020
@@ -1381,7 +1388,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Population  </summary>
         ///<returns> the Population </returns>
 
-        public int[] geti_Pop()
+        public int[] Geti_Pop()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
@@ -1406,13 +1413,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the GPCD_urban  </summary>
         ///<returns> the GPCD_urban </returns>
 
-        public int[] geti_gpcd()
+        public int[] Geti_gpcd()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_gpcd();
+                result[i] = FUnitModels[i].Geti_gpcd();
             }
             return result;
         }
@@ -1431,13 +1438,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the GPCD_ag  </summary>
         ///<returns> the GPCD_ag </returns>
 
-        public int[] geti_gpcdAg()
+        public int[] Geti_gpcdAg()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_gpcdAg();
+                result[i] = FUnitModels[i].Geti_gpcdAg();
             }
             return result;
         }
@@ -1456,13 +1463,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the GPCD_other  </summary>
         ///<returns> the GPCD_other </returns>
 
-        public int[] geti_gpcdOther()
+        public int[] Geti_gpcdOther()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_gpcdOther();
+                result[i] = FUnitModels[i].Geti_gpcdOther();
             }
             return result;
         }
@@ -1483,13 +1490,13 @@ namespace WaterSimDCDC.Generic
         ///  Rays code
         /// </summary>
         /// <returns></returns>
-        public int[] geti_UseSurfaceExternal()
+        public int[] Geti_UseSurfaceExternal()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceFreshUseExternal();
+                result[i] = FUnitModels[i].Geti_SurfaceFreshUseExternal();
             }
             return result;
         }
@@ -1500,7 +1507,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_UseSurfaceExternal(int[] Values)
+        public void Seti_UseSurfaceExternal(int[] Values)
         {  
             if (FResourceModels.ContainsType(Type.GetType("SurfaceModel")))
                 {
@@ -1511,7 +1518,7 @@ namespace WaterSimDCDC.Generic
                 }
                 for (int i = 0; i < ArraySize; i++)
                 {
-                    FUnitModels[i].seti_SurfaceFreshUseExternal(Values[i]);
+                    FUnitModels[i].Seti_SurfaceFreshUseExternal(Values[i]);
                 }
             }
         }
@@ -1530,13 +1537,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_UseColoradoExternal()
+        public int[] Geti_UseColoradoExternal()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_ColoradoUseExternal();
+                result[i] = FUnitModels[i].Geti_ColoradoUseExternal();
             }
             return result;
         }
@@ -1547,7 +1554,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_UseColoradoExternal(int[] Values)
+        public void Seti_UseColoradoExternal(int[] Values)
         {
             // 10.07.20 das is this a typo?
             //if (FResourceModels.ContainsType(Type.GetType("WaterSim_CORiverMode")))
@@ -1560,7 +1567,7 @@ namespace WaterSimDCDC.Generic
                 }
                 for (int i = 0; i < ArraySize; i++)
                 {
-                    FUnitModels[i].seti_ColoradoUseExternal(Values[i]);
+                    FUnitModels[i].Seti_ColoradoUseExternal(Values[i]);
                 }
             }
         }
@@ -1580,13 +1587,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceFresh  </summary>
         ///<returns> the SurfaceFresh </returns>
 
-        public int[] geti_SurfaceWaterFresh()
+        public int[] Geti_SurfaceWaterFresh()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceWaterFresh();
+                result[i] = FUnitModels[i].Geti_SurfaceWaterFresh();
             }
             return result;
         }
@@ -1596,7 +1603,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a SurfaceFresh  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SurfaceWaterFresh(int[] Values)
+        public void Seti_SurfaceWaterFresh(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -1605,7 +1612,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SurfaceWaterFresh(Values[i]);
+                FUnitModels[i].Seti_SurfaceWaterFresh(Values[i]);
             }
         }
         #endregion SurfaceFresh
@@ -1622,13 +1629,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceFreshNet  </summary>
         ///<returns> the SurfaceFreshNet </returns>
 
-        public int[] geti_SurfaceWaterFreshNet()
+        public int[] Geti_SurfaceWaterFreshNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceWaterFreshNet();
+                result[i] = FUnitModels[i].Geti_SurfaceWaterFreshNet();
             }
             return result;
         }
@@ -1651,13 +1658,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceColorado  </summary>
         ///<returns> the SurfaceColorado </returns>
 
-        public int[] geti_SurfaceColorado()
+        public int[] Geti_SurfaceColorado()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceColorado();
+                result[i] = FUnitModels[i].Geti_SurfaceColorado();
             }
             return result;
         }
@@ -1667,7 +1674,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a SurfaceColorado  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SurfaceColorado(int[] Values)
+        public void Seti_SurfaceColorado(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -1676,7 +1683,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SurfaceColorado(Values[i]);
+                FUnitModels[i].Seti_SurfaceColorado(Values[i]);
             }
         }
         #endregion SurfaceColorado
@@ -1694,13 +1701,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceFreshNet  </summary>
         ///<returns> the SurfaceFreshNet </returns>
 
-        public int[] geti_SurfaceColoradoNet()
+        public int[] Geti_SurfaceColoradoNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceColoradoNet();
+                result[i] = FUnitModels[i].Geti_SurfaceColoradoNet();
             }
             return result;
         }
@@ -1721,13 +1728,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceSaline  </summary>
         ///<returns> the SurfaceSaline </returns>
 
-        public int[] geti_SurfaceWaterSaline()
+        public int[] Geti_SurfaceWaterSaline()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceWaterSaline();
+                result[i] = FUnitModels[i].Geti_SurfaceWaterSaline();
             }
             return result;
         }
@@ -1737,7 +1744,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a SurfaceSaline  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SurfaceWaterSaline(int[] Values)
+        public void Seti_SurfaceWaterSaline(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -1746,7 +1753,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SurfaceWaterSaline(Values[i]);
+                FUnitModels[i].Seti_SurfaceWaterSaline(Values[i]);
             }
         }
         #endregion SurfaceSaline
@@ -1763,13 +1770,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceSalineNet  </summary>
         ///<returns> the SurfaceSalineNet </returns>
 
-        public int[] geti_SurfaceWaterSalineNet()
+        public int[] Geti_SurfaceWaterSalineNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceWaterSalineNet();
+                result[i] = FUnitModels[i].Geti_SurfaceWaterSalineNet();
             }
             return result;
         }
@@ -1788,13 +1795,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Groundwater  </summary>
         ///<returns> the Groundwater </returns>
 
-        public int[] geti_Groundwater()
+        public int[] Geti_Groundwater()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Groundwater();
+                result[i] = FUnitModels[i].Geti_Groundwater();
             }
             return result;
         }
@@ -1807,7 +1814,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_Groundwater(int[] Values)
+        public void Seti_Groundwater(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -1816,7 +1823,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Groundwater(Values[i]);
+                FUnitModels[i].Seti_Groundwater(Values[i]);
             }
         }
         #endregion Groundwater
@@ -1833,13 +1840,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the GroundwaterNet  </summary>
         ///<returns> the GroundwaterNet </returns>
 
-        public int[] geti_GroundwaterNet()
+        public int[] Geti_GroundwaterNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GroundwaterNet();
+                result[i] = FUnitModels[i].Geti_GroundwaterNet();
             }
             return result;
         }
@@ -1858,13 +1865,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Effluent  </summary>
         ///<returns> the Effluent </returns>
 
-        public int[] geti_Effluent()
+        public int[] Geti_Effluent()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Effluent();
+                result[i] = FUnitModels[i].Geti_Effluent();
             }
             return result;
         }
@@ -1874,7 +1881,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Effluent  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_Effluent(int[] Values)
+        public void Seti_Effluent(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -1883,14 +1890,14 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Effluent(Values[i]);
+                FUnitModels[i].Seti_Effluent(Values[i]);
             }
         }
         /// <summary>
         ///  Sampson edits 08.08.18
         /// </summary>
         /// <returns></returns>
-        public int[] geti_AvailableReclaimed()
+        public int[] Geti_AvailableReclaimed()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
@@ -1915,13 +1922,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the EffluentNet  </summary>
         ///<returns> the EffluentNet </returns>
 
-        public int[] geti_EffluentNet()
+        public int[] Geti_EffluentNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_EffluentNet();
+                result[i] = FUnitModels[i].Geti_EffluentNet();
             }
             return result;
         }
@@ -1940,13 +1947,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceLake  </summary>
         ///<returns> the SurfaceLake </returns>
 
-        public int[] geti_SurfaceLake()
+        public int[] Geti_SurfaceLake()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceLake();
+                result[i] = FUnitModels[i].Geti_SurfaceLake();
             }
             return result;
         }
@@ -1956,7 +1963,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a SurfaceLake  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SurfaceLake(int[] Values)
+        public void Seti_SurfaceLake(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -1965,7 +1972,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SurfaceLake(Values[i]);
+                FUnitModels[i].Seti_SurfaceLake(Values[i]);
             }
         }
         #endregion SurfaceLake
@@ -1982,13 +1989,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceLakeNet  </summary>
         ///<returns> the SurfaceLakeNet </returns>
 
-        public int[] geti_SurfaceLakeNet()
+        public int[] Geti_SurfaceLakeNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceLakeNet();
+                result[i] = FUnitModels[i].Geti_SurfaceLakeNet();
             }
             return result;
         }
@@ -2007,13 +2014,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the TotalSupplies  </summary>
         ///<returns> the TotalSupplies </returns>
 
-        public int[] geti_TotalSupplies()
+        public int[] Geti_TotalSupplies()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_TotalSupplies();
+                result[i] = FUnitModels[i].Geti_TotalSupplies();
             }
             return result;
         }
@@ -2032,13 +2039,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Urban  </summary>
         ///<returns> the Urban </returns>
 
-        public int[] geti_Urban()
+        public int[] Geti_Urban()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Urban();
+                result[i] = FUnitModels[i].Geti_Urban();
             }
             return result;
         }
@@ -2048,7 +2055,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Urban  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_Urban(int[] Values)
+        public void Seti_Urban(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2057,7 +2064,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Urban(Values[i]);
+                FUnitModels[i].Seti_Urban(Values[i]);
             }
         }
         #endregion Urban
@@ -2074,13 +2081,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the UrbanNet  </summary>
         ///<returns> the UrbanNet </returns>
 
-        public int[] geti_Urban_Net()
+        public int[] Geti_Urban_Net()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Urban_Net();
+                result[i] = FUnitModels[i].Geti_Urban_Net();
             }
             return result;
         }
@@ -2099,13 +2106,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Agriculture  </summary>
         ///<returns> the Agriculture </returns>
 
-        public int[] geti_Agriculture()
+        public int[] Geti_Agriculture()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Agriculture();
+                result[i] = FUnitModels[i].Geti_Agriculture();
             }
             return result;
         }
@@ -2115,7 +2122,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Agriculture  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_Agriculture(int[] Values)
+        public void Seti_Agriculture(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2124,7 +2131,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Agriculture(Values[i]);
+                FUnitModels[i].Seti_Agriculture(Values[i]);
             }
         }
         #endregion Agriculture
@@ -2141,13 +2148,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgricultureNet  </summary>
         ///<returns> the AgricultureNet </returns>
 
-        public int[] geti_Agriculture_Net()
+        public int[] Geti_Agriculture_Net()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Agriculture_Net();
+                result[i] = FUnitModels[i].Geti_Agriculture_Net();
             }
             return result;
         }
@@ -2166,13 +2173,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Industrial  </summary>
         ///<returns> the Industrial </returns>
 
-        public int[] geti_Industrial()
+        public int[] Geti_Industrial()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Industrial();
+                result[i] = FUnitModels[i].Geti_Industrial();
             }
             return result;
         }
@@ -2187,13 +2194,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_IndustrialGPED()
+        public int[] Geti_IndustrialGPED()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_IndustrialGPED();
+                result[i] = FUnitModels[i].Geti_IndustrialGPED();
             }
             return result;
         }
@@ -2203,7 +2210,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Industrial  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_Industrial(int[] Values)
+        public void Seti_Industrial(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2212,7 +2219,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_Industrial(Values[i]);
+                FUnitModels[i].Seti_Industrial(Values[i]);
             }
         }
 
@@ -2227,7 +2234,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_IndustryEmployees(int[] Values)
+        public void Seti_IndustryEmployees(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2236,7 +2243,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_IndustryEmployees(Values[i]);
+                FUnitModels[i].Seti_IndustryEmployees(Values[i]);
             }
         }
 
@@ -2246,13 +2253,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_IndustryEmployees()
+        public int[] Geti_IndustryEmployees()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_IndustryEmployees();
+                result[i] = FUnitModels[i].Geti_IndustryEmployees();
             }
             return result;
         }
@@ -2271,13 +2278,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the IndustrialNet  </summary>
         ///<returns> the IndustrialNet </returns>
 
-        public int[] geti_Industrial_Net()
+        public int[] Geti_Industrial_Net()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_Industrial_Net();
+                result[i] = FUnitModels[i].Geti_Industrial_Net();
             }
             return result;
         }
@@ -2296,13 +2303,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Power  </summary>
         ///<returns> the Power </returns>
 
-        public int[] geti_PowerWater()
+        public int[] Geti_PowerWater()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PowerWater();
+                result[i] = FUnitModels[i].Geti_PowerWater();
             }
             return result;
         }
@@ -2312,7 +2319,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Power  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_PowerWater(int[] Values)
+        public void Seti_PowerWater(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2321,7 +2328,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_PowerWater(Values[i]);
+                FUnitModels[i].Seti_PowerWater(Values[i]);
             }
         }
 
@@ -2335,13 +2342,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_PowerGPMWD()
+        public int[] Geti_PowerGPMWD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PowerGPMWD();
+                result[i] = FUnitModels[i].Geti_PowerGPMWD();
             }
             return result;
         }
@@ -2360,13 +2367,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the PowerNet  </summary>
         ///<returns> the PowerNet </returns>
 
-        public int[] geti_PowerWater_Net()
+        public int[] Geti_PowerWater_Net()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PowerWater_Net();
+                result[i] = FUnitModels[i].Geti_PowerWater_Net();
             }
             return result;
         }
@@ -2385,13 +2392,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the PowerEnergy  </summary>
         ///<returns> the PowerEnergy </returns>
 
-        public int[] geti_PowerEnergy()
+        public int[] Geti_PowerEnergy()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PowerEnergy();
+                result[i] = FUnitModels[i].Geti_PowerEnergy();
             }
             return result;
         }
@@ -2412,13 +2419,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_TotalDemand()
+        public int[] Geti_TotalDemand()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_TotalDemand();
+                result[i] = FUnitModels[i].Geti_TotalDemand();
             }
             return result;
         }
@@ -2441,13 +2448,13 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_TotalDemandNet()
+        public int[] Geti_TotalDemandNet()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_TotalDemandNet();
+                result[i] = FUnitModels[i].Geti_TotalDemandNet();
             }
             return result;
         }
@@ -2467,13 +2474,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the NetDemandDifference  </summary>
         ///<returns> the NetDemandDifference </returns>
 
-        public int[] geti_NetDemandDifference()
+        public int[] Geti_NetDemandDifference()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_NetDemandDifference();
+                result[i] = FUnitModels[i].Geti_NetDemandDifference();
             }
             return result;
         }
@@ -2492,13 +2499,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the UrbanWaterConservation  </summary>
         ///<returns> the UrbanWaterConservation </returns>
 
-        public int[] geti_UrbanConservation()
+        public int[] Geti_UrbanConservation()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanConservation();
+                result[i] = FUnitModels[i].Geti_UrbanConservation();
             }
             return result;
         }
@@ -2508,7 +2515,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a UrbanWaterConservation  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanConservation(int[] Values)
+        public void Seti_UrbanConservation(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2517,7 +2524,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanConservation(Values[i]);
+                FUnitModels[i].Seti_UrbanConservation(Values[i]);
             }
         }
         #endregion UrbanWaterConservation
@@ -2534,13 +2541,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgWaterConservation  </summary>
         ///<returns> the AgWaterConservation </returns>
 
-        public int[] geti_AgConservation()
+        public int[] Geti_AgConservation()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_AgConservation();
+                result[i] = FUnitModels[i].Geti_AgConservation();
             }
             return result;
         }
@@ -2550,7 +2557,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a AgWaterConservation  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_AgConservation(int[] Values)
+        public void Seti_AgConservation(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2559,7 +2566,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_AgConservation(Values[i]);
+                FUnitModels[i].Seti_AgConservation(Values[i]);
             }
         }
         #endregion AgWaterConservation
@@ -2576,13 +2583,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the PowerWaterConservation  </summary>
         ///<returns> the PowerWaterConservation </returns>
 
-        public int[] geti_PowerConservation()
+        public int[] Geti_PowerConservation()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PowerConservation();
+                result[i] = FUnitModels[i].Geti_PowerConservation();
             }
             return result;
         }
@@ -2592,7 +2599,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a PowerWaterConservation  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_PowerConservation(int[] Values)
+        public void Seti_PowerConservation(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2601,7 +2608,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_PowerConservation(Values[i]);
+                FUnitModels[i].Seti_PowerConservation(Values[i]);
             }
         }
         #endregion PowerWaterConservation
@@ -2618,13 +2625,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the IndustrialWaterConservation  </summary>
         ///<returns> the IndustrialWaterConservation </returns>
 
-        public int[] geti_IndustryConservation()
+        public int[] Geti_IndustryConservation()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_IndustryConservation();
+                result[i] = FUnitModels[i].Geti_IndustryConservation();
             }
             return result;
         }
@@ -2634,7 +2641,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a IndustrialWaterConservation  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_IndustryConservation(int[] Values)
+        public void Seti_IndustryConservation(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2643,7 +2650,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_IndustryConservation(Values[i]);
+                FUnitModels[i].Seti_IndustryConservation(Values[i]);
             }
         }
         #endregion IndustrialWaterConservation
@@ -2660,13 +2667,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the SurfaceWaterManagement  </summary>
         ///<returns> the SurfaceWaterManagement </returns>
 
-        public int[] geti_SurfaceWaterControl()
+        public int[] Geti_SurfaceWaterControl()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SurfaceWaterControl();
+                result[i] = FUnitModels[i].Geti_SurfaceWaterControl();
             }
             return result;
         }
@@ -2676,7 +2683,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a SurfaceWaterManagement  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SurfaceWaterControl(int[] Values)
+        public void Seti_SurfaceWaterControl(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2685,7 +2692,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SurfaceWaterControl(Values[i]);
+                FUnitModels[i].Seti_SurfaceWaterControl(Values[i]);
             }
         }
         #endregion SurfaceWaterManagement
@@ -2702,13 +2709,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the GroundwaterManagement  </summary>
         ///<returns> the GroundwaterManagement </returns>
 
-        public int[] geti_GroundwaterControl()
+        public int[] Geti_GroundwaterControl()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GroundwaterControl();
+                result[i] = FUnitModels[i].Geti_GroundwaterControl();
             }
             return result;
         }
@@ -2718,7 +2725,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a GroundwaterManagement  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_GroundwaterControl(int[] Values)
+        public void Seti_GroundwaterControl(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2727,7 +2734,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_GroundwaterControl(Values[i]);
+                FUnitModels[i].Seti_GroundwaterControl(Values[i]);
             }
         }
         #endregion GroundwaterManagement
@@ -2752,13 +2759,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_UrbanWasteWaterFlow()
+        public int[] Geti_UrbanWasteWaterFlow()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_WasteWaterFlow();
+                result[i] = FUnitModels[i].Geti_WasteWaterFlow();
             }
             return result;
         }
@@ -2774,13 +2781,13 @@ namespace WaterSimDCDC.Generic
         ///<returns> the ReclainedWaterUse </returns>
         ///------------------------------------------------------
 
-        public int[] geti_ReclaimedWaterManagement()
+        public int[] Geti_ReclaimedWaterManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_ReclaimedWaterManagement();
+                result[i] = FUnitModels[i].Geti_ReclaimedWaterManagement();
             }
             return result;
         }
@@ -2790,7 +2797,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets the Ratio of Allowed Effluent that can be used for Reclaimed Water Use  </summary>
         /// <param name="Values">   The values. </param>
         ///--------------------------------------------------------
-        public void seti_ReclaimedWaterManagement(int[] Values)
+        public void Seti_ReclaimedWaterManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2799,7 +2806,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ReclaimedWaterManagement(Values[i]);
+                FUnitModels[i].Seti_ReclaimedWaterManagement(Values[i]);
             }
         }
         #endregion ReclainedWaterUse
@@ -2820,7 +2827,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int[] geti_GrayWaterManagement()
+        public int[] Geti_GrayWaterManagement()
         {
 
             int ArraySize = FUnitModels.Count;
@@ -2828,7 +2835,7 @@ namespace WaterSimDCDC.Generic
             int[] temp = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GrayWaterManagement();
+                result[i] = FUnitModels[i].Geti_GrayWaterManagement();
                
             }
             return result;
@@ -2839,7 +2846,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets the Ratio of Allowed Effluent that can be used for Reclaimed Water Use  </summary>
         /// <param name="Values">   The values. </param>
         ///--------------------------------------------------------
-        public void seti_GrayWaterManagement(int[] Values)
+        public void Seti_GrayWaterManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2848,10 +2855,10 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_GrayWaterManagement(Values[i]);
+                FUnitModels[i].Seti_GrayWaterManagement(Values[i]);
             }
         }
-        //public int[] geti_GrayWaterFlow()
+        //public int[] Geti_GrayWaterFlow()
         //{
 
         //    int ArraySize = FUnitModels.Count;
@@ -2859,7 +2866,7 @@ namespace WaterSimDCDC.Generic
         //    int[] temp = new int[ArraySize];
         //    for (int i = 0; i < ArraySize; i++)
         //    {
-        //        result[i] = FUnitModels[i].geti_GrayWaterFlow();
+        //        result[i] = FUnitModels[i].Geti_GrayWaterFlow();
 
         //    }
         //    return result;
@@ -2882,13 +2889,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the LakeWaterManagement  </summary>
         ///<returns> the LakeWaterManagement </returns>
 
-        public int[] geti_LakeWaterManagement()
+        public int[] Geti_LakeWaterManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_LakeWaterManagement();
+                result[i] = FUnitModels[i].Geti_LakeWaterManagement();
             }
             return result;
         }
@@ -2898,7 +2905,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a LakeWaterManagement  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_LakeWaterManagement(int[] Values)
+        public void Seti_LakeWaterManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2907,7 +2914,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_LakeWaterManagement(Values[i]);
+                FUnitModels[i].Seti_LakeWaterManagement(Values[i]);
             }
         }
         #endregion LakeWaterManagement
@@ -2924,7 +2931,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Augmented  </summary>
         ///<returns> the Augmented </returns>
 
-        public int[] geti_Augmented()
+        public int[] Geti_Augmented()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
@@ -2940,7 +2947,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Augmented  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_Augmented(int[] Values)
+        public void Seti_Augmented(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -2966,7 +2973,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the Augmented  </summary>
         ///<returns> the Augmented </returns>
 
-        public int[] geti_Desalinization()
+        public int[] Geti_Desalinization()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
@@ -2982,7 +2989,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a Augmented  </summary>
         /// <param name="Values">   The values. </param>
         // 01.13.22 used (set) in the manager das
-        public void seti_Desalinization(int[] Values)
+        public void Seti_Desalinization(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3005,13 +3012,13 @@ namespace WaterSimDCDC.Generic
         ///// <summary> Gets the Augmented  </summary>
         /////<returns> the Augmented </returns>
 
-        //public int[] geti_RecycleWasteWater()
+        //public int[] Geti_RecycleWasteWater()
         //{
         //    int ArraySize = FUnitModels.Count;
         //    int[] result = new int[ArraySize];
         //    for (int i = 0; i < ArraySize; i++)
         //    {
-        //        result[i] = FUnitModels[i].geti_Recycle();
+        //        result[i] = FUnitModels[i].Geti_Recycle();
         //    }
         //    return result;
         //}
@@ -3021,7 +3028,7 @@ namespace WaterSimDCDC.Generic
         ///// <summary> Sets a Augmented  </summary>
         ///// <param name="Values">   The values. </param>
 
-        //public void seti_RecycleWasteWater(int[] Values)
+        //public void Seti_RecycleWasteWater(int[] Values)
         //{
         //    int ArraySize = FUnitModels.Count;
         //    if (ArraySize > Values.Length)
@@ -3030,7 +3037,7 @@ namespace WaterSimDCDC.Generic
         //    }
         //    for (int i = 0; i < ArraySize; i++)
         //    {
-        //        FUnitModels[i].seti_Recycle(Values[i]);
+        //        FUnitModels[i].Seti_Recycle(Values[i]);
         //    }
         //}
         #endregion Recycle
@@ -3054,13 +3061,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the PopGrowthRate  </summary>
         ///<returns> the PopGrowthRate </returns>
 
-        public int[] geti_PopGrowthRate()
+        public int[] Geti_PopGrowthRate()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PopGrowthRate();
+                result[i] = FUnitModels[i].Geti_PopGrowthRate();
             }
             return result;
         }
@@ -3070,7 +3077,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a PopGrowthAdjustment  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_PopGrowthRate(int[] Values)
+        public void Seti_PopGrowthRate(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3079,7 +3086,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_PopGrowthRate(Values[i]);
+                FUnitModels[i].Seti_PopGrowthRate(Values[i]);
             }
         }
         #endregion PopGrowthRate
@@ -3094,13 +3101,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the PopGrowthRate  </summary>
         ///<returns> the PopGrowthRate </returns>
 
-        public int[] geti_PopGrowthRateMod()
+        public int[] Geti_PopGrowthRateMod()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_PopGRateModifier();
+                result[i] = FUnitModels[i].Geti_PopGRateModifier();
             }
             return result;
         }
@@ -3110,7 +3117,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a PopGrowthAdjustment  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_PopGrowthRateMod(int[] Values)
+        public void Seti_PopGrowthRateMod(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3119,7 +3126,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_PopGRateModifier(Values[i]);
+                FUnitModels[i].Seti_PopGRateModifier(Values[i]);
             }
         }
         #endregion PopGrowthRate Modifyer
@@ -3141,13 +3148,13 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int[]. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_ClimateChangeTarget()
+        public int[] Geti_ClimateChangeTarget()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_ClimateChangeTarget();
+                result[i] = FUnitModels[i].Geti_ClimateChangeTarget();
             }
             return result;
         }
@@ -3157,7 +3164,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values">   The values. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ClimateChangeTarget(int[] Values)
+        public void Seti_ClimateChangeTarget(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3166,7 +3173,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ClimateChangeTarget(Values[i]);
+                FUnitModels[i].Seti_ClimateChangeTarget(Values[i]);
             }
         }
 
@@ -3176,24 +3183,24 @@ namespace WaterSimDCDC.Generic
         /// <param name="Value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ClimateChangeTargetBase(int Value)
+        public void Seti_ClimateChangeTargetBase(int Value)
         {
             int ArraySize = FUnitModels.Count;
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ClimateChangeTarget(Value);
+                FUnitModels[i].Seti_ClimateChangeTarget(Value);
             }
         }
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Geti climate change target base. </summary>
         /// <remarks>   This returns the Basin average for the ClimateChange Target based on teh aggregate mode (weighted average)
-        ///             NOTE!! if a call to seti_ClimateChangeTargetBase() is followed by a call to  seti_ClimateChangeTarget() then the value returned 
-        ///             by this method may not be equal to the value initially set using  seti_ClimateChangeTargetBase()  </remarks>
+        ///             NOTE!! if a call to Seti_ClimateChangeTargetBase() is followed by a call to  Seti_ClimateChangeTarget() then the value returned 
+        ///             by this method may not be equal to the value initially set using  Seti_ClimateChangeTargetBase()  </remarks>
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_ClimateChangeTargetBase()
+        public int Geti_ClimateChangeTargetBase()
         {
             int result = ClimateChangeTarget.RegionalValue(eProvider.eBasin);
             return result;
@@ -3207,13 +3214,13 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int[]. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_ClimateChangeTargetYear()
+        public int[] Geti_ClimateChangeTargetYear()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_ClimateChangeTargetYear();
+                result[i] = FUnitModels[i].Geti_ClimateChangeTargetYear();
             }
             return result;
         }
@@ -3223,7 +3230,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values">   The values. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ClimateChangeTargetYear(int[] Values)
+        public void Seti_ClimateChangeTargetYear(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3232,7 +3239,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ClimateChangeTargetYear(Values[i]);
+                FUnitModels[i].Seti_ClimateChangeTargetYear(Values[i]);
             }
         }
 
@@ -3242,25 +3249,25 @@ namespace WaterSimDCDC.Generic
         /// <param name="Value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ClimateChangeTargetYearBase(int Value)
+        public void Seti_ClimateChangeTargetYearBase(int Value)
         {
             int ArraySize = FUnitModels.Count;
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ClimateChangeTargetYear(Value);
+                FUnitModels[i].Seti_ClimateChangeTargetYear(Value);
             }
         }
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Geti climate change target year base. </summary>
         /// <remarks>  NOTE !!!! This will return a missing value since years are not agregated, so there is no BASE value
-        ///            use geti_ClimateChangeTargetYear() to see the target year for each parameter</remarks>
+        ///            use Geti_ClimateChangeTargetYear() to see the target year for each parameter</remarks>
         /// 
         /// <returns>   An int. </returns>
-        /// <see cref="geti_ClimateChangeTargetYear"/>
+        /// <see cref="Geti_ClimateChangeTargetYear"/>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_ClimateChangeTargetYearBase()
+        public int Geti_ClimateChangeTargetYearBase()
         {
             int result = ClimateChangeTargetYear.RegionalValue(eProvider.eBasin);
             return result;
@@ -3309,13 +3316,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgriculturalGrowth  </summary>
         ///<returns> the AgriculturalGrowth </returns>
 
-        public int[] geti_DemandModelUrbanIndex()
+        public int[] Geti_DemandModelUrbanIndex()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_aDemandModelUrbanIndex();
+                result[i] = FUnitModels[i].Geti_aDemandModelUrbanIndex();
                 //         
             }
             return result;
@@ -3325,7 +3332,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a AgriculturalGrowth  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_DemandModelUrbanIndex(int[] Values)
+        public void Seti_DemandModelUrbanIndex(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3334,8 +3341,8 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                set_DemandModelUrban(FUnitModels[i], Values[i]);
-                FUnitModels[i].seti_aDemandModelUrbanIndex(Values[i]);
+                Set_DemandModelUrban(FUnitModels[i], Values[i]);
+                FUnitModels[i].Seti_aDemandModelUrbanIndex(Values[i]);
             }
 
         }
@@ -3345,7 +3352,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <param name="TempModel"></param>
         /// <param name="model"></param>
-        public void set_DemandModelUrban(WaterSimCRFModel TempModel, int model)
+        public void Set_DemandModelUrban(WaterSimCRFModel TempModel, int model)
         {
             switch (model)
             {
@@ -3382,13 +3389,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgriculturalGrowth  </summary>
         ///<returns> the AgriculturalGrowth </returns>
 
-        public int[] geti_DemandModelAgIndex()
+        public int[] Geti_DemandModelAgIndex()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_aDemandModelAgIndex();
+                result[i] = FUnitModels[i].Geti_aDemandModelAgIndex();
                 //         
             }
             return result;
@@ -3400,7 +3407,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a AgriculturalGrowth  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_DemandModelAgIndex(int[] Values)
+        public void Seti_DemandModelAgIndex(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3410,7 +3417,7 @@ namespace WaterSimDCDC.Generic
             for (int i = 0; i < ArraySize; i++)
             {
                 set_DemandModelAg(FUnitModels[i], Values[i]);
-                FUnitModels[i].seti_aDemandModelAgIndex(Values[i]);
+                FUnitModels[i].Seti_aDemandModelAgIndex(Values[i]);
             }
 
         }
@@ -3455,13 +3462,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgriculturalGrowth  </summary>
         ///<returns> the AgriculturalGrowth </returns>
 
-        public int[] geti_DemandModelIndIndex()
+        public int[] Geti_DemandModelIndIndex()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_aDemandModelIndIndex();
+                result[i] = FUnitModels[i].Geti_aDemandModelIndIndex();
                 //         
             }
             return result;
@@ -3473,7 +3480,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a AgriculturalGrowth  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_DemandModelIndIndex(int[] Values)
+        public void Seti_DemandModelIndIndex(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3483,7 +3490,7 @@ namespace WaterSimDCDC.Generic
             for (int i = 0; i < ArraySize; i++)
             {
                 set_DemandModelInd(FUnitModels[i], Values[i]);
-                FUnitModels[i].seti_aDemandModelIndIndex(Values[i]);
+                FUnitModels[i].Seti_aDemandModelIndIndex(Values[i]);
             }
 
         }
@@ -3536,13 +3543,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanHighDensityManagement()
+        public int[] Geti_UrbanHighDensityManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanHighDensity();
+                result[i] = FUnitModels[i].Geti_UrbanHighDensity();
             }
             return result;
         }
@@ -3550,7 +3557,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanHighDensityManagement(int[] Values)
+        public void Seti_UrbanHighDensityManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3559,7 +3566,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanHighDensity(Values[i]);
+                FUnitModels[i].Seti_UrbanHighDensity(Values[i]);
             }
         }
         // =======================================================================
@@ -3576,13 +3583,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanHighDensityManagementSMF()
+        public int[] Geti_UrbanHighDensityManagementSMF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanHighDensitySMF();
+                result[i] = FUnitModels[i].Geti_UrbanHighDensitySMF();
             }
             return result;
         }
@@ -3590,7 +3597,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanHighDensityManagementSMF(int[] Values)
+        public void Seti_UrbanHighDensityManagementSMF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3599,7 +3606,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanHighDensitySMF(Values[i]);
+                FUnitModels[i].Seti_UrbanHighDensitySMF(Values[i]);
             }
         }
         // =======================================================================
@@ -3612,13 +3619,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanHighDensityManagementWMF()
+        public int[] Geti_UrbanHighDensityManagementWMF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanHighDensityWMF();
+                result[i] = FUnitModels[i].Geti_UrbanHighDensityWMF();
             }
             return result;
         }
@@ -3626,7 +3633,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanHighDensityManagementWMF(int[] Values)
+        public void Seti_UrbanHighDensityManagementWMF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3635,7 +3642,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanHighDensityWMF(Values[i]);
+                FUnitModels[i].Seti_UrbanHighDensityWMF(Values[i]);
             }
         }
         // =======================================================================
@@ -3648,13 +3655,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanHighDensityManagementMMF()
+        public int[] Geti_UrbanHighDensityManagementMMF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanHighDensityMMF();
+                result[i] = FUnitModels[i].Geti_UrbanHighDensityMMF();
             }
             return result;
         }
@@ -3662,7 +3669,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanHighDensityManagementMMF(int[] Values)
+        public void Seti_UrbanHighDensityManagementMMF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3671,7 +3678,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanHighDensityMMF(Values[i]);
+                FUnitModels[i].Seti_UrbanHighDensityMMF(Values[i]);
             }
         }
         // =======================================================================
@@ -3684,13 +3691,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanHighDensityManagementHMF()
+        public int[] Geti_UrbanHighDensityManagementHMF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanHighDensityHMF();
+                result[i] = FUnitModels[i].Geti_UrbanHighDensityHMF();
             }
             return result;
         }
@@ -3698,7 +3705,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanHighDensityManagementHMF(int[] Values)
+        public void Seti_UrbanHighDensityManagementHMF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3707,7 +3714,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanHighDensityHMF(Values[i]);
+                FUnitModels[i].Seti_UrbanHighDensityHMF(Values[i]);
             }
         }
         // =======================================================================
@@ -3723,13 +3730,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanLowDensityManagement()
+        public int[] Geti_UrbanLowDensityManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanLowDensity();
+                result[i] = FUnitModels[i].Geti_UrbanLowDensity();
             }
             return result;
         }
@@ -3737,7 +3744,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanLowDensityManagement(int[] Values)
+        public void Seti_UrbanLowDensityManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3746,7 +3753,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanLowDensity(Values[i]);
+                FUnitModels[i].Seti_UrbanLowDensity(Values[i]);
             }
         }
         // ------------------------------------------------------
@@ -3762,13 +3769,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanLowDensityManagementLSF()
+        public int[] Geti_UrbanLowDensityManagementLSF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanLowDensityLSF();
+                result[i] = FUnitModels[i].Geti_UrbanLowDensityLSF();
             }
             return result;
         }
@@ -3776,7 +3783,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanLowDensityManagementLSF(int[] Values)
+        public void Seti_UrbanLowDensityManagementLSF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3785,7 +3792,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanLowDensityLSF(Values[i]);
+                FUnitModels[i].Seti_UrbanLowDensityLSF(Values[i]);
             }
         }
         // ------------------------------------------------------
@@ -3798,13 +3805,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanLowDensityManagementTSF()
+        public int[] Geti_UrbanLowDensityManagementTSF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanLowDensityTSF();
+                result[i] = FUnitModels[i].Geti_UrbanLowDensityTSF();
             }
             return result;
         }
@@ -3812,7 +3819,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanLowDensityManagementTSF(int[] Values)
+        public void Seti_UrbanLowDensityManagementTSF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3821,7 +3828,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanLowDensityTSF(Values[i]);
+                FUnitModels[i].Seti_UrbanLowDensityTSF(Values[i]);
             }
         }
         // ------------------------------------------------------
@@ -3834,13 +3841,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_UrbanLowDensityManagementSSF()
+        public int[] Geti_UrbanLowDensityManagementSSF()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_UrbanLowDensitySSF();
+                result[i] = FUnitModels[i].Geti_UrbanLowDensitySSF();
             }
             return result;
         }
@@ -3848,7 +3855,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_UrbanLowDensityManagementSSF(int[] Values)
+        public void Seti_UrbanLowDensityManagementSSF(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3857,7 +3864,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_UrbanLowDensitySSF(Values[i]);
+                FUnitModels[i].Seti_UrbanLowDensitySSF(Values[i]);
             }
         }
         // ------------------------------------------------------
@@ -3872,13 +3879,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_SuburbanDensityManagement()
+        public int[] Geti_SuburbanDensityManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SuburbanDensity();
+                result[i] = FUnitModels[i].Geti_SuburbanDensity();
             }
             return result;
         }
@@ -3886,7 +3893,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SuburbanDensityManagement(int[] Values)
+        public void Seti_SuburbanDensityManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3895,7 +3902,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SuburbanDensity(Values[i]);
+                FUnitModels[i].Seti_SuburbanDensity(Values[i]);
             }
         }
         ///------------------------------------------------------      
@@ -3905,13 +3912,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_ExurbanHighDensityManagement()
+        public int[] Geti_ExurbanHighDensityManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_ExurbanHighDensity();
+                result[i] = FUnitModels[i].Geti_ExurbanHighDensity();
             }
             return result;
         }
@@ -3919,7 +3926,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_ExurbanHighDensityManagement(int[] Values)
+        public void Seti_ExurbanHighDensityManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3928,7 +3935,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ExurbanHighDensity(Values[i]);
+                FUnitModels[i].Seti_ExurbanHighDensity(Values[i]);
             }
         }
         ///------------------------------------------------------      
@@ -3938,13 +3945,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_ExurbanLowDensityManagement()
+        public int[] Geti_ExurbanLowDensityManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_ExurbanLowDensity();
+                result[i] = FUnitModels[i].Geti_ExurbanLowDensity();
             }
             return result;
         }
@@ -3952,7 +3959,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_ExurbanLowDensityManagement(int[] Values)
+        public void Seti_ExurbanLowDensityManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3961,14 +3968,44 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_ExurbanLowDensity(Values[i]);
+                FUnitModels[i].Seti_ExurbanLowDensity(Values[i]);
             }
         }
         #endregion suburan, exhurban density
         #endregion Urban Density Management
         //==============================================================
         #region Updated Policies- October 2021
+        public providerArrayProperty RainWaterHarvest;
 
+        ///------------------------------------------------------
+        /// <summary> Gets the ClimateDrought  </summary>
+        ///<returns> the ClimateDrought </returns>
+        public int[] Geti_RainWaterManagement()
+        {
+            int ArraySize = FUnitModels.Count;
+            int[] result = new int[ArraySize];
+            for (int i = 0; i < ArraySize; i++)
+            {
+                result[i] = FUnitModels[i].Geti_RainWater();
+            }
+            return result;
+        }
+        ///------------------------------------------------------
+        /// <summary> Sets a ClimateDrought  </summary>
+        /// <param name="Values">   The values. </param>
+
+        public void Seti_RainWaterManagement(int[] Values)
+        {
+            int ArraySize = FUnitModels.Count;
+            if (ArraySize > Values.Length)
+            {
+                ArraySize = Values.Length;
+            }
+            for (int i = 0; i < ArraySize; i++)
+            {
+                FUnitModels[i].Seti_RainWater(Values[i]);
+            }
+        }
         ///------------------------------------------------------      
         ///<summary> Urban High intensity management control</summary>
         public providerArrayProperty AirWaterExtraction;
@@ -3976,13 +4013,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_AirWaterManagement()
+        public int[] Geti_AirWaterManagement()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_AirWater();
+                result[i] = FUnitModels[i].Geti_AirWater();
             }
             return result;
         }
@@ -3990,7 +4027,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_AirWaterManagement(int[] Values)
+        public void Seti_AirWaterManagement(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -3999,7 +4036,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_AirWater(Values[i]);
+                FUnitModels[i].Seti_AirWater(Values[i]);
             }
         }
 
@@ -4011,13 +4048,13 @@ namespace WaterSimDCDC.Generic
         ///------------------------------------------------------
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
-        public int[] geti_AirWaterInstallations()
+        public int[] Geti_AirWaterInstallations()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_AirWaterInstallations();
+                result[i] = FUnitModels[i].Geti_AirWaterInstallations();
             }
             return result;
         }
@@ -4025,7 +4062,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_AirWaterInstallations(int[] Values)
+        public void Seti_AirWaterInstallations(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4034,7 +4071,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_AirWaterInstallations(Values[i]);
+                FUnitModels[i].Seti_AirWaterInstallations(Values[i]);
             }
         }
         //
@@ -4048,7 +4085,7 @@ namespace WaterSimDCDC.Generic
         ///  Urban water demand savings from atmos and rainwater
         /// </summary>
         /// <returns></returns>
-        public int[] geti_NewWaterSavingsOnDemand()
+        public int[] Geti_NewWaterSavingsOnDemand()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
@@ -4066,7 +4103,7 @@ namespace WaterSimDCDC.Generic
         ///  Urban water demand savings from atmos and rainwater
         /// </summary>
         /// <returns></returns>
-        public int[] geti_StormwaterPotential()
+        public int[] Geti_StormwaterPotential()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
@@ -4094,13 +4131,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the ClimateDrought  </summary>
         ///<returns> the ClimateDrought </returns>
 
-        public int[] geti_DroughtImpacts()
+        public int[] Geti_DroughtImpacts()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DroughtImpacts();
+                result[i] = FUnitModels[i].Geti_DroughtImpacts();
             }
             return result;
         }
@@ -4110,7 +4147,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a ClimateDrought  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_DroughtImpacts(int[] Values)
+        public void Seti_DroughtImpacts(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4119,7 +4156,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DroughtImpacts(Values[i]);
+                FUnitModels[i].Seti_DroughtImpacts(Values[i]);
             }
         }
         #endregion ClimateDrought
@@ -4139,13 +4176,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the DroughtControl  </summary>
         ///<returns> the DroughtControl </returns>
 
-        public int[] geti_DroughtControl()
+        public int[] Geti_DroughtControl()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DroughtControl();
+                result[i] = FUnitModels[i].Geti_DroughtControl();
             }
             return result;
         }
@@ -4155,7 +4192,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a DroughtControl  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_DroughtControl(int[] Values)
+        public void Seti_DroughtControl(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4164,7 +4201,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DroughtControl(Values[i]);
+                FUnitModels[i].Seti_DroughtControl(Values[i]);
             }
         }
 
@@ -4178,13 +4215,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_DroughtActive()
+        public int[] Geti_DroughtActive()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DroughtActive();
+                result[i] = FUnitModels[i].Geti_DroughtActive();
             }
             return result;
         }
@@ -4195,7 +4232,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtActive(int[] Values)
+        public void Seti_DroughtActive(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4204,7 +4241,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DroughtActive(Values[i]);
+                FUnitModels[i].Seti_DroughtActive(Values[i]);
             }
         }
 
@@ -4217,13 +4254,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_DroughtStartYear()
+        public int[] Geti_DroughtStartYear()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DroughtSartYear();
+                result[i] = FUnitModels[i].Geti_DroughtSartYear();
             }
             return result;
         }
@@ -4234,7 +4271,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtStartYear(int[] Values)
+        public void Seti_DroughtStartYear(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4243,7 +4280,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DroughStartYear(Values[i]);
+                FUnitModels[i].Seti_DroughStartYear(Values[i]);
             }
         }
 
@@ -4256,13 +4293,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_DroughtLength()
+        public int[] Geti_DroughtLength()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DroughtLength();
+                result[i] = FUnitModels[i].Geti_DroughtLength();
             }
             return result;
         }
@@ -4273,7 +4310,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtLength(int[] Values)
+        public void Seti_DroughtLength(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4282,7 +4319,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DroughtLength(Values[i]);
+                FUnitModels[i].Seti_DroughtLength(Values[i]);
             }
         }
 
@@ -4295,13 +4332,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_DroughtDepth()
+        public int[] Geti_DroughtDepth()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DroughtDepth();
+                result[i] = FUnitModels[i].Geti_DroughtDepth();
             }
             return result;
         }
@@ -4312,7 +4349,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="Values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtDepth(int[] Values)
+        public void Seti_DroughtDepth(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4321,7 +4358,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DroughtDepth(Values[i]);
+                FUnitModels[i].Seti_DroughtDepth(Values[i]);
             }
         }
 
@@ -4345,7 +4382,7 @@ namespace WaterSimDCDC.Generic
         /// <seealso cref="WaterSimCRFModel.DoCapLimits"/>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DoCapLimits(int[] Values)
+        public void Seti_DoCapLimits(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4354,7 +4391,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DoCapLimits(Values[i]);
+                FUnitModels[i].Seti_DoCapLimits(Values[i]);
             }
         }
 
@@ -4366,13 +4403,13 @@ namespace WaterSimDCDC.Generic
         /// <seealso cref="WaterSimCRFModel.DoCapLimits"/>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_DoCapLimits()
+        public int[] Geti_DoCapLimits()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DoCapLimits();
+                result[i] = FUnitModels[i].Geti_DoCapLimits();
             }
             return result;
         }
@@ -4389,7 +4426,7 @@ namespace WaterSimDCDC.Generic
         /// <seealso cref="WaterSimCRFModel.DoReviseResources"/>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DoReviseResources(int[] Values)
+        public void Seti_DoReviseResources(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4398,7 +4435,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_DoReviseResources(Values[i]);
+                FUnitModels[i].Seti_DoReviseResources(Values[i]);
             }
         }
 
@@ -4410,13 +4447,13 @@ namespace WaterSimDCDC.Generic
         /// <seealso cref="WaterSimCRFModel.DoReviseResources"/>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_DoReviseResources()
+        public int[] Geti_DoReviseResources()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_DoReviseResources();
+                result[i] = FUnitModels[i].Geti_DoReviseResources();
             }
             return result;
         }
@@ -4436,13 +4473,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgricultureProduction  </summary>
         ///<returns> the AgricultureProduction </returns>
 
-        public int[] geti_AgricutureProduction()
+        public int[] Geti_AgricutureProduction()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_AgricutureProduction();
+                result[i] = FUnitModels[i].Geti_AgricutureProduction();
             }
             return result;
         }
@@ -4455,13 +4492,13 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_agricultureGPDD()
+        public int[] Geti_agricultureGPDD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_agricultureGPDD();
+                result[i] = FUnitModels[i].Geti_agricultureGPDD();
             }
             return result;
         }
@@ -4484,13 +4521,13 @@ namespace WaterSimDCDC.Generic
         ///  is this gallons per dollar per day? Ray?
         /// </summary>
         /// <returns></returns>
-        public int[] geti_initialAgricultureGPDD()
+        public int[] Geti_initialAgricultureGPDD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_AgricultureInitialGPDD();
+                result[i] = FUnitModels[i].Geti_AgricultureInitialGPDD();
             }
             return result;
         }
@@ -4508,13 +4545,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the AgriculturalGrowth  </summary>
         ///<returns> the AgriculturalGrowth </returns>
 
-        public int[] geti_AgGrowthRate()
+        public int[] Geti_AgGrowthRate()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_AgGrowthRate();
+                result[i] = FUnitModels[i].Geti_AgGrowthRate();
             }
             return result;
         }
@@ -4524,7 +4561,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a AgriculturalGrowth  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_AgGrowthRate(int[] Values)
+        public void Seti_AgGrowthRate(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4533,7 +4570,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_AgGrowthRate(Values[i]);
+                FUnitModels[i].Seti_AgGrowthRate(Values[i]);
             }
         }
         #endregion AgriculturalGrowth
@@ -4561,13 +4598,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SUR_UD  </summary>
         ///<returns> the _SUR_UD </returns>
 
-        public int[] geti_SUR_UD()
+        public int[] Geti_SUR_UD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SUR_UD();
+                result[i] = FUnitModels[i].Geti_SUR_UD();
             }
             return result;
         }
@@ -4577,7 +4614,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SUR_UD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SUR_UD(int[] Values)
+        public void Seti_SUR_UD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4586,7 +4623,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SUR_UD(Values[i]);
+                FUnitModels[i].Seti_SUR_UD(Values[i]);
             }
         }
         #endregion _SUR_UD
@@ -4603,13 +4640,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SUR_AD  </summary>
         ///<returns> the _SUR_AD </returns>
 
-        public int[] geti_SUR_AD()
+        public int[] Geti_SUR_AD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SUR_AD();
+                result[i] = FUnitModels[i].Geti_SUR_AD();
             }
             return result;
         }
@@ -4619,7 +4656,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SUR_AD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SUR_AD(int[] Values)
+        public void Seti_SUR_AD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4628,7 +4665,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SUR_AD(Values[i]);
+                FUnitModels[i].Seti_SUR_AD(Values[i]);
             }
         }
         #endregion _SUR_AD
@@ -4645,13 +4682,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SUR_ID  </summary>
         ///<returns> the _SUR_ID </returns>
 
-        public int[] geti_SUR_ID()
+        public int[] Geti_SUR_ID()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SUR_ID();
+                result[i] = FUnitModels[i].Geti_SUR_ID();
             }
             return result;
         }
@@ -4661,7 +4698,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SUR_ID  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SUR_ID(int[] Values)
+        public void Seti_SUR_ID(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4670,7 +4707,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SUR_ID(Values[i]);
+                FUnitModels[i].Seti_SUR_ID(Values[i]);
             }
         }
         #endregion _SUR_ID
@@ -4687,13 +4724,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SUR_PD  </summary>
         ///<returns> the _SUR_PD </returns>
 
-        public int[] geti_SUR_PD()
+        public int[] Geti_SUR_PD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SUR_PD();
+                result[i] = FUnitModels[i].Geti_SUR_PD();
             }
             return result;
         }
@@ -4703,7 +4740,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SUR_PD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SUR_PD(int[] Values)
+        public void Seti_SUR_PD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4712,7 +4749,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SUR_PD(Values[i]);
+                FUnitModels[i].Seti_SUR_PD(Values[i]);
             }
         }
         #endregion _SUR_PD
@@ -4729,13 +4766,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SURL_UD  </summary>
         ///<returns> the _SURL_UD </returns>
 
-        public int[] geti_SURL_UD()
+        public int[] Geti_SURL_UD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SURL_UD();
+                result[i] = FUnitModels[i].Geti_SURL_UD();
             }
             return result;
         }
@@ -4745,7 +4782,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SURL_UD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SURL_UD(int[] Values)
+        public void Seti_SURL_UD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4754,7 +4791,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SURL_UD(Values[i]);
+                FUnitModels[i].Seti_SURL_UD(Values[i]);
             }
         }
         #endregion _SURL_UD
@@ -4771,13 +4808,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SURL_AD  </summary>
         ///<returns> the _SURL_AD </returns>
 
-        public int[] geti_SURL_AD()
+        public int[] Geti_SURL_AD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SURL_AD();
+                result[i] = FUnitModels[i].Geti_SURL_AD();
             }
             return result;
         }
@@ -4787,7 +4824,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SURL_AD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SURL_AD(int[] Values)
+        public void Seti_SURL_AD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4796,7 +4833,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SURL_AD(Values[i]);
+                FUnitModels[i].Seti_SURL_AD(Values[i]);
             }
         }
         #endregion _SURL_AD
@@ -4813,13 +4850,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SURL_ID  </summary>
         ///<returns> the _SURL_ID </returns>
 
-        public int[] geti_SURL_ID()
+        public int[] Geti_SURL_ID()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SURL_ID();
+                result[i] = FUnitModels[i].Geti_SURL_ID();
             }
             return result;
         }
@@ -4829,7 +4866,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SURL_ID  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SURL_ID(int[] Values)
+        public void Seti_SURL_ID(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4838,7 +4875,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SURL_ID(Values[i]);
+                FUnitModels[i].Seti_SURL_ID(Values[i]);
             }
         }
         #endregion _SURL_ID
@@ -4855,13 +4892,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SURL_PD  </summary>
         ///<returns> the _SURL_PD </returns>
 
-        public int[] geti_SURL_PD()
+        public int[] Geti_SURL_PD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SURL_PD();
+                result[i] = FUnitModels[i].Geti_SURL_PD();
             }
             return result;
         }
@@ -4871,7 +4908,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SURL_PD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SURL_PD(int[] Values)
+        public void Seti_SURL_PD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4880,7 +4917,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SURL_PD(Values[i]);
+                FUnitModels[i].Seti_SURL_PD(Values[i]);
             }
         }
         #endregion _SURL_PD
@@ -4897,13 +4934,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_UD  </summary>
         ///<returns> the _GW_UD </returns>
 
-        public int[] geti_GW_UD()
+        public int[] Geti_GW_UD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GW_UD();
+                result[i] = FUnitModels[i].Geti_GW_UD();
             }
             return result;
         }
@@ -4913,7 +4950,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _GW_UD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_GW_UD(int[] Values)
+        public void Seti_GW_UD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4922,7 +4959,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_GW_UD(Values[i]);
+                FUnitModels[i].Seti_GW_UD(Values[i]);
             }
         }
         #endregion _GW_UD
@@ -4939,13 +4976,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_AD  </summary>
         ///<returns> the _GW_AD </returns>
 
-        public int[] geti_GW_AD()
+        public int[] Geti_GW_AD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GW_AD();
+                result[i] = FUnitModels[i].Geti_GW_AD();
             }
             return result;
         }
@@ -4955,7 +4992,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _GW_AD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_GW_AD(int[] Values)
+        public void Seti_GW_AD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -4964,7 +5001,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_GW_AD(Values[i]);
+                FUnitModels[i].Seti_GW_AD(Values[i]);
             }
         }
         #endregion _GW_AD
@@ -4981,13 +5018,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_ID  </summary>
         ///<returns> the _GW_ID </returns>
 
-        public int[] geti_GW_ID()
+        public int[] Geti_GW_ID()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GW_ID();
+                result[i] = FUnitModels[i].Geti_GW_ID();
             }
             return result;
         }
@@ -4997,7 +5034,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _GW_ID  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_GW_ID(int[] Values)
+        public void Seti_GW_ID(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5006,7 +5043,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_GW_ID(Values[i]);
+                FUnitModels[i].Seti_GW_ID(Values[i]);
             }
         }
         #endregion _GW_ID
@@ -5023,13 +5060,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_PD  </summary>
         ///<returns> the _GW_PD </returns>
 
-        public int[] geti_GW_PD()
+        public int[] Geti_GW_PD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_GW_PD();
+                result[i] = FUnitModels[i].Geti_GW_PD();
             }
             return result;
         }
@@ -5039,7 +5076,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _GW_PD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_GW_PD(int[] Values)
+        public void Seti_GW_PD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5048,7 +5085,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_GW_PD(Values[i]);
+                FUnitModels[i].Seti_GW_PD(Values[i]);
             }
         }
         #endregion _GW_PD
@@ -5065,13 +5102,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _REC_UD  </summary>
         ///<returns> the _REC_UD </returns>
 
-        public int[] geti_REC_UD()
+        public int[] Geti_REC_UD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_REC_UD();
+                result[i] = FUnitModels[i].Geti_REC_UD();
             }
             return result;
         }
@@ -5081,7 +5118,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _REC_UD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_REC_UD(int[] Values)
+        public void Seti_REC_UD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5090,7 +5127,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_REC_UD(Values[i]);
+                FUnitModels[i].Seti_REC_UD(Values[i]);
             }
         }
         #endregion _REC_UD
@@ -5107,13 +5144,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _REC_AD  </summary>
         ///<returns> the _REC_AD </returns>
 
-        public int[] geti_REC_AD()
+        public int[] Geti_REC_AD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_REC_AD();
+                result[i] = FUnitModels[i].Geti_REC_AD();
             }
             return result;
         }
@@ -5123,7 +5160,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _REC_AD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_REC_AD(int[] Values)
+        public void Seti_REC_AD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5132,7 +5169,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_REC_AD(Values[i]);
+                FUnitModels[i].Seti_REC_AD(Values[i]);
             }
         }
         #endregion _REC_AD
@@ -5149,13 +5186,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _REC_ID  </summary>
         ///<returns> the _REC_ID </returns>
 
-        public int[] geti_REC_ID()
+        public int[] Geti_REC_ID()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_REC_ID();
+                result[i] = FUnitModels[i].Geti_REC_ID();
             }
             return result;
         }
@@ -5165,7 +5202,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _REC_ID  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_REC_ID(int[] Values)
+        public void Seti_REC_ID(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5174,7 +5211,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_REC_ID(Values[i]);
+                FUnitModels[i].Seti_REC_ID(Values[i]);
             }
         }
         #endregion _REC_ID
@@ -5191,13 +5228,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _REC_PD  </summary>
         ///<returns> the _REC_PD </returns>
 
-        public int[] geti_REC_PD()
+        public int[] Geti_REC_PD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_REC_PD();
+                result[i] = FUnitModels[i].Geti_REC_PD();
             }
             return result;
         }
@@ -5207,7 +5244,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _REC_PD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_REC_PD(int[] Values)
+        public void Seti_REC_PD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5216,7 +5253,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_REC_PD(Values[i]);
+                FUnitModels[i].Seti_REC_PD(Values[i]);
             }
         }
         #endregion _REC_PD
@@ -5226,16 +5263,16 @@ namespace WaterSimDCDC.Generic
         ///  Reclaimed water demand
         /// </summary>
         /// <returns></returns>
-        public int[] geti_REC_D()
+        public int[] Geti_REC_D()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_REC_AD() + 
-                    FUnitModels[i].geti_REC_ID() + 
-                    FUnitModels[i].geti_REC_PD() + 
-                    FUnitModels[i].geti_REC_UD();
+                result[i] = FUnitModels[i].Geti_REC_AD() + 
+                    FUnitModels[i].Geti_REC_ID() + 
+                    FUnitModels[i].Geti_REC_PD() + 
+                    FUnitModels[i].Geti_REC_UD();
             }
             return result;
         }
@@ -5255,13 +5292,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SAL_UD  </summary>
         ///<returns> the _SAL_UD </returns>
 
-        public int[] geti_SAL_UD()
+        public int[] Geti_SAL_UD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SAL_UD();
+                result[i] = FUnitModels[i].Geti_SAL_UD();
             }
             return result;
         }
@@ -5271,7 +5308,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SAL_UD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SAL_UD(int[] Values)
+        public void Seti_SAL_UD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5280,7 +5317,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SAL_UD(Values[i]);
+                FUnitModels[i].Seti_SAL_UD(Values[i]);
             }
         }
         #endregion _SAL_UD
@@ -5297,13 +5334,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SAL_AD  </summary>
         ///<returns> the _SAL_AD </returns>
 
-        public int[] geti_SAL_AD()
+        public int[] Geti_SAL_AD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SAL_AD();
+                result[i] = FUnitModels[i].Geti_SAL_AD();
             }
             return result;
         }
@@ -5313,7 +5350,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SAL_AD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SAL_AD(int[] Values)
+        public void Seti_SAL_AD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5322,7 +5359,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SAL_AD(Values[i]);
+                FUnitModels[i].Seti_SAL_AD(Values[i]);
             }
         }
         #endregion _SAL_AD
@@ -5339,13 +5376,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SAL_ID  </summary>
         ///<returns> the _SAL_ID </returns>
 
-        public int[] geti_SAL_ID()
+        public int[] Geti_SAL_ID()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SAL_ID();
+                result[i] = FUnitModels[i].Geti_SAL_ID();
             }
             return result;
         }
@@ -5355,7 +5392,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SAL_ID  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SAL_ID(int[] Values)
+        public void Seti_SAL_ID(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5364,7 +5401,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SAL_ID(Values[i]);
+                FUnitModels[i].Seti_SAL_ID(Values[i]);
             }
         }
         #endregion _SAL_ID
@@ -5381,13 +5418,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _SAL_PD  </summary>
         ///<returns> the _SAL_PD </returns>
 
-        public int[] geti_SAL_PD()
+        public int[] Geti_SAL_PD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_SAL_PD();
+                result[i] = FUnitModels[i].Geti_SAL_PD();
             }
             return result;
         }
@@ -5397,7 +5434,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _SAL_PD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_SAL_PD(int[] Values)
+        public void Seti_SAL_PD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5406,7 +5443,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_SAL_PD(Values[i]);
+                FUnitModels[i].Seti_SAL_PD(Values[i]);
             }
         }
         #endregion _SAL_PD
@@ -5426,13 +5463,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_AD  </summary>
         ///<returns> the _GW_AD </returns>
 
-        public int[] geti_COL_AD()
+        public int[] Geti_COL_AD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_COL_AD();
+                result[i] = FUnitModels[i].Geti_COL_AD();
             }
             return result;
         }
@@ -5441,7 +5478,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _COL_AD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_COL_AD(int[] Values)
+        public void Seti_COL_AD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5450,7 +5487,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_COL_AD(Values[i]);
+                FUnitModels[i].Seti_COL_AD(Values[i]);
             }
         }
 
@@ -5469,13 +5506,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_AD  </summary>
         ///<returns> the _GW_AD </returns>
 
-        public int[] geti_COL_UD()
+        public int[] Geti_COL_UD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_COL_UD();
+                result[i] = FUnitModels[i].Geti_COL_UD();
             }
             return result;
         }
@@ -5484,7 +5521,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _COL_UD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_COL_UD(int[] Values)
+        public void Seti_COL_UD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5493,7 +5530,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_COL_UD(Values[i]);
+                FUnitModels[i].Seti_COL_UD(Values[i]);
             }
         }
 
@@ -5512,13 +5549,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_AD  </summary>
         ///<returns> the _GW_AD </returns>
 
-        public int[] geti_COL_ID()
+        public int[] Geti_COL_ID()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_COL_ID();
+                result[i] = FUnitModels[i].Geti_COL_ID();
             }
             return result;
         }
@@ -5527,7 +5564,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _COL_ID  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_COL_ID(int[] Values)
+        public void Seti_COL_ID(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5536,7 +5573,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_COL_ID(Values[i]);
+                FUnitModels[i].Seti_COL_ID(Values[i]);
             }
         }
         #endregion _COL_ID
@@ -5554,13 +5591,13 @@ namespace WaterSimDCDC.Generic
         /// <summary> Gets the _GW_AD  </summary>
         ///<returns> the _GW_AD </returns>
 
-        public int[] geti_COL_PD()
+        public int[] Geti_COL_PD()
         {
             int ArraySize = FUnitModels.Count;
             int[] result = new int[ArraySize];
             for (int i = 0; i < ArraySize; i++)
             {
-                result[i] = FUnitModels[i].geti_COL_PD();
+                result[i] = FUnitModels[i].Geti_COL_PD();
             }
             return result;
         }
@@ -5569,7 +5606,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Sets a _COL_PD  </summary>
         /// <param name="Values">   The values. </param>
 
-        public void seti_COL_PD(int[] Values)
+        public void Seti_COL_PD(int[] Values)
         {
             int ArraySize = FUnitModels.Count;
             if (ArraySize > Values.Length)
@@ -5578,7 +5615,7 @@ namespace WaterSimDCDC.Generic
             }
             for (int i = 0; i < ArraySize; i++)
             {
-                FUnitModels[i].seti_COL_PD(Values[i]);
+                FUnitModels[i].Seti_COL_PD(Values[i]);
             }
         }
 

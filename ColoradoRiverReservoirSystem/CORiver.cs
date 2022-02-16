@@ -17,7 +17,7 @@ namespace CORiverModel
         // Restored CORiverModel namespace
         // WaterSimDCDC.Generic.COriverModel West;
         //COriverModel West;
-        int FDroughtActive = 0;
+        //int FDroughtActive = 0;
         readonly UnitDataCO FUnitData;
         public UnitDataCO FUDC;
         //public const int defaultYearCO = 2014;
@@ -52,7 +52,7 @@ namespace CORiverModel
             SeekInFlow();
             // end 09.15.20 das
         }
-        private void resetvariables()
+        private void Resetvariables()
         {
         }
         #region properties 

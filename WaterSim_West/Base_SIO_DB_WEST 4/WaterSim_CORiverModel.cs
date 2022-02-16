@@ -162,7 +162,7 @@ namespace WaterSimDCDC.Generic
 
         public int Geti_CoRiverTraceStartYear()
         {
-            return FCORiverModel.geti_CoRiverTraceStartYear();
+            return FCORiverModel.Geti_CoRiverTraceStartYear();
         }
         // =========================================================
         /// <summary>
@@ -420,7 +420,7 @@ namespace WaterSimDCDC.Generic
             int sum = 0;
             for (int i = 0; i < Bcodes.Length; i++)
             {
-                sum = Owner.FastUnitModel(i).geti_SurfaceColorado();
+                sum = Owner.FastUnitModel(i).Geti_SurfaceColorado();
                 dataOut[i] = sum;
             }
         }
@@ -521,7 +521,7 @@ namespace WaterSimDCDC.Generic
         /// Not clear, yet, on why we have this property [09.11.20 das]
         /// </summary>
         /// <returns></returns>
-        public int[] geti_StreamAllocation()
+        public int[] Geti_StreamAllocation()
         {
             return FCOModels.Geti_StreamAllocation();
         }

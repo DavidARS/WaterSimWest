@@ -1116,7 +1116,7 @@ namespace WaterSimDCDC
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public abstract int[] geti_Indicator();
+        public abstract int[] Geti_Indicator();
 
     }
     // ========================================================================================
@@ -1701,7 +1701,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] value = null;
             if (FGWProcess != null)
@@ -1722,7 +1722,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_CumulativeIndicator()
+        public int[] Geti_CumulativeIndicator()
         {
             int[] value = null;
             if (FGWProcess != null)
@@ -1743,7 +1743,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_CumulativeSafeYieldNet()
+        public int[] Geti_CumulativeSafeYieldNet()
         {
             int[] value = null;
             if (FGWProcess != null)
@@ -1764,7 +1764,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_SafeYield_Reduction_Goal()
+        public int[] Geti_SafeYield_Reduction_Goal()
         {
             int[] value = null;
             if (FGWProcess != null)
@@ -1785,7 +1785,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_SafeYield()
+        public int[] Geti_SafeYield()
         {
             int[] value = null;
             if (FGWProcess != null)
@@ -1829,23 +1829,23 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            AnnualIndicator = new providerArrayProperty(FPM, eModelParam.epP_GW_Annual_Indicator, geti_Indicator, eProviderAggregateMode.agAverage);
+            AnnualIndicator = new providerArrayProperty(FPM, eModelParam.epP_GW_Annual_Indicator, Geti_Indicator, eProviderAggregateMode.agAverage);
             //FPM.AddParameter(new ModelParameterClass(eModelParam.epGW_Annual_Indicator, "Annual Safe Yield Indicatior", "GWSYA", AnnualIndicator));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epGW_Annual_Indicator, "The ratio of the amount of reduction in 2010 groundwater withdrawal needed to achieve Safe Yield to the annual ground water withdrawal, 0 means safe yield achived, 100 is max value", "%", "Percent", "Groundwater Indicator", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-            CumulativeIndicator = new providerArrayProperty(FPM, eModelParam.epP_GW_Cumulative_Indicator, geti_CumulativeIndicator, eProviderAggregateMode.agAverage);
+            CumulativeIndicator = new providerArrayProperty(FPM, eModelParam.epP_GW_Cumulative_Indicator, Geti_CumulativeIndicator, eProviderAggregateMode.agAverage);
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_GW_Cumulative_Indicator, "Scenario Safe Yield Indicatior", eModelFields.epP_GW_Cumulative_Indicator, CumulativeIndicator));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_GW_Cumulative_Indicator, "The ratio of the amount of reduction in 2010 groundwater withdrawal needed to achieve Safe Yield to the cumaulative difference between Safe Yield Withdrawal and annual ground water withdrawal, 0 means safe yield balance is achieved, 100 is max value", "%", "Percent", "Groundwater Cumulative Indicator", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-            CumulativeSafeYieldNet = new providerArrayProperty(FPM, eModelParam.epP_GW_Cumulative_SafeYieldNet, geti_CumulativeSafeYieldNet, eProviderAggregateMode.agSum);
+            CumulativeSafeYieldNet = new providerArrayProperty(FPM, eModelParam.epP_GW_Cumulative_SafeYieldNet, Geti_CumulativeSafeYieldNet, eProviderAggregateMode.agSum);
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_GW_Cumulative_SafeYieldNet, "Safe Yield Cumulative Net", eModelFields.epP_GW_Cumulative_SafeYieldNet, CumulativeSafeYieldNet));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_GW_Cumulative_SafeYieldNet, "The total cumulative overdraft of groundwater based on the amount of reduction in 2010 groundwater withdrawal needed to achieve Safe Yield and annual ground water withdrawal, 0 means safe yield balance is achieved, 100 is max value", "mgd", "Millions of Gallons Per Day", "Groundwater Cumulative Overdraft", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-            SafeYield_Reduction_Goal = new providerArrayProperty(FPM, eModelParam.epP_GW_SafeYield_Reduction_Goal, geti_SafeYield_Reduction_Goal, eProviderAggregateMode.agSum);
+            SafeYield_Reduction_Goal = new providerArrayProperty(FPM, eModelParam.epP_GW_SafeYield_Reduction_Goal, Geti_SafeYield_Reduction_Goal, eProviderAggregateMode.agSum);
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_GW_SafeYield_Reduction_Goal, "Safe Yield Reduction Goal", eModelFields.epP_GW_SafeYield_Reduction_Goal, SafeYield_Reduction_Goal));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_GW_SafeYield_Reduction_Goal, "The amount of reduction in annual groundwater based on the amount of reduction in 2010 groundwater withdrawal needed to achieve Safe Yield","mgd", "Millions of Gallons Per Day", "Groundwater Cumulative Overdraft", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-            SafeYield = new providerArrayProperty(FPM, eModelParam.epP_GW_SafeYield, geti_SafeYield, eProviderAggregateMode.agSum);
+            SafeYield = new providerArrayProperty(FPM, eModelParam.epP_GW_SafeYield, Geti_SafeYield, eProviderAggregateMode.agSum);
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_GW_SafeYield, "Groundwater Safe Yield", eModelFields.epP_GW_SafeYield, SafeYield));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_GW_SafeYield, "The amount of annual groundwater withdrawal that represents safe yield or a balance with the amount of annual hgroundwater recharge", "mgd", "Millions of Gallons Per Day", "Groundwater Cumulative Overdraft", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
@@ -1972,7 +1972,7 @@ namespace WaterSimDCDC
             // get the data
             FEcoGPCD = FIData.EconomicGPCD();
             FEcoValue = FIData.EcoValue();
-            FBaseTotalDemand = (WSim as WaterSimManager).WaterSimWestModel.geti_TotalDemand();
+            FBaseTotalDemand = (WSim as WaterSimManager).WaterSimWestModel.Geti_TotalDemand();
 //            FBasePop = WSim.ParamManager.Model_Parameter(eModelParam.epMagicPop).Value;
             FBasePop = WSim.ParamManager.Model_Parameter(eModelParam.epP_Population).ProviderProperty.getvalues().Values;
             // Calculate The Base Economic Demand
@@ -2125,7 +2125,7 @@ namespace WaterSimDCDC
         /// <returns>   An int[] </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             // get the Annual GPCY from the model
             double[] AnnualGPCY = IndicatorTools.ConvertInt32ToDouble((FWSim as WaterSimManager).TotalGPCY.getvalues().Values,0);
@@ -2165,7 +2165,7 @@ namespace WaterSimDCDC
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_ECODemand, "Demand for Economic Production", "ECOD",EcoDemand));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ECODemand, "The volume of water needed to meet local water needs for economic production to support the population", "mgd", "Million Gallans Per Day", "Economic Demand", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-            EcoRatio = new providerArrayProperty(FPM, eModelParam.epP_ECORatio, geti_Indicator, eProviderAggregateMode.agAverage);
+            EcoRatio = new providerArrayProperty(FPM, eModelParam.epP_ECORatio, Geti_Indicator, eProviderAggregateMode.agAverage);
             //FPM.AddParameter(new ModelParameterClass(eModelParam.epP_ECORatio, "Econmic Water Stress", "ECOR", EcoRatio));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_ECODemand, "The ratio of Needed Gallons Per Capita Per Day to Annual Gallons Per Capita Per Day", "%", "Percent", "Economic Water Stress", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
         }
@@ -2339,7 +2339,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] result = new int[FModelCount];
             // get current surfacewater withdrawal for urban
@@ -2372,7 +2372,7 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            SurfaceChangeIndicator = new providerArrayProperty(FPM, eModelParam.epP_SWIndicator, geti_Indicator, eProviderAggregateMode.agAverage);
+            SurfaceChangeIndicator = new providerArrayProperty(FPM, eModelParam.epP_SWIndicator, Geti_Indicator, eProviderAggregateMode.agAverage);
             //FPM.AddParameter(new ModelParameterClass(eModelParam.epSWIndicator, "Surfacewater Indicator", "SWI", SurfaceChangeIndicator));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epSWIndicator, "Change in impact on Surface Water", "?", "?", "Surfacewater Indicator", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
@@ -2768,7 +2768,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] result = new int[FModelCount];
 
@@ -2831,7 +2831,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_BaseAGPD100()
+        public int[] Geti_BaseAGPD100()
         {
             int[] result = new int[FModelCount];
 
@@ -2846,7 +2846,7 @@ namespace WaterSimDCDC
         /// <summary> The base a gpd 100.</summary>
         providerArrayProperty BaseAGPD100;
 
-        public int[] geti_AgRate()
+        public int[] Geti_AgRate()
         {
             int[] result = new int[FModelCount];
 
@@ -2867,11 +2867,11 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            BaseAGPD100 = new providerArrayProperty(FPM, eModelParam.epP_AgricultureBaseGPD100, geti_BaseAGPD100, eProviderAggregateMode.agAverage);
+            BaseAGPD100 = new providerArrayProperty(FPM, eModelParam.epP_AgricultureBaseGPD100, Geti_BaseAGPD100, eProviderAggregateMode.agAverage);
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_AgricultureBaseGPD100, "Ag Base GPD", eModelFields.epP_AgricultureBaseGPD100, BaseAGPD100));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_AgricultureBaseGPD100, "Initial 100 Gallons per Dollar", "GP$", "100 Gallons Per Dollar", "Initial GPD", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-            AgIndicator = new providerArrayProperty(FPM, eModelParam.epP_AgricultureIndicator, geti_Indicator, eProviderAggregateMode.agAverage);
+            AgIndicator = new providerArrayProperty(FPM, eModelParam.epP_AgricultureIndicator, Geti_Indicator, eProviderAggregateMode.agAverage);
             //FPM.AddParameter(new ModelParameterClass(eModelParam.epAgricultureIndicator, "Ag Indicator", eModelFields.epAgricultureIndicator, AgIndicator));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epAgricultureBaseGPD100, "Efficiency of Ag Water Use", "?", "?", "Ag Indicator", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
@@ -2958,7 +2958,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] result = new int[FModelCount];
             // get model parameters
@@ -3024,7 +3024,7 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            UrbanEfficiency = new providerArrayProperty(FPM, eModelParam.epP_UrbanEfficiencyIndicator, geti_Indicator, eProviderAggregateMode.agAverage);
+            UrbanEfficiency = new providerArrayProperty(FPM, eModelParam.epP_UrbanEfficiencyIndicator, Geti_Indicator, eProviderAggregateMode.agAverage);
             //FPM.AddParameter(new ModelParameterClass(eModelParam.epUrbanEfficiencyIndicator, "Urban Water Efficiency Stress", "UEF", UrbanEfficiency));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epAgricultureBaseGPD100, "Urban Water Efficiency Stress", "0-100", "Indicator Stress 0 - 100", "Urban Efficiency Stress", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
@@ -3527,7 +3527,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] result = new int[FModelCount];
             // get estimate of wastewater flow
@@ -3577,7 +3577,7 @@ namespace WaterSimDCDC
             double[] BaseSurface = FEP.BaseSurfaceWater();
             //// get the ag surface water use, this is an obscure parameter reference, and is slow, but should work
             //double[] AgSurface = IndicatorTools.ConvertInt32ToDouble(FWSim.ParamManager.Model_Parameter(eModelParam.epP_SUR_AD).ProviderProperty.getvalues().Values, 0);
-            double[] AgWater = IndicatorTools.ConvertInt32ToDouble(FWSim.WaterSimWestModel.geti_Agriculture(),0);
+            double[] AgWater = IndicatorTools.ConvertInt32ToDouble(FWSim.WaterSimWestModel.Geti_Agriculture(),0);
             
             // Create a adjusted net surface use
             
@@ -3668,8 +3668,8 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            Environment = new providerArrayProperty(FPM, eModelParam.epP_ENVIndicator, geti_Indicator, eProviderAggregateMode.agAverage);
-            //FPM.AddParameter(new ModelParameterClass(eModelParam.epENVIndicator, "Environment Indicators", "ENVIND", geti_Environment));
+            Environment = new providerArrayProperty(FPM, eModelParam.epP_ENVIndicator, Geti_Indicator, eProviderAggregateMode.agAverage);
+            //FPM.AddParameter(new ModelParameterClass(eModelParam.epENVIndicator, "Environment Indicators", "ENVIND", Geti_Environment));
             //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epENVIndicator, "Impact of Influent Reductions on Changes in Surface Water Flows", "0-100", "", "Environment Indicator", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
 
@@ -3737,7 +3737,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] result = new int[FModelCount];
             // get model values
@@ -3777,7 +3777,7 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            industryEfficiency = new providerArrayProperty(FPM, eModelParam.epP_IndustryEfficiency, geti_Indicator, eProviderAggregateMode.agAverage);
+            industryEfficiency = new providerArrayProperty(FPM, eModelParam.epP_IndustryEfficiency, Geti_Indicator, eProviderAggregateMode.agAverage);
            
         }
     }
@@ -3844,7 +3844,7 @@ namespace WaterSimDCDC
                 /// <returns>   An int. </returns>
                 ///-------------------------------------------------------------------------------------------------
 
-                public override int[] geti_Indicator() // PowerEfficiencyIndicator()
+                public override int[] Geti_Indicator() // PowerEfficiencyIndicator()
                 {
                     int[] result = new int[FModelCount];
                     // get model values
@@ -3932,8 +3932,8 @@ namespace WaterSimDCDC
                     ParameterManagerClass FPM = FWSim.ParamManager;
                     Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-                    PowerEfficiency = new providerArrayProperty(FPM, eModelParam.epP_PowerEfficiency, geti_Indicator, eProviderAggregateMode.agAverage);
-                    //FPM.AddParameter(new ModelParameterClass(eModelParam.epPowerEfficiency, "Power Water Efficiency Stress", "PEF", geti_PowerEfficiencyIndicator));
+                    PowerEfficiency = new providerArrayProperty(FPM, eModelParam.epP_PowerEfficiency, Geti_Indicator, eProviderAggregateMode.agAverage);
+                    //FPM.AddParameter(new ModelParameterClass(eModelParam.epPowerEfficiency, "Power Water Efficiency Stress", "PEF", Geti_PowerEfficiencyIndicator));
                     //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epPowerEfficiency, "Power Water Efficiency Stress", "0-100", "Indicator Stress 0 - 100", "Power Efficiency Stress", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
                 }
@@ -3994,7 +3994,7 @@ namespace WaterSimDCDC
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] result = new int[FModelCount];
 
@@ -4002,7 +4002,7 @@ namespace WaterSimDCDC
             //int[][] AllIndicatorsByModel = new int[FTheIndicators.Count][];
             //for(int i=0;i<FIndicatorCount;i++)
             //{
-            //    AllIndicatorsByModel[i] = FTheIndicators[i].geti_Indicator();
+            //    AllIndicatorsByModel[i] = FTheIndicators[i].Geti_Indicator();
             //}
             //// Now calculate the average of these
             //int[] AvgIndicator = new int[FModelCount];
@@ -4058,10 +4058,10 @@ namespace WaterSimDCDC
             //}
 
             // Get the Average Sustainability
-            int[] AvgIndicator = geti_AverageSustainability();
+            int[] AvgIndicator = Geti_AverageSustainability();
 
             // Get Net DEmand ratio indicator
-            int[] TheReverseRatio = geti_NetDemandRatioIndicator();
+            int[] TheReverseRatio = Geti_NetDemandRatioIndicator();
 
             // OK, go ahead figure out the assessment value as average of net ratio and sustainability
             for (int modeli = 0; modeli < FModelCount; modeli++)
@@ -4083,14 +4083,14 @@ namespace WaterSimDCDC
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_AverageSustainability()
+        public int[] Geti_AverageSustainability()
         {
 
             // Setup the AllIndicators array and get all the values
             int[][] AllIndicatorsByModel = new int[FTheIndicators.Count][];
             for (int i = 0; i < FIndicatorCount; i++)
             {
-                AllIndicatorsByModel[i] = FTheIndicators[i].geti_Indicator();
+                AllIndicatorsByModel[i] = FTheIndicators[i].Geti_Indicator();
             }
             // Now calculate the average of these
             int[] AvgIndicator = new int[FModelCount];
@@ -4133,7 +4133,7 @@ namespace WaterSimDCDC
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_NetDemandRatioIndicator()
+        public int[] Geti_NetDemandRatioIndicator()
         {
             // OK now get the Total Demand and the Net (deficit), 
             // this should be the inverse of net to demand ratio, ie low net should be close to 100 
@@ -4171,9 +4171,9 @@ namespace WaterSimDCDC
 
         public void CreateModelParameters()
         {
-            Assessment = new providerArrayProperty(eModelParam.epP_Assessment, geti_Indicator);
-            AverageSustainabilityIndicator = new providerArrayProperty(eModelParam.epP_AverageSustainability, geti_AverageSustainability);
-            ReverseNetDemandRatio = new providerArrayProperty(eModelParam.epP_ReverseNetDemandRatio, geti_NetDemandRatioIndicator);
+            Assessment = new providerArrayProperty(eModelParam.epP_Assessment, Geti_Indicator);
+            AverageSustainabilityIndicator = new providerArrayProperty(eModelParam.epP_AverageSustainability, Geti_AverageSustainability);
+            ReverseNetDemandRatio = new providerArrayProperty(eModelParam.epP_ReverseNetDemandRatio, Geti_NetDemandRatioIndicator);
                 
         }
 
@@ -4300,13 +4300,13 @@ namespace WaterSimDCDC
 
             // get the data - These are initial data: one rune
 
-            FBaseTotalDemand = (WSim as WaterSimManager).WaterSimWestModel.geti_TotalDemand();
+            FBaseTotalDemand = (WSim as WaterSimManager).WaterSimWestModel.Geti_TotalDemand();
             //          
-            FBaseRecycledDemand = (WSim as WaterSimManager).WaterSimWestModel.geti_Effluent();
+            FBaseRecycledDemand = (WSim as WaterSimManager).WaterSimWestModel.Geti_Effluent();
             // this needs confirmation
-            FBaseMaxRecycle = (WSim as WaterSimManager).WaterSimWestModel.geti_AvailableReclaimed();
+            FBaseMaxRecycle = (WSim as WaterSimManager).WaterSimWestModel.Geti_AvailableReclaimed();
             // 08.18.18
-            FBaseRECtoUrban = (WSim as WaterSimManager).WaterSimWestModel.geti_REC_UD();
+            FBaseRECtoUrban = (WSim as WaterSimManager).WaterSimWestModel.Geti_REC_UD();
             //
             return true;
         }
@@ -4427,8 +4427,8 @@ namespace WaterSimDCDC
             int[] maxRecycle = new int[FModelCount];
             double[] d_maxRecycle = new double[FModelCount];
 
-            recycle = FWSim.WaterSimWestModel.geti_Effluent();
-            maxRecycle = FWSim.WaterSimWestModel.geti_AvailableReclaimed();
+            recycle = FWSim.WaterSimWestModel.Geti_Effluent();
+            maxRecycle = FWSim.WaterSimWestModel.Geti_AvailableReclaimed();
             //
             // Loop through can calcualte PctRecycled
             for (int i = 0; i < FModelCount; i++)
@@ -4448,8 +4448,8 @@ namespace WaterSimDCDC
                 }
             }
             //
-           // RecToUrban = this.MYWaterSimModel.geti_GrayWaterFlow();
-           // multiply = this.MYWaterSimModel.geti_GrayWaterManagement();
+           // RecToUrban = this.MYWaterSimModel.Geti_GrayWaterFlow();
+           // multiply = this.MYWaterSimModel.Geti_GrayWaterManagement();
          
             //grayWaterPotential(RecToUrban, multiply);
             return PercentRecycled;
@@ -4470,8 +4470,8 @@ namespace WaterSimDCDC
 
             double[] d_demand = new double[FModelCount];
             int[] demand = new int[FModelCount];
-            recycle = FWSim.WaterSimWestModel.geti_Effluent();
-            demand = FWSim.WaterSimWestModel.geti_TotalDemand();
+            recycle = FWSim.WaterSimWestModel.Geti_Effluent();
+            demand = FWSim.WaterSimWestModel.Geti_TotalDemand();
             // Loop through can calcualte PctRecycled
             for (int i = 0; i < FModelCount; i++)
             {
@@ -4505,7 +4505,7 @@ namespace WaterSimDCDC
         //public void grayWaterPotential(int[] baseRecUrban, int[] management)
         //{
         //    int[] gray = new int[FModelCount];
-        //    gray = this.MYWaterSimModel.geti_GrayWaterManagement();
+        //    gray = this.MYWaterSimModel.Geti_GrayWaterManagement();
         //    //double[] Gbase = new double[FModelCount];
         //    int[] iGray = new int[FModelCount];
         //    double G = 0;
@@ -4524,7 +4524,7 @@ namespace WaterSimDCDC
         //    In.Values = iGray;
         //    ModelParameterClass MP = FWSim.ParamManager.Model_Parameter(eModelParam.epP_Effluent);
         //    // MP.ProviderProperty.setvalues(In);
-        //    this.MYWaterSimModel.seti_Effluent(iGray);
+        //    this.MYWaterSimModel.Seti_Effluent(iGray);
         //   //  this.MYWaterSimModel.Effluent.setvalues(In);
 
         //}
@@ -4548,7 +4548,7 @@ namespace WaterSimDCDC
         /// </remarks>
         /// <returns>   An int[] </returns>
         ///-------------------------------------------------------------------------------------------------
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
              int[] TempInt = Geti_PCTRecycledDemand();
             //int[] TempInt = Geti_PCTRecycled();
@@ -4574,7 +4574,7 @@ namespace WaterSimDCDC
             FPM.AddParameter(new ModelParameterClass(eModelParam.epP_PCTRecycledOfTotDem, "The Percent of reclaimed water recycled in relation to total demand", "PCTRD", PercentRecycledOfDemand));
             ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_PCTRecycledOfTotDem, "The ratio of reclaimed water used to total demand", "%", "Percent", "Percent Recycled of Demand", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
             //
-            RecycleIndicator = new providerArrayProperty(FPM, eModelParam.epP_RecyclingIndicator, geti_Indicator, eProviderAggregateMode.agAverage);
+            RecycleIndicator = new providerArrayProperty(FPM, eModelParam.epP_RecyclingIndicator, Geti_Indicator, eProviderAggregateMode.agAverage);
 
         }
     }
@@ -4682,7 +4682,7 @@ namespace WaterSimDCDC
 
             // get the data - These are initial data: one run
 
-            FBaseMax = (WSim as WaterSimManager).WaterSimWestModel.geti_TotalDemand();
+            FBaseMax = (WSim as WaterSimManager).WaterSimWestModel.Geti_TotalDemand();
 
             //
             return true;
@@ -4864,7 +4864,7 @@ namespace WaterSimDCDC
             double[] result = new double[FModelCount];          
             double[] GPD = new double[FModelCount];
             GPD = AIP.FAGGallonPerDollar;
-            //int[] AD = FWSim.WaterSimWestModel.geti_Agriculture();
+            //int[] AD = FWSim.WaterSimWestModel.Geti_Agriculture();
             double[] Demand = IndicatorTools.ConvertInt32ToDouble(FWSim.ParamManager.Model_Parameter(eModelParam.epP_Agriculture).ProviderProperty.getvalues().Values, 0);
             result = GrabMinandMax(GPD,Demand, TD);
             return result;
@@ -4878,7 +4878,7 @@ namespace WaterSimDCDC
             double[] gpcd = new double[FModelCount];
             //
             gpcd = IndicatorTools.ConvertInt32ToDouble(FWSim.ParamManager.Model_Parameter(eModelParam.epP_GPCD_urban).ProviderProperty.getvalues().Values, 0);
-            int[] GPCD = FWSim.WaterSimWestModel.geti_gpcd();
+            int[] GPCD = FWSim.WaterSimWestModel.Geti_gpcd();
             //people = IndicatorTools.ConvertInt32ToDouble(FWSim.ParamManager.Model_Parameter(eModelParam.epP_Population).ProviderProperty.getvalues().Values, 0);
             //
             double[] Demand = IndicatorTools.ConvertInt32ToDouble(FWSim.ParamManager.Model_Parameter(eModelParam.epP_Urban).ProviderProperty.getvalues().Values, 0);
@@ -4900,7 +4900,7 @@ namespace WaterSimDCDC
         {
             double[] result = new double[FModelCount];
             double[] temp = new double[FModelCount];
-            int[] PW = FWSim.WaterSimWestModel.geti_PowerGPMWD();
+            int[] PW = FWSim.WaterSimWestModel.Geti_PowerGPMWD();
             temp = IndicatorTools.ConvertInt32ToDouble(PW, 0); 
             double[] Demand = IndicatorTools.ConvertInt32ToDouble(FWSim.ParamManager.Model_Parameter(eModelParam.epP_Power).ProviderProperty.getvalues().Values, 0);
             result = GrabMinandMax(temp, Demand, TD);
@@ -4970,7 +4970,7 @@ namespace WaterSimDCDC
         /// </remarks>
         /// <returns>   An int[] </returns>
         ///-------------------------------------------------------------------------------------------------
-        public override int[] geti_Indicator()
+        public override int[] Geti_Indicator()
         {
             int[] TempInt = Geti_ReduceUseResult();
             return TempInt;
@@ -4987,7 +4987,7 @@ namespace WaterSimDCDC
             ParameterManagerClass FPM = FWSim.ParamManager;
             Extended_Parameter_Documentation ExtendDoc = FPM.Extended;
 
-            reduceUseIndicator = new providerArrayProperty(FPM, eModelParam.epP_ReduceUseIndicator, geti_Indicator, eProviderAggregateMode.agAverage);
+            reduceUseIndicator = new providerArrayProperty(FPM, eModelParam.epP_ReduceUseIndicator, Geti_Indicator, eProviderAggregateMode.agAverage);
         }
     }
     #endregion Reducing Water Use Indicator
@@ -5359,7 +5359,7 @@ namespace WaterSimDCDC
 
         //public int TotalModelDemand(string UnitName)
         //{
-        //    return geti_TotalDemand(UnitName); 
+        //    return Geti_TotalDemand(UnitName); 
         //}
 
         //===================================================================================================
@@ -5380,9 +5380,9 @@ namespace WaterSimDCDC
         /// <returns> An int[].</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        protected int[] geti_TotalGPCY()
+        protected int[] Geti_TotalGPCY()
         {
-            int[] TheTotaldemand =  WestModel.geti_TotalDemand();//  1000000.0;
+            int[] TheTotaldemand =  WestModel.Geti_TotalDemand();//  1000000.0;
             int ModelCnt = WestModel.ModelCount;
             int[] POP = ParamManager.Model_Parameter(eModelParam.epP_Population).ProviderProperty.getvalues().Values; //.epMagicPop).Value;
             int[] Values = new int[ModelCnt];
@@ -5411,7 +5411,7 @@ namespace WaterSimDCDC
 
         //public int[] TotalGPCY
         //{
-        //    get { return geti_TotalGPCY(); }
+        //    get { return Geti_TotalGPCY(); }
         //}
 
 #endregion
@@ -5483,7 +5483,7 @@ namespace WaterSimDCDC
         /// <returns> An int. -1 if conversion error</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_UrbanSurfaceWater(WaterSimCRFModel WSmith)
+        public int Geti_UrbanSurfaceWater(WaterSimCRFModel WSmith)
         {
             int result = -1;
             double UrbanSW = 0;
@@ -5517,14 +5517,14 @@ namespace WaterSimDCDC
         /// <returns> An array of int. -1 value means conversion error</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_UrbanSurfaceWater()
+        public int[] Geti_UrbanSurfaceWater()
         {
             int NumberOfModels = WestModel.ModelCount;
             int[] Values = new int[NumberOfModels];
             int cnt = 0;
             foreach (WaterSimCRFModel WSM in WestModel.WaterSimCRFModels)
             {
-                Values[cnt] = geti_UrbanSurfaceWater(WSM);
+                Values[cnt] = Geti_UrbanSurfaceWater(WSM);
                 cnt++;
             }
             return Values;
@@ -5548,7 +5548,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PowerSaline(WaterSimCRFModel WSmith)
+        public int Geti_PowerSaline(WaterSimCRFModel WSmith)
         {
             int result = -1;
             double PowerSal = 0;
@@ -5581,14 +5581,14 @@ namespace WaterSimDCDC
         /// <returns> An int array, -1 means a conversion error</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_PowerSaline()
+        public int[] Geti_PowerSaline()
         {
             int NumberOfModels = WestModel.ModelCount;
             int[] Values = new int[NumberOfModels];
             int cnt = 0;
             foreach (WaterSimCRFModel WSM in WestModel.WaterSimCRFModels)
             {
-                Values[cnt] = geti_PowerSaline(WSM);
+                Values[cnt] = Geti_PowerSaline(WSM);
             }
             return Values;
         }
@@ -5602,7 +5602,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. -1 if conversion error</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_SurfaceLake(WaterSimCRFModel WSmith)
+        public int Geti_SurfaceLake(WaterSimCRFModel WSmith)
         {
             int result = -1;
             double temp = WSmith.TheCRFNetwork.SurfaceLake.Limit;
@@ -5624,14 +5624,14 @@ namespace WaterSimDCDC
         /// <returns> An int. -1 if conversion error.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_SurfaceLake()
+        public int[] Geti_SurfaceLake()
         {
             int NumberOfModels = WestModel.ModelCount;
             int[] Values = new int[NumberOfModels];
             int cnt = 0;
             foreach (WaterSimCRFModel WSM in WestModel.WaterSimCRFModels)
             {
-                Values[cnt] = geti_SurfaceLake(WSM);
+                Values[cnt] = Geti_SurfaceLake(WSM);
             }
             return Values;
         }
@@ -5646,7 +5646,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_NetWorkAgricultureDemand(WaterSimCRFModel WSmith)
+        public int Geti_NetWorkAgricultureDemand(WaterSimCRFModel WSmith)
         {
             int result = -1;
             double AgDemand = 0;
@@ -5678,14 +5678,14 @@ namespace WaterSimDCDC
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int[] geti_NetWorkAgricultureDemand()
+        public int[] Geti_NetWorkAgricultureDemand()
         {
             int NumberOfModels = WestModel.ModelCount;
             int[] Values = new int[NumberOfModels];
             int cnt = 0;
             foreach (WaterSimCRFModel WSM in WestModel.WaterSimCRFModels)
             {
-                Values[cnt] = geti_NetWorkAgricultureDemand(WSM);
+                Values[cnt] = Geti_NetWorkAgricultureDemand(WSM);
             }
             return Values;
         }
@@ -5700,7 +5700,7 @@ namespace WaterSimDCDC
         ///-------------------------------------------------------------------------------------------------
 
         // ?? NEEDS WORK  CRFNetwork not used!!  Population set to 0  Wha is this
-        public int geti_Population(WaterSimCRFModel WSmith)
+        public int Geti_Population(WaterSimCRFModel WSmith)
         {
             int result = -1;
             double Pop2010 = 0;
@@ -5768,7 +5768,7 @@ namespace WaterSimDCDC
         ///// <returns> An int.</returns>
         /////-------------------------------------------------------------------------------------------------
 
-        //private int geti_agTargetEfficiency(WaterSimCRFModel WSmith)
+        //private int Geti_agTargetEfficiency(WaterSimCRFModel WSmith)
         //{
         //    double Temp = WSmith.AgricultureInitialGPDD;
         //    int result = -1;
@@ -5789,7 +5789,7 @@ namespace WaterSimDCDC
         /// <returns> An int[]</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        private int[] geti_agTargetEfficiency()
+        private int[] Geti_agTargetEfficiency()
         {
             return AGIndicator.AgricultureTargetEfficiency;
                 //int NumberOfModels = WestModel.ModelCount;
@@ -5797,7 +5797,7 @@ namespace WaterSimDCDC
                 //int cnt = 0;
                 //foreach (WaterSimCRFModel WSM in WestModel.WaterSimCRFModels)
                 //{
-                //    Values[cnt] = geti_agTargetEfficiency(WSM);
+                //    Values[cnt] = Geti_agTargetEfficiency(WSM);
                 //}
                 //return Values;
 
@@ -5810,7 +5810,7 @@ namespace WaterSimDCDC
         ///// <param name="value">    The value. </param>
         /////-------------------------------------------------------------------------------------------------
 
-        //void seti_agTargetEfficiency(int value, WaterSimCRFModel WSmith)
+        //void Seti_agTargetEfficiency(int value, WaterSimCRFModel WSmith)
         //{
         //    //FAgTargetEfficieny = value;
         //    //WSmith.AgricultureTargetGPDD = value;
@@ -5824,7 +5824,7 @@ namespace WaterSimDCDC
         /// <param name="values"> The values.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        void seti_agTargetEfficiency(int[] values)
+        void Seti_agTargetEfficiency(int[] values)
         {
             AGIndicator.AgricultureTargetEfficiency = values;
             //int cnt = 0;
@@ -5845,7 +5845,7 @@ namespace WaterSimDCDC
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_InitialPowerGenerated(WaterSimCRFModel WSmith)
+        public int Geti_InitialPowerGenerated(WaterSimCRFModel WSmith)
         {
             int result = 0;
             //int StateCode = ParamManager.Model_Parameter(eModelParam.epState).Value;
@@ -5869,7 +5869,7 @@ namespace WaterSimDCDC
             int cnt = 0;
             foreach (WaterSimCRFModel WSM in WestModel.WaterSimCRFModels)
             {
-                Values[cnt] = geti_InitialPowerGenerated(WSM);
+                Values[cnt] = Geti_InitialPowerGenerated(WSM);
             }
             return Values;
         }
@@ -5916,7 +5916,7 @@ namespace WaterSimDCDC
         //    }
         //}
 
-        //public int geti_SUR_PD()
+        //public int Geti_SUR_PD()
         //{
         //    int result = GetFluxAllocated("SUR", "PTOT");
         //    return result;
@@ -5942,28 +5942,28 @@ namespace WaterSimDCDC
                 // EDIT QUAY
                 // ALL THESE PRAMETERS GOT MOVED TO WATERSIMMANAGER
                 // New Parameters
-                //WestModel.Population = new providerArrayProperty(_pm, eModelParam.epP_Population, WestModel.geti_Pop, eProviderAggregateMode.agSum);
+                //WestModel.Population = new providerArrayProperty(_pm, eModelParam.epP_Population, WestModel.Geti_Pop, eProviderAggregateMode.agSum);
                 //_pm.AddParameter(new ModelParameterClass(eModelParam.epP_Population, "Population Served", "POP_P", WestModel.Population));
                 //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_Population, "State Population People in any given year- we use an estimate of slope to project out to 2065", "ppl", "State Population (ppl)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-                //TotalDemand = new providerArrayProperty(ParamManager, eModelParam.epP_TotalDemand, geti_TotalDemand, eProviderAggregateMode.agSum);
+                //TotalDemand = new providerArrayProperty(ParamManager, eModelParam.epP_TotalDemand, Geti_TotalDemand, eProviderAggregateMode.agSum);
                 //ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_TotalDemand, "Total Demand", eModelFields.epP_TotalDemand, TotalDemand));
                 //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_TotalDemand, "Total Water Demand for all consumers", "MG", "Total Water DEmand (MGD)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-                //TotalDemandNet = new providerArrayProperty(ParamManager, eModelParam.epP_TotalDemandNet, geti_TotalDemand, eProviderAggregateMode.agSum);
+                //TotalDemandNet = new providerArrayProperty(ParamManager, eModelParam.epP_TotalDemandNet, Geti_TotalDemand, eProviderAggregateMode.agSum);
                 //ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_TotalDemandNet, "Total Demand (Net)", eModelFields.epP_TotalDemandNet, TotalDemandNet));
                 //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_TotalDemandNet, "Total NetWater Demand for all consumers, essentially Water Sources - Demand", "MGD", "Total Net Water DEmand (MGD)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
                 // END EDIT
 
-                TotalGPCY = new providerArrayProperty(ParamManager, eModelParam.epP_TotalGPCY, geti_TotalGPCY, eProviderAggregateMode.agSum);
+                TotalGPCY = new providerArrayProperty(ParamManager, eModelParam.epP_TotalGPCY, Geti_TotalGPCY, eProviderAggregateMode.agSum);
                 ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_TotalGPCY, "Total GPCY", eModelFields.epP_TotalGPCY, TotalGPCY));
                 ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_TotalGPCY, "Total Gallons Per Capita for all consumers per year, Essentailly Total Demand divided by Population", "GPCY", "Total Gallons Per Capita Per Year (G)", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-                UrbanSurfaceWater = new providerArrayProperty(ParamManager, eModelParam.epP_UrbanSurfacewater, geti_UrbanSurfaceWater, eProviderAggregateMode.agSum);
+                UrbanSurfaceWater = new providerArrayProperty(ParamManager, eModelParam.epP_UrbanSurfacewater, Geti_UrbanSurfaceWater, eProviderAggregateMode.agSum);
                 ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_UrbanSurfacewater, "Urban Surfacewater", "USUR_P", UrbanSurfaceWater));
                 ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_UrbanSurfacewater, "Urban Surfacewater: Amount of Surface water used to meet Urban Demand", "MGD", "Million Gallons Per Day", "Urban Surfacewater", new string[] { "No Change", "Moderate", "Extreme" }, new int[] { 100, 70, 30 }, new ModelParameterGroupClass[] { }));
 
-                PowerSaline = new providerArrayProperty(ParamManager, eModelParam.epP_PowerSaline, geti_PowerSaline, eProviderAggregateMode.agSum);
+                PowerSaline = new providerArrayProperty(ParamManager, eModelParam.epP_PowerSaline, Geti_PowerSaline, eProviderAggregateMode.agSum);
                 ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_PowerSaline, "Power Saline","PSAL_P", PowerSaline));
                 ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_PowerSaline, "Power Saline: Amount of Saline water used to meet Power Demand", "MGD", "Million Gallons Per Day", "Urban Surfacewater", new string[] { "No Change", "Moderate", "Extreme" }, new int[] { 100, 70, 30 }, new ModelParameterGroupClass[] { }));
 
@@ -5973,14 +5973,14 @@ namespace WaterSimDCDC
 
 
 
-                //               ParamManager.AddParameter(new ModelParameterClass(eModelParam.epAgricultureDemand, "Agriculture Demand", "ADP", geti_AgDemand));
-                //                ParamManager.AddParameter(new ModelParameterClass(eModelParam.epAgricultureProduction, "Agriculture Net $", "ANP", geti_AgProduction));
+                //               ParamManager.AddParameter(new ModelParameterClass(eModelParam.epAgricultureDemand, "Agriculture Demand", "ADP", Geti_AgDemand));
+                //                ParamManager.AddParameter(new ModelParameterClass(eModelParam.epAgricultureProduction, "Agriculture Net $", "ANP", Geti_AgProduction));
 
-                AgTargetEfficiency = new providerArrayProperty(ParamManager, eModelParam.epP_AgricultureTargetEfficiency, geti_agTargetEfficiency, seti_agTargetEfficiency, eProviderAggregateMode.agAverage);
+                AgTargetEfficiency = new providerArrayProperty(ParamManager, eModelParam.epP_AgricultureTargetEfficiency, Geti_agTargetEfficiency, Seti_agTargetEfficiency, eProviderAggregateMode.agAverage);
                 ParamManager.AddParameter(new ModelParameterClass(eModelParam.epP_AgricultureTargetEfficiency, "Ag Target Efficiency", eModelFields.epP_AgricuktureTargetEfficiency, rangeChecktype.rctCheckRange, 0, 10000, null, AgTargetEfficiency ));
                 ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epP_AgricultureTargetEfficiency, "Target Ag Efficiency", "GPDD", "Gallons Per Dollar FArm Income per Day", "", new string[] { }, new int[] { }, new ModelParameterGroupClass[] { }));
 
-                //ParamManager.AddParameter(new ModelParameterClass(eModelParam.epSurfaceLake, "Surface Lake Water", "SURL", geti_SurfaceLake));
+                //ParamManager.AddParameter(new ModelParameterClass(eModelParam.epSurfaceLake, "Surface Lake Water", "SURL", Geti_SurfaceLake));
                 //ExtendDoc.Add(new WaterSimDescripItem(eModelParam.epSurfaceLake, "Surface Lake Water", "mgd", "Million Gallons Per Day", "Lake Water", new string[] {}, new int[] { }, new ModelParameterGroupClass[] { }));
                 
                 // Load the data

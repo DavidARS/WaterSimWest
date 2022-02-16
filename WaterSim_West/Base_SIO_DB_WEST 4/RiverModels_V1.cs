@@ -119,17 +119,35 @@ namespace WaterSimDCDC.Generic
          WaterSimModel FOwner;
         
         // Number of Regions
+        /// <summary>
+        /// 
+        /// </summary>
         readonly int FRegionsN = 0;
         // Water Available by Region
+        /// <summary>
+        /// 
+        /// </summary>
         readonly BasinWater  FAvailableWater;
         //
         int FDroughtStartYearLF = 2015;
         int FDroughtLengthLF = 9999;
         int FDroughtActiveLF = 0;
         double FDroughtDepthLF = 0.0;
+        /// <summary>
+        /// 
+        /// </summary>
         public int DefaultDroughtStartYearLF = 2015;
+        /// <summary>
+        /// 
+        /// </summary>
         public int DefaultDroughtLengthLF = 9999;
+        /// <summary>
+        /// 
+        /// </summary>
         public int DefaultDroughtActiveLF = 0;
+        /// <summary>
+        /// 
+        /// </summary>
         public double DefaultDroughtDepthLF = 0.0;
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Runs the River Model with the given input data.</summary>
@@ -162,18 +180,11 @@ namespace WaterSimDCDC.Generic
 
         public abstract BasinWater Allocate(ResourceModelOutput Output, int year);
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Allocates this models output to the various regions managed by WaterSimModel.</summary>
-        ///
-        /// <remarks> This is intended for models where allocation is done outside of model and an array of values is needed
-        ///           but river model results is maintained in the river model
-        ///          This needs to be implemented , this allocates to the various models Pseudo ocde is provided</remarks>
-        ///
-        /// <param name="WaterSimCRFModels"> A list of watersim crf models.</param>
-        ///
-        /// <returns> True if it succeeds, false if it fails.</returns>
-        ///-------------------------------------------------------------------------------------------------
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public abstract BasinWater Allocate(int year);
         //{
         //PSEUDO CODE of a general approach
@@ -201,11 +212,17 @@ namespace WaterSimDCDC.Generic
         //return false;
         //}
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int DroughtActiveLF { get => FDroughtActiveLF; set => FDroughtActiveLF = value; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int DroughtStartYearLF { get => FDroughtStartYearLF; set => FDroughtStartYearLF = value; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int DroughtLengthLF { get => FDroughtLengthLF; set => FDroughtLengthLF = value; }
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Gets or sets the drought depth.</summary>
@@ -293,6 +310,10 @@ namespace WaterSimDCDC.Generic
     public class ColoradoRiverInputData : ResourceModelInput
     {
         readonly double[] FTraceData;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="TheTraceData"></param>
         public ColoradoRiverInputData(double[] TheTraceData)
         {
             FTraceData = TheTraceData;
@@ -352,12 +373,10 @@ namespace WaterSimDCDC.Generic
 
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Initializes a new instance of the WaterSimDCDC.WestRiverModels.SurfaceWaterInput
-        ///     class.</summary>
-        /// <param name="TheModels"> the models.</param>
-        ///-------------------------------------------------------------------------------------------------
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="InitialResource"></param>
         public SurfaceWaterInput(int[] InitialResource)
         {
             FInitial = new BasinWater(InitialResource);
@@ -535,15 +554,10 @@ namespace WaterSimDCDC.Generic
         {
         }
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary> Initializes a new instance of the WaterSimDCDC.WestRiverModels.SurfaceWaterOutput
-        ///     class.</summary>
+        /// <summary>
         /// 
-        /// <param name="years">               The years.</param>
-        /// <param name="NumberOfRegions">     Number of regions.</param>
-        /// <param name="InitialSurfaceWater"> The total number of surface water.</param>
-        ///-------------------------------------------------------------------------------------------------
-
+        /// </summary>
+        /// <param name="NumberOfRegions"></param>
         public SurfaceWaterOutput(int NumberOfRegions)
         {
             // Create the output results array by year and region, empty at this point
@@ -651,7 +665,7 @@ namespace WaterSimDCDC.Generic
         /// <remarks> Quay, 9/9/2020.</remarks>
         ///-------------------------------------------------------------------------------------------------
 
-        public void resetoutput()
+        public void Resetoutput()
         {
             // Create new OuputObaject
             FSUROutput = new SurfaceWaterOutput(FRegionNumber);
@@ -667,7 +681,7 @@ namespace WaterSimDCDC.Generic
         public override void ResetModel()
         {
             // Reset Output object
-            resetoutput();
+            Resetoutput();
         }
 
   
@@ -744,12 +758,12 @@ namespace WaterSimDCDC.Generic
             {
                 // setup params
                 double InitialSurfacewater = FSURInput.InitialWater.RegionResource(regi);
-                double SurfaceGoal = Owner.FastUnitModel(regi).geti_SurfaceWaterControl() / 100;
-                double ClimateChangeTarget = Owner.FastUnitModel(regi).geti_ClimateChangeTarget() / 100; // FSURInput.ClimateChangeTarget[regi];
-                int DroughtActive = Owner.FastUnitModel(regi).geti_DroughtActive(); // FSURInput.DroughtActive[regi];
-                int DroughtStartYear = Owner.FastUnitModel(regi).geti_DroughtSartYear(); // FSURInput.DroughtStartYear[regi];
-                int DroughtLength = Owner.FastUnitModel(regi).geti_DroughtLength(); // FSURInput.DroughtLength[regi];
-                int DroughtDepth = Owner.FastUnitModel(regi).geti_DroughtDepth(); // FSURInput.DroughtDepth[regi];
+                double SurfaceGoal = Owner.FastUnitModel(regi).Geti_SurfaceWaterControl() / 100;
+                double ClimateChangeTarget = Owner.FastUnitModel(regi).Geti_ClimateChangeTarget() / 100; // FSURInput.ClimateChangeTarget[regi];
+                int DroughtActive = Owner.FastUnitModel(regi).Geti_DroughtActive(); // FSURInput.DroughtActive[regi];
+                int DroughtStartYear = Owner.FastUnitModel(regi).Geti_DroughtSartYear(); // FSURInput.DroughtStartYear[regi];
+                int DroughtLength = Owner.FastUnitModel(regi).Geti_DroughtLength(); // FSURInput.DroughtLength[regi];
+                int DroughtDepth = Owner.FastUnitModel(regi).Geti_DroughtDepth(); // FSURInput.DroughtDepth[regi];
                 int year = Owner.FastUnitModel(regi).currentYear; // FSURInput.CurrentYear;
                 int endYear = Owner.FastUnitModel(regi).endYear; // FSURInput.EndYear;
                 int startYear = Owner.FastUnitModel(regi).startYear; // FSURInput.StartYear;

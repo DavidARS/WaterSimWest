@@ -738,19 +738,19 @@ namespace WaterSimDCDC
         }
 
 
-        private int geti_Simulation_Start_Year() { return Simulation_Start_Year; }
-        private void seti_Simulation_Start_Year(int value) { Simulation_Start_Year = value; }
+        private int Geti_Simulation_Start_Year() { return Simulation_Start_Year; }
+        private void Seti_Simulation_Start_Year(int value) { Simulation_Start_Year = value; }
 
-        private int geti_Simulation_End_Year() { return Simulation_End_Year; }
-        private void seti_Simulation_End_Year(int value) { Simulation_End_Year = value; }
+        private int Geti_Simulation_End_Year() { return Simulation_End_Year; }
+        private void Seti_Simulation_End_Year(int value) { Simulation_End_Year = value; }
 
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Initializes the model parameters. </summary>
         protected virtual void initialize_ModelParameters()
         {
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epSimulation_Start_Year, "Simulation Start Year", "STARTYR", rangeChecktype.rctCheckRange, DefaultStartYear(), DefaultMaxStartYear(), geti_Simulation_Start_Year, seti_Simulation_Start_Year, RangeCheck.NoSpecialBase));
-            _pm.AddParameter(new ModelParameterClass(eModelParam.epSimulation_End_Year, "Simulation End Year", "STOPYR", rangeChecktype.rctCheckRange, DefaultMinStopYear() + 1, DefaultMaxStartYear() + 1, geti_Simulation_End_Year, seti_Simulation_End_Year, RangeCheck.NoSpecialBase));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epSimulation_Start_Year, "Simulation Start Year", "STARTYR", rangeChecktype.rctCheckRange, DefaultStartYear(), DefaultMaxStartYear(), Geti_Simulation_Start_Year, Seti_Simulation_Start_Year, RangeCheck.NoSpecialBase));
+            _pm.AddParameter(new ModelParameterClass(eModelParam.epSimulation_End_Year, "Simulation End Year", "STOPYR", rangeChecktype.rctCheckRange, DefaultMinStopYear() + 1, DefaultMaxStartYear() + 1, Geti_Simulation_End_Year, Seti_Simulation_End_Year, RangeCheck.NoSpecialBase));
 
         }
 

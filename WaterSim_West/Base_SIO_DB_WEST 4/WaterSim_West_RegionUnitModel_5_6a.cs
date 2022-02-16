@@ -96,10 +96,29 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         public DataClassLCLU FDClclu;
+        // =============================================
+        // Dynamic loading of classes
         /// <summary>
         ///  temperature data
         /// </summary>
         public DataClassTemperature FDCtemperature;
+        /// <summary>
+        /// 
+        /// </summary>
+        public NewWater FAtmos;
+        /// <summary>
+        /// 
+        /// </summary>
+        public RainWaterHarvesting FRain;
+        /// <summary>
+        /// 
+        /// </summary>
+        public StormWater FStorm;
+        /// <summary>
+        /// 
+        /// </summary>
+        public DataClassLcluArea Farea;
+        // =============================================
         /// <summary> Information describing the unit.</summary>
         /// <remarks>  This is the unit Data class used to retrieve USGS combined and summary data by region </remarks>
         UnitData FUnitData = null;
@@ -112,6 +131,7 @@ namespace WaterSimDCDC.Generic
 
         // ====================================
         //
+        string DataDirectoryPath;
         // ===========================
         // Demand Classes
         // ==============
@@ -124,7 +144,7 @@ namespace WaterSimDCDC.Generic
         DemandModel IndustrialDEM;
         DemandModel PowerDEM;
         //
-        StormWater STORM;
+        //StormWater STORM;
         // Direct access models
         readonly UrbanDemand_GPCD UD;
         //UrbanDemand_GPCDa UDA;
@@ -136,7 +156,7 @@ namespace WaterSimDCDC.Generic
         readonly RuralDemand_LCLU_ag ADR;
         readonly RuralDemand_LCLU_industry IDR;
         //============================
-        readonly DataClassTemperature DataClassT;
+        //readonly DataClassTemperature DataClassT;
         //
         readonly NewWater NWater;
         //
@@ -528,7 +548,8 @@ namespace WaterSimDCDC.Generic
         }
         #endregion newer constructor
         // =========================================================================================================
-        #region current constructor
+        #region Previously new- Feb 2022
+
         // 02.08.22 das
         /// <summary>
         ///  This constructor holds the urban density classification proportins for the land-cover
@@ -582,8 +603,107 @@ namespace WaterSimDCDC.Generic
             Initialize_Variables();
         }
         // 
+        #endregion PREVIOUS NEW fEBRUARY 2022
+        // =========================================================================================================
+        #region current
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DataDirectory"></param>
+        /// <param name="TheUnitData"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="TheUnitName"></param>
+        /// <param name="cod"></param>
+        /// <param name="UD"></param>
+        /// <param name="sw"></param>
+        public WaterSimCRFModel(string DataDirectory,UnitData TheUnitData, RateDataClass TheRateData, 
+                string TheUnitName, ColoradoDesalExchangeClass cod, UrbanDensityDataClass UD, StreamWriter sw)
+        {
+            DataDirectoryPath = DataDirectory;
+            FUnitName = TheUnitName;
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            //
+            FDC = null;
+            Atmosphere = null;
+            Rain = null;
+            Storm = null;
+            ///
+            CODE = cod;
+            FUDProportions = UD;
+            //      
+            StreamW = sw;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out string errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
+
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            Initialize_Variables();
+        }
         #endregion current construct
+        // =========================================================================================================
+        #region Load-unload classes as needed
+        //  code to see if I can load classes as needed- free up resources when not needed
+        // edits 02.15.22 das, edits 02.16.22 das
+        // ==================================================
+        string LCLUrcnFilename      = "RCNbyLCLU.csv";
+        string LCLUclassesFilename  = "Oct21_Acres_ssp2.csv";
+        string RainFallFilename     = "WSWestRainFall.csv";
+        string ClimateDataFilename  = "ClimateMonthly_24.csv";
+        string addInputsDir         = "\\Inputs\\";
+        //
+        internal void LoadClassesAsNeeded(int year)
+        {
+            if (year == startYear)
+            {
+                if (this.AirWaterManagement == true)
+                {
+                    int cloudy = 2;
+                    using (NewWater NWater = new NewWater(FUnitData, cloudy))
+                    {  Atmosphere = NWater; }
+
+                    using (DataClassTemperature FD = new DataClassTemperature(DataDirectoryPath + addInputsDir, ClimateDataFilename))
+                    { FDC = FD; }                     
+                }
+                //
+                if(this.RainWaterHarvest == true)
+                {
+                    using (DataClassLcluArea FDataLCLUarea = new DataClassLcluArea(DataDirectoryPath + addInputsDir, LCLUclassesFilename))
+                    { LCLUdataICLUSII = FDataLCLUarea; }
+                    
+                    //DataClassRCN FDataLCLUrcn = new DataClassRCN(DataDirectoryPath + addInputsDir, LCLUrcnFilename);
+                    using(DataClassRainFall RF = new DataClassRainFall(DataDirectoryPath + addInputsDir, RainFallFilename))
+                    {
+                        using (RainWaterHarvesting RW = new RainWaterHarvesting(RF, LCLUdataICLUSII, FUnitData))
+                        {
+                            Rain = RW;
+                        }
+                            DataClassRCN FDataLCLUrcn = new DataClassRCN(DataDirectoryPath + addInputsDir, LCLUrcnFilename);
+                            using (StormWater SW = new StormWater(FUnitData, RF, Rain, LCLUdataICLUSII, FDataLCLUrcn))
+                            {
+                                Storm = SW;
+                            }
+                    }
+                }
+                //ICLUSIIinvoked
+            }
+        }
+        //
         // ========================================================================================================= 
+        #endregion
+        // =========================================================================================================
         #endregion constructors
         #region properties
         /// 
@@ -731,28 +851,70 @@ namespace WaterSimDCDC.Generic
         /// <summary>
         /// Stormwater object
         /// </summary>
-        public StormWater StormW
-        {
-            get { return STORM; }
-            set { STORM = value; }
-        }
-        /// <summary>
-        /// Rainwater object
-        /// </summary>
-        public RainWaterHarvesting RainW
-        {
-            get { return CRFRWH; }
-            set { CRFRWH = value; }
-        }
+        //public StormWater StormW
+        //{
+        //    get { return STORM; }
+        //    set { STORM = value; }
+        //}
+        ///// <summary>
+        ///// Rainwater object
+        ///// </summary>
+        //public RainWaterHarvesting RainW
+        //{
+        //    get { return CRFRWH; }
+        //    set { CRFRWH = value; }
+        //}
+        // ===============================================
+        // 02.15.22 das
+        // added to this class to speed up loading
         //
         /// <summary>
-        /// Rainwater harvesting switch
+        ///  Object for the temperature and humidity data
         /// </summary>
-        public bool RainwaterHarvesting
+        public DataClassTemperature FDC
         {
-            get; set;
+            get { return FDCtemperature; }
+            set { FDCtemperature = value; }
         }
-        //
+        //NewWater NW
+        /// <summary>
+        /// 
+        /// </summary>
+        public NewWater Atmosphere
+        {
+            get { return FAtmos; }
+            set { FAtmos = value; }
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public RainWaterHarvesting Rain
+        {
+            get { return FRain; }
+            set { FRain = value; }
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public StormWater Storm
+        {
+            get { return FStorm; }
+            set { FStorm = value; }
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DataClassLcluArea LCLUdataICLUSII
+        {
+            get { return Farea; }
+            set { Farea = value; }
+
+        }
+        // ===============================================
+
         /// <summary>
         ///  CO desal exchange data
         /// </summary>
@@ -791,8 +953,6 @@ namespace WaterSimDCDC.Generic
             TheAddedDemand = temp;
 
             LoadSensitivityToTemperature(DCT, CRF);
-
-
         }
         double _addedDemand = 0;
         /// <summary>
@@ -1023,13 +1183,13 @@ namespace WaterSimDCDC.Generic
         //
 
         // AG
-        readonly double FMinAgGPDDPercent = 0.10;
-        readonly double AgGPDDChangeCoef = 1;
+        double FMinAgGPDDPercent = 0.10;
+        double AgGPDDChangeCoef = 1;
 
         // *************************
         // Sampson edits 06.27.18
         readonly double FMinAgLCLU = 0;
-        readonly double FAgLCLUChangeCoef = 1;
+        double FAgLCLUChangeCoef = 1;
         // End Sampson Edits 06.27.18
         // ====================================================
 
@@ -1038,7 +1198,7 @@ namespace WaterSimDCDC.Generic
         double FInitialGPMWD = 0;
         // Minimum Gallons Per Mega Watt per day
         readonly double FMinPwGPMWDPercent = 0.1;
-        readonly double FPwGPMWChangeCoef = 1;
+        double FPwGPMWChangeCoef = 1;
 
         // Initial watt per person 
         /// <summary>
@@ -1159,7 +1319,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DoReviseResources()
+        public int Geti_DoReviseResources()
         {
             if (DoReviseResources)
                 return 1;
@@ -1174,7 +1334,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DoReviseResources(int value)
+        public void Seti_DoReviseResources(int value)
         {
             if (value == 0)
             {
@@ -1203,7 +1363,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int  0=DoCaplimts = false;  1= DoCaplimits = true.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DoCapLimits()
+        public int Geti_DoCapLimits()
         {
             if (DoCapLimits)
             {
@@ -1222,7 +1382,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value. 0=DoCaplimts = false;  any thing else= DoCaplimits = true.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DoCapLimits(int value)
+        public void Seti_DoCapLimits(int value)
         {
             if (value == 0)
             {
@@ -1304,7 +1464,7 @@ namespace WaterSimDCDC.Generic
             // Set up the Power Base cooeffcients
 
             // Set Initial Power
-            GetInitialPower();
+            GetinitialPower();
             // Intital Gallons per mega watt of power per day
             // Got to check this!
             if (initialPower > 0)
@@ -1315,7 +1475,7 @@ namespace WaterSimDCDC.Generic
             }
 
             // OK give the model this initial value
-            seti_GallonsPerMegaWattPerDay((int)FInitialGPMWD);
+            Seti_GallonsPerMegaWattPerDay((int)FInitialGPMWD);
 
             // Initial watt per person 
             // Got to Check this!
@@ -1324,7 +1484,7 @@ namespace WaterSimDCDC.Generic
                 FInitialWattPerPerson = (initialPower * convertPower) / population;
             }
             // ok give the model this initial value
-            seti_WattsPerPerson((int)FInitialWattPerPerson);
+            Seti_WattsPerPerson((int)FInitialWattPerPerson);
 
 
             // power
@@ -1357,7 +1517,7 @@ namespace WaterSimDCDC.Generic
             // set the Boolean switch to be able to use "Air Water." A NewWater source
             if (AirWaterManagement)
             {
-                seti_AirWater(1);
+                Seti_AirWater(1);
             }
         }
 
@@ -1373,7 +1533,7 @@ namespace WaterSimDCDC.Generic
         ///// <param name="value"> The value.</param>
         /////-------------------------------------------------------------------------------------------------
 
-        //public void seti_YearIndex(int value)
+        //public void Seti_YearIndex(int value)
         //{
         //    if ((value > -1) && (value < 51))
         //    {
@@ -1386,7 +1546,7 @@ namespace WaterSimDCDC.Generic
         ///// <returns> An int.</returns>
         /////-------------------------------------------------------------------------------------------------
 
-        //public int geti_YearIndex()
+        //public int Geti_YearIndex()
         //{
         //    return FYearIndex;
         //}
@@ -1423,7 +1583,7 @@ namespace WaterSimDCDC.Generic
             // For now I am leaving the ChangeUnit Here here becuase it must be done before each simulation
 
             UnitNetwork.ChangeUnit(FUnitName);
-            // seti_StateIndex(FStateIndex);
+            // Seti_StateIndex(FStateIndex);
             // End EDIT 2 19 18
 
             ResetVariables();
@@ -1452,43 +1612,43 @@ namespace WaterSimDCDC.Generic
             //
             // QUAY EDIT 3/5/2018
             // CHANGED THIS TO USE A DEAFULT REDUCTION OF 1% per year, ie 0.99
-            // seti_PowerConservation(Hundred);
-            //seti_AgConservation(Hundred);
+            // Seti_PowerConservation(Hundred);
+            //Seti_AgConservation(Hundred);
 
-            // seti_UrbanConservation(temp);
-            // seti_AgConservation(temp);
-            seti_AgConservation((int)(_DefaultAgGPDDAdjust * 100));
-            seti_UrbanConservation((int)(_DefaultUrGPCDAdjust * 100));
-            seti_PowerConservation((int)(_DefaultPwGPWDAdjust * 100));
+            // Seti_UrbanConservation(temp);
+            // Seti_AgConservation(temp);
+            Seti_AgConservation((int)(_DefaultAgGPDDAdjust * 100));
+            Seti_UrbanConservation((int)(_DefaultUrGPCDAdjust * 100));
+            Seti_PowerConservation((int)(_DefaultPwGPWDAdjust * 100));
             // END EDIT 3/5/2018
             // QUAY 3/29/18
             // OPPS forgot industry
-            seti_IndustryConservation((int)(_DefaultIndGPEDAdjust * 100));
+            Seti_IndustryConservation((int)(_DefaultIndGPEDAdjust * 100));
             // END EDIT 3/29/18
 
             // QUAY EDIT 3/30/28
             // YIKES MISSED THIS ONE AS WELL
-            seti_PopGRateModifier((int)_DefaultPopGrowthMode * 100);
+            Seti_PopGRateModifier((int)_DefaultPopGrowthMode * 100);
             // END EDIT 3/30/18
 
             // QUAY EDIT 3/5/2018
             // OUCH DO NOT DO THIS HERE, this gets set at object creation
             // Will need to think about this. deleted for now
-            //seti_PopGrowthRate(temp);
+            //Seti_PopGrowthRate(temp);
             // END EDIT
             //
-            seti_SurfaceWaterControl(Hundred);
-            seti_GroundwaterControl(Hundred);
+            Seti_SurfaceWaterControl(Hundred);
+            Seti_GroundwaterControl(Hundred);
 
             // EDIT QUAY 3/22/18
             // Why is this being done, this is a resource.  Need to leave this alone
             // I commented this out
-            //seti_Effluent(zero);
+            //Seti_Effluent(zero);
             // END EDIT 3/22/18
 
             // EDIT QUAY 3/22/18
             // Lets not set this to zero, we need to get an initial State for based on potential reclaimed the initial values in Effluent.Limit
-            // seti_ReclaimedWaterManagement(zero));
+            // Seti_ReclaimedWaterManagement(zero));
             double PercentReclaimed = 0;
             double TheMaxReclaimed = MaxReclaimed();
             // This is a proportion NOT a percent FYI
@@ -1498,16 +1658,16 @@ namespace WaterSimDCDC.Generic
             //
             defaultPCTReclaimed = 0;
             defaultPCTReclaimed = PercentReclaimed * 100;
-            seti_ReclaimedWaterManagement((int)(PercentReclaimed * 100));
+            Seti_ReclaimedWaterManagement((int)(PercentReclaimed * 100));
             // sampson edits.. I do not know why Ray is doing this.. need to straighten this out.
             // das still don't understand 11.29.21 Reclained include potential graywater use here...
             // need to ensure that we do NOT double dip if graywater and all effluent is used
 
-            // seti_ReclaimedWaterManagement((int)(zero));
+            // Seti_ReclaimedWaterManagement((int)(zero));
             // END EDIT 3/22/18
             // 
-            seti_LakeWaterManagement(Hundred);
-            seti_DesalinationPolicy(0);
+            Seti_LakeWaterManagement(Hundred);
+            Seti_DesalinationPolicy(0);
             //
             // NOTE QUAY 3/9/18
             // I left this in here, but I do not think it is being used now
@@ -1520,7 +1680,7 @@ namespace WaterSimDCDC.Generic
             // Moved this to firstpreprocess()
             //InitialPower(FUnitName);
             // END EDIT 3/9/18
-            seti_PowerEnergy(initialPower);
+            Seti_PowerEnergy(initialPower);
             invokeEffluent = true;
 
             // EDIT QUAY 3/5/18
@@ -1555,7 +1715,7 @@ namespace WaterSimDCDC.Generic
             // END EDIT
 
             // sampson edits 09.06.18
-            seti_GrayWaterManagement(zero);
+            Seti_GrayWaterManagement(zero);
             // end sampson edits 09.06.18
 
         }
@@ -1624,7 +1784,7 @@ namespace WaterSimDCDC.Generic
         {
             if (year == endYear)
             {
-                //int temp = geti_NetDemandDifference();
+                //int temp = Geti_NetDemandDifference();
                 //tearDown(year);
             }
         }
@@ -1650,6 +1810,22 @@ namespace WaterSimDCDC.Generic
         //    UrbanHighDensityManagement = 1.3;
         //}
         #region Model kernel Calls
+        // 
+        // NEW test code, to load classes based on need
+        // fuck
+        internal void LoadClassResources()
+        {
+
+            bool test = false;
+
+        }
+
+
+
+
+
+
+
         // das 2021
         //  Pretty Obvious
         // CLEAN UP int baseyear = 2015;
@@ -1663,10 +1839,10 @@ namespace WaterSimDCDC.Generic
         // model call
         internal void Model(int year)
         {
-
+            LoadClassesAsNeeded(year);
             // QUAY EDIT 3/18/18
             // This is not doing anything or used by any method, several methods and properties also commented out
-            //seti_YearIndex(year - baseyear);
+            //Seti_YearIndex(year - baseyear);
 
             // Also , restrucured this code to reflectnew system, renamed soem functions to reflect what they are doing, added comments
             // End Edit
@@ -1800,7 +1976,12 @@ namespace WaterSimDCDC.Generic
         //internal void Run_Network_Model()
         internal void annual_Consumers()
         {
-            TemperatureData(FDCtemperature, this);
+            // This needs checking- whether or NOT Ray wants a temperature influence  on water demand in the model
+            // 02.16.22 das
+            if (AirWaterManagement == true)
+            {
+                TemperatureData(FDCtemperature, this);
+            }
 
             // edits 09.20.21 das
             densityManagement(StreamW);
@@ -1901,28 +2082,34 @@ namespace WaterSimDCDC.Generic
             //  findMe
 
             //
-            YearsToTarget = (EndYear - startYear);
-            double initialValue = 1;
-            double startYears = 1;
-            FUrbanHighDensityChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagement, initialValue, startYears, YearsToTarget);
-            // end das edits 09.21.21
-            FUrbanHD_SMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementSMF, initialValue, startYears, YearsToTarget);
-            FUrbanHD_WMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementWMF, initialValue, startYears, YearsToTarget);
-            FUrbanHD_MMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementMMF, initialValue, startYears, YearsToTarget);
-            FUrbanHD_HMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementHMF, initialValue, startYears, YearsToTarget);
+                //bool T = ICLUSIIinvoked;
+            if (ICLUSIIinvoked)
+            {
+                //
+                YearsToTarget = (EndYear - startYear);
+                double initialValue = 1;
+                double startYears = 1;
+                //
+                FUrbanHighDensityChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagement, initialValue, startYears, YearsToTarget);
+                // end das edits 09.21.21
+                FUrbanHD_SMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementSMF, initialValue, startYears, YearsToTarget);
+                FUrbanHD_WMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementWMF, initialValue, startYears, YearsToTarget);
+                FUrbanHD_MMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementMMF, initialValue, startYears, YearsToTarget);
+                FUrbanHD_HMFChangeCoef = utilities.ExponentialCoefficient(UrbanHighDensityManagementHMF, initialValue, startYears, YearsToTarget);
 
-            // edits das 10.06.21
-            FUrbanLowDensityChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagement, initialValue, startYears, YearsToTarget);
-            //
-            FUrbanLD_LSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementLSF, initialValue, startYears, YearsToTarget);
-            FUrbanLD_TSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementTSF, initialValue, startYears, YearsToTarget);
-            FUrbanLD_SSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementSSF, initialValue, startYears, YearsToTarget);
-
-            //
-            // ------------------------------------------------------------------------------------------------------------------------------------
-            FSuburbanDensityChangeCoef = utilities.ExponentialCoefficient(SuburbanDensityManagement, initialValue, startYears, YearsToTarget);
-            FExurbanHighDensityChangeCoef = utilities.ExponentialCoefficient(ExurbanHighDensityManagement, initialValue, startYears, YearsToTarget);
-            FExurbanLowDensityChangeCoef = utilities.ExponentialCoefficient(ExurbanLowDensityManagement, initialValue, startYears, YearsToTarget);
+                // edits das 10.06.21
+                FUrbanLowDensityChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagement, initialValue, startYears, YearsToTarget);
+                //
+                FUrbanLD_LSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementLSF, initialValue, startYears, YearsToTarget);
+                FUrbanLD_TSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementTSF, initialValue, startYears, YearsToTarget);
+                FUrbanLD_SSFChangeCoef = utilities.ExponentialCoefficient(UrbanLowDensityManagementSSF, initialValue, startYears, YearsToTarget);
+            
+                //
+                // ------------------------------------------------------------------------------------------------------------------------------------
+                FSuburbanDensityChangeCoef = utilities.ExponentialCoefficient(SuburbanDensityManagement, initialValue, startYears, YearsToTarget);
+                FExurbanHighDensityChangeCoef = utilities.ExponentialCoefficient(ExurbanHighDensityManagement, initialValue, startYears, YearsToTarget);
+                FExurbanLowDensityChangeCoef = utilities.ExponentialCoefficient(ExurbanLowDensityManagement, initialValue, startYears, YearsToTarget);
+            }
             // end edits das 10.06.21
 
 
@@ -1956,7 +2143,7 @@ namespace WaterSimDCDC.Generic
             //---------------------------------------------------
             // Calculates the Surface Water Change Coefficients
             YearsToTarget = (EndYear - StartYear);
-            double TheSurfaceGoal = (double)geti_SurfaceWaterControl() / 100;
+            double TheSurfaceGoal = (double)Geti_SurfaceWaterControl() / 100;
 
             // set the surface change limit need for ChangeINcrement method
             // Essentially if declining (d) then lower limit (l) and if increasing )i) set upper limit (u)
@@ -1987,7 +2174,7 @@ namespace WaterSimDCDC.Generic
             //---------------------------------------------------
             // Calculates the groundwater change coefficients
             YearsToTarget = (EndYear - StartYear);
-            double TheGWGoal = (double)geti_GroundwaterControl() / 100;
+            double TheGWGoal = (double)Geti_GroundwaterControl() / 100;
 
             // set the surface change limit need for ChangeINcrement method
             if (TheGWGoal < 1)
@@ -2550,15 +2737,15 @@ namespace WaterSimDCDC.Generic
             {
                 int one = 100;
                 int zero = 0;
-                seti_SurfaceWaterControl(one);
-                seti_GroundwaterControl(one);
+                Seti_SurfaceWaterControl(one);
+                Seti_GroundwaterControl(one);
                 // EDIT QUAY 3/22/18
                 // SAME WHY IS THIS BEUNG DONE THIS IS A RESOURCE
                 // I commented this out
-                //seti_Effluent(zero);
+                //Seti_Effluent(zero);
                 // END EDIT 3/22/18
-                seti_LakeWaterManagement(one);
-                seti_DesalinationPolicy(zero);
+                Seti_LakeWaterManagement(one);
+                Seti_DesalinationPolicy(zero);
             }
         }
 
@@ -2654,7 +2841,7 @@ namespace WaterSimDCDC.Generic
                 tempBase = annualFactor * FBaseSurfaceWater;
 
                 //int one = 100;
-                //tempBase = geti_SurfaceWaterFresh() * d_surfaceWaterControl;
+                //tempBase = Geti_SurfaceWaterFresh() * d_surfaceWaterControl;
                 // end edit
 
 
@@ -2686,35 +2873,30 @@ namespace WaterSimDCDC.Generic
 
 
                 //if (startDroughtYear <= currentYear)
-                //    temp = geti_SurfaceWaterFresh() * d_surfaceWaterControl * d_drought;
+                //    temp = Geti_SurfaceWaterFresh() * d_surfaceWaterControl * d_drought;
                 // End EDIT
 
                 result = Convert.ToInt32(NewSurfaceLimit);
-                seti_SurfaceWaterFresh(result);
-                //if (startDroughtYear <= currentYear) seti_DroughtControl(one);
+                Seti_SurfaceWaterFresh(result);
+                //if (startDroughtYear <= currentYear) Seti_DroughtControl(one);
             }
         }
         // END EDIT QUAY 9 8 20
         //
         // 10.28.21, 11.02.21 das
-        //  edits 01.28.22 das
+        //  edits 01.28.22 das, edits 02.16.22 das
         void surfaceNew(StreamWriter sw)
         {
             int result = 0;
             if (AirWaterManagement)
             {
-                double d = Math.Round(NWater.AirWaterUse(this, FDCtemperature));
+                double d = Math.Round(Atmosphere.AirWaterUse(this, FDC));
                 result = Convert.ToInt32(d);
-                //seti_SurfaceWaterFreshNew(result);
                 DemandReductionRainAndAtmos += d;
-                int urban = geti_Urban();
+                int urban = Geti_Urban();
                 double newDemand = Math.Max(0, urban - d);
-                seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
-
+                Seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
             }
-
-
-
             //writeToStream(sw, result, UnitName); 
         }
         //void yearlyAverageRH()
@@ -2759,11 +2941,7 @@ namespace WaterSimDCDC.Generic
             double result = 0;
             //int UDPeriod = (currentYear  - startYear) +1;
             int UDPeriod = (currentYear - startYear);
-            //
-            if (currentYear == 2016)
-            {
-               // bool stop = true;
-            }
+            //       
             // findMe
             // edit das 09.20.21, 10.06.21
             // This is the change in urban density.  Each policy should have its own set of factors
@@ -2773,35 +2951,35 @@ namespace WaterSimDCDC.Generic
             {
                 result = generic(UrbanHighDensityManagement, FUrbanHighDensityChangeCoef, UDPeriod);
                 UrbanHighDensityChange = result;
-                //seti_UrbanHighDensity(result);
+                //Seti_UrbanHighDensity(result);
             }
             // ==================================
             if (UrbanHighDensityManagementSMF != 1)
             {
                 result = generic(UrbanHighDensityManagementSMF, FUrbanHD_SMFChangeCoef, UDPeriod);
                 UrbanHighDensityChangeSMF = result;
-                //seti_UrbanHighDensity(result);
+                //Seti_UrbanHighDensity(result);
             }
             //
             if (UrbanHighDensityManagementWMF != 1)
             {
                 result = generic(UrbanHighDensityManagementWMF, FUrbanHD_WMFChangeCoef, UDPeriod);
                 UrbanHighDensityChangeWMF = result;
-                //seti_UrbanHighDensity(result);
+                //Seti_UrbanHighDensity(result);
             }
             //
             if (UrbanHighDensityManagementMMF != 1)
             {
                 result = generic(UrbanHighDensityManagementMMF, FUrbanHD_MMFChangeCoef, UDPeriod);
                 UrbanHighDensityChangeMMF = result;
-                //seti_UrbanHighDensity(result);
+                //Seti_UrbanHighDensity(result);
             }
             //
             if (UrbanHighDensityManagementHMF != 1)
             {
                 result = generic(UrbanHighDensityManagementHMF, FUrbanHD_HMFChangeCoef, UDPeriod);
                 UrbanHighDensityChangeHMF = result;
-                //seti_UrbanHighDensity(result);
+                //Seti_UrbanHighDensity(result);
             }
             //
             // ==================================
@@ -2810,7 +2988,7 @@ namespace WaterSimDCDC.Generic
             {
                 result = generic(UrbanLowDensityManagement, FUrbanLowDensityChangeCoef, UDPeriod);
                 UrbanLowDensityChange = result;
-                //seti_UrbanLowDensity(result);
+                //Seti_UrbanLowDensity(result);
             }
             //==================================
             // NEW code 02.01.22 das
@@ -2818,19 +2996,19 @@ namespace WaterSimDCDC.Generic
             {
                 result = generic(UrbanLowDensityManagementLSF, FUrbanLD_LSFChangeCoef, UDPeriod);
                 UrbanLowDensityChangeLSF = result;
-                //seti_UrbanLowDensity(result);
+                //Seti_UrbanLowDensity(result);
             }
             if (UrbanLowDensityManagementTSF != 1)
             {
                 result = generic(UrbanLowDensityManagementTSF, FUrbanLD_TSFChangeCoef, UDPeriod);
                 UrbanLowDensityChangeTSF = result;
-                //seti_UrbanLowDensity(result);
+                //Seti_UrbanLowDensity(result);
             }
             if (UrbanLowDensityManagementSSF != 1)
             {
                 result = generic(UrbanLowDensityManagementSSF, FUrbanLD_SSFChangeCoef, UDPeriod);
                 UrbanLowDensityChangeSSF = result;
-                //seti_UrbanLowDensity(result);
+                //Seti_UrbanLowDensity(result);
             }
 
             // end edits NEW CODE 02.01.22 das
@@ -2843,19 +3021,19 @@ namespace WaterSimDCDC.Generic
             {
                 result = generic(SuburbanDensityManagement, FSuburbanDensityChangeCoef, UDPeriod);
                 SuburbanDensityChange = result;
-                //seti_SuburbanDensity(result);
+                //Seti_SuburbanDensity(result);
             }
             if (ExurbanHighDensityManagement != 1)
             {
                 result = generic(ExurbanHighDensityManagement, FExurbanHighDensityChangeCoef, UDPeriod);
                 ExurbanHighDensityChange = result;
-                //seti_ExurbanHighDensity(result);
+                //Seti_ExurbanHighDensity(result);
             }
             if (ExurbanLowDensityManagement != 1)
             {
                 result = generic(ExurbanLowDensityManagement, FExurbanLowDensityChangeCoef, UDPeriod);
                 ExurbanLowDensityChange = result;
-                //seti_ExurbanLowDensity(result);
+                //Seti_ExurbanLowDensity(result);
             }
             //
             // edits 02.02.22 das this variable checkes to see if ANY of the density classes were
@@ -2902,27 +3080,32 @@ namespace WaterSimDCDC.Generic
             //double E = 0;
             // switch added on 11.09.21
             // Have not yet USED this water.....
-            if (rainWaterHarvest)
+            if (RainWaterHarvest)
             {
                 double d = 0;
                 if (StartRainYear <= this.currentYear)
                 {
                     int year = this.currentYear;
-                    d = RainW.RwHarvestingYearly(UnitName, year - StartRainYear, this);
-                    double e = CRFSWB.waterBudgetByClassYearly(UnitName, year - StartRainYear, this);
+                    d = Rain.RwHarvestingYearly(UnitName, year - StartRainYear, this);
+                    double e = Storm.waterBudgetByClassYearly(UnitName, year - StartRainYear, this);
                     //D = (d * 1000000) / population;
                     //E = (e * 1000000) / population;
-                    double IndAcres = FDClclu.FastIndAcres(UnitName, year);
-                    double UrbAcres = FDClclu.FastUrbanAcres(UnitName, year);
+                    //double IndAcres = FDClclu.FastIndAcres(UnitName, year);
+                    //double UrbAcres = FDClclu.FastUrbanAcres(UnitName, year);
+
+                    // DO I need to add commercial?????
+                    double IndAcres = LCLUdataICLUSII.FastArea_UN(FUnitName, "Ind", this.currentYear);
+                    double UrbAcres = LCLUdataICLUSII.FastArea_UN(FUnitName, "Urban", this.currentYear);
+                    //
                     e *= 1000000; // * 365;
                     StormWaterRunoffPerArea = Math.Round(e / (IndAcres + UrbAcres));  // gallons per acre-1 per day-1
                 }
                 // fuc
-                int urban = geti_Urban();
+                int urban = Geti_Urban();
                 int rain = Convert.ToInt32(d);
                 DemandReductionRainAndAtmos = rain;
                 double newDemand = Math.Max(0, urban - rain);
-                seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
+                Seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
             }
 
             // writeToStream2(StreamW, D, E, UnitName);
@@ -2992,7 +3175,7 @@ namespace WaterSimDCDC.Generic
                 NewSurfaceLimit = tempBase;
 
                 result = Convert.ToInt32(NewSurfaceLimit);
-                seti_SurfaceColorado(result);
+                Seti_SurfaceColorado(result);
             }
         }
 
@@ -3005,11 +3188,11 @@ namespace WaterSimDCDC.Generic
         {
             double temp = 0;
             int result = 0;
-            //temp = geti_SurfaceWaterSaline() * _desalinization;
-            temp = geti_SurfaceWaterSaline();
+            //temp = Geti_SurfaceWaterSaline() * _desalinization;
+            temp = Geti_SurfaceWaterSaline();
             result = Convert.ToInt32(temp);
             result = (int)temp;
-            seti_SurfaceWaterSaline(result);
+            Seti_SurfaceWaterSaline(result);
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -3020,10 +3203,10 @@ namespace WaterSimDCDC.Generic
         {
             double temp = 0;
             int result = 0;
-            //temp = geti_SurfaceLake() * LWManagement;
-            temp = geti_SurfaceLake() * d_lakeWaterManagement;
+            //temp = Geti_SurfaceLake() * LWManagement;
+            temp = Geti_SurfaceLake() * d_lakeWaterManagement;
             result = Convert.ToInt32(temp);
-            seti_SurfaceLake(result);
+            Seti_SurfaceLake(result);
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -3062,11 +3245,11 @@ namespace WaterSimDCDC.Generic
             result = (int)tempBase;
 
             // double temp = 0;
-            // temp = geti_Groundwater() * d_groundwaterControl;
+            // temp = Geti_Groundwater() * d_groundwaterControl;
             // result = (int)temp;
             // end edit
 
-            seti_Groundwater(result);
+            Seti_Groundwater(result);
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -3083,10 +3266,10 @@ namespace WaterSimDCDC.Generic
             //int result = 0;
             temp = AvailableReclaimed();
 
-            //temp = geti_Effluent();
+            //temp = Geti_Effluent();
             //result = (int)temp;
-            //seti_Effluent(result);
-            //seti_Effluent(temp);
+            //Seti_Effluent(result);
+            //Seti_Effluent(temp);
             SetReclaimed(temp);
         }
         //
@@ -3528,14 +3711,14 @@ namespace WaterSimDCDC.Generic
         void Urban_old()
         {
             double temp = 0;
-            int result = geti_Urban();
+            int result = Geti_Urban();
             temp = weightedGrowthPopulation(result) * modifyDemandCF();
             if (invokePolicies)
             {
                 temp = 0;
                 try
                 {
-                    temp = alterGrowthConservation(geti_Urban(), UrbanConservation) * modifyDemandCF();
+                    temp = alterGrowthConservation(Geti_Urban(), UrbanConservation) * modifyDemandCF();
                 }
                 catch (Exception ex)
                 {
@@ -3544,7 +3727,7 @@ namespace WaterSimDCDC.Generic
                 }
             }
             result = Convert.ToInt32(temp);
-            seti_Urban(result);
+            Seti_Urban(result);
             // QUAY EDIT 2 18 18
             // These are not be used, I removed them
             // i_demand_urban = result;
@@ -3577,7 +3760,7 @@ namespace WaterSimDCDC.Generic
             //double NewDemandMGD = Demand / convertDemand;
             double NewDemandMGD = Demand;
             // Set value for parameter
-            seti_Urban((int)NewDemandMGD);
+            Seti_Urban((int)NewDemandMGD);
         }
         // END EDIT 3/1/18
         void Urban(StreamWriter sw)
@@ -3597,7 +3780,7 @@ namespace WaterSimDCDC.Generic
             //double NewDemandMGD = Demand / convertDemand;
             double NewDemandMGD = Demand;
             // Set value for parameter
-            seti_Urban((int)NewDemandMGD);
+            Seti_Urban((int)NewDemandMGD);
             //writeToStream(sw, Demand);
 
         }
@@ -3645,7 +3828,7 @@ namespace WaterSimDCDC.Generic
         ///  Land-cover land-use, or based on GPCD
         /// </summary>
         /// <returns></returns>
-        public int geti_aDemandModelUrbanIndex()
+        public int Geti_aDemandModelUrbanIndex()
         {
             int TempInt = FDemandModelUrbanIndex;
             return TempInt;
@@ -3655,7 +3838,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_aDemandModelUrbanIndex(int value)
+        public void Seti_aDemandModelUrbanIndex(int value)
         {
             FDemandModelUrbanIndex = value;
         }
@@ -3668,7 +3851,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_aDemandModelAgIndex()
+        public int Geti_aDemandModelAgIndex()
         {
             int TempInt = FDemandModelAgIndex;
             return TempInt;
@@ -3680,12 +3863,12 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_aDemandModelAgIndex(int value)
+        public void Seti_aDemandModelAgIndex(int value)
         {
             FDemandModelAgIndex = value;
         }
         ///      
-        public int geti_aDemandModelIndIndex()
+        public int Geti_aDemandModelIndIndex()
         {
             int TempInt = FDemandModelIndIndex;
             return TempInt;
@@ -3694,7 +3877,7 @@ namespace WaterSimDCDC.Generic
         /// <summary> Seti ag growth rate.</summary>
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
-        public void seti_aDemandModelIndIndex(int value)
+        public void Seti_aDemandModelIndIndex(int value)
         {
 
             FDemandModelIndIndex = value;
@@ -3754,7 +3937,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_AgGrowthRate()
+        public int Geti_AgGrowthRate()
         {
             int TempInt = Convert.ToInt32(Math.Round(FAgRate * 100));
             return TempInt;
@@ -3765,7 +3948,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_AgGrowthRate(int value)
+        public void Seti_AgGrowthRate(int value)
         {
             FAgRate = (Double)value / 100;
         }
@@ -3779,7 +3962,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_agAdjustProductionRate()
+        public int Geti_agAdjustProductionRate()
         {
             int TempInt = Convert.ToInt32(Math.Round(_agAdjustProductionRate * 100));
             return TempInt;
@@ -3790,7 +3973,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_agAdjustProductionRate(int value)
+        public void Seti_agAdjustProductionRate(int value)
         {
             _agAdjustProductionRate = (Double)value / 100;
         }
@@ -3825,7 +4008,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_AgricultureInitialGPDD()
+        public int Geti_AgricultureInitialGPDD()
         {
             return (int)FAgBaseGPDD;
         }
@@ -3937,7 +4120,7 @@ namespace WaterSimDCDC.Generic
 
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti ag demand. </summary>
+        /// <summary>   Gets the Geti ag demand. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
@@ -4060,7 +4243,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_AgricutureProduction()
+        public int Geti_AgricutureProduction()
         {
             return (int)FAgProduction;
         }
@@ -4092,7 +4275,7 @@ namespace WaterSimDCDC.Generic
             result = (int)temp;
             //result = (int)Mytemp;
             // set the parameter for AgDemand
-            seti_Agriculture(result);
+            Seti_Agriculture(result);
 
         }
 
@@ -4137,7 +4320,7 @@ namespace WaterSimDCDC.Generic
             get
             {
                 double AgDemand = UnitNetwork.Agriculture.Demand * convertDemand;
-                double FarmIncome = geti_AgricutureProduction() * convertFarmIncome;
+                double FarmIncome = Geti_AgricutureProduction() * convertFarmIncome;
                 double GPDD = 0;
                 if (FarmIncome > 0)
                 {
@@ -4155,7 +4338,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_agricultureGPDD()
+        public int Geti_agricultureGPDD()
         {
             return agricultureGPDD;
         }
@@ -4187,7 +4370,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_GallonsPerMegaWattPerDay()
+        public int Geti_GallonsPerMegaWattPerDay()
         {
             return (int)FGallonsPerMegaWattPerDay;
         }
@@ -4198,7 +4381,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_GallonsPerMegaWattPerDay(int value)
+        public void Seti_GallonsPerMegaWattPerDay(int value)
         {
             FGallonsPerMegaWattPerDay = value;
         }
@@ -4213,7 +4396,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_WattsPerPerson()
+        public int Geti_WattsPerPerson()
         {
             return (int)FWattsPerPersonPerDay;
         }
@@ -4224,7 +4407,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_WattsPerPerson(int value)
+        public void Seti_WattsPerPerson(int value)
         {
             FWattsPerPersonPerDay = value;
         }
@@ -4247,17 +4430,17 @@ namespace WaterSimDCDC.Generic
         public void Power()
         {
             //double PowerProduced = PowerProduction(currentYear, startYear);
-            //seti_PowerEnergy((int)PowerProduced);
+            //Seti_PowerEnergy((int)PowerProduced);
             //double PowerWater = PowerDemand(currentYear, startYear, PowerProduced, PowerConservation);
             //// 07.10.18 das edits
             //PowerWater += PowerWater * TheAddedPowerPCT;
             //// end edits das 07.10.18
-            //seti_PowerWater((int)PowerWater);
+            //Seti_PowerWater((int)PowerWater);
 
             //double temp= PD.GetDemand(currentYear);
             double temp = POWER.GetDemand(currentYear);
-            seti_PowerWater((int)temp);
-            //seti_PowerWater((int)PowerWater);
+            Seti_PowerWater((int)temp);
+            //Seti_PowerWater((int)PowerWater);
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -4310,14 +4493,14 @@ namespace WaterSimDCDC.Generic
         {
             double temp = 0;
             int result = 0;
-            temp = weightedGrowthPopulation(geti_PowerWater()) * modifyDemandCF();
+            temp = weightedGrowthPopulation(Geti_PowerWater()) * modifyDemandCF();
             //
             if (invokePolicies)
             {
                 temp = 0;
                 try
                 {
-                    temp = alterGrowthConservation(geti_PowerWater(), PowerConservation) * modifyDemandCF();
+                    temp = alterGrowthConservation(Geti_PowerWater(), PowerConservation) * modifyDemandCF();
                 }
                 catch (Exception ex)
                 {
@@ -4326,7 +4509,7 @@ namespace WaterSimDCDC.Generic
                 }
             }
             result = (int)temp;
-            seti_PowerWater(result);
+            Seti_PowerWater(result);
             // QUAY EDIT 2 18 18
             // This are not be used, I removed them
             //i_demand_power = result;
@@ -4387,7 +4570,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PowerGPMWD()
+        public int Geti_PowerGPMWD()
         {
             return (int)PowerGPMWD();
         }
@@ -4401,9 +4584,9 @@ namespace WaterSimDCDC.Generic
         {
             double temp = 0;
             int result = 0;
-            temp = weightedGrowthPopulation(geti_PowerEnergy()) * modifyDemandCF();
+            temp = weightedGrowthPopulation(Geti_PowerEnergy()) * modifyDemandCF();
             result = Convert.ToInt32(temp);
-            seti_PowerEnergy(result);
+            Seti_PowerEnergy(result);
         }
         // ------------------------------------
 
@@ -4495,7 +4678,7 @@ namespace WaterSimDCDC.Generic
                 // IndustrialDamper = Math.Max(IndustrialGrowthRate * modValue, useValue);
                 // END EDIT 3/3/2018
                 DampenTheRate = Math.Min(IndustrialGrowthRate / 2, minTheRate);
-                if (theCurrentYear <= theStartYear) { Industry2015 = geti_Industrial(); }
+                if (theCurrentYear <= theStartYear) { Industry2015 = Geti_Industrial(); }
 
                 double period = (theCurrentYear - theStartYear) + 1;
                 double dampedRate = Dampen(IndustrialGrowthRate / 100, IndustrialDamper, period);
@@ -4545,7 +4728,7 @@ namespace WaterSimDCDC.Generic
             //double indEmp = Industrial_Employees(currentYear, StartYear);
             //FIndEmployees = indEmp;
             //double indDemand = Industrial_Demand(currentYear, StartYear, indEmp);
-            //seti_Industrial((int)indDemand);
+            //Seti_Industrial((int)indDemand);
 
             //double temp= ID.GetDemand(currentYear);
 
@@ -4554,7 +4737,7 @@ namespace WaterSimDCDC.Generic
             //double myTemp = IDR.GetDemand(currentYear);
             //this.INDUSTRY.GetDemand(currentYear);
             temp = this.INDUSTRY.GetDemand(currentYear);
-            seti_Industrial((int)temp);
+            Seti_Industrial((int)temp);
         }
 
         ///-------------------------------------------------------------------------------------------------
@@ -4613,7 +4796,7 @@ namespace WaterSimDCDC.Generic
                 temp = Calc_IndDemand(currentYear, startYear, IndustryConservation);
             }
             result = Convert.ToInt32(temp);
-            seti_Industrial(result);
+            Seti_Industrial(result);
             // QUAY EDIT 2 18 18
             // These are not be used, I removed them
             //i_demand_industry = result;
@@ -4647,12 +4830,12 @@ namespace WaterSimDCDC.Generic
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary> geti for Industry Gallons Per Employee per Day</summary>
+        /// <summary> Geti for Industry Gallons Per Employee per Day</summary>
         /// <remarks> Quay, 3/20/2018.</remarks>
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_IndustrialGPED()
+        public int Geti_IndustrialGPED()
         {
             return (int)IndustryGPED();
         }
@@ -4691,7 +4874,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_IndustryEmployees()
+        public int Geti_IndustryEmployees()
         {
             return (int)FIndEmployees;
         }
@@ -4703,7 +4886,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_IndustryEmployees(int value)
+        public void Seti_IndustryEmployees(int value)
         {
             FIndEmployees = value;
         }
@@ -4714,15 +4897,15 @@ namespace WaterSimDCDC.Generic
 
         // ----------------
         #region GPCD and modify Demand
-        internal int geti_gpcd()
+        internal int Geti_gpcd()
         {
             return urbanGPCD;
         }
-        internal int geti_gpcdAg()
+        internal int Geti_gpcdAg()
         {
             return agriculturalGPCD;
         }
-        internal int geti_gpcdOther()
+        internal int Geti_gpcdOther()
         {
             return powerGPCD + industrialGPCD;
         }
@@ -4827,18 +5010,28 @@ namespace WaterSimDCDC.Generic
             get { return _policyStartYear; }
         }
         //
-        // edits 11.09.21 das
-        bool b_rainwater = false;
+        bool b_rainwaterOver = false;
         /// <summary>
         ///  True/ false on rainwater harvesting
         /// </summary>
-        public bool rainWaterHarvest
+        public bool RainWaterOverride
         {
-            set { b_rainwater = value; }
-            get { return b_rainwater; }
+            set { b_rainwaterOver = value; }
+            get { return b_rainwaterOver; }
         }
-        // end edits 11.09.21 das
-        // =========================================
+        //// -----------------------------------
+        //// edits 11.09.21 das
+        //bool b_rainwater = false;
+        ///// <summary>
+        /////  True/ false on rainwater harvesting
+        ///// </summary>
+        //public bool RainWaterHarvest
+        //{
+        //    set { b_rainwater = value; }
+        //    get { return b_rainwater; }
+        //}
+        //// end edits 11.09.21 das
+        //// =========================================
         // edits 01.13.22 das
         // not sure if I should comment this out
         // or use it!!!!
@@ -4857,7 +5050,7 @@ namespace WaterSimDCDC.Generic
         double modifyDemandCF()
         {
             double result = 1;
-            double cf = geti_DroughtControl();
+            double cf = Geti_DroughtControl();
             if (cf * 0.01 < 1)
             {
                 result = utilities.Hyperbola(cf);
@@ -4897,9 +5090,9 @@ namespace WaterSimDCDC.Generic
         //
         // ======================================================================================
         // May want to use the parameter that Ray created...
-        //  ParamManager.AddParameter(new ModelParameterClass(eModelParam.epTotalDemand, "Total Demand", "TD", geti_TotalDemand));
+        //  ParamManager.AddParameter(new ModelParameterClass(eModelParam.epTotalDemand, "Total Demand", "TD", Geti_TotalDemand));
         //  This is currently not being used by any code for a GET
-        double d_demand_total = 0;
+        readonly double d_demand_total = 0;
         //double demand_total
         //{
         //    get
@@ -4909,7 +5102,7 @@ namespace WaterSimDCDC.Generic
         //    set
         //    {
         //        double temp = value;
-        //        temp = (geti_Urban() + geti_Agriculture() + geti_PowerWater() + geti_Industrial());
+        //        temp = (Geti_Urban() + Geti_Agriculture() + Geti_PowerWater() + Geti_Industrial());
         //        d_demand_total = temp;
         //    }
         //}
@@ -4950,7 +5143,7 @@ namespace WaterSimDCDC.Generic
                 double temp = value;
                 if (0 < d_demand_total)
                 {
-                    temp = Convert.ToDouble(geti_Urban()) / Convert.ToDouble(d_demand_total);
+                    temp = Convert.ToDouble(Geti_Urban()) / Convert.ToDouble(d_demand_total);
                     temp = utilities.RoundToSignificantDigits(temp, 3);
                 }
                 //value = temp;
@@ -4965,7 +5158,7 @@ namespace WaterSimDCDC.Generic
                 double temp = value;
                 if (0 < d_demand_total)
                 {
-                    temp = Convert.ToDouble(geti_Agriculture()) / Convert.ToDouble(d_demand_total);
+                    temp = Convert.ToDouble(Geti_Agriculture()) / Convert.ToDouble(d_demand_total);
                     temp = utilities.RoundToSignificantDigits(temp, 3);
                 }
                 _proportion_waterdemand_ag = temp;
@@ -4990,7 +5183,7 @@ namespace WaterSimDCDC.Generic
                 double temp = value;
                 if (0 < d_demand_total)
                 {
-                    temp = Convert.ToDouble(geti_PowerWater()) / Convert.ToDouble(d_demand_total);
+                    temp = Convert.ToDouble(Geti_PowerWater()) / Convert.ToDouble(d_demand_total);
                     temp = utilities.RoundToSignificantDigits(temp, 3);
                 }
                 _proportion_waterdemand_power = temp;
@@ -5044,11 +5237,11 @@ namespace WaterSimDCDC.Generic
 
         // NEW CODE AS OF 09.08.16 das 
         //
-        double PopAdj = 1.4;
+        readonly double PopAdj = 1.4;
         // QUAY EDIT 3/3/2018
         // Changed how dampen function works, see dampen()
         //double PopDamper = 1.0
-        double PopDamper = 0.90;
+        readonly double PopDamper = 0.90;
         // END EDIT 3/3/2018
 
         // EDIT 3/4/18
@@ -5079,7 +5272,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PopulationGrowthRate()
+        public int Geti_PopulationGrowthRate()
         {
             return (int)(FPopRate * 100);
         }
@@ -5092,7 +5285,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_PopulationGrowthRate(int value)
+        public void Seti_PopulationGrowthRate(int value)
         {
             FPopRate = (double)value / 100;
         }
@@ -5290,7 +5483,7 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         public virtual int gpcd
         {
-            get { return geti_gpcd(); }
+            get { return Geti_gpcd(); }
             set { _urban_gpcd = value; }
         }
         const int StartYear = 2015;
@@ -5332,7 +5525,7 @@ namespace WaterSimDCDC.Generic
 
         const int RawPopDataInc = 5;
         // 02.09.16
-        internal int geti_gpcdTotal()
+        internal int Geti_gpcdTotal()
         {
             return GPCD;
         }
@@ -5352,7 +5545,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_NewPopulation()
+        public int Geti_NewPopulation()
         {
             int TempInt = 0;
             TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Population.CurrentState));
@@ -5368,7 +5561,7 @@ namespace WaterSimDCDC.Generic
         /// <value> The seti new population.</value>
         ///-------------------------------------------------------------------------------------------------
 
-        public int seti_NewPopulation
+        public int Seti_NewPopulation
         {
             set { UnitNetwork.Population.CurrentState = value; }
             //set { WSA.Population.CurrentState = value; }
@@ -5383,12 +5576,12 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti surface water fresh. </summary>
+        /// <summary>   Gets the Geti surface water fresh. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_SurfaceWaterFresh()
+        public int Geti_SurfaceWaterFresh()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.SurfaceFresh.Limit));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.SurfaceFresh.Limit));
@@ -5401,7 +5594,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_SurfaceWaterFresh(int value)
+        public void Seti_SurfaceWaterFresh(int value)
         {
             UnitNetwork.SurfaceFresh.Limit = value;
             //WSA.SurfaceFresh.Limit = value;
@@ -5414,7 +5607,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_SurfaceWaterFreshNew()
+        public int Geti_SurfaceWaterFreshNew()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.SurfaceFresh.Limit));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.SurfaceFresh.Limit));
@@ -5427,7 +5620,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_SurfaceWaterFreshNew(int value)
+        public void Seti_SurfaceWaterFreshNew(int value)
         {
             UnitNetwork.SurfaceFresh.Limit += value;
             //WSA.SurfaceFresh.Limit = value;
@@ -5443,7 +5636,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_SurfaceWaterFreshNet()
+        public int Geti_SurfaceWaterFreshNet()
         {
             int TempInt = Convert.ToInt32(Math.Abs(Math.Round(UnitNetwork.SurfaceFresh.Net)) + 0);
             //int TempInt = Convert.ToInt32(Math.Abs(Math.Round(WSA.SurfaceFresh.Net)) + 0);
@@ -5458,7 +5651,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_SurfaceFreshUseExternal()
+        public int Geti_SurfaceFreshUseExternal()
         {
             return FUseExternalSurface;
         }
@@ -5469,7 +5662,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_SurfaceFreshUseExternal(int value)
+        public void Seti_SurfaceFreshUseExternal(int value)
         {
             FUseExternalSurface = value;
         }
@@ -5480,7 +5673,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_ColoradoUseExternal()
+        public int Geti_ColoradoUseExternal()
         {
             return FUseExternalColorado;
         }
@@ -5491,7 +5684,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ColoradoUseExternal(int value)
+        public void Seti_ColoradoUseExternal(int value)
         {
             FUseExternalColorado = value;
         }
@@ -5507,7 +5700,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_SurfaceColorado()
+        public int Geti_SurfaceColorado()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Colorado.Limit));
             return TempInt;
@@ -5518,7 +5711,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_SurfaceColorado(int value)
+        public void Seti_SurfaceColorado(int value)
         {
             UnitNetwork.Colorado.Limit = value;
         }
@@ -5526,7 +5719,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_SurfaceColoradoNet()
+        public int Geti_SurfaceColoradoNet()
         {
             int TempInt = Convert.ToInt32(Math.Abs(Math.Round(UnitNetwork.Colorado.Net)) + 0);
             return TempInt;
@@ -5559,12 +5752,12 @@ namespace WaterSimDCDC.Generic
         // end edits 01.14.22 das
         // ====================================================================================
         // edits 01.19.22 das
-        //public int geti_CODesalExchange()
+        //public int Geti_CODesalExchange()
         //{
         //    int TempString = UnitNetwork.Desalination.UnitModelExchange;
         //    return TempString;
         //}
-        //public void seti_CODesalExchange(int value)
+        //public void Seti_CODesalExchange(int value)
         //{
         //    UnitNetwork.Desalination.UnitModelExchange = value;
         // }
@@ -5576,12 +5769,12 @@ namespace WaterSimDCDC.Generic
 
         // -------------------------------------------------------------------------------------------------
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti surface lake From CRF_Network. </summary>
+        /// <summary>   Gets the Geti surface lake From CRF_Network. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_SurfaceLake()
+        public int Geti_SurfaceLake()
         {
             int result = 0;
             double temp = TheCRFNetwork.SurfaceLake.Limit;
@@ -5592,7 +5785,7 @@ namespace WaterSimDCDC.Generic
             }
             catch (Exception ex)
             {
-                throw new Exception(" public int geti_SurfaceLake()", ex);
+                throw new Exception(" public int Geti_SurfaceLake()", ex);
                 // ouch
             }
             return result;
@@ -5601,7 +5794,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_SurfaceLake(int value)
+        public void Seti_SurfaceLake(int value)
         {
             UnitNetwork.SurfaceLake.Value = value;
             //WSA.SurfaceLake.Value = value;
@@ -5610,7 +5803,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_SurfaceLakeNet()
+        public int Geti_SurfaceLakeNet()
         {
             int result = 0;
             //double temp = WSmith.TheCRFNetwork.SurfaceLake.Limit;
@@ -5624,7 +5817,7 @@ namespace WaterSimDCDC.Generic
             }
             catch (Exception ex)
             {
-                throw new Exception("public int geti_SurfaceLakeNet()", ex);
+                throw new Exception("public int Geti_SurfaceLakeNet()", ex);
                 // ouch
             }
             return result;
@@ -5635,13 +5828,13 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti surface water saline. </summary>
+        /// <summary>   Gets the Geti surface water saline. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
         // Changed to mimic Surface Lake on 03.10.16 DAS
         //
-        public int geti_SurfaceWaterSaline()
+        public int Geti_SurfaceWaterSaline()
         {
             int result = 0;
             double temp = UnitNetwork.SurfaceSaline.Limit;
@@ -5653,7 +5846,7 @@ namespace WaterSimDCDC.Generic
             }
             catch (Exception ex)
             {
-                throw new Exception("public int geti_SurfaceWaterSaline()", ex);
+                throw new Exception("public int Geti_SurfaceWaterSaline()", ex);
                 // ouch
             }
             //return result;
@@ -5667,7 +5860,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_SurfaceWaterSaline(int value)
+        public void Seti_SurfaceWaterSaline(int value)
         {
             UnitNetwork.SurfaceSaline.Limit = value;
             //WSA.SurfaceSaline.Limit = value;
@@ -5676,7 +5869,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_SurfaceWaterSalineNet()
+        public int Geti_SurfaceWaterSalineNet()
         {
 
             int result = 0;
@@ -5691,7 +5884,7 @@ namespace WaterSimDCDC.Generic
             }
             catch (Exception ex)
             {
-                throw new Exception("public int geti_SurfaceWaterSalineNet()", ex);
+                throw new Exception("public int Geti_SurfaceWaterSalineNet()", ex);
             }
             return result;
         }
@@ -5701,12 +5894,12 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti groundwater. </summary>
+        /// <summary>   Gets the Geti groundwater. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Groundwater()
+        public int Geti_Groundwater()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Groundwater.Limit));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.Groundwater.Limit));
@@ -5719,7 +5912,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_Groundwater(int value)
+        public void Seti_Groundwater(int value)
         {
             UnitNetwork.Groundwater.Limit = value;
             //WSA.Groundwater.Limit = value;
@@ -5728,7 +5921,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_GroundwaterNet()
+        public int Geti_GroundwaterNet()
         {
             int TempInt = Convert.ToInt32(Math.Abs(Math.Round(UnitNetwork.Groundwater.Net)) + 0);
             //int TempInt = Convert.ToInt32(Math.Abs(Math.Round(WSA.Groundwater.Net)) + 0);
@@ -5756,7 +5949,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Effluent()
+        public int Geti_Effluent()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Effluent.Limit));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.Effluent.Limit));
@@ -5771,7 +5964,7 @@ namespace WaterSimDCDC.Generic
         ///-------------------------------------------------------------------------------------------------
         // Is this logic still valid?
         // 11.29.21 das
-        public void seti_Effluent(int value)
+        public void Seti_Effluent(int value)
         {
             SetReclaimed(value);
             // QUAY EDIT 3/22/18
@@ -5821,7 +6014,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_EffluentNet()
+        public int Geti_EffluentNet()
         {
             int TempInt = Convert.ToInt32(Math.Abs(Math.Round(UnitNetwork.Effluent.Net)) + 0);
             //int TempInt = Convert.ToInt32(Math.Abs(Math.Round(WSA.Effluent.Net)) + 0);
@@ -5930,14 +6123,14 @@ namespace WaterSimDCDC.Generic
         void calculateGrayWater()
         {
             bool alterDemand = false;
-            int i_gwm = this.geti_GrayWaterManagement();
+            int i_gwm = this.Geti_GrayWaterManagement();
 
             // This is either the ratio of the default USGS reclaimed water use to max available effluent
             // or it is set in the UI... it is both
-            //int i_rwm = this.geti_ReclaimedWaterManagement();
+            //int i_rwm = this.Geti_ReclaimedWaterManagement();
 
             // maximum potential available graywater. 11.29.21 das
-            //int i_gwFlow = this.geti_GrayWaterFlow();
+            //int i_gwFlow = this.Geti_GrayWaterFlow();
             double d_gwFlow = GrayWaterPotential();
             // =============================================
 
@@ -5973,9 +6166,9 @@ namespace WaterSimDCDC.Generic
             if (alterDemand)
             {
                 //double temp = 0;
-                int urban = geti_Urban();
+                int urban = Geti_Urban();
                 double newDemand = Math.Max(0, urban - grayWaterUsed);
-                seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
+                Seti_Urban((int)newDemand); // set the reduced water demand by the urban sector
                 GrayWaterPotential(); // reset the graywater flow because demand changed
                 int unitcode = this.FUnitCode; // for a debug break point
             }
@@ -6024,7 +6217,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_consumptionRatio()
+        public int Geti_consumptionRatio()
         {
             return (int)(Fconsumption * 100);
         }
@@ -6037,7 +6230,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_consumptionRatio(int value)
+        public void Seti_consumptionRatio(int value)
         {
             Fconsumption = (double)value / 100;
         }
@@ -6073,7 +6266,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_indoorRatio()
+        public int Geti_indoorRatio()
         {
             return (int)(Findoor * 100);
         }
@@ -6084,7 +6277,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_indoorRatio(int value)
+        public void Seti_indoorRatio(int value)
         {
             Findoor = (double)value / 100;
         }
@@ -6152,7 +6345,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_WasteWaterFlow()
+        public int Geti_WasteWaterFlow()
         {
             return (int)WasteWaterFlow();
         }
@@ -6201,7 +6394,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_ReclaimedWaterManagement()
+        public int Geti_ReclaimedWaterManagement()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_reclaimedWaterUse * 100));
             return TempInt;
@@ -6211,7 +6404,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value"> The value (zero to 1.00). </param>
         ///------------------------------------------------------------------
-        public void seti_ReclaimedWaterManagement(int value)
+        public void Seti_ReclaimedWaterManagement(int value)
         {
             d_reclaimedWaterUse = (Double)value / 100;
         }
@@ -6244,7 +6437,7 @@ namespace WaterSimDCDC.Generic
         ///  Get the int for Gray Water Use
         /// </summary>
         /// <returns></returns>
-        public int geti_GrayWaterManagement()
+        public int Geti_GrayWaterManagement()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_grayWaterUse * 100));
             return TempInt;
@@ -6254,7 +6447,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value"> The value (zero to 1.00). </param>
         ///------------------------------------------------------------------
-        public void seti_GrayWaterManagement(int value)
+        public void Seti_GrayWaterManagement(int value)
         {
             d_grayWaterUse = (Double)value / 100;
         }
@@ -6275,7 +6468,7 @@ namespace WaterSimDCDC.Generic
         /// Get the Gray Water Produced
         /// </summary>
         /// <returns></returns>
-        public int geti_GrayWaterFlow()
+        public int Geti_GrayWaterFlow()
         {
             return (int)GrayWaterPotential();
         }
@@ -6309,7 +6502,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_TotalSupplies()
+        public int Geti_TotalSupplies()
         {
             int result = 0;
             double temp = TheCRFNetwork.SurfaceLake.Limit;
@@ -6324,7 +6517,7 @@ namespace WaterSimDCDC.Generic
             }
             catch (Exception ex)
             {
-                throw new Exception("public int geti_TotalSupplies()", ex);
+                throw new Exception("public int Geti_TotalSupplies()", ex);
                 // ouch
             }
             return result;
@@ -6387,7 +6580,7 @@ namespace WaterSimDCDC.Generic
         /// <value> The total net demand for all consumers.</value>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_TotalDemandNet()
+        public int Geti_TotalDemandNet()
         {
             return (int)getd_TotalNet();
         }
@@ -6399,7 +6592,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_TotalDemand()
+        public int Geti_TotalDemand()
         {
             return (int)getd_TotalDemand();
         }
@@ -6408,9 +6601,9 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_NetDemandDifference()
+        public int Geti_NetDemandDifference()
         {
-            //int TotalSupplies = geti_TotalSupplies();
+            //int TotalSupplies = Geti_TotalSupplies();
             int tempInt = 0;
             double temp = 0;
             //
@@ -6430,12 +6623,12 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti urban. </summary>
+        /// <summary>   Gets the Geti urban. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Urban()
+        public int Geti_Urban()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Urban.Demand));
             // int TempInt = Convert.ToInt32(Math.Round(WSA.Urban.Demand));
@@ -6448,7 +6641,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_Urban(int value)
+        public void Seti_Urban(int value)
         {
             UnitNetwork.Urban.Demand = value;
             //WSA.Urban.Demand = value;
@@ -6459,12 +6652,12 @@ namespace WaterSimDCDC.Generic
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti urban net. </summary>
+        /// <summary>   Gets the Geti urban net. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Urban_Net()
+        public int Geti_Urban_Net()
         {
             int TempInt = Convert.ToInt32(Math.Round(Math.Abs(UnitNetwork.Urban.Net)));
             //int TempInt = Convert.ToInt32(Math.Round(Math.Abs(WSA.Urban.Net)));
@@ -6478,12 +6671,12 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti agriculture. </summary>
+        /// <summary>   Gets the Geti agriculture. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Agriculture()
+        public int Geti_Agriculture()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Agriculture.Demand));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.Agriculture.Demand));
@@ -6496,7 +6689,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_Agriculture(int value)
+        public void Seti_Agriculture(int value)
         {
             UnitNetwork.Agriculture.Demand = value;
             //WSA.Agriculture.Demand = value;
@@ -6507,12 +6700,12 @@ namespace WaterSimDCDC.Generic
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti agriculture net. </summary>
+        /// <summary>   Gets the Geti agriculture net. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Agriculture_Net()
+        public int Geti_Agriculture_Net()
         {
             int TempInt = Convert.ToInt32(Math.Abs(Math.Round(UnitNetwork.Agriculture.Net)));
             //int TempInt = Convert.ToInt32(Math.Abs(Math.Round(WSA.Agriculture.Net)));
@@ -6530,12 +6723,12 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti industrial. </summary>
+        /// <summary>   Gets the Geti industrial. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Industrial()
+        public int Geti_Industrial()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Industrial.Demand));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.Industrial.Demand));
@@ -6548,7 +6741,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_Industrial(int value)
+        public void Seti_Industrial(int value)
         {
             UnitNetwork.Industrial.Demand = value;
             //WSA.Industrial.Demand = value;
@@ -6559,13 +6752,13 @@ namespace WaterSimDCDC.Generic
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti industrial net. </summary>
+        /// <summary>   Gets the Geti industrial net. </summary>
         ///
         /// 
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_Industrial_Net()
+        public int Geti_Industrial_Net()
         {
             int TempInt = Convert.ToInt32(Math.Round(Math.Abs(UnitNetwork.Industrial.Net)));
             //int TempInt = Convert.ToInt32(Math.Round(Math.Abs(WSA.Industrial.Net)));
@@ -6578,12 +6771,12 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Gets the geti power. </summary>
+        /// <summary>   Gets the Geti power. </summary>
         ///
         /// <returns>   . </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PowerWater()
+        public int Geti_PowerWater()
         {
             int TempInt = Convert.ToInt32(Math.Round(UnitNetwork.Power.Demand));
             //int TempInt = Convert.ToInt32(Math.Round(WSA.Power.Demand));
@@ -6596,7 +6789,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_PowerWater(int value)
+        public void Seti_PowerWater(int value)
         {
             UnitNetwork.Power.Demand = value;
             //WSA.Power.Demand = value;
@@ -6611,7 +6804,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PowerWater_Net()
+        public int Geti_PowerWater_Net()
         {
             int TempInt = Convert.ToInt32(Math.Round(Math.Abs(UnitNetwork.Power.Net)));
             //            int TempInt = Convert.ToInt32(Math.Round(Math.Abs(WSA.Power.Net)));
@@ -6620,7 +6813,7 @@ namespace WaterSimDCDC.Generic
         }
         // ------------------------------------------------------------------
         int _initialPower = 0;
-        void GetInitialPower()
+        void GetinitialPower()
         {
             int temp = UnitNetwork.InitialPowerGenerated;
             initialPower = temp;
@@ -6657,7 +6850,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PowerEnergy()
+        public int Geti_PowerEnergy()
         {
             int temp = _powerEnergy;
             return temp;
@@ -6668,7 +6861,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_PowerEnergy(int value)
+        public void Seti_PowerEnergy(int value)
         {
             _powerEnergy = value;
         }
@@ -6702,7 +6895,7 @@ namespace WaterSimDCDC.Generic
         //-----------------------------------------------
 
         ///-----------------------------------------------------------------
-        /// <summary>   Gets the geti population growth rate. </summary>
+        /// <summary>   Gets the Geti population growth rate. </summary>
         ///
         /// <returns>an int from zero to 150 </returns>
         ///-----------------------------------------------------------------
@@ -6711,7 +6904,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_PopGRateModifier()
+        public int Geti_PopGRateModifier()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_popGrowthRateMod * 100));
             return TempInt;
@@ -6722,11 +6915,11 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///----------------------------------------------------------------
-        //public void seti_PopGrowthRate(int value)
+        //public void Seti_PopGrowthRate(int value)
         //{
         //    d_popGrowthRate = (Double)value / 100;
         //}
-        public void seti_PopGRateModifier(int value)
+        public void Seti_PopGRateModifier(int value)
         {
             d_popGrowthRateMod = ((Double)value / 100);
         }
@@ -6744,14 +6937,14 @@ namespace WaterSimDCDC.Generic
         // Population Growth Rate 
         //-----------------------------------------------
 
-        double d_popGrowthRate = 1.00;
+        readonly double d_popGrowthRate = 1.00;
         ///-----------------------------------------------------------------
-        /// <summary>   Gets the geti population growth rate. </summary>
+        /// <summary>   Gets the Geti population growth rate. </summary>
         ///
         /// <returns>an int from zero to 150 </returns>
         ///-----------------------------------------------------------------
 
-        public int geti_PopGrowthRate()
+        public int Geti_PopGrowthRate()
         {
             // Edit Quay 3/19/18
             // This has been confusing, end up with two sets of population variables
@@ -6768,7 +6961,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///----------------------------------------------------------------
-        public void seti_PopGrowthRate(int value)
+        public void Seti_PopGrowthRate(int value)
         {
             // Edit Quay 3/19/18
             // This has been confusing, end up with two sets of population variables
@@ -6790,7 +6983,7 @@ namespace WaterSimDCDC.Generic
         //--------------------------------
 
         ///--------------------------------------------------------------
-        /// <summary>   Gets the geti DroughtImpacts. </summary>
+        /// <summary>   Gets the Geti DroughtImpacts. </summary>
         ///
         /// <returns>an int from zero to 150   . </returns>
         ///--------------------------------------------------------------
@@ -6800,7 +6993,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_DroughtImpacts()
+        public int Geti_DroughtImpacts()
         {
             int TempInt = Convert.ToInt32(d_droughtManagement);
             return TempInt;
@@ -6810,7 +7003,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_DroughtImpacts(int value)
+        public void Seti_DroughtImpacts(int value)
         {
             d_droughtManagement = value;
         }
@@ -6820,13 +7013,25 @@ namespace WaterSimDCDC.Generic
         #region housing density management code       
         // =======================================================================
         //
+        /// <summary>
+        ///  A switch to note if any of the density management controls were
+        ///  modified. This property is used to speed up runtime by eliminating
+        ///  method calls unneeded.
+        ///  02.16.22 das
+        /// </summary>
+        public bool ICLUSIIinvoked
+        {
+            get; set;
+        }
+
+        //
         // OLD code as of 02.01.22 das
         //
         #region old code - urban high density (intensitu) ICLUS data
         // High Intensity Urban Density Class ICLUS version 2
         //
         ///--------------------------------------------------------------
-        /// <summary>   Gets the geti Urban Density
+        /// <summary>   Gets the Geti Urban Density
         /// Modify the density of the five ICLUS classes. </summary>
         ///
         /// <returns>an int from zero to 150   . </returns>
@@ -6836,7 +7041,7 @@ namespace WaterSimDCDC.Generic
         ///   WaterSim Model Class
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanHighDensity()
+        public int Geti_UrbanHighDensity()
         {
             int TempInt = Convert.ToInt32(d_urbanHighDensityManagement * 100);
             return TempInt;
@@ -6847,7 +7052,7 @@ namespace WaterSimDCDC.Generic
         ///  02.01.22 das .. needs clearing
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_UrbanHighDensity(int value)
+        public void Seti_UrbanHighDensity(int value)
         {
             d_urbanHighDensityManagement = Convert.ToDouble(value) / 100;
         }
@@ -6882,9 +7087,10 @@ namespace WaterSimDCDC.Generic
         /// Small multi-family density class
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanHighDensitySMF()
+        public int Geti_UrbanHighDensitySMF()
         {
             int TempInt = Convert.ToInt32(d_urbanHighDensityManagementSMF * 100);
+
             return TempInt;
         }
         /// <summary>
@@ -6892,9 +7098,10 @@ namespace WaterSimDCDC.Generic
         /// 02.01.22 das
         /// </summary>
         /// <param name="value"></param>
-        public void seti_UrbanHighDensitySMF(int value)
+        public void Seti_UrbanHighDensitySMF(int value)
         {
             d_urbanHighDensityManagementSMF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         // =========================================
         /// <summary>
@@ -6929,7 +7136,7 @@ namespace WaterSimDCDC.Generic
         /// Small multi-family density class
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanHighDensityWMF()
+        public int Geti_UrbanHighDensityWMF()
         {
             int TempInt = Convert.ToInt32(d_urbanHighDensityManagementWMF * 100);
             return TempInt;
@@ -6939,9 +7146,10 @@ namespace WaterSimDCDC.Generic
         /// 02.01.22 das
         /// </summary>
         /// <param name="value"></param>
-        public void seti_UrbanHighDensityWMF(int value)
+        public void Seti_UrbanHighDensityWMF(int value)
         {
             d_urbanHighDensityManagementWMF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         // =========================================
         /// <summary>
@@ -6969,7 +7177,7 @@ namespace WaterSimDCDC.Generic
         /// Small multi-family density class
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanHighDensityMMF()
+        public int Geti_UrbanHighDensityMMF()
         {
             int TempInt = Convert.ToInt32(d_urbanHighDensityManagementMMF * 100);
             return TempInt;
@@ -6979,9 +7187,10 @@ namespace WaterSimDCDC.Generic
         /// 02.01.22 das
         /// </summary>
         /// <param name="value"></param>
-        public void seti_UrbanHighDensityMMF(int value)
+        public void Seti_UrbanHighDensityMMF(int value)
         {
             d_urbanHighDensityManagementMMF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         // =========================================
         /// <summary>
@@ -7009,7 +7218,7 @@ namespace WaterSimDCDC.Generic
         /// Small multi-family density class
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanHighDensityHMF()
+        public int Geti_UrbanHighDensityHMF()
         {
             int TempInt = Convert.ToInt32(d_urbanHighDensityManagementHMF * 100);
             return TempInt;
@@ -7019,9 +7228,10 @@ namespace WaterSimDCDC.Generic
         /// 02.01.22 das
         /// </summary>
         /// <param name="value"></param>
-        public void seti_UrbanHighDensityHMF(int value)
+        public void Seti_UrbanHighDensityHMF(int value)
         {
             d_urbanHighDensityManagementHMF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         // =========================================
         /// <summary>
@@ -7060,7 +7270,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanLowDensity()
+        public int Geti_UrbanLowDensity()
         {
             int TempInt = Convert.ToInt32(d_urbanLowDensityManagement * 100);
             return TempInt;
@@ -7070,7 +7280,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_UrbanLowDensity(int value)
+        public void Seti_UrbanLowDensity(int value)
         {
             d_urbanLowDensityManagement = Convert.ToDouble(value) / 100;
         }
@@ -7102,7 +7312,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanLowDensityLSF()
+        public int Geti_UrbanLowDensityLSF()
         {
             int TempInt = Convert.ToInt32(d_urbanLowDensityManagementLSF * 100);
             return TempInt;
@@ -7112,9 +7322,10 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_UrbanLowDensityLSF(int value)
+        public void Seti_UrbanLowDensityLSF(int value)
         {
             d_urbanLowDensityManagementLSF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         /// <summary>
         /// 
@@ -7139,7 +7350,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanLowDensityTSF()
+        public int Geti_UrbanLowDensityTSF()
         {
             int TempInt = Convert.ToInt32(d_urbanLowDensityManagementTSF * 100);
             return TempInt;
@@ -7149,9 +7360,10 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_UrbanLowDensityTSF(int value)
+        public void Seti_UrbanLowDensityTSF(int value)
         {
             d_urbanLowDensityManagementTSF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         /// <summary>
         /// 
@@ -7177,7 +7389,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanLowDensitySSF()
+        public int Geti_UrbanLowDensitySSF()
         {
             int TempInt = Convert.ToInt32(d_urbanLowDensityManagementSSF * 100);
             return TempInt;
@@ -7187,9 +7399,10 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_UrbanLowDensitySSF(int value)
+        public void Seti_UrbanLowDensitySSF(int value)
         {
             d_urbanLowDensityManagementSSF = Convert.ToDouble(value) / 100;
+            ICLUSIIinvoked = true;
         }
         /// <summary>
         /// 
@@ -7223,7 +7436,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_SuburbanDensity()
+        public int Geti_SuburbanDensity()
         {
             int TempInt = Convert.ToInt32(d_suburbanDensityManagement * 100);
             return TempInt;
@@ -7233,7 +7446,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_SuburbanDensity(int value)
+        public void Seti_SuburbanDensity(int value)
         {
             d_suburbanDensityManagement = Convert.ToDouble(value) / 100;
         }
@@ -7264,7 +7477,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_ExurbanHighDensity()
+        public int Geti_ExurbanHighDensity()
         {
             int TempInt = Convert.ToInt32(d_exurbanHighDensityManagement * 100);
             return TempInt;
@@ -7274,7 +7487,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_ExurbanHighDensity(int value)
+        public void Seti_ExurbanHighDensity(int value)
         {
             d_exurbanHighDensityManagement = Convert.ToDouble(value) / 100;
         }
@@ -7306,7 +7519,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_ExurbanLowDensity()
+        public int Geti_ExurbanLowDensity()
         {
             int TempInt = Convert.ToInt32(d_exurbanLowDensityManagement * 100);
             return TempInt;
@@ -7316,7 +7529,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_ExurbanLowDensity(int value)
+        public void Seti_ExurbanLowDensity(int value)
         {
             d_exurbanLowDensityManagement = Convert.ToDouble(value) / 100;
         }
@@ -7341,6 +7554,50 @@ namespace WaterSimDCDC.Generic
         // ------------------------------------------------------------------
         // Added policies - October 2021
         // ------------------------------------------------------------------
+        //
+        // NEW on 02.14.22 das REMOVE redudant policy
+        /// <summary>
+        /// 
+        /// </summary>
+        bool b_rainwaterManagement = false;
+        /// <summary>
+        ///  Atmospheric water ubterface to Model
+        /// </summary>
+        /// <returns></returns>
+        public int Geti_RainWater()
+        {
+            int TempInt = Convert.ToInt32(b_rainwaterManagement);
+            return TempInt;
+        }
+        ///------------------------------------------------------------------
+        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        ///
+        /// <param name="value">    The value. </param>
+        ///------------------------------------------------------------------
+        public void Seti_RainWater(int value)
+        {
+            b_rainwaterManagement = Convert.ToBoolean(value);
+            RainWaterHarvest = b_rainwaterManagement;
+        }
+
+        // -----------------------------------
+        // edits 11.09.21 das
+        bool b_rainwater = false;
+        /// <summary>
+        ///  True/ false on rainwater harvesting
+        /// </summary>
+        public bool RainWaterHarvest
+        {
+            set { b_rainwater = value; }
+            get { return b_rainwater; }
+        }
+        // end edits 11.09.21 das
+        // =========================================
+
+        // ========================================================================
+
+
+
         // edits 10.27.21 das
         //
         // Water from the air using SOURCE hydropanels
@@ -7349,7 +7606,7 @@ namespace WaterSimDCDC.Generic
         ///  Atmospheric water ubterface to Model
         /// </summary>
         /// <returns></returns>
-        public int geti_AirWater()
+        public int Geti_AirWater()
         {
             int TempInt = Convert.ToInt32(b_airWaterManagement);
             return TempInt;
@@ -7359,7 +7616,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_AirWater(int value)
+        public void Seti_AirWater(int value)
         {
             b_airWaterManagement = Convert.ToBoolean(value);
         }
@@ -7389,7 +7646,7 @@ namespace WaterSimDCDC.Generic
         ///  systems 
         /// </summary>
         /// <returns></returns>
-        public int geti_AirWaterInstallations()
+        public int Geti_AirWaterInstallations()
         {
             int TempInt = i_airWaterInstallations;
             // AirWaterInstallations;
@@ -7401,7 +7658,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_AirWaterInstallations(int value)
+        public void Seti_AirWaterInstallations(int value)
         {
             i_airWaterInstallations = value;
             AirWaterInstallations = value;
@@ -7443,7 +7700,7 @@ namespace WaterSimDCDC.Generic
         //--------------------------------
 
         ///--------------------------------------------------------------
-        /// <summary>   Gets the geti UrbanConservation. </summary>
+        /// <summary>   Gets the Geti UrbanConservation. </summary>
         ///
         /// <returns>an int from zero to 100   . </returns>
         ///--------------------------------------------------------------
@@ -7458,7 +7715,7 @@ namespace WaterSimDCDC.Generic
         /// Conservation of urban water - proportion saved
         /// </summary>
         /// <returns></returns>
-        public int geti_UrbanConservation()
+        public int Geti_UrbanConservation()
         {
             int temp = Convert.ToInt32(Math.Round(d_urbanConservation * 100));
             return temp;
@@ -7468,7 +7725,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_UrbanConservation(int value)
+        public void Seti_UrbanConservation(int value)
         {
             d_urbanConservation = (Double)value / 100;
         }
@@ -7489,7 +7746,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_DesalinationPolicy()
+        public int Geti_DesalinationPolicy()
         {
             int TempInt =_desalinization ;
             return TempInt;
@@ -7498,7 +7755,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_DesalinationPolicy(int value)
+        public void Seti_DesalinationPolicy(int value)
         {
             _desalinization = value;
             
@@ -7520,7 +7777,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_Recycle()
+        public int Geti_Recycle()
         {
             int TempInt = Convert.ToInt32(Math.Round(_recycle * 100));
             return TempInt;
@@ -7529,7 +7786,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_Recycle(int value)
+        public void Seti_Recycle(int value)
         {
             _recycle = (Double)value / 100;
         }
@@ -7571,7 +7828,7 @@ namespace WaterSimDCDC.Generic
         //--------------------------------
 
         ///--------------------------------------------------------------
-        /// <summary>   Gets the geti AgConservation.</summary>
+        /// <summary>   Gets the Geti AgConservation.</summary>
         ///
         /// <returns>an int from zero to 100   . </returns>
         ///--------------------------------------------------------------
@@ -7580,7 +7837,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_AgConservation()
+        public int Geti_AgConservation()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_agConservation * 100));
             return TempInt;
@@ -7590,7 +7847,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
-        public void seti_AgConservation(int value)
+        public void Seti_AgConservation(int value)
         {
             d_agConservation = (Double)value / 100;
         }
@@ -7618,7 +7875,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_PowerConservation()
+        public int Geti_PowerConservation()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_powerConservation * 100));
             return TempInt;
@@ -7628,7 +7885,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value (0 to 1.00). </param>
         ///------------------------------------------------------------------
-        public void seti_PowerConservation(int value)
+        public void Seti_PowerConservation(int value)
         {
             d_powerConservation = (Double)value / 100;
         }
@@ -7658,7 +7915,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int 0 - 100</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_IndustryConservation()
+        public int Geti_IndustryConservation()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_industryConservation * 100));
             return TempInt;
@@ -7679,7 +7936,7 @@ namespace WaterSimDCDC.Generic
         ///
         /// <param name="value">    The value (0 to 1.00). </param>
         ///------------------------------------------------------------------
-        public void seti_IndustryConservation(int value)
+        public void Seti_IndustryConservation(int value)
         {
             d_industryConservation = (Double)value / 100;
         }
@@ -7691,12 +7948,12 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <returns>an int from zero to 100   . </returns>
         //int d_groundwaterManagement = 1;
-        //public int geti_GroundwaterManagement()
+        //public int Geti_GroundwaterManagement()
         //{
         //    int TempInt = d_groundwaterManagement;
         //    return TempInt;
         //}
-        public int geti_GroundwaterControl()
+        public int Geti_GroundwaterControl()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_groundwaterControl * 100));
             return TempInt;
@@ -7708,7 +7965,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_GroundwaterControl(int value)
+        public void Seti_GroundwaterControl(int value)
         {
             d_groundwaterControl = ((double)value) / 100;
         }
@@ -7768,12 +8025,12 @@ namespace WaterSimDCDC.Generic
         /// </summary>
         /// <returns>an int from zero to 100   . </returns>
         //int i_surfaceWaterManagement = 1;
-        //public int geti_()
+        //public int Geti_()
         //{
         //    int TempInt = i_surfaceWaterManagement;
         //    return TempInt;
         //}
-        public int geti_SurfaceWaterControl()
+        public int Geti_SurfaceWaterControl()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_surfaceWaterControl * 100));
             return TempInt;
@@ -7785,15 +8042,15 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_SurfaceWaterControl(int value)
+        public void Seti_SurfaceWaterControl(int value)
         {
             d_surfaceWaterControl = ((double)value) / 100;
         }
 
-        double FudgeFactorHigh = 0.99;
-        double FudgeFactorLow = 0.92;
+        readonly  double FudgeFactorHigh = 0.99;
+        readonly double FudgeFactorLow = 0.92;
 
-        double ReviseTolerance = .02;
+        readonly  double ReviseTolerance = .02;
         ///-------------------------------------------------------------------------------------------------
         /// <summary> Revise surface control.</summary>
         /// <remarks> Quay, 4/3/2018.</remarks>
@@ -7854,7 +8111,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <returns></returns>
-        public int geti_LakeWaterManagement()
+        public int Geti_LakeWaterManagement()
         {
             int TempInt = Convert.ToInt32(Math.Round(d_lakeWaterManagement * 100));
             return TempInt;
@@ -7864,7 +8121,7 @@ namespace WaterSimDCDC.Generic
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void seti_LakeWaterManagement(int value)
+        public void Seti_LakeWaterManagement(int value)
         {
             d_lakeWaterManagement = (double)value / 100;
 
@@ -7994,7 +8251,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DroughtControl()
+        public int Geti_DroughtControl()
         {
             int TempInt = Convert.ToInt32(d_drought * 100);
             return TempInt;
@@ -8005,7 +8262,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtControl(int value)
+        public void Seti_DroughtControl(int value)
         {
             d_drought = ((double)value) / 100;
         }
@@ -8016,7 +8273,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DroughtDepth()
+        public int Geti_DroughtDepth()
         {
             return (int)(FDroughtDepth * 100);
         }
@@ -8027,7 +8284,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtDepth(int value)
+        public void Seti_DroughtDepth(int value)
         {
             FDroughtDepth = (double)value / 100;
         }
@@ -8038,7 +8295,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughStartYear(int value)
+        public void Seti_DroughStartYear(int value)
         {
             FDroughtStartYear = value;
         }
@@ -8049,7 +8306,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DroughtSartYear()
+        public int Geti_DroughtSartYear()
         {
             return FDroughtStartYear;
         }
@@ -8060,7 +8317,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtLength(int value)
+        public void Seti_DroughtLength(int value)
         {
             FDroughtLength = value;
         }
@@ -8071,7 +8328,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DroughtLength()
+        public int Geti_DroughtLength()
         {
             return FDroughtLength;
         }
@@ -8082,7 +8339,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value"> The value.</param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_DroughtActive(int value)
+        public void Seti_DroughtActive(int value)
         {
             FDroughtActive = value;
         }
@@ -8093,7 +8350,7 @@ namespace WaterSimDCDC.Generic
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_DroughtActive()
+        public int Geti_DroughtActive()
         {
             return FDroughtActive;
         }
@@ -8153,7 +8410,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ClimateChangeTarget(int value)
+        public void Seti_ClimateChangeTarget(int value)
         {
             FCCChangeTarget = (double)value / 100;
         }
@@ -8163,7 +8420,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_ClimateChangeTarget()
+        public int Geti_ClimateChangeTarget()
         {
             return (int)(FCCChangeTarget * 100);
         }
@@ -8173,7 +8430,7 @@ namespace WaterSimDCDC.Generic
         /// <param name="value">    The value. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public void seti_ClimateChangeTargetYear(int value)
+        public void Seti_ClimateChangeTargetYear(int value)
         {
             FCCYearTarget = value;
         }
@@ -8183,7 +8440,7 @@ namespace WaterSimDCDC.Generic
         /// <returns>   An int. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_ClimateChangeTargetYear()
+        public int Geti_ClimateChangeTargetYear()
         {
             return (int)FCCYearTarget;
         }
@@ -8273,7 +8530,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SUR_UD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SUR_UD()
+        public int Geti_SUR_UD()
         {
             int result = 0;
             result = GetFluxAllocated("SUR", "UTOT");
@@ -8284,7 +8541,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SUR_UD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SUR_UD(int value)
+        public void Seti_SUR_UD(int value)
         {
             SetFluxAllocation("SUR", "UTOT", value);
         }
@@ -8297,7 +8554,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SUR_AD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SUR_AD()
+        public int Geti_SUR_AD()
         {
             int result = 0;
             result = GetFluxAllocated("SUR", "ATOT");
@@ -8308,7 +8565,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SUR_AD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SUR_AD(int value)
+        public void Seti_SUR_AD(int value)
         {
             SetFluxAllocation("SUR", "ATOT", value);
         }
@@ -8321,7 +8578,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SUR_ID value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SUR_ID()
+        public int Geti_SUR_ID()
         {
             int result = 0;
             result = GetFluxAllocated("SUR", "ITOT");
@@ -8332,7 +8589,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SUR_ID value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SUR_ID(int value)
+        public void Seti_SUR_ID(int value)
         {
             SetFluxAllocation("SUR", "ITOT", value);
         }
@@ -8345,7 +8602,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SUR_PD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SUR_PD()
+        public int Geti_SUR_PD()
         {
             int result = 0;
             result = GetFluxAllocated("SUR", "PTOT");
@@ -8356,7 +8613,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SUR_PD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SUR_PD(int value)
+        public void Seti_SUR_PD(int value)
         {
             SetFluxAllocation("SUR", "PTOT", value);
         }
@@ -8369,7 +8626,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SURL_UD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SURL_UD()
+        public int Geti_SURL_UD()
         {
             int result = 0;
             result = GetFluxAllocated("SURL", "UTOT");
@@ -8380,7 +8637,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SURL_UD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SURL_UD(int value)
+        public void Seti_SURL_UD(int value)
         {
             SetFluxAllocation("SURL", "UTOT", value);
         }
@@ -8393,7 +8650,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SURL_AD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SURL_AD()
+        public int Geti_SURL_AD()
         {
             int result = 0;
             result = GetFluxAllocated("SURL", "ATOT");
@@ -8404,7 +8661,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SURL_AD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SURL_AD(int value)
+        public void Seti_SURL_AD(int value)
         {
             SetFluxAllocation("SURL", "ATOT", value);
         }
@@ -8417,7 +8674,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SURL_ID value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SURL_ID()
+        public int Geti_SURL_ID()
         {
             int result = 0;
             result = GetFluxAllocated("SURL", "ITOT");
@@ -8428,7 +8685,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SURL_ID value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SURL_ID(int value)
+        public void Seti_SURL_ID(int value)
         {
             SetFluxAllocation("SURL", "ITOT", value);
         }
@@ -8441,7 +8698,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SURL_PD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SURL_PD()
+        public int Geti_SURL_PD()
         {
             int result = 0;
             result = GetFluxAllocated("SURL", "PTOT");
@@ -8452,7 +8709,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SURL_PD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SURL_PD(int value)
+        public void Seti_SURL_PD(int value)
         {
             SetFluxAllocation("SURL", "PTOT", value);
         }
@@ -8465,7 +8722,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get GW_UD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_GW_UD()
+        public int Geti_GW_UD()
         {
             int result = 0;
             result = GetFluxAllocated("GW", "UTOT");
@@ -8476,7 +8733,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set GW_UD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_GW_UD(int value)
+        public void Seti_GW_UD(int value)
         {
             SetFluxAllocation("GW", "UTOT", value);
         }
@@ -8489,7 +8746,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get GW_AD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_GW_AD()
+        public int Geti_GW_AD()
         {
             int result = 0;
             result = GetFluxAllocated("GW", "ATOT");
@@ -8500,7 +8757,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set GW_AD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_GW_AD(int value)
+        public void Seti_GW_AD(int value)
         {
             SetFluxAllocation("GW", "ATOT", value);
         }
@@ -8513,7 +8770,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get GW_ID value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_GW_ID()
+        public int Geti_GW_ID()
         {
             int result = 0;
             result = GetFluxAllocated("GW", "ITOT");
@@ -8524,7 +8781,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set GW_ID value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_GW_ID(int value)
+        public void Seti_GW_ID(int value)
         {
             SetFluxAllocation("GW", "ITOT", value);
         }
@@ -8537,7 +8794,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get GW_PD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_GW_PD()
+        public int Geti_GW_PD()
         {
             int result = 0;
             result = GetFluxAllocated("GW", "PTOT");
@@ -8548,7 +8805,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set GW_PD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_GW_PD(int value)
+        public void Seti_GW_PD(int value)
         {
             SetFluxAllocation("GW", "PTOT", value);
         }
@@ -8561,7 +8818,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get REC_UD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_REC_UD()
+        public int Geti_REC_UD()
         {
             int result = 0;
             result = GetFluxAllocated("REC", "UTOT");
@@ -8572,7 +8829,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set REC_UD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_REC_UD(int value)
+        public void Seti_REC_UD(int value)
         {
             SetFluxAllocation("REC", "UTOT", value);
         }
@@ -8585,7 +8842,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get REC_AD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_REC_AD()
+        public int Geti_REC_AD()
         {
             int result = 0;
             result = GetFluxAllocated("REC", "ATOT");
@@ -8596,7 +8853,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set REC_AD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_REC_AD(int value)
+        public void Seti_REC_AD(int value)
         {
             SetFluxAllocation("REC", "ATOT", value);
         }
@@ -8609,7 +8866,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get REC_ID value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_REC_ID()
+        public int Geti_REC_ID()
         {
             int result = 0;
             result = GetFluxAllocated("REC", "ITOT");
@@ -8620,7 +8877,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set REC_ID value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_REC_ID(int value)
+        public void Seti_REC_ID(int value)
         {
             SetFluxAllocation("REC", "ITOT", value);
         }
@@ -8633,7 +8890,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get REC_PD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_REC_PD()
+        public int Geti_REC_PD()
         {
             int result = 0;
             result = GetFluxAllocated("REC", "PTOT");
@@ -8644,7 +8901,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set REC_PD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_REC_PD(int value)
+        public void Seti_REC_PD(int value)
         {
             SetFluxAllocation("REC", "PTOT", value);
         }
@@ -8657,7 +8914,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SAL_UD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SAL_UD()
+        public int Geti_SAL_UD()
         {
             int result = 0;
             result = GetFluxAllocated("SAL", "UTOT");
@@ -8668,7 +8925,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SAL_UD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SAL_UD(int value)
+        public void Seti_SAL_UD(int value)
         {
             SetFluxAllocation("SAL", "UTOT", value);
         }
@@ -8681,7 +8938,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SAL_AD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SAL_AD()
+        public int Geti_SAL_AD()
         {
             int result = 0;
             result = GetFluxAllocated("SAL", "ATOT");
@@ -8692,7 +8949,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SAL_AD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SAL_AD(int value)
+        public void Seti_SAL_AD(int value)
         {
             SetFluxAllocation("SAL", "ATOT", value);
         }
@@ -8705,7 +8962,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SAL_ID value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SAL_ID()
+        public int Geti_SAL_ID()
         {
             int result = 0;
             result = GetFluxAllocated("SAL", "ITOT");
@@ -8716,7 +8973,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SAL_ID value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SAL_ID(int value)
+        public void Seti_SAL_ID(int value)
         {
             SetFluxAllocation("SAL", "ITOT", value);
         }
@@ -8729,7 +8986,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get SAL_PD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_SAL_PD()
+        public int Geti_SAL_PD()
         {
             int result = 0;
             result = GetFluxAllocated("SAL", "PTOT");
@@ -8740,7 +8997,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set SAL_PD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_SAL_PD(int value)
+        public void Seti_SAL_PD(int value)
         {
             SetFluxAllocation("SAL", "PTOT", value);
         }
@@ -8757,7 +9014,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get COL_AD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_COL_AD()
+        public int Geti_COL_AD()
         {
             int result = 0;
             result = GetFluxAllocated("COL", "ATOT");
@@ -8768,7 +9025,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set COL_AD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_COL_AD(int value)
+        public void Seti_COL_AD(int value)
         {
             SetFluxAllocation("COL", "ATOT", value);
         }
@@ -8781,7 +9038,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get COL_UD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_COL_UD()
+        public int Geti_COL_UD()
         {
             int result = 0;
             result = GetFluxAllocated("COL", "UTOT");
@@ -8792,7 +9049,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set COL_UD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_COL_UD(int value)
+        public void Seti_COL_UD(int value)
         {
             SetFluxAllocation("COL", "UTOT", value);
         }
@@ -8806,7 +9063,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get COL_ID value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_COL_ID()
+        public int Geti_COL_ID()
         {
             int result = 0;
             result = GetFluxAllocated("COL", "ITOT");
@@ -8817,7 +9074,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set COL_ID value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_COL_ID(int value)
+        public void Seti_COL_ID(int value)
         {
             SetFluxAllocation("COL", "ITOT", value);
         }
@@ -8830,7 +9087,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  get COL_PD value </summary>
         /// <returns>  the value allocated for this flux. </returns>
         ///-----------------------------------------------------------
-        public int geti_COL_PD()
+        public int Geti_COL_PD()
         {
             int result = 0;
             result = GetFluxAllocated("COL", "PTOT");
@@ -8841,7 +9098,7 @@ namespace WaterSimDCDC.Generic
         ///  <summary>  set COL_PD value </summary>
         /// <param name="value">    The value to Allocate to the Flux Parameter. </param>
         ///-----------------------------------------------------------
-        public void seti_COL_PD(int value)
+        public void Seti_COL_PD(int value)
         {
             SetFluxAllocation("COL", "PTOT", value);
         }

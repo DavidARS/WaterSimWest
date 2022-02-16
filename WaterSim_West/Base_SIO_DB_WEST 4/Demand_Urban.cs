@@ -19,9 +19,9 @@ namespace WaterSim_Base
         // objects
         WaterSimCRFModel CRF;
         //
-        StreamWriter sw;
+        //StreamWriter sw;
         //
-        double Fdemand;
+        readonly double Fdemand;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
         const double convertDemand = 1000000;
@@ -30,15 +30,17 @@ namespace WaterSim_Base
 
         //  This is the initial GPCD value, the 120 is a default, this is calclated based on data from the USGS data file
         //double FBaseUrbanGPCD = 120;
-        double FMinUrbanGPCDPercent = _MinimumUrbanGPCD / 120;
 
-        double FUrbanGPCDChangeCoef = 1;
+        //double FMinUrbanGPCDPercent = _MinimumUrbanGPCD / 120;
+
+        //double FUrbanGPCDChangeCoef = 1;
         /// <summary> The base population, thisis read from the USGS data file.</summary>
-        double FBasePopulation = 0;
+
+        readonly double FBasePopulation = 0;
         /// <summary>   The pop growth rate, this is read from the Rate file. </summary>
         //
-         int FUnitCode = 0;
-        string FComment = "";
+        readonly int FUnitCode = 0;
+        readonly string FComment = "";
 
         public bool isInstantiated=false;
         //

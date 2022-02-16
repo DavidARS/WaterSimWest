@@ -21,12 +21,19 @@ namespace WaterSim_Base
     /// </summary>
     public struct DataStructRainWater
     {
-        string FRegion;
-        int FStateCode;
-        int FRegionCode;
-        double FRain;
-        int FYear;
-       
+        readonly string FRegion;
+        readonly int FStateCode;
+        readonly int FRegionCode;
+        readonly double FRain;
+        readonly int FYear;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stateC"></param>
+        /// <param name="regionC"></param>
+        /// <param name="region"></param>
+        /// <param name="year"></param>
+        /// <param name="Rainfall"></param>
         public DataStructRainWater(int stateC, int regionC, string region, int  year, double Rainfall)
         {
             bool isErr = false;
@@ -65,12 +72,12 @@ namespace WaterSim_Base
     /// <summary>
     /// The class used in input the rainfall data for the regions
     /// </summary>
-    public class DataClassRainFall
+    public class DataClassRainFall : IDisposable
     {
         // DataTable Parameters
         DataTable TheData = null;
-        string FDataDirectory = "";
-        string FFilename = "";
+        readonly string FDataDirectory = "";
+        readonly string FFilename = "";
         // EDIT end 2 13 18
 
         const string FScodeFieldStr = "SC";
@@ -79,21 +86,21 @@ namespace WaterSim_Base
         // Added Region Filed strings and setup to use State or Region
         const string FRnameFieldStr = "RN";
         const string FRcodeFieldStr = "RC";
-        
 
-        string FNameFieldStr = FRnameFieldStr;
-        string FCodeFieldStr = FRcodeFieldStr;
 
-        string FRainFallFieldStr = "rainfall";
-        string FcurrentYearFieldStr = "year";
+        readonly string FNameFieldStr = FRnameFieldStr;
+        readonly string FCodeFieldStr = FRcodeFieldStr;
+
+        readonly string FRainFallFieldStr = "rainfall";
+        readonly string FcurrentYearFieldStr = "year";
 
         // Data Array Parameters
 
-        Dictionary<string, int> StateCodes = new Dictionary<string, int>();
+        readonly Dictionary<string, int> StateCodes = new Dictionary<string, int>();
         const double InvalidRate = -1;//double.NaN;
 
-        double[] FRainFallArray = null;
-        double[] FYearArray = null;
+        readonly double[] FRainFallArray = null;
+        readonly double[] FYearArray = null;
 
         List<DataStructRainWater> FRainFallDataList = new List<DataStructRainWater>();
         //
@@ -105,7 +112,7 @@ namespace WaterSim_Base
         get;
         set;
         }
-        int Tyear = 0;
+        readonly int Tyear = 0;
 
         /// <summary>
         /// 
@@ -120,8 +127,10 @@ namespace WaterSim_Base
             bool isErr = false;
             FDataDirectory = DataDirectory ;
             FFilename = Filename;
-            UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
-            DbCon.UseFieldHeaders = true;
+            UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "")
+            {
+                UseFieldHeaders = true
+            };
             DbCon.Open();
             TheData = Tools.LoadTable(DbCon, FFilename, ref isErr, ref errMessage);
             if (isErr)
@@ -185,6 +194,27 @@ namespace WaterSim_Base
             }
             LastYear = Tyear;
         }
+        // ==============================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        // ==============================================================
         // ==============================================================
         private double[] GetDataArray(string FieldStr)
         {
@@ -269,7 +299,7 @@ namespace WaterSim_Base
     /// </summary>
     public struct RWconstants
     {
-        int Fyear;
+        readonly int Fyear;
         /// <summary>
         /// 
         /// </summary>
@@ -330,12 +360,18 @@ namespace WaterSim_Base
     /// <summary>
     /// 
     /// </summary>
-    public class RainWaterHarvesting
+    public class RainWaterHarvesting : IDisposable
     {
         DataClassRainFall RainFall;
         UnitData FUnitData;
         DataClassLcluArea LCLUclasses;
+        /// <summary>
+        /// 
+        /// </summary>
         public int FUnitCount = 0;
+        /// <summary>
+        /// 
+        /// </summary>
         public int FYearCount = 0;
         /// <summary>
         ///  Constructor
@@ -355,7 +391,12 @@ namespace WaterSim_Base
             RainFall = Rain;
             LCLUclasses = LCLUclass;
         }
-        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Rain"></param>
+        /// <param name="LCLUclass"></param>
+        /// <param name="UnitData"></param>
         public RainWaterHarvesting(DataClassRainFall Rain, DataClassLcluArea LCLUclass, UnitData UnitData)
         {
             RainFall = Rain;
@@ -374,53 +415,107 @@ namespace WaterSim_Base
             RWcapture = new double[FUnitCount];
 
         }
+        // ==============================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+        // ==============================================================
 
-        //
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] IND_harvesting
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] COMM_harvesting
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] EA_harvesting
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] QA_harvesting
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] TA_harvesting
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] HA_harvesting
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] A_harvesting
         {
             get; set;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public double [] RWcapture
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double[,] RWcaptureYear_MGD
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double[,] RWcaptureYear_ratio
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double[,] RWYear_MGD
         {
             get; set;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public double[] RWacres
         {
             get; set;
@@ -440,7 +535,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             int i = 0;
-            int j = 0;
+            //int j = 0;
              IND_harvesting = new double[FUnitCount];
             //RWacres = new double[FUnitCount];
             foreach (string name in FUnitData.UnitNames)
@@ -674,14 +769,14 @@ namespace WaterSim_Base
             return temp;
         }
         //======================================================================
-        internal void roofCapture(int year)
+        internal void RoofCapture(int year)
         {
             double temp = 0;
             RWacres = new double[FUnitCount];
             temp = INDroof(year) + COMroof(year)+ EigthAcreroof(year) + QuarterAcreroof(year)+ThirdAcreroof(year) + 
                 HalfAcreroof(year) + Acreroof(year);
         }
-        internal void roofCaptureYearly(int year, string name, WaterSimCRFModel CRF)
+        internal void RoofCaptureYearly(int year, string name, WaterSimCRFModel CRF)
         {
             double temp = 0;
             RWacres = new double[FUnitCount];
@@ -696,7 +791,7 @@ namespace WaterSim_Base
         /// <summary>
         /// 
         /// </summary>
-        public void  rwHarvesting()
+        public void  RwHarvesting()
         {
             // rainfall in mm yr-1
             // output is MGD year-1
@@ -711,14 +806,14 @@ namespace WaterSim_Base
             for (int year = RainFall.FirstYear; year < RainFall.LastYear; year++)
             //while (int year <= RainFall.DataTableRows)
             {
-                roofCapture(year);
+                RoofCapture(year);
                 foreach (string code in FUnitData.UnitNames)
                 {             
                     double T = RainFall.FastRainFall(code, year);
-                    RWYear_MGD[i,j] = RWacres[i] * UnitConvertLiters(T) / Utilities.daysInAYear(year);
+                    RWYear_MGD[i,j] = RWacres[i] * UnitConvertLiters(T) / Utilities.DaysInAYear(year);
                     temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
                        TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvertLiters(T); // MG;
-                    RWcaptureYear_MGD[i,j] = temp/ Utilities.daysInAYear(year);
+                    RWcaptureYear_MGD[i,j] = temp/ Utilities.DaysInAYear(year);
                     if(0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
                         RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
                     i++;
@@ -736,7 +831,7 @@ namespace WaterSim_Base
         /// <param name="year"></param>
         /// <param name="CRF">the CRF object</param>
         /// <returns></returns>
-        public double rwHarvestingYearly(string name, int year, WaterSimCRFModel CRF)
+        public double RwHarvestingYearly(string name, int year, WaterSimCRFModel CRF)
         {
             // rainfall in mm yr-1
             // output is supposed to be MGD year-1
@@ -755,9 +850,9 @@ namespace WaterSim_Base
             int cYear = year + 2020;
 
            // RWcapture = new double[FUnitCount];
-            roofCaptureYearly(cYear, name,CRF);
+            RoofCaptureYearly(cYear, name,CRF);
             double T = RainFall.FastRainFall(name, cYear);
-            RWYear_MGD[i, j] = RWacres[i] * UnitConvertLiters(T) / Utilities.daysInAYear(cYear);
+            RWYear_MGD[i, j] = RWacres[i] * UnitConvertLiters(T) / Utilities.DaysInAYear(cYear);
             // area in acres * rainfall conversion
             //temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
             // TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvert(T); // MGD;
@@ -765,7 +860,7 @@ namespace WaterSim_Base
             // add a compliance parameter? This code assumes that all residents capture and use rainwater
             temp = (IND_harvesting[i] + COMM_harvesting[i] + EA_harvesting[i] + QA_harvesting[i] +
              TA_harvesting[i] + HA_harvesting[i] + A_harvesting[i]) * UnitConvertLiters(T); // MGD;
-            RWcaptureYear_MGD[i, j] = temp / Utilities.daysInAYear(cYear);
+            RWcaptureYear_MGD[i, j] = temp / Utilities.DaysInAYear(cYear);
             if (0 < RWYear_MGD[i, j]) RWcaptureYear_ratio[i, j] =
                  RWcaptureYear_MGD[i, j] / RWYear_MGD[i, j]; // always < 1
                                                              //
@@ -891,7 +986,7 @@ namespace WaterSim_Base
             }
             return iout;
         }
-        enum classs
+        enum Classs
         {
             Ind=0,
             Com=1,

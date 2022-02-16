@@ -5311,6 +5311,7 @@ namespace UniDB
             }
             catch (Exception ex)
             {
+                throw new Exception("", ex);
                 // ouch what does this mean, just quit?
             }
             return Data;

@@ -25,8 +25,8 @@ namespace CORiverModel
         //
         ColoradoRiver COriver;
         COriverModel CRM;
-        BasinDCP BDP;
-        internal StreamWriter sw;
+        readonly BasinDCP BDP;
+        //internal StreamWriter sw;
 
         //
         //string UnitDataFIDContempory = "COflowDataExtended.csv";
@@ -165,7 +165,7 @@ namespace CORiverModel
         // 10.07.20 das
         //==============================================
         // this needs fixing
-        double[,] _ics = new double[65,24];
+        readonly double[,] _ics = new double[65,24];
         /// <summary>
         /// Set the Intentionally Created Surplus estimate for each region
         /// </summary>
@@ -408,7 +408,6 @@ namespace CORiverModel
             // 1 = 2007 Upper CO River Comission Schedule
             //2 = Arizona Upper Basin Depletion schedule-Don Gross - ADWR, 30 November 2012
             double UB = 0;
-            double UBout = 0;
             int choice = UBchoice;
             switch (choice)
             {
@@ -427,7 +426,7 @@ namespace CORiverModel
                     break;
             }
             UB += UtahPipelineTransfers;
-            RemoveICSfromUB(UB,out UBout);
+            RemoveICSfromUB(UB,out double UBout);
             SetUBtotal(UBout);
         }
         //
@@ -507,7 +506,7 @@ namespace CORiverModel
             }
             return result;
         }
-        internal double stateLevel_DCPICS(int year, int state)
+        internal double StateLevel_DCPICS(int year, int state)
         {
             double result = 0;
             bool update = true;
@@ -1596,10 +1595,10 @@ namespace CORiverModel
             // The if block. Elevation is still valid
             if (eM <= Constants.meadTierZero)
             {
-                caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
-                azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
-                nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
-                mxDCP = stateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
+                caDCP = StateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
+                azDCP = StateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
+                nvDCP = StateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+                mxDCP = StateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
             }
             // 
             if (Constants.meadDeadPool < State_bb+ (caDCP * Constants.acreFeetToMAF))
@@ -1990,10 +1989,10 @@ namespace CORiverModel
             if (eM <= Constants.meadTierZero)
             {
                 // calculate DCP regardless of elevation...estimated elevation is seen by the method
-                caDCP = stateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
-                azDCP = stateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
-                nvDCP = stateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
-                mxDCP = stateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
+                caDCP = StateLevel_DCPICS(year, Constants.CA) * Constants.acreFeetToMAF;
+                azDCP = StateLevel_DCPICS(year, Constants.AZ) * Constants.acreFeetToMAF;
+                nvDCP = StateLevel_DCPICS(year, Constants.NV) * Constants.acreFeetToMAF;
+                mxDCP = StateLevel_DCPICS(year, Constants.MX) * Constants.acreFeetToMAF;
             }
 
             // 1 January of every year - state for Mead reflects initial pool

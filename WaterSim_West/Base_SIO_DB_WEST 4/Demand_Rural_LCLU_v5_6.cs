@@ -18,7 +18,7 @@ namespace WaterSim_Base
     /// </summary>
     public struct LCLUconstants
     {
-        int Fyear;
+        readonly int Fyear;
         /// <summary>
         /// 
         /// </summary>
@@ -103,7 +103,7 @@ namespace WaterSim_Base
         // objects
         WaterSimCRFModel CRF;
         //
-        StreamWriter SW;
+        readonly StreamWriter SW;
         //
         /// <summary>
         /// 
@@ -159,7 +159,7 @@ namespace WaterSim_Base
         #region Constructors
         // ==================================================================================
 
-        double FBaseRate = 0;
+        //readonly double FBaseRate = 0;
         /// <summary>
         /// 
         /// </summary>
@@ -249,10 +249,9 @@ namespace WaterSim_Base
             double temp = 0;
             double NewDemand = 0;
             //
-            preProcessDemand(currentYear, sw);
+            PreProcessDemand(currentYear, sw);
 
             double period = (currentYear - CRF.startYear) + 1;
-            double outValue;
             // string region = CRF.UnitName;
             //
             //double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
@@ -262,11 +261,11 @@ namespace WaterSim_Base
             }
             else
             {
-                NewDemand = EstimateConsumerDemands(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, period, out outValue);
+                NewDemand = EstimateConsumerDemands(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, period, out double outValue);
             }
             //
             temp = NewDemand;
-            demandUrban = temp;
+            DemandUrban = temp;
         }
         internal void Demand(int currentYear)
         {
@@ -276,7 +275,6 @@ namespace WaterSim_Base
             preProcessDemand(currentYear);
 
             double period = (currentYear - CRF.startYear) + 1;
-            double outValue;
             // string region = CRF.UnitName;
             //
             //double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, LminUrban, period);
@@ -286,11 +284,11 @@ namespace WaterSim_Base
             }
             else
             {
-                NewDemand = EstimateConsumerDemands(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, period, out outValue);
+                NewDemand = EstimateConsumerDemands(Lacres, LBaseRate, LurbanConservation, LurbanLCLUChangeCoef, period, out double outValue);
             }
             //
             temp = NewDemand;
-            demandUrban = temp;
+            DemandUrban = temp;
         }
 
         // ================================================================================================================================================
@@ -427,31 +425,31 @@ namespace WaterSim_Base
             get; set;
         }
         // ==============
-        double rUH
+        double RUH
         { get; set; }
-        double rUL
+        double RUL
         { get; set; }
-        double rSUB
+        double RSUB
         { get; set; }
-        double rExUH
+        double RExUH
         { get; set; }
-        double rExUL
+        double RExUL
         { get; set; }
         //
-        double rUL_LSF
+        double RUL_LSF
         { get; set; }
-        double rUL_TSF
+        double RUL_TSF
         { get; set; }
-        double rUL_SSF
+        double RUL_SSF
         { get; set;
         }
-        double rUH_SMF
+        double RUH_SMF
         { get; set; }
-        double rUH_WMF
+        double RUH_WMF
         { get; set; }
-        double rUH_MMF
+        double RUH_MMF
         { get; set; }
-        double rUH_HMF
+        double RUH_HMF
         { get; set; }
         //
 
@@ -491,7 +489,7 @@ namespace WaterSim_Base
         // ===========================================
         // Demand
         double _demandUrban = 0;
-        double demandUrban
+        double DemandUrban
         {
             get { return _demandUrban; }
             set { _demandUrban = value; }
@@ -511,7 +509,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             Demand(currentYear);
-            temp = demandUrban;
+            temp = DemandUrban;
             return temp;
         }
         /// <summary>
@@ -524,7 +522,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             Demand(currentYear, sw);
-            temp = demandUrban;
+            temp = DemandUrban;
             return temp;
         }
         /// <summary>
@@ -587,7 +585,7 @@ namespace WaterSim_Base
         /// </summary>
         /// <param name="currentYear"></param>
         /// <param name="sw"></param>
-        public void preProcessDemand(int currentYear, StreamWriter sw)
+        public void PreProcessDemand(int currentYear, StreamWriter sw)
         {
             // Old data - Ag, Urban, Industry
             string region = CRF.UnitName;
@@ -596,7 +594,7 @@ namespace WaterSim_Base
             if (FDLCLU != null)
             {
                 DUAdemand = true;
-                switchLCLU(region, currentYear, sw);
+                SwitchLCLU(region, currentYear, sw);
             }
             else
             {
@@ -612,14 +610,14 @@ namespace WaterSim_Base
         /// <param name="region"></param>
         /// <param name="currentYear"></param>
         /// <param name="sw"></param>
-        public void switchLCLU(string region, int currentYear, StreamWriter sw)
+        public void SwitchLCLU(string region, int currentYear, StreamWriter sw)
         {
             double period = (currentYear - CRF.startYear) + 1;
             //
             AssignLCLU(region, currentYear);
             ProcessRequest(region, currentYear, sw);
-            convertAcresToUnits();
-            calculateDemand(region, currentYear, LurbanConservation, period, sw);
+            ConvertAcresToUnits();
+            CalculateDemand(region, currentYear, LurbanConservation, period, sw);
         }
       
 
@@ -655,16 +653,16 @@ namespace WaterSim_Base
             ExUL = FDLCLU.FastArea_UN(region, "Acre", currentYear);
         }
         //
-        void dataCheck(string region, int currentYear, StreamWriter sw)
+        void DataCheck(string region, int currentYear, StreamWriter sw)
         {
-            double Tacres = totalAcres(region, currentYear);
+            double Tacres = TotalAcres(region, currentYear);
             double Aacres = UL_LSF + UL_TSF + UL_SSF + UH_SMF + UH_WMF + UH_MMF + UH_HMF + SUB + ExUH + ExUL;
             //double Init = init_LSF + init_TSF + init_SSF + init_SMF + init_WMF + init_MMF + init_HMF + init_SUB + init_ExH + init_ExL;
             //sw.WriteLine(region + "," + currentYear + "," + Tacres + "," + Aacres + "," + Init);
             sw.WriteLine(region + "," + currentYear + "," + UL_LSF + "," + UL_TSF + "," + UL_SSF + "," + UH_SMF + ","
                 + UH_WMF + "," + UH_MMF + "," + UH_HMF + "," + SUB + "," + ExUH + "," + ExUL + "," + Tacres + "," + Aacres);
-            // sw.WriteLine(region + "," + currentYear + "," + rUL_LSF + "," + rUL_TSF + "," + rUL_SSF + "," + rUH_SMF + ","
-            //+ rUH_WMF + "," + rUH_MMF + "," + rUH_HMF + "," + rSUB + "," + rExUH + "," + rExUL + "," + Tacres + "," + Aacres);
+            // sw.WriteLine(region + "," + currentYear + "," + RUL_LSF + "," + RUL_TSF + "," + RUL_SSF + "," + RUH_SMF + ","
+            //+ RUH_WMF + "," + RUH_MMF + "," + RUH_HMF + "," + RSUB + "," + RExUH + "," + RExUL + "," + Tacres + "," + Aacres);
         }
 
         // =============================================================
@@ -701,7 +699,7 @@ namespace WaterSim_Base
         #endregion
         // end edits 02.09.22 das
         // =============================================================
-        internal double totalAcres(string region, int year)
+        internal double TotalAcres(string region, int year)
         {
             return FDLCLU.FastTotalUrbanArea_UN(region, year);
         }
@@ -714,7 +712,7 @@ namespace WaterSim_Base
         //Exurban high intensity: 0.1 < EH< 0.4 DUA (assume 0.25)
         //Exurban low intensity: 0.02 < EL< 0.1 DUA (assume 0.06)
         //
-        internal void convertAcresToUnits()
+        internal void ConvertAcresToUnits()
         {
             UHunits = LCLUconstants.UHunitsAcre * UH;
             UH_SMFunits = LCLUconstants.UHunitsSMFacre * UH_SMF;
@@ -731,7 +729,7 @@ namespace WaterSim_Base
             ExUHunits = LCLUconstants.ExUHunitsAcre * ExUH;
             ExULunits = LCLUconstants.ExULunitsAcre * ExUL;
         }
-        internal void convertAcresToUnits(StreamWriter sw, int year, string region)
+        internal void ConvertAcresToUnits(StreamWriter sw, int year, string region)
         {
             UHunits = LCLUconstants.UHunitsAcre * UH;
             UH_SMFunits = LCLUconstants.UHunitsSMFacre * UH_SMF;
@@ -774,7 +772,7 @@ namespace WaterSim_Base
         // =======================================================================
         internal void ProcessRequest(string region, int year, StreamWriter sw)
         {
-            double TAcres = totalAcres(region, year);
+            double TAcres = TotalAcres(region, year);
 
             if (CRF.UrbanDensityChangeCheck == 0)
             {
@@ -915,18 +913,18 @@ namespace WaterSim_Base
 
         void ProcessUpdates(bool[] follow, double TAcres, double diff)
         {
-            if (!follow[0]) { UL_LSF = update(TAcres, rUL_LSF, diff); }
-            if (!follow[1]) { UL_TSF = update(TAcres, rUL_TSF, diff); }
-            if (!follow[2]) { UL_SSF = update(TAcres, rUL_SSF, diff); }
-            if (!follow[3]) { UH_SMF = update(TAcres, rUH_SMF, diff); }
-            if (!follow[4]) { UH_WMF = update(TAcres, rUH_WMF, diff); }
-            if (!follow[5]) { UH_MMF = update(TAcres, rUH_MMF, diff); }
-            if (!follow[6]) { UH_HMF = update(TAcres, rUH_HMF, diff); }
-            if (!follow[7]) { SUB = update(TAcres, rSUB, diff); }
-            if (!follow[8]) { ExUH = update(TAcres, rExUH, diff); }
-            if (!follow[9]) { ExUL = update(TAcres, rExUL, diff); }
+            if (!follow[0]) { UL_LSF = Update(TAcres, RUL_LSF, diff); }
+            if (!follow[1]) { UL_TSF = Update(TAcres, RUL_TSF, diff); }
+            if (!follow[2]) { UL_SSF = Update(TAcres, RUL_SSF, diff); }
+            if (!follow[3]) { UH_SMF = Update(TAcres, RUH_SMF, diff); }
+            if (!follow[4]) { UH_WMF = Update(TAcres, RUH_WMF, diff); }
+            if (!follow[5]) { UH_MMF = Update(TAcres, RUH_MMF, diff); }
+            if (!follow[6]) { UH_HMF = Update(TAcres, RUH_HMF, diff); }
+            if (!follow[7]) { SUB = Update(TAcres, RSUB, diff); }
+            if (!follow[8]) { ExUH = Update(TAcres, RExUH, diff); }
+            if (!follow[9]) { ExUL = Update(TAcres, RExUL, diff); }
         }
-        internal double update(double A, double B, double C)
+        internal double Update(double A, double B, double C)
         {
             double temp = 0;
             temp = Math.Round(A * B + C * B, 2);
@@ -938,10 +936,10 @@ namespace WaterSim_Base
         #region relative acres estimates
         void REL(double sum)
         {
-            rUL_LSF = UL_LSF / sum;
-            rUL_TSF = UL_TSF / sum; rUL_SSF = UL_SSF / sum; rUH_SMF = UH_SMF / sum;
-            rUH_WMF = UH_WMF / sum; rUH_MMF = UH_MMF / sum; rUH_HMF = UH_HMF / sum;
-            rSUB = SUB / sum; rExUH = ExUH / sum; rExUL = ExUL / sum;
+            RUL_LSF = UL_LSF / sum;
+            RUL_TSF = UL_TSF / sum; RUL_SSF = UL_SSF / sum; RUH_SMF = UH_SMF / sum;
+            RUH_WMF = UH_WMF / sum; RUH_MMF = UH_MMF / sum; RUH_HMF = UH_HMF / sum;
+            RSUB = SUB / sum; RExUH = ExUH / sum; RExUL = ExUL / sum;
         }
 
         #endregion relative acres
@@ -952,10 +950,10 @@ namespace WaterSim_Base
         #region more properties-relative Acres & initial acres per class     
         // ==========================================================
         // Initial estimats of acres in each density class
-        double density
-        { get; set; }
-        double difference
-        { get; set; }
+        //double Density
+        //{ get; set; }
+        //double Difference
+        //{ get; set; }
         #endregion properties - relative acres and initial acres
         // ==========================================================
 
@@ -1041,7 +1039,7 @@ namespace WaterSim_Base
             get; set;
         }
         // =============================================================================================
-        internal void calculateDemand(string region, int year, double AdjustEfficiency, double period, StreamWriter sw)
+        internal void CalculateDemand(string region, int year, double AdjustEfficiency, double period, StreamWriter sw)
         {
             double result = 0;
             double temp = 0;
@@ -1069,29 +1067,29 @@ namespace WaterSim_Base
                     //
                     result = temp = AdjustEfficiency * UH_SMFunits * DemandFromDUA("SMF", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_SMFChangeCoef, CRF.UrbanHighDensityChangeSMF);
-                    resultSMF = tempTesting(temp, days);
+                    resultSMF = TempTesting(temp, days);
                     //
                     Base = (AdjustEfficiency * UH_WMFunits * DemandFromDUA("WMF", region) * utilities.convertGallonsMG) / days;
                     temp = AdjustEfficiency * UH_WMFunits * DemandFromDUA("WMF", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_WMFChangeCoef, CRF.UrbanHighDensityChangeWMF);
                     result += temp;
-                    resultWMF = tempTesting(temp, days);
+                    resultWMF = TempTesting(temp, days);
                     //
                     temp = AdjustEfficiency * UH_MMFunits * DemandFromDUA("MMF", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_MMFChangeCoef, CRF.UrbanHighDensityChangeMMF);
                     result += temp;
-                    resultMMF = tempTesting(temp, days);
+                    resultMMF = TempTesting(temp, days);
                     //
                     temp = AdjustEfficiency * UH_HMFunits * DemandFromDUA("HMF", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanHD_HMFChangeCoef, CRF.UrbanHighDensityChangeHMF);
                     result += temp;
-                    resultHMF = tempTesting(temp, days);
+                    resultHMF = TempTesting(temp, days);
 
                     //
                     temp = AdjustEfficiency * UL_LSFunits * DemandFromDUA("LSF", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_LSFChangeCoef, CRF.UrbanLowDensityChangeLSF);
                     result += temp;
-                    resultLSF = tempTesting(temp, days);
+                    resultLSF = TempTesting(temp, days);
                     //
                     // ===============================================================================================
                     //
@@ -1100,30 +1098,30 @@ namespace WaterSim_Base
                     temp = AdjustEfficiency * UL_TSFunits * DemandFromDUA("TSF", region) *
                         utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_TSFChangeCoef, CRF.UrbanLowDensityChangeTSF);
                     result += temp;
-                    resultTSF = tempTesting(temp, days);
+                    resultTSF = TempTesting(temp, days);
                     //
                     // ==============================================================================================
                     //
                     temp = AdjustEfficiency * UL_SSFunits * DemandFromDUA("SSF", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FUrbanLD_SSFChangeCoef, CRF.UrbanLowDensityChangeSSF);
                     result += temp;
-                    resultSSF = tempTesting(temp, days);
+                    resultSSF = TempTesting(temp, days);
 
                     //
                     temp = AdjustEfficiency * Subunits * DemandFromDUA("ThirdAcre", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FSuburbanDensityChangeCoef, CRF.SuburbanDensityChange);
                     result += temp;
-                    resultSUB = tempTesting(temp, days);
+                    resultSUB = TempTesting(temp, days);
 
                     temp = AdjustEfficiency * ExUHunits * DemandFromDUA("HalfAcre", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FExurbanHighDensityChangeCoef, CRF.ExurbanHighDensityChange);
                     result += temp;
-                    resultExH = tempTesting(temp, days);
+                    resultExH = TempTesting(temp, days);
 
                     temp = AdjustEfficiency * ExULunits * DemandFromDUA("Acre", region) *
                             utilities.AnnualExponentialChange(startValue, period, CRF.FExurbanLowDensityChangeCoef, CRF.ExurbanLowDensityChange);
                     result += temp;
-                    resultExL = tempTesting(temp, days);
+                    resultExL = TempTesting(temp, days);
                 }
                 else
                 {
@@ -1165,7 +1163,7 @@ namespace WaterSim_Base
             //}
         }
         // Testing
-        internal double tempTesting(double root, double days)
+        internal double TempTesting(double root, double days)
         {
             double result = 0;
             result = root * utilities.convertGallonsMG / days;
@@ -1173,29 +1171,29 @@ namespace WaterSim_Base
         }
         void DemandCheck(string region, int currentYear, double demand, StreamWriter sw)
         {
-            sw.WriteLine(region + "," + currentYear + "," + resultLSF + "," + resultTSF + "," + resultSSF + "," + resultSMF + ","
-               + resultWMF + "," + resultMMF + "," + resultHMF + "," + resultSUB + "," + resultExH + "," + resultExL + "," + demand);
+            //sw.WriteLine(region + "," + currentYear + "," + resultLSF + "," + resultTSF + "," + resultSSF + "," + resultSMF + ","
+            //   + resultWMF + "," + resultMMF + "," + resultHMF + "," + resultSUB + "," + resultExH + "," + resultExL + "," + demand);
         }
-        double resultLSF
-        { get; set; }
-        double resultTSF
-        { get; set; }
-        double resultSSF
-        { get; set; }
-        double resultSMF
-        { get; set; }
-        double resultWMF
-        { get; set; }
-        double resultMMF
-        { get; set; }
-        double resultHMF
-        { get; set; }
-        double resultSUB
-        { get; set; }
-        double resultExH
-        { get; set; }
-        double resultExL
-        { get; set; }
+        //double resultLSF
+        //{ get; set; }
+        //double resultTSF
+        //{ get; set; }
+        //double resultSSF
+        //{ get; set; }
+        //double resultSMF
+        //{ get; set; }
+        //double resultWMF
+        //{ get; set; }
+        //double resultMMF
+        //{ get; set; }
+        //double resultHMF
+        //{ get; set; }
+        //double resultSUB
+        //{ get; set; }
+        //double resultExH
+        //{ get; set; }
+        //double resultExL
+        //{ get; set; }
 
         // ============================================================================================================
     
@@ -1279,7 +1277,7 @@ namespace WaterSim_Base
         public DataClassLCLU FDClclu;
         //
         //
-        StreamWriter SW;
+        readonly StreamWriter SW;
         //
 
         // Version 2 ICLUS
@@ -1289,12 +1287,12 @@ namespace WaterSim_Base
         public DataClassLcluArea FDLCLU;
 
         //
-        double Fdemand;
+        readonly double Fdemand;
         // constants
         // This is the coeffecient to convert USGS MGD Consumer/resource numbers to gallons
         const double convertDemand = 1000000;
         //
-        int FUnitCode = 0;
+        readonly int FUnitCode = 0;
         /// <summary>
         /// 
         /// </summary>
@@ -1303,7 +1301,7 @@ namespace WaterSim_Base
 
         #region Constructors
         // ========================================================================================
-        double FBaseRate = 0;
+        readonly double FBaseRate = 0;
         /// <summary>
         /// 
         /// </summary>
@@ -1355,7 +1353,7 @@ namespace WaterSim_Base
             //
             double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LagConservation, LagLCLUChangeCoef, LminAg, period);
             temp = NewDemand;
-            demandAg = temp;
+            DemandAg = temp;
         }
         // =================================================================================================================
 
@@ -1411,7 +1409,7 @@ namespace WaterSim_Base
         // ===========================================
         // Demand
         double _demandAg = 0;
-        double demandAg
+        double DemandAg
         {
             get { return _demandAg; }
             set { _demandAg = value; }
@@ -1432,7 +1430,7 @@ namespace WaterSim_Base
             double temp = 0;
             Demand(currentYear);
 
-            temp = Math.Round(demandAg);
+            temp = Math.Round(DemandAg);
             return temp;
         }
         /// <summary>
@@ -1446,7 +1444,7 @@ namespace WaterSim_Base
             double temp = 0;
             Demand(currentYear);
 
-            temp = Math.Round(demandAg);
+            temp = Math.Round(DemandAg);
             return temp;
         }      /// <summary>
                /// 
@@ -1560,10 +1558,10 @@ namespace WaterSim_Base
         public DataClassLCLU FDClclu;
         //
         //
-        StreamWriter SW;
+        readonly  StreamWriter SW;
         //
 
-        double Fdemand;
+       /// readonly double Fdemand;
         // List<Industry> industryList = new List<Industry>();
         internal const double irate = 0.03;
         // constants
@@ -1571,7 +1569,7 @@ namespace WaterSim_Base
         const double convertDemand = 1000000;
         const int initialYear = 2015;
         //
-        int FUnitCode = 0;
+       /// readonly int FUnitCode = 0;
         /// <summary>
         /// 
         /// </summary>
@@ -1612,7 +1610,7 @@ namespace WaterSim_Base
             //
             double NewDemand = EstimateLCLUDemand(Lacres, LBaseRate, LindustrialConservation, LindustryLCLUChangeCoef, LminIndustry, period);
             temp = NewDemand;
-            demandIndustry = count(currentYear, temp);
+            DemandIndustry = Count(currentYear, temp);
         }
         /// <summary>
         /// Keep Industrial demand from exceeding an annual growth
@@ -1622,7 +1620,7 @@ namespace WaterSim_Base
         /// <param name="Y"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        internal double count(int Y, double values)
+        internal double Count(int Y, double values)
         {
             double result = 0;
             result = values;
@@ -1690,7 +1688,7 @@ namespace WaterSim_Base
         // ===========================================
         // Demand
         double _demandIndustry = 0;
-        double demandIndustry
+        double DemandIndustry
         {
             get { return _demandIndustry; }
             set { _demandIndustry = value; }
@@ -1710,7 +1708,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             Demand(currentYear);
-            temp = demandIndustry;
+            temp = DemandIndustry;
             return temp;
         }
         /// <summary>
@@ -1723,7 +1721,7 @@ namespace WaterSim_Base
         {
             double temp = 0;
             Demand(currentYear);
-            temp = demandIndustry;
+            temp = DemandIndustry;
             return temp;
         }
 
@@ -1793,14 +1791,14 @@ namespace WaterSim_Base
     /// </summary>
     public struct DataLCLU
     {
-        string FUnitName;
-        string FUnitCodeStr;
-        int FUnitCode;
+        readonly string FUnitName;
+        readonly string FUnitCodeStr;
+        readonly int FUnitCode;
 
-        int FYear;
-        double FAcerageUrban;
-        double FAcerageAg;
-        double FAcerageInd;
+        readonly int FYear;
+        readonly double FAcerageUrban;
+        readonly double FAcerageAg;
+        readonly double FAcerageInd;
 
 
         /// <summary>
@@ -1912,8 +1910,8 @@ namespace WaterSim_Base
     {
         // DataTable Parameters
         DataTable TheData = null;
-        string FDataDirectory = "";
-        string FFilename = "";
+        readonly string FDataDirectory = "";
+        readonly string FFilename = "";
         // EDIT end 2 13 18
 
         const string FScodeFieldStr = "SC";
@@ -1923,23 +1921,23 @@ namespace WaterSim_Base
         const string FRnameFieldStr = "RN";
         const string FRcodeFieldStr = "RC";
 
-        string FNameFieldStr = FRnameFieldStr;
-        string FCodeFieldStr = FRcodeFieldStr;
+        readonly string FNameFieldStr = FRnameFieldStr;
+        readonly string FCodeFieldStr = FRcodeFieldStr;
 
-        string FAcerageUrbanFieldStr = "URBACRES";
-        string FAcerageAgFieldStr = "AGACRES";
-        string FAcerageIndFieldStr = "INDACRES";
-        string FcurrentYearFieldStr = "YEAR";
+        readonly string FAcerageUrbanFieldStr = "URBACRES";
+        readonly string FAcerageAgFieldStr = "AGACRES";
+        readonly string FAcerageIndFieldStr = "INDACRES";
+        readonly string FcurrentYearFieldStr = "YEAR";
 
         // Data Array Parameters
 
-        Dictionary<string, int> StateCodes = new Dictionary<string, int>();
+        readonly Dictionary<string, int> StateCodes = new Dictionary<string, int>();
         const double InvalidRate = -1;//double.NaN;
 
-        double[] FAcresUrbanArray = null;
-        double[] FAcresAgArray = null;
-        double[] FAcresIndArray = null;
-        double[] FYearArray = null;
+        readonly double[] FAcresUrbanArray = null;
+        readonly double[] FAcresAgArray = null;
+        readonly double[] FAcresIndArray = null;
+        readonly double[] FYearArray = null;
 
         List<DataLCLU> FRuralDataList = new List<DataLCLU>();
         /// <summary>
@@ -1953,8 +1951,10 @@ namespace WaterSim_Base
             bool isErr = false;
             FDataDirectory = DataDirectory ;
             FFilename = Filename;
-            UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "");
-            DbCon.UseFieldHeaders = true;
+            UniDbConnection DbCon = new UniDbConnection(SQLServer.stText, "", FDataDirectory, "", "", "")
+            {
+                UseFieldHeaders = true
+            };
             DbCon.Open();
             TheData = Tools.LoadTable(DbCon, FFilename, ref isErr, ref errMessage);
             if (isErr)

@@ -23,9 +23,21 @@ namespace WaterSim_Base
         {
             Fyear = year;
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public const double Z = 254;
+        /// <summary>
+        /// 
+        /// </summary>
         public const double Perc_scale = 3;
+        /// <summary>
+        /// 
+        /// </summary>
         public const double Perc_store = 0.05;
+        /// <summary>
+        /// 
+        /// </summary>
         public const double Perc_slope = 0.1;
         //
         // Impervious as a function  of residential density
@@ -46,16 +58,25 @@ namespace WaterSim_Base
         public const double HalfAcre = 0.25;
         public const double Acre = 0.20;
         //1 acre = 4,046.8564224 square meters
+        /// <summary>
+        /// 
+        /// </summary>
         public const double AcrestoSquaremeters = 4046.8564224;
         // Liters to Million gallons - 1 liter = 0.264 172 052 36 gallon [US, liquid]
+        /// <summary>
+        /// 
+        /// </summary>
         public const double LitersToGallons = 0.26417205236;
+        /// <summary>
+        /// 
+        /// </summary>
         public const double GallonsToMillionGallons = 0.000001;
         //
     }
     /// <summary>
     /// Class to model stormwater runoff
     /// </summary>
-    public class StormWater
+    public class StormWater : IDisposable
     {
        // WaterSimCRFModel CRF;
         UnitData FUnitData;
@@ -201,6 +222,27 @@ namespace WaterSim_Base
 
             return total;
         }
+        // ==============================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+        // ==============================================================
+
         double modArea(double area)
         {
             double temp = 0;
@@ -1030,7 +1072,7 @@ namespace WaterSim_Base
     /// <summary>
     /// 
     /// </summary>
-    public class DataClassLcluArea
+    public class DataClassLcluArea : IDisposable
     {
         // DataTable Parameters
         DataTable TheData = null;
@@ -1096,7 +1138,7 @@ namespace WaterSim_Base
         /// </summary>
         /// <param name="DataDirectory"></param>
         /// <param name="Filename"></param>
-        public DataClassLcluArea(string DataDirectory, string Filename)
+        public DataClassLcluArea(string DataDirectory, string Filename) 
         {
             string errMessage = "";
             bool isErr = false;
@@ -1240,6 +1282,19 @@ namespace WaterSim_Base
                 }
             }
         }
+        // ==============================================================
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+        // ==============================================================
 
         // ==============================================================
         private double[] GetDataArray(string FieldStr)
@@ -1334,6 +1389,9 @@ namespace WaterSim_Base
                         break;
                     case "Acre":
                         temp = TheData.Acre;
+                        break;
+                    case "Urban":
+                        temp = TheData.EigthAcre + TheData.QuarterAcre+ TheData.ThirdAcre + TheData.HalfAcre + TheData.Acre;
                         break;
                 }
             }

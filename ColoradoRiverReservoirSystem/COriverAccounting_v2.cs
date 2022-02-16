@@ -59,7 +59,7 @@ namespace CORiverModel
             }
             catch (Exception e)
             {
-
+                throw new Exception("public bool CORassess", e);
             }
             return temp;
         }
@@ -72,14 +72,14 @@ namespace CORiverModel
         {
             //string USGSstate;
             //string USGSregion;
-            int USGSRC;
-            double FUCOL;
-            double FACOL;
-            double FPCOL;
-            double FICOL;
-            double FOCOL;
-            double FTCOL;
-            string RName;
+            readonly int USGSRC;
+            readonly double FUCOL;
+            readonly double FACOL;
+            readonly double FPCOL;
+            readonly double FICOL;
+            readonly double FOCOL;
+            readonly double FTCOL;
+            readonly string RName;
             /// <summary>
             /// 
             /// </summary>
@@ -129,35 +129,35 @@ namespace CORiverModel
             //{
             //    get { return USGSregion; }
             //}
-            public int rc
+            public int Rc
             {
                 get { return USGSRC; }
             }
-            public double urban
+            public double Urban
             {
                 get { return FUCOL; }
             }
-            public double ag
+            public double Ag
             {
                 get { return FACOL; }
             }
-            public double power
+            public double Power
             {
                 get { return FPCOL; }
             }
-            public double industry
+            public double Industry
             {
                 get { return FICOL; }
             }
-            public double other
+            public double Other
             {
                 get { return FOCOL; }
             }
-            public double total
+            public double Total
             {
                 get { return FTCOL; }
             }
-            public string regionName
+            public string RegionName
             {
                 get { return RName; }
             }
@@ -171,35 +171,35 @@ namespace CORiverModel
         {
             // DataTable Parameters
             DataTable TheData = null;
-            string FDataDirectory = "";
-            string FFilename = "";
+            readonly string FDataDirectory = "";
+            readonly string FFilename = "";
             // EDIT end 2 13 18
 
             // string FNameFieldStr = FRnameFieldStr;
 
-            string FRnameFieldStr1 = "RC";
-            string FColoradoRiverUse_1 = "UCOL";
-            string FColoradoRiverUse_2 = "ACOL";
-            string FColoradoRiverUse_3 = "PCOL";
-            string FColoradoRiverUse_4 = "ICOL";
-            string FColoradoRiverUse_5 = "OCOL";
-            string FColoradoRiverUse_6 = "COL";
-            string FRnameFieldStr2 = "RN";
+            readonly string FRnameFieldStr1 = "RC";
+            readonly string FColoradoRiverUse_1 = "UCOL";
+            readonly string FColoradoRiverUse_2 = "ACOL";
+            readonly string FColoradoRiverUse_3 = "PCOL";
+            readonly string FColoradoRiverUse_4 = "ICOL";
+            readonly string FColoradoRiverUse_5 = "OCOL";
+            readonly string FColoradoRiverUse_6 = "COL";
+            readonly string FRnameFieldStr2 = "RN";
             //
             // Data Array Parameters
 
-            Dictionary<string, int> RegionCodes = new Dictionary<string, int>();
+            readonly Dictionary<string, int> RegionCodes = new Dictionary<string, int>();
             const double InvalidRate = -1;//double.NaN;
             const string InvalidString = "-1";
 
-            string[] FString = null;
-            int[] FRegion = null;
-            double[] FCORuse_1 = null;
-            double[] FCORuse_2 = null;
-            double[] FCORuse_3 = null;
-            double[] FCORuse_4 = null;
-            double[] FCORuse_5 = null;
-            double[] FCORuse_6 = null;
+            readonly string[] FString = null;
+            readonly int[] FRegion = null;
+            readonly double[] FCORuse_1 = null;
+            readonly double[] FCORuse_2 = null;
+            readonly double[] FCORuse_3 = null;
+            readonly double[] FCORuse_4 = null;
+            readonly double[] FCORuse_5 = null;
+            readonly double[] FCORuse_6 = null;
             //
 
             List<USGSData> FDataList = new List<USGSData>();
@@ -328,20 +328,20 @@ namespace CORiverModel
             {
                 double temp = InvalidRate;
                 USGSData TheData = FDataList.Find(delegate (USGSData FD) {
-                    return ((FD.rc == rc));
+                    return ((FD.Rc == rc));
                 });
 
-                temp = TheData.urban;
+                temp = TheData.Urban;
                 return temp;
             }
             public string FastRNCOL(int rc)
             {
                 string temp = InvalidString;
                 USGSData TheData = FDataList.Find(delegate (USGSData FD) {
-                    return ((FD.rc == rc));
+                    return ((FD.Rc == rc));
                 });
 
-                temp = TheData.regionName;
+                temp = TheData.RegionName;
                 return temp;
             }
 

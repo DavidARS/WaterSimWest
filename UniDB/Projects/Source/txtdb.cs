@@ -709,11 +709,17 @@ namespace txtdb
         //     The number of rows successfully added to or refreshed in the System.Data.DataTable.
         //     This value does not include rows affected by statements that do not return
         //     rows.
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startRecord"></param>
+        /// <param name="maxRecords"></param>
+        /// <param name="dataTables"></param>
+        /// <returns></returns>
         public int Fill(int startRecord, int maxRecords, params DataTable[] dataTables)
         {
             throw new Exception("Fill(int startRecord, int maxRecords, params DataTable[] dataTables) not implemented");
-            return 0;
+            //return 0;
         }
         //
         // Summary:

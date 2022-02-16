@@ -133,10 +133,7 @@ namespace WaterSimDCDC.WestVisual
 
             if (Node != null)
             {
-                if (ParmItemCheck != null)
-                {
-                    ParmItemCheck(this, Node);
-                }
+                ParmItemCheck?.Invoke(this, Node);
             }
         }
 

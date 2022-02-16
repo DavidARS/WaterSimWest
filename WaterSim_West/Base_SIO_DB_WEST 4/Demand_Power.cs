@@ -70,13 +70,13 @@ namespace WaterSim_Base
             preProcessProduction();
             double period = (currentYear - CRF.startYear) + 1;
             LPowerProduction = PowerProduction(period);
-            CRF.seti_PowerEnergy((int)LPowerProduction);
+            CRF.Seti_PowerEnergy((int)LPowerProduction);
             //
             preProcessDemand();
             temp = PowerDemand(period, LPowerProduction, LPowerConservation);
             result = temp / convertDemand;
             demand = result;
-            //CRF.seti_PowerWater((int)result);
+            //CRF.Seti_PowerWater((int)result);
         }
 
 

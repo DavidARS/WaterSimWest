@@ -230,7 +230,7 @@ namespace CORiverModel
         /// <returns> An int.</returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public int geti_CoRiverTraceStartYear()
+        public int Geti_CoRiverTraceStartYear()
         {
             return PM.Geti_CoRiverTraceStartYear();
         }

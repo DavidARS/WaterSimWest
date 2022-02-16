@@ -2240,7 +2240,9 @@ namespace WaterSimDCDC.Generic
         }
         /// <summary>
         /// 
-        ///
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public string FastTarget(string source)
         {
             string temp = "";

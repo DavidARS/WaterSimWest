@@ -677,9 +677,7 @@ namespace WaterSim_West_v_1
 
         private void panelUserControls_Resize(object sender, EventArgs e)
         {
-            int NewWidth = 0;
-            int NewLeft = 0;
-            AdjustInputPanelWidthAndLeft(out NewWidth, out NewLeft);
+            AdjustInputPanelWidthAndLeft(out int NewWidth, out int NewLeft);
             panelUserControls.Left = NewLeft;
             panelUserControls.Width = NewWidth;
         }
@@ -834,7 +832,7 @@ namespace WaterSim_West_v_1
                     MyWSIM.DbConnection.ChangeDatabase(TempDir);
                 }
                 // OK, now database is the directory and TempTableName is the file/table name
-                bool isErr = false;
+                //bool isErr = false;
                 // OK, load this table and check that it is viable
                 DataTable Temp = MyWSIM.LoadWaterSimTable(TempTableName);
                 OkToUse = WaterSimManager_DB.Valid_DataTable(Temp);

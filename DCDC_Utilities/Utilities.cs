@@ -21,7 +21,7 @@ namespace DCDC_Utilities
         public const double convertGallonsToLiters = 3.785411784;
 
         #region Power Curve
-        public static double loadSensitivity(double TavHistorical, double TavScenario)
+        public static double LoadSensitivity(double TavHistorical, double TavScenario)
         {
             double temp = 0;
             const double asymptote = 3.692; // 3.5 is actual asymptote - Load sensitivity asymptote
@@ -102,7 +102,7 @@ namespace DCDC_Utilities
             if(2063 < time)
             {
 
-                bool stop=true;
+               // bool stop=true;
             }
 
             if (T >= TemperatureBreak)
@@ -140,7 +140,7 @@ namespace DCDC_Utilities
         /// </summary>
         /// <param name="year"></param>
         /// <returns></returns>
-        public static double daysInAYear(double year)
+        public static double DaysInAYear(double year)
         {
             double result = 365;
             double Leapyear = (Convert.ToInt32((year + 1) / 4) * 4 - 1) + 1;
@@ -210,7 +210,7 @@ namespace DCDC_Utilities
         {
             double dataOut = 0;
             //dataOut = (((datain * 1000000) * galAF ) / 1000000 ) / daysInAYear(year);
-            dataOut = ((datain) * galAF) / daysInAYear(year);
+            dataOut = ((datain) * galAF) / DaysInAYear(year);
             return dataOut;
         }
         // end edits 06.12.20 das
@@ -372,7 +372,7 @@ namespace DCDC_Utilities
 
     /// 
     /// </summary>
-    public class DataClassTemperature
+    public class DataClassTemperature : IDisposable
     {
         // DataTable Parameters
         DataTable TheData = null;
@@ -500,8 +500,17 @@ namespace DCDC_Utilities
 
         }
         // ==============================================================
-
-
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
         // ==============================================================
 
         // Scenario

@@ -10,7 +10,7 @@ namespace WaterSim_Base
     /// A class to hold new water available to users. Includes condensate water but also desalinization water.
     /// 11.10.21 David A Sampson
     /// </summary>
-    public class NewWater : IDisposable
+    public class NewWater
     {
         internal struct NWconstants
         {      
@@ -72,17 +72,6 @@ namespace WaterSim_Base
         void Initialize(int solar)
         {
             Solar = solar;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-            }
         }
         #endregion constructors
         #region getsAndsets
