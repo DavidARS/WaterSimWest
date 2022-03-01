@@ -40,7 +40,13 @@ using DCDC_Utilities;
 //
 // VERSION 5_0_!
 // There do appear to be orphaned code segments in this version, look for FOLLOW UP
-
+//
+// VERSION 8
+//  Various edits from January and February 2022
+//      A) Urban density classes based on ICLUS II data (using Denver Water building types)
+//      B) New water (Atmospheric water, rainwater harvested, potential stormwater capture)
+//      C) New method to only create objects needed depending on user inputs
+//      D) Desalination water- three methods: direct use, pipeline, or water exchanges
 // 
 //  RULES/CONVENTIONS
 //  1) All aspects of the WaterSimCRF model should be done inside the model() method.  the runoneYear() method
@@ -146,15 +152,15 @@ namespace WaterSimDCDC.Generic
         //
         //StormWater STORM;
         // Direct access models
-        readonly UrbanDemand_GPCD UD;
-        //UrbanDemand_GPCDa UDA;
-        readonly AgriculturalDemand_income ADI;
-        readonly PowerDemand_wp PD;
-        readonly IndustryDemand_employee ID;
-        //
-        readonly RuralDemand_LCLU_urban UDR;
-        readonly RuralDemand_LCLU_ag ADR;
-        readonly RuralDemand_LCLU_industry IDR;
+        //readonly UrbanDemand_GPCD UD;
+        ////UrbanDemand_GPCDa UDA;
+        //readonly AgriculturalDemand_income ADI;
+        //readonly PowerDemand_wp PD;
+        //readonly IndustryDemand_employee ID;
+        ////
+        //readonly RuralDemand_LCLU_urban UDR;
+        //readonly RuralDemand_LCLU_ag ADR;
+        //readonly RuralDemand_LCLU_industry IDR;
         //============================
         //readonly DataClassTemperature DataClassT;
         //
@@ -605,7 +611,7 @@ namespace WaterSimDCDC.Generic
         // 
         #endregion PREVIOUS NEW fEBRUARY 2022
         // =========================================================================================================
-        #region current
+        #region recently current Constructor
         /// <summary>
         /// 
         /// </summary>
@@ -652,9 +658,56 @@ namespace WaterSimDCDC.Generic
 
             Initialize_Variables();
         }
-        #endregion current construct
+        #endregion
         // =========================================================================================================
-        #region Load-unload classes as needed
+        #region current Constructor
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DataDirectory"></param>
+        /// <param name="TheUnitData"></param>
+        /// <param name="TheRateData"></param>
+        /// <param name="TheUnitName"></param>
+        /// <param name="cod"></param>
+        /// <param name="sw"></param>
+        public WaterSimCRFModel(string DataDirectory, UnitData TheUnitData, RateDataClass TheRateData,
+             string TheUnitName, ColoradoDesalExchangeClass cod, StreamWriter sw)
+        {
+            DataDirectoryPath = DataDirectory;
+            FUnitName = TheUnitName;
+            FRDC = TheRateData;
+            FUnitData = TheUnitData;
+            //
+            FDC = null;
+            Atmosphere = null;
+            Rain = null;
+            Storm = null;
+            //
+            CODE = cod;
+            //      
+            StreamW = sw;
+            //
+            if (FUnitData.GetValue(TheUnitName, UDI.UnitCodeField, out FUnitCode, out string errMsg))
+            {
+                // All good
+            }
+            else
+            {
+                // Not So Good 
+                FComment = "Unit Code : " + errMsg;
+            }
+            // ESIT QUAY 9/13/18
+            UnitNetwork = new West_CRF_Unit_Network(TheUnitData, TheUnitName);
+            // END EDIT
+
+            // Gets all the base data POpRate, Initialpop, Agrate , AgNet etc. 
+            SetBaseValues();
+
+            Initialize_Variables();
+        }
+        #endregion current construct Constructor
+        // =========================================================================================================
+        #region Load-unload classes as needed (includes embedded csv file names)
         //  code to see if I can load classes as needed- free up resources when not needed
         // edits 02.15.22 das, edits 02.16.22 das
         // ==================================================
@@ -705,6 +758,7 @@ namespace WaterSimDCDC.Generic
         #endregion
         // =========================================================================================================
         #endregion constructors
+        // =================================
         #region properties
         /// 
         /// <summary>   Dispose of this object, cleaning up any resources it uses. </summary>
@@ -1033,13 +1087,15 @@ namespace WaterSimDCDC.Generic
         // ============================================================================
         //
         #endregion
+        // =================================
 
         // =================================
         // Model Control
         // These routines control the model
         // =============================================================================================
         #region Model_Control- includes model kernal calls (main calls)
-
+        // =========
+        #region constants
         //-------------------------------------------------
         // MODEL CONSTANTS
         // ------------------------------------------------
@@ -1239,6 +1295,7 @@ namespace WaterSimDCDC.Generic
         int FDemandModelIndIndex = 1;
         // End Sampson Edits 07.02.18
         //
+        #endregion constants
         // ====================================================
 
 
@@ -1521,37 +1578,6 @@ namespace WaterSimDCDC.Generic
             }
         }
 
-
-        // QUAY EDIT 3/18/18
-        // These methods and properties are not being used.
-
-        ///// <summary> Zero-based index of the year.</summary>
-        //public int FYearIndex = 0;
-
-        /////-------------------------------------------------------------------------------------------------
-        ///// <summary> Seti year index.</summary>
-        ///// <param name="value"> The value.</param>
-        /////-------------------------------------------------------------------------------------------------
-
-        //public void Seti_YearIndex(int value)
-        //{
-        //    if ((value > -1) && (value < 51))
-        //    {
-        //        FYearIndex = value;
-        //    }
-        //}
-
-        /////-------------------------------------------------------------------------------------------------
-        ///// <summary> Geti year index.</summary>
-        ///// <returns> An int.</returns>
-        /////-------------------------------------------------------------------------------------------------
-
-        //public int Geti_YearIndex()
-        //{
-        //    return FYearIndex;
-        //}
-        // END EDIT 3/18/18
-
         // -------------------------
         // Reset Network and variables
         #region Reset Network and variables
@@ -1803,28 +1829,9 @@ namespace WaterSimDCDC.Generic
             {
             }
         }
-        // ===========================
-        //
-        //internal void testUrban()
-        //{
-        //    UrbanHighDensityManagement = 1.3;
-        //}
-        #region Model kernel Calls
+
+        #region Model kernel Calls (including desalination code)
         // 
-        // NEW test code, to load classes based on need
-        // fuck
-        internal void LoadClassResources()
-        {
-
-            bool test = false;
-
-        }
-
-
-
-
-
-
 
         // das 2021
         //  Pretty Obvious
@@ -2118,7 +2125,7 @@ namespace WaterSimDCDC.Generic
             //---------------------------------------------------
             // This calculates the change coef for Urban LCLU demand
             //
-            //
+            // ICLUS I land-cover land-use acres
             // 09.20.21 das damn
             // 
             YearsToTarget = (EndYear - startYear);
@@ -2214,7 +2221,7 @@ namespace WaterSimDCDC.Generic
             // 01.19.22 das
             // edits 01.25.22 das
             // 
-            // Desalination
+            #region  Desalination
             //
             // DesalDirectPolcy is an override from the UI
             // NOTE: the Desal Policies are set in "Geti_DesalPolicy()." (CODE.FastSource(FUnitName) 
@@ -2283,8 +2290,8 @@ namespace WaterSimDCDC.Generic
                     int actual = Geti_DesalPolicy();
                     int checkValue = Convert.ToInt32(retrieve(regionName));
                     FUnitData.SetValue(regionName, FldName, actual, checkValue, out value, out errMsg);
-                    string message = "User input does not match csv inputs";
-                    string title = "Delsaination policy Miss Match";
+                    string message = "User input does not match csv inputs- line 2293 in UnitModel";
+                    string title = "Desalination policy Miss Match";
                     MessageBox.Show(message, title);
                 }
             }
@@ -2429,7 +2436,7 @@ namespace WaterSimDCDC.Generic
 
                 FUnitData.GetValue(source, FldName, out int value, out string errMsg);
                 double d = value;
-                // need to deside if, there are no data in the USDA data table for direct use desal designated,
+                // need to decide if, there are no data in the USDA data table for direct use desal designated,
                 // do we add from default here, or add this default to whatever is in the file? QUESTION FOR RAY
                 // 01.26.22 das
                 if (0 < d)
@@ -2487,6 +2494,7 @@ namespace WaterSimDCDC.Generic
         }
         #endregion Desalination Piped Used Code
         // =====================================================================================================================
+        #endregion desal
         // =====================================================================
         // Properties to pass variables to other Classes for Demand Estimation
         //
@@ -5075,9 +5083,6 @@ namespace WaterSimDCDC.Generic
         //END EDIT 2 18 18
         #endregion
         // 
-        //public int sustainability_surface_water;
-        //public int sustainability_groundwater;
-        //public int sustainability_economic;
         // -------------------------------------------------
         // proportions
         // -------------------------------------------------
@@ -7612,7 +7617,7 @@ namespace WaterSimDCDC.Generic
             return TempInt;
         }
         ///------------------------------------------------------------------
-        /// <summary>   Seti Urban Density of ICLUS urban classes . </summary>
+        /// <summary>   Seti Atmospheric water </summary>
         ///
         /// <param name="value">    The value. </param>
         ///------------------------------------------------------------------
@@ -7803,25 +7808,7 @@ namespace WaterSimDCDC.Generic
         // end edits 11.29.21 das
         // ============================================================
 
-        //
-        //public double Desal
-        //{
-        //    get
-        //    {
-
-        //        double temp = 1;
-
-        //        if (invokePolicies)
-        //        {
-        //            temp = 1 + _desalinization;
-        //        }
-        //        return temp;
-
-        //    }
-        //}
-
-
-
+      
         // =====================================================================
         // ============================================
         // Agricultural Water Conservation
@@ -9108,7 +9095,6 @@ namespace WaterSimDCDC.Generic
 
 
         #endregion fluxes
-
     }
     #region Utilities
     static class utilities

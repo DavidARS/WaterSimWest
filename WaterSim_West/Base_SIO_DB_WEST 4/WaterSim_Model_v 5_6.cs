@@ -298,15 +298,15 @@ namespace WaterSimDCDC.Generic
         //
         // das edits 06.03.21
         readonly DataClassLcluArea FDataLCLUarea;
-        readonly DataClassRCN FDataLCLUrcn;
+        //readonly DataClassRCN FDataLCLUrcn;
         // end edits das o6.03.21
 
         // edits 01.19.22 das
         //readonly ColoradoDesalExchangeClass FCODExchange;
         // end edits 01.19.22 das
         // ==========================================================
-        readonly RainWaterHarvesting RW;
-        readonly StormWater SW;
+        //readonly RainWaterHarvesting RW;
+        //readonly StormWater SW;
         // ==========================================================
         //Resource Model list
         ResourceModelList FResourceModels =  new ResourceModelList();
@@ -391,7 +391,7 @@ namespace WaterSimDCDC.Generic
             //string UrbanDensityPropFilename = "UrbanDensityProportion.csv";
             string UrbanDensityPropFilename = "UrbanDensityDUAandProportion.csv";
             // end edits 02.08.22 das
-
+            //
             string outputs = "\\Outputs\\";
             string addInputsDir = "\\Inputs\\";
             //
@@ -408,6 +408,7 @@ namespace WaterSimDCDC.Generic
                 // ======================================================================================================
                 // ICLUS III
                 // urban demand index equals 3
+                // Both used below -  public void Set_DemandModelUrban(WaterSimCRFModel TempModel, int model)
                 FDataLCLUarea = new DataClassLcluArea(DataDirectoryName + addInputsDir, LCLUclassesFilename);
                 // edits 02.08.22 das
                 UDproportions = new UrbanDensityDataClass(DataDirectoryName + addInputsDir, UrbanDensityPropFilename);
@@ -426,7 +427,9 @@ namespace WaterSimDCDC.Generic
                     //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, FDataTemperature, Name, RW, SW, NW, swriter); // 11.02.21 das
                     //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, swriter); // 11.02.21 das
                     //WaterSimCRFModel TempModel = new WaterSimCRFModel(FUnitData, FRateData, FDataLCLU, TD, Name, RW, SW, NW, COD, UDproportions, swriter); // 02.08.22 das
-                    WaterSimCRFModel TempModel = new WaterSimCRFModel(DataDirectoryName,FUnitData, FRateData, Name, COD, UDproportions, swriter); // 02.08.22 das
+                    //WaterSimCRFModel TempModel = new WaterSimCRFModel(DataDirectoryName,FUnitData, FRateData, Name, COD, UDproportions, swriter); // 02.14.22 das
+                    WaterSimCRFModel TempModel = new WaterSimCRFModel(DataDirectoryName, FUnitData, FRateData, Name, COD, swriter); // 02.16.22 das
+
                     FUnitModels.Add(TempModel);
                     set_DefaultDemandModel(TempModel);
                 }
@@ -446,8 +449,7 @@ namespace WaterSimDCDC.Generic
             {
                 throw ex;
             }
- 
-        }
+         }
         //
         //public bool UTwaterTransfers
         //{
@@ -679,24 +681,26 @@ namespace WaterSimDCDC.Generic
 
         // ======================================================
         // edits 01.13.22 das
-        internal int DesalPoliciesForAgent
-        { get; set; }
-        /// <summary>
-        /// At the moment, not used
-        /// </summary>
-        public int desalPoliciesForAgent
-        {
-            set
-            {
-                int DesalPoliciesForAgent = value;
-                //FPolicyStartYear = value;
-                foreach (WaterSimCRFModel WSM in FUnitModels)
-                {
-                    WSM.desalinationPolicy = DesalPoliciesForAgent;
-                }
-            }
-            get { return DesalPoliciesForAgent; }
-        }
+        // edits 02.17.22 das REMOVED from use
+
+        //internal int DesalPoliciesForAgent
+        //{ get; set; }
+        ///// <summary>
+        ///// At the moment, not used
+        ///// </summary>
+        //public int desalPoliciesForAgent
+        //{
+        //    set
+        //    {
+        //        int DesalPoliciesForAgent = value;
+        //        //FPolicyStartYear = value;
+        //        foreach (WaterSimCRFModel WSM in FUnitModels)
+        //        {
+        //            WSM.desalinationPolicy = DesalPoliciesForAgent;
+        //        }
+        //    }
+        //    get { return DesalPoliciesForAgent; }
+        //}
         // end edits 11.09.21 das
         // ======================================================
 
@@ -2404,7 +2408,6 @@ namespace WaterSimDCDC.Generic
         }
 
         #endregion PowerEnergy
-
         //=======================================================
         //      TOTAL DEMAND
         //======================================================
@@ -2459,8 +2462,6 @@ namespace WaterSimDCDC.Generic
             return result;
         }
         #endregion
-
-
         //=======================================================
         //  NetDemandDifference
         //=======================================================
@@ -2738,8 +2739,6 @@ namespace WaterSimDCDC.Generic
             }
         }
         #endregion GroundwaterManagement
-
-
         //=======================================================
         //  ReclainedWaterUse and Wastewater flow
         //=======================================================
@@ -2875,7 +2874,6 @@ namespace WaterSimDCDC.Generic
 
 
         #endregion Gray Water Use
-
         //=======================================================
         //  LakeWaterManagement
         //=======================================================
@@ -3002,8 +3000,6 @@ namespace WaterSimDCDC.Generic
             }
         }
         #endregion Desalination
-
-
         //=======================================================
         #region Recycle
         //public providerArrayProperty Recycle;
@@ -3041,13 +3037,6 @@ namespace WaterSimDCDC.Generic
         //    }
         //}
         #endregion Recycle
-
-
-
-
-
-
-
         //=======================================================
         //  PopGrowthRate
         //=======================================================
@@ -3278,19 +3267,10 @@ namespace WaterSimDCDC.Generic
         //------------------------------------------------------
 
 
-
-        // ======================================================
-
-        // ------------------------------------------------------
-        //
-        // Denver Demand Model Variables
-        // 06.01.18,06.03.18
-        // das
-
         //=================================================================================================
         //  Demand Model
         //=================================================================================================
-        #region Model To Use
+        #region Model(s) To Use - from "Index" settings
         /// <summary>
         /// 
         /// </summary>
@@ -3346,7 +3326,7 @@ namespace WaterSimDCDC.Generic
             }
 
         }
-          //
+        //
         /// <summary>
         /// This method sets the demand model to use based on the value being passed in.
         /// </summary>
@@ -3357,25 +3337,35 @@ namespace WaterSimDCDC.Generic
             switch (model)
             {
                 case 1:
-                    DemandModel tempUrban = new UrbanDemand_GPCD(TempModel);
-                    TempModel.URBAN = tempUrban;
+                    using (DemandModel tempUrban = new UrbanDemand_GPCD(TempModel)) // edits 02.16.22 das
+                    {
+                        TempModel.URBAN = tempUrban;
+                    }
                     break;
                 case 2:
-                    DemandModel tempUrban_2 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU);
-                    TempModel.URBAN = tempUrban_2;
+                    using (DemandModel tempUrban_2 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU)) // edits 02.16.22 das
+                    {
+                        TempModel.URBAN = tempUrban_2;
+                    }
                     break;
                 case 3:
                     // ICLUS version II data - urban classes
                     //DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea);
                     //TempModel.URBAN = tempUrban_3;
                     // 02.09.22 das
-                    DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea, UDproportions);
-                    TempModel.URBAN = tempUrban_3;
+                    
+                    using (DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea, UDproportions))
+                    {
+                        //DemandModel tempUrban_3 = new RuralDemand_LCLU_urban(TempModel, FRateData, FDataLCLU, FDataLCLUarea, UDproportions);
+                        TempModel.URBAN = tempUrban_3;
+                    }
                     break;
 
                 default:
-                    DemandModel tempUrban_d = new UrbanDemand_GPCD(TempModel);
-                    TempModel.URBAN = tempUrban_d;
+                    using (DemandModel tempUrban_d = new UrbanDemand_GPCD(TempModel))
+                    {
+                        TempModel.URBAN = tempUrban_d;
+                    }
                     break;
             }
           }
@@ -3529,7 +3519,7 @@ namespace WaterSimDCDC.Generic
         #endregion Model To Use
 
         // ------------------------------------------------------
-        // =======================================================================
+        // ======================================================
         // Original code
         //=======================================================
         //  Urban Density Management of ICLUS urban classes

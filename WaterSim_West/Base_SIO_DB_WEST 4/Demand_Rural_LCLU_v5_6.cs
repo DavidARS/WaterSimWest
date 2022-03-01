@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
 using WaterSimDCDC;
 using System.Collections.Generic;
 using WaterSimDCDC.Generic;
@@ -945,18 +942,6 @@ namespace WaterSim_Base
         #endregion relative acres
         // =================================================================================
 
-        // ============================================================
-        // the properties to hold relative area for each density class
-        #region more properties-relative Acres & initial acres per class     
-        // ==========================================================
-        // Initial estimats of acres in each density class
-        //double Density
-        //{ get; set; }
-        //double Difference
-        //{ get; set; }
-        #endregion properties - relative acres and initial acres
-        // ==========================================================
-
         // =======================================================================
         // Add the DUA estimates for each density class
         // ICLUS data version 2.
@@ -1031,7 +1016,7 @@ namespace WaterSim_Base
         public double DemandFromDUA(string LCLUclass, string region)
         {
             double result = 0;
-            result = OutdoorDemandFromDUA(LCLUclass, region) + IndoorDemandFromPPH(LCLUclass);
+            result =Math.Round(OutdoorDemandFromDUA(LCLUclass, region) + IndoorDemandFromPPH(LCLUclass),1);
             return result;
         }
         internal bool DUAdemand
@@ -1152,15 +1137,15 @@ namespace WaterSim_Base
             }
             //demand = result; // set the property labeled "demand"
             double Days = utilities.daysInAYear(year);
-            demand = (result * utilities.convertGallonsMG) / Days;  // set the property labeled "demand"
-            //if (region == "Arizona Central South")
-            //{
-            //    //sw.WriteLine(region + "," + year + "," + resultWMF + ","  + Base  );
-            //    sw.WriteLine(region + "," + year + "," + resultLSF + "," + resultTSF + "," + resultSSF + "," + resultSMF + ","
-            //     + resultWMF + "," + resultMMF + "," + resultHMF + "," + resultSUB + "," + resultExH + "," + resultExL + "," + demand);
+            demand = Math.Round((result * utilities.convertGallonsMG) / Days, 6);  // set the property labeled "demand"
+            if (region == "Arizona Central South")
+            {
+                //sw.WriteLine(region + "," + year + "," + resultWMF + ","  + Base  );
+                //sw.WriteLine(region + "," + year + "," + resultLSF + "," + resultTSF + "," + resultSSF + "," + resultSMF + ","
+                // + resultWMF + "," + resultMMF + "," + resultHMF + "," + resultSUB + "," + resultExH + "," + resultExL + "," + demand);
 
-            //    //DemandCheck(region, year, demand, sw);
-            //}
+                //DemandCheck(region, year, demand, sw);
+            }
         }
         // Testing
         internal double TempTesting(double root, double days)
